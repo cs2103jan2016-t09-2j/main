@@ -1,8 +1,7 @@
 import java.time.LocalDate;
 import java.time.LocalTime;
 
-
-public class Task {
+class Task {
 	
 	private String description;
 	private boolean isFloatingType, isScheduledType;
