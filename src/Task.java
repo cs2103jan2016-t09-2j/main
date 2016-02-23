@@ -9,79 +9,82 @@ class Task {
 	private LocalTime startTime, endTime, dueTime;
 	
 	public Task()  {
-		
+		setDescription(null);
+		isFloatingType = false; isScheduledType = false;
+		setStartDate(null); setEndDate(null); setDueDate(null);
+		setStartTime(null); setEndTime(null); setDueTime(null);
 	}
 	
-	public void setDescription(String description){
+	protected void setDescription(String description){
 		this.description = description;
 	}
 	
-	public String getDescription(){
+	protected String getDescription(){
 		return this.description;
 	}
 	
-	public void setFloatingTask(){
+	protected void setFloatingTask(){
 		isFloatingType = true; 
 	}
 	
-	public void setScheduledTask(){
+	protected void setScheduledTask(){
 		isFloatingType = false; 
 		isScheduledType = true;
 	}
 	
-	public boolean isFloatingTask() {
+	protected boolean isFloatingTask() {
 		return isFloatingType;
 	}
 	
-	public boolean isScheduledTask() {
+	protected boolean isScheduledTask() {
 		return isScheduledType;
 	}
 	
-	public void setStartDate(LocalDate startDate) {
+	protected void setStartDate(LocalDate startDate) {
 		this.startDate = startDate; 
 	}
 	
-	public void setEndDate(LocalDate endDate) {
+	protected void setEndDate(LocalDate endDate) {
 		this.endDate = endDate; 
 	}
 	
-	public void setDueDate(LocalDate dueDate) {
+	protected void setDueDate(LocalDate dueDate) {
 		this.dueDate = dueDate; 
 	}
 	
-	public LocalDate getStartDate() {
+	protected LocalDate getStartDate() {
 		return this.startDate; 
 	}
 	
-	public LocalDate getEndDate() {
+	protected LocalDate getEndDate() {
 		return this.endDate; 
 	}
 	
-	public LocalDate getDueDate() {
+	protected LocalDate getDueDate() {
 		return this.dueDate; 
 	}
 	
-	public void setStartTime(LocalTime startTime) {
+	protected void setStartTime(LocalTime startTime) {
 		this.startTime = startTime; 
 	}
 	
-	public void setEndTime(LocalTime endTime) {
+	protected void setEndTime(LocalTime endTime) {
 		this.endTime = endTime; 
 	}
 	
-	public void setDueTime(LocalTime dueTime) {
+	protected void setDueTime(LocalTime dueTime) {
 		this.dueTime = dueTime; 
 	}
 	
-	public LocalTime getStartTime() {
+	protected LocalTime getStartTime() {
 		return this.startTime; 
 	}
 	
-	public LocalTime getEndTime() {
+	protected LocalTime getEndTime() {
 		return this.endTime; 
 	}
 	
-	public LocalTime getDueTime() {
+	protected LocalTime getDueTime() {
 		return this.dueTime; 
 	}
 }
