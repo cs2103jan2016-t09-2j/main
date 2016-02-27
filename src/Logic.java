@@ -3,6 +3,8 @@ import java.time.LocalTime;
 import java.util.*;
 
 import ScheduleHacks.Task;
+import Parser.Command;
+import Parser.CommandParser;
 
 class Logic {
 	

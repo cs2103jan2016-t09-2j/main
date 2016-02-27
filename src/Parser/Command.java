@@ -1,3 +1,4 @@
+package Parser;
 import ScheduleHacks.Task;
 
 public class Command {

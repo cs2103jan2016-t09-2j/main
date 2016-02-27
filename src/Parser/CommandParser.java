@@ -1,3 +1,4 @@
+package Parser;
 //import java.time.LocalDate;
 //import java.time.LocalTime;
 
@@ -11,13 +12,13 @@ import org.ocpsoft.prettytime.nlp.PrettyTimeParser;
 
 import ScheduleHacks.Task;
 
-class CommandParser {
+public class CommandParser {
 	
 	private static final int NO_WHITE_SPACE = -1;
 	private static final int FIRST_INDEX = 0;
 	private static final char WHITE_SPACE = ' ';
 	
-	static Command getParsedCommand(String newUserCommand){
+	public static Command getParsedCommand(String newUserCommand){
 		return parseCommand(newUserCommand);
 	}
 
