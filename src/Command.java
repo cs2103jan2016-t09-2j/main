@@ -1,10 +1,18 @@
-package ScheduleHacks;
+import ScheduleHacks.Task;
 
 public class Command {
 
 	public enum COMMAND_TYPE {
 		ADD_TASK, DELETE_TASK, MODIFY_TASK, COMPLETE_TASK, EXIT
 	};
+	
+	private static final String[] COMMAND_ADD = {"add", "create", "+", "a"};
+	private static final String[] COMMAND_DELETE = {"delete", "d", "-", "clear", "remove"};
+	private static final String[] COMMAND_MODIFY = {"modify", "edit", "update", "change"};
+	private static final String[] COMMAND_COMPLETE = {"complete", "done", "finish", 
+								                      "completed", "finished"};
+	private static final String[] COMMAND_EXIT = {"exit", "close", "quit"};
+	private static final String   COMMAND_INVALID = null;
 	
 	private Task taskDescription;
 	private COMMAND_TYPE commandType;
@@ -57,21 +65,42 @@ public class Command {
 	 * @return the commandType, so that necessary actions can be performed.
 	 */
 	private COMMAND_TYPE determineCommandType(String commandFirstWord) {
-		if(commandFirstWord == null) {
+		if(commandFirstWord.equals(COMMAND_INVALID)) {
 			throw new Error("command type string cannot be null!");
 		}
 		
-		if(commandFirstWord.equalsIgnoreCase("add")) {
+		if(hasInDictionary(COMMAND_ADD, commandFirstWord)) {
 			return COMMAND_TYPE.ADD_TASK;
-		} else if(commandFirstWord.equalsIgnoreCase("delete")) {
+		} else if(hasInDictionary(COMMAND_DELETE, commandFirstWord)) {
 			return COMMAND_TYPE.DELETE_TASK;
-		} else if(commandFirstWord.equalsIgnoreCase("modify")) {
+		} else if(hasInDictionary(COMMAND_MODIFY, commandFirstWord)) {
 			return COMMAND_TYPE.MODIFY_TASK;
-		} else if(commandFirstWord.equalsIgnoreCase("complete")) {
+		} else if(hasInDictionary(COMMAND_COMPLETE, commandFirstWord)) {
 			return COMMAND_TYPE.COMPLETE_TASK;
-		} else if(commandFirstWord.equalsIgnoreCase("exit")) {
+		} else if(hasInDictionary(COMMAND_EXIT, commandFirstWord)) {
 			return COMMAND_TYPE.EXIT;
 		}
 		return null;
+	}
+
+	/**
+	 * This operation helps us to overcome the variations in command type
+	 * input by the user.
+	 * 
+	 * @param commandFirstWord
+	 * 					is the first word of the user's command. 
+	 * @param commandDictionary
+	 * 					is the String dictionary passed for determineCommandType()
+	 * 
+	 * @return 
+	 * 			true if the first word from the user's command is contained in the
+	 *          respective dictionary, otherwise false
+	 */
+	private boolean hasInDictionary(String[] commandDictionary, String commandFirstWord) {
+		for(String command: commandDictionary) {
+			if(command.equalsIgnoreCase(commandFirstWord))
+				return true;
+		}
+		return false;
 	}
 }
