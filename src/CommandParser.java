@@ -9,14 +9,17 @@
 
 //import com.joestelmach.natty.Parser;
 
+import ScheduleHacks.Task;
+import ScheduleHacks.Command;
+
 class CommandParser {
 	
-	private static final String COMMAND_ADD = "add";
-	private static final String COMMAND_DELETE = "delete";
-	private static final String COMMAND_MODIFY = "modify";
-	private static final String COMMAND_COMPLETE = "complete";
-	private static final String COMMAND_EXIT = "exit";
-	private static final String COMMAND_INVALID = null;
+	private static final String[] COMMAND_ADD = {"add"};
+	private static final String[] COMMAND_DELETE = {"delete"};
+	private static final String[] COMMAND_MODIFY = {"modify"};
+	private static final String[] COMMAND_COMPLETE = {"complete"};
+	private static final String[] COMMAND_EXIT = {"exit"};
+	private static final String   COMMAND_INVALID = null;
 	
 	private static final int NO_WHITE_SPACE = -1;
 	private static final int FIRST_INDEX = 0;
@@ -54,7 +57,7 @@ class CommandParser {
 	 */
 
 	private static String determineCommandType(String commandFirstWord) {
-		if(commandFirstWord.equalsIgnoreCase("add") ||
+/*		if(commandFirstWord.equalsIgnoreCase("add") ||
 		   commandFirstWord.equalsIgnoreCase("create") ||
 		   commandFirstWord.equalsIgnoreCase("+")){
 			return COMMAND_ADD;
@@ -75,10 +78,9 @@ class CommandParser {
 				  commandFirstWord.equalsIgnoreCase("close") ||
 				  commandFirstWord.equalsIgnoreCase("quit")){
 			return COMMAND_EXIT;
-		}
+		} */
 		return COMMAND_INVALID;
 	}
-	
 
 	/**
 	 * This method is used to retrieve the first word from the user's command, which is

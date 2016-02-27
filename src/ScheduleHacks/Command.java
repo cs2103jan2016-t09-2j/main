@@ -1,48 +1,49 @@
+package ScheduleHacks;
 
-class Command {
+public class Command {
 
-	enum COMMAND_TYPE {
+	public enum COMMAND_TYPE {
 		ADD_TASK, DELETE_TASK, MODIFY_TASK, COMPLETE_TASK, EXIT
 	};
 	
 	private Task taskDescription;
 	private COMMAND_TYPE commandType;
 	
-	Command() {
+	public Command() {
 		taskDescription = null;
 		commandType = null;
 	}
 	
 	// Parameterized Constructor that accepts a command word and task details
-	Command(String commandFirstWord, Task newTaskDetails) {
+	public Command(String commandFirstWord, Task newTaskDetails) {
 		setCommandType(commandFirstWord);
 		setTaskDetails(newTaskDetails);
 	}
 	
 	//Parameterized Constructor that accepts another Command
-	Command(Command newCommand) {
+	public Command(Command newCommand) {
 		this.commandType = newCommand.commandType;
 		this.taskDescription = newCommand.taskDescription;
 	}
 	
-	void setCommandType(String commandFirstWord){
+	private void setCommandType(String commandFirstWord){
 		this.commandType = determineCommandType(commandFirstWord);
 	}
 	
 	// It throws an error when the command type is Invalid.
 	// Need to change it later on.
-	protected COMMAND_TYPE getCommandType(){
+	public COMMAND_TYPE getCommandType(){
 		if(commandType == null) {
 			throw new Error("Invalid Command Type");
 		}
 		return this.commandType;
 	}
 
-	void setTaskDetails(Task newTaskDetails){
+	private void setTaskDetails(Task newTaskDetails){
 		this.taskDescription = newTaskDetails;
 	}
 	
-	protected Task getTaskDetails() {
+	public Task getTaskDetails() {
 		return this.taskDescription;
 	}
 	

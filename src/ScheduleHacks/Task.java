@@ -1,7 +1,10 @@
+package ScheduleHacks;
+
+
 import java.time.LocalDate;
 import java.time.LocalTime;
 
-class Task {
+public class Task {
 	
 	private String description;
 	private boolean isFloatingType, isScheduledType;
@@ -19,7 +22,7 @@ class Task {
 		this.description = description;
 	}
 	
-	protected String getDescription(){
+	public String getDescription(){
 		return this.description;
 	}
 	
@@ -27,16 +30,16 @@ class Task {
 		isFloatingType = true; 
 	}
 	
-	protected void setScheduledTask(){
+	void setScheduledTask(){
 		isFloatingType = false; 
 		isScheduledType = true;
 	}
 	
-	protected boolean isFloatingTask() {
+	public boolean isFloatingTask() {
 		return isFloatingType;
 	}
 	
-	protected boolean isScheduledTask() {
+	public boolean isScheduledTask() {
 		return isScheduledType;
 	}
 	
@@ -52,15 +55,15 @@ class Task {
 		this.dueDate = dueDate; 
 	}
 	
-	protected LocalDate getStartDate() {
+	public LocalDate getStartDate() {
 		return this.startDate; 
 	}
 	
-	protected LocalDate getEndDate() {
+	public LocalDate getEndDate() {
 		return this.endDate; 
 	}
 	
-	protected LocalDate getDueDate() {
+	public LocalDate getDueDate() {
 		return this.dueDate; 
 	}
 	
@@ -76,15 +79,15 @@ class Task {
 		this.dueTime = dueTime; 
 	}
 	
-	protected LocalTime getStartTime() {
+	public LocalTime getStartTime() {
 		return this.startTime; 
 	}
 	
-	protected LocalTime getEndTime() {
+	public LocalTime getEndTime() {
 		return this.endTime; 
 	}
 	
-	protected LocalTime getDueTime() {
+	public LocalTime getDueTime() {
 		return this.dueTime; 
 	}
 }

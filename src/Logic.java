@@ -2,6 +2,9 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.*;
 
+import ScheduleHacks.Task;
+import ScheduleHacks.Command;
+
 class Logic {
 	
 	Command.COMMAND_TYPE executeCommand;
