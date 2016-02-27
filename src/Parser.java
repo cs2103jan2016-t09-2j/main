@@ -1,5 +1,9 @@
 import java.time.LocalDate;
 import java.time.LocalTime;
+//import java.util.Date;
+
+//import com.joestelmach.natty.*;
+//import org.ocpsoft.prettytime.nlp;
 
 class Parser {
 	
@@ -27,9 +31,9 @@ class Parser {
 	
 	// incomplete
 	private void parseCommand() {
-		String commandFirstWord = getFirstWord();
+		String commandFirstWord = getFirstWord(userCommand);
 		String commandType = determineCommandType(commandFirstWord);
-		String taskStatement = removeFirstWord();
+		String taskStatement = removeFirstWord(userCommand);
 		
 	}
 
@@ -82,7 +86,7 @@ class Parser {
 	 * @return 
 	 * 		the first word of the user command, which is the command type.
 	 */
-	private String getFirstWord(){
+	String getFirstWord(String userCommand){
 		userCommand.trim();
 		
 		int whiteSpacePosition = userCommand.indexOf(WHITE_SPACE);
@@ -100,7 +104,7 @@ class Parser {
 	 * @return taskStatement
 	 * 					which is exclusive of the command type.
 	 */
-	private String removeFirstWord() {
+	String removeFirstWord(String userCommand) {
 		int whiteSpacePosition = userCommand.indexOf(WHITE_SPACE);
 		
 		if(whiteSpacePosition != NO_WHITE_SPACE) {
