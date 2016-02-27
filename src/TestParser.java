@@ -16,4 +16,22 @@ public class TestParser {
 		String output = CommandParser.removeFirstWord(testString);
 		assertEquals(output, "life is great");
 	}
+	
+	@Test
+	public void testFloatingTask1() {
+		String testString = "add life is great";
+		assertEquals(true, CommandParser.floatingTask(testString));
+	}
+	
+	@Test
+	public void testFloatingTask2() {
+		String testString = "add Meet Robin Hood at 4pm on thurs";
+		assertEquals(false, CommandParser.floatingTask(testString));
+	}
+	
+	@Test
+	public void testFloatingTask3() {
+		String testString = "add Meet Robin Hood thurs";
+		assertEquals(false, CommandParser.floatingTask(testString));
+	}
 }

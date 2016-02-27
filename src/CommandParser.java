@@ -1,11 +1,11 @@
 //import java.time.LocalDate;
 //import java.time.LocalTime;
 
-//import java.util.Date;
-//import java.util.List;
+import java.util.Date;
+import java.util.List;
 
 //import org.ocpsoft.prettytime.PrettyTime;
-//import org.ocpsoft.prettytime.nlp.PrettyTimeParser;
+import org.ocpsoft.prettytime.nlp.PrettyTimeParser;
 
 //import com.joestelmach.natty.Parser;
 
@@ -32,10 +32,21 @@ class CommandParser {
 	
 	//incomplete
 	private static Task setTaskDetails(String taskStatement) {
-		// TODO Auto-generated method stub
+		floatingTask(taskStatement);
 		return null;
 	}
 
+	//incomplete
+	protected static boolean floatingTask(String taskStatement) {
+		PrettyTimeParser timeParse = new PrettyTimeParser();
+		List<Date> dateList = timeParse.parse(taskStatement);
+		if(dateList.isEmpty()) {
+			return true;
+		}
+		return false;
+	}
+	
+	
 
 	/**
 	 * This method is used to retrieve the first word from the user's command, which is
