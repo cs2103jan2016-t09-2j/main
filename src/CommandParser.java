@@ -1,11 +1,15 @@
-import java.time.LocalDate;
-import java.time.LocalTime;
+//import java.time.LocalDate;
+//import java.time.LocalTime;
+
 //import java.util.Date;
+//import java.util.List;
 
-//import com.joestelmach.natty.*;
-//import org.ocpsoft.prettytime.nlp;
+//import org.ocpsoft.prettytime.PrettyTime;
+//import org.ocpsoft.prettytime.nlp.PrettyTimeParser;
 
-class Parser {
+//import com.joestelmach.natty.Parser;
+
+class CommandParser {
 	
 	private static final String COMMAND_ADD = "add";
 	private static final String COMMAND_DELETE = "delete";
@@ -18,25 +22,25 @@ class Parser {
 	private static final int FIRST_INDEX = 0;
 	private static final char WHITE_SPACE = ' ';
 	
-	private String userCommand;
-	
-	Parser() {
-		this.userCommand = null;
+	static Command getParsedCommand(String newUserCommand){
+		return parseCommand(newUserCommand);
 	}
-	
-	Parser(String newUserCommand) {
-		this.userCommand = newUserCommand;
-		parseCommand();
-	}
-	
-	// incomplete
-	private void parseCommand() {
+
+	private static Command parseCommand(String userCommand) {
 		String commandFirstWord = getFirstWord(userCommand);
 		String commandType = determineCommandType(commandFirstWord);
 		String taskStatement = removeFirstWord(userCommand);
+		Task taskDetails = setTaskDetails(taskStatement);
 		
+		Command parsedCommand = new Command(commandType, taskDetails);
+		return parsedCommand;
 	}
-
+	
+	//incomplete
+	private static Task setTaskDetails(String taskStatement) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
 	/**
 	 * This operation helps us to overcome the variations in command type
@@ -49,7 +53,7 @@ class Parser {
 	 * 					thereby making execution easier.
 	 */
 
-	private String determineCommandType(String commandFirstWord) {
+	private static String determineCommandType(String commandFirstWord) {
 		if(commandFirstWord.equalsIgnoreCase("add") ||
 		   commandFirstWord.equalsIgnoreCase("create") ||
 		   commandFirstWord.equalsIgnoreCase("+")){
@@ -86,7 +90,7 @@ class Parser {
 	 * @return 
 	 * 		the first word of the user command, which is the command type.
 	 */
-	String getFirstWord(String userCommand){
+	static String getFirstWord(String userCommand){
 		userCommand.trim();
 		
 		int whiteSpacePosition = userCommand.indexOf(WHITE_SPACE);
@@ -104,7 +108,7 @@ class Parser {
 	 * @return taskStatement
 	 * 					which is exclusive of the command type.
 	 */
-	String removeFirstWord(String userCommand) {
+	static String removeFirstWord(String userCommand) {
 		int whiteSpacePosition = userCommand.indexOf(WHITE_SPACE);
 		
 		if(whiteSpacePosition != NO_WHITE_SPACE) {
