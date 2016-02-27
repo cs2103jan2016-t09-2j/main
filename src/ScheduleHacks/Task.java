@@ -18,7 +18,7 @@ public class Task {
 		setStartTime(null); setEndTime(null); setDueTime(null);
 	}
 	
-	protected void setDescription(String description){
+	public void setDescription(String description){
 		this.description = description;
 	}
 	
@@ -26,11 +26,11 @@ public class Task {
 		return this.description;
 	}
 	
-	protected void setFloatingTask(){
+	public void setFloatingTask(){
 		isFloatingType = true; 
 	}
 	
-	void setScheduledTask(){
+	public void setScheduledTask(){
 		isFloatingType = false; 
 		isScheduledType = true;
 	}
@@ -43,15 +43,15 @@ public class Task {
 		return isScheduledType;
 	}
 	
-	protected void setStartDate(LocalDate startDate) {
+	public void setStartDate(LocalDate startDate) {
 		this.startDate = startDate; 
 	}
 	
-	protected void setEndDate(LocalDate endDate) {
+	public void setEndDate(LocalDate endDate) {
 		this.endDate = endDate; 
 	}
 	
-	protected void setDueDate(LocalDate dueDate) {
+	public void setDueDate(LocalDate dueDate) {
 		this.dueDate = dueDate; 
 	}
 	
@@ -67,15 +67,15 @@ public class Task {
 		return this.dueDate; 
 	}
 	
-	protected void setStartTime(LocalTime startTime) {
+	public void setStartTime(LocalTime startTime) {
 		this.startTime = startTime; 
 	}
 	
-	protected void setEndTime(LocalTime endTime) {
+	public void setEndTime(LocalTime endTime) {
 		this.endTime = endTime; 
 	}
 	
-	protected void setDueTime(LocalTime dueTime) {
+	public void setDueTime(LocalTime dueTime) {
 		this.dueTime = dueTime; 
 	}
 	

@@ -20,18 +20,18 @@ public class TestParser {
 	@Test
 	public void testFloatingTask1() {
 		String testString = "add life is great";
-		assertEquals(true, CommandParser.floatingTask(testString));
+		assertEquals(true, CommandParser.isFloatingTask(testString));
 	}
 	
 	@Test
 	public void testFloatingTask2() {
 		String testString = "add Meet Robin Hood at 4pm on thurs";
-		assertEquals(false, CommandParser.floatingTask(testString));
+		assertEquals(false, CommandParser.isFloatingTask(testString));
 	}
 	
 	@Test
 	public void testFloatingTask3() {
 		String testString = "add Meet Robin Hood thurs";
-		assertEquals(false, CommandParser.floatingTask(testString));
+		assertEquals(false, CommandParser.isFloatingTask(testString));
 	}
 }

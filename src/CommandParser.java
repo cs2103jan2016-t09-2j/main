@@ -32,12 +32,20 @@ class CommandParser {
 	
 	//incomplete
 	private static Task setTaskDetails(String taskStatement) {
-		floatingTask(taskStatement);
+		Task newTask = new Task();
+		
+		if (isFloatingTask(taskStatement)) {
+			newTask.setDescription(taskStatement);
+			newTask.setFloatingTask();
+			return newTask;
+		} else {
+			
+		}
 		return null;
 	}
 
 	//incomplete
-	protected static boolean floatingTask(String taskStatement) {
+	protected static boolean isFloatingTask(String taskStatement) {
 		PrettyTimeParser timeParse = new PrettyTimeParser();
 		List<Date> dateList = timeParse.parse(taskStatement);
 		if(dateList.isEmpty()) {
