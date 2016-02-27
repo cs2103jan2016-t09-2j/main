@@ -5,25 +5,24 @@ import java.util.*;
 class Logic {
 	
 	Command.COMMAND_TYPE executeCommand;
-	Parser parsingUserInput;
 	Command existingCommand;
 	Task executeTask;
 	
-	private ArrayList <Task> floatingTasksToDo = new ArrayList <Task> ();
-	private ArrayList <Task> floatingTasksComplete = new ArrayList <Task> ();
-	private ArrayList <Task> scheduledTasksToDo = new ArrayList <Task> ();
-	private ArrayList <Task> scheduledTasksComplete = new ArrayList <Task> ();
-	private ArrayList <Task> scheduledTasksOverDue = new ArrayList <Task> ();
+	private ArrayList<Task> floatingTasksToDo = new ArrayList<Task>();
+	private ArrayList<Task> floatingTasksComplete = new ArrayList<Task>();
+	private ArrayList<Task> scheduledTasksToDo = new ArrayList<Task>();
+	private ArrayList<Task> scheduledTasksComplete = new ArrayList<Task>();
+	private ArrayList<Task> scheduledTasksOverDue = new ArrayList<Task>();
 	private String originalDescription, commandFirstWord;
 	private LocalDate start_date, due_date;
 	private LocalTime start_time, due_time;
 	
-	public void passToParser(String originalDescription){
-		parsingUserInput = new Parser(originalDescription);
+	public void getParsedCommand(String originalDescription){
+		existingCommand = new Command(CommandParser.getParsedCommand(originalDescription));
 	}
 	
 	public Command.COMMAND_TYPE getCommand() {
-		executeCommand = existingCommand.determineCommandType(commandFirstWord);
+		executeCommand = existingCommand.getCommandType();
 		return executeCommand;
 	}
 	
@@ -41,13 +40,15 @@ class Logic {
 			break;
 		case MODIFY_TASK:
 			modifyTask(executeTask);
+			break;
 		case COMPLETE_TASK:
 			completeTask(executeTask);
+			break;
 		case EXIT:
 			exit();	
 		}
 	}
-	
+
 	private void addTask(Task executeTask) {
 		start_date = executeTask.getStartDate();
 		due_date = executeTask.getDueDate();
@@ -78,6 +79,15 @@ class Logic {
 		}
 	}
 	
+	private void deleteTask(Task executeTask) {
+	}
 	
+	private void modifyTask(Task executeTask) {
+	}
 	
+	private void completeTask(Task executeTask) {
+	}
+	
+	private void exit() {
+	}
 }

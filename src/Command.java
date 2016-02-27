@@ -13,10 +13,16 @@ class Command {
 		commandType = null;
 	}
 	
-	// Parameterized Constructor
+	// Parameterized Constructor that accepts a command word and task details
 	Command(String commandFirstWord, Task newTaskDetails) {
 		setCommandType(commandFirstWord);
 		setTaskDetails(newTaskDetails);
+	}
+	
+	//Parameterized Constructor that accepts another Command
+	Command(Command newCommand) {
+		this.commandType = newCommand.commandType;
+		this.taskDescription = newCommand.taskDescription;
 	}
 	
 	void setCommandType(String commandFirstWord){
