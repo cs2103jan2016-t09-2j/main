@@ -17,22 +17,26 @@ public class Command {
 	
 	private Task taskDescription;
 	private COMMAND_TYPE commandType;
+	private Integer taskIndex;
 	
 	public Command() {
-		taskDescription = null;
-		commandType = null;
+		this.taskDescription = null;
+		this.commandType = null;
+		this.taskIndex = null;
 	}
 	
 	// Parameterized Constructor that accepts a command word and task details
-	public Command(String commandFirstWord, Task newTaskDetails) {
+	public Command(String commandFirstWord, Task newTaskDetails, Integer newTaskIndex) {
 		setCommandType(commandFirstWord);
 		setTaskDetails(newTaskDetails);
+		setTaskIndex(newTaskIndex);
 	}
-	
+
 	//Parameterized Constructor that accepts another Command
 	public Command(Command newCommand) {
 		this.commandType = newCommand.commandType;
 		this.taskDescription = newCommand.taskDescription;
+		this.taskIndex = newCommand.taskIndex;
 	}
 	
 	private void setCommandType(String commandFirstWord){
@@ -54,6 +58,14 @@ public class Command {
 	
 	public Task getTaskDetails() {
 		return this.taskDescription;
+	}
+	
+	private void setTaskIndex(Integer newTaskIndex) {
+		this.taskIndex = newTaskIndex;
+	}
+	
+	public Integer getTaskIndex() {
+		return this.taskIndex;
 	}
 	
 	/**

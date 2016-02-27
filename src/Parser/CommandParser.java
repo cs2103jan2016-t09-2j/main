@@ -26,8 +26,9 @@ public class CommandParser {
 		String commandType = getFirstWord(userCommand);
 		String taskStatement = removeFirstWord(userCommand);
 		Task taskDetails = setTaskDetails(taskStatement);
-		
-		Command parsedCommand = new Command(commandType, taskDetails);
+		 
+		//ERROR
+		Command parsedCommand = new Command(commandType, taskDetails, null);
 		return parsedCommand;
 	}
 	
