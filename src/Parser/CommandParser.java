@@ -84,6 +84,11 @@ public class CommandParser {
 	 */
 	// incomplete
 	private static boolean isScheduledTask(List<Date> dateList) {
+		for(int index = dateList.size()-1; index>=0; index--) {
+			Date dateTime =  dateList.get(index);
+			String stringDateTime = dateTime.toString();
+		}
+		
 		return true;
 	}
 
