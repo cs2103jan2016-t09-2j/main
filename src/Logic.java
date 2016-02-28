@@ -55,14 +55,14 @@ class Logic {
 
 	private void addTask(Task executeTask) {
 		if (executeTask.isScheduledTask()){
-			if ((executeTask.getDueDate().compareTo(executeTask.getStartDate())>0)) {
+			if ((executeTask.getEndDate().compareTo(executeTask.getStartDate())>0)) {
 				scheduledTasksToDo.add(executeTask);
 			}
-			else if (executeTask.getDueDate().compareTo(executeTask.getStartDate())<0) {
+			else if (executeTask.getEndDate().compareTo(executeTask.getStartDate())<0) {
 				scheduledTasksOverDue.add(executeTask);
 			}
 			else {
-				if (executeTask.getStartTime().compareTo(executeTask.getDueTime())<0){
+				if (executeTask.getStartTime().compareTo(executeTask.getEndTime())<0){
 					scheduledTasksToDo.add(executeTask);
 				}
 				else {
@@ -136,12 +136,12 @@ class Logic {
 				case ("date"):
 					DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyy-MMM-dd");
 					LocalDate editedDate = (LocalDate) df.parse(modifiedTaskDescription.substring(6));
-					executeTask.setDueDate(editedDate);
+					executeTask.setEndDate(editedDate);
 					break;
 				case ("time"):
 					DateTimeFormatter tf  = DateTimeFormatter.ofPattern("hh:mm");
 					LocalTime editedTime = (LocalTime) tf.parse(modifiedTaskDescription.substring(6));
-					executeTask.setDueTime(editedTime);
+					executeTask.setEndTime(editedTime);
 					break;
 			}
 		}
