@@ -27,18 +27,27 @@ class DateParser {
 	// private static final String REGEX_EXTRA_WHITESPACE = "\\s{2,}";
 
 	// Instance Variables
+	private String taskDetails;
 
 	DateParser() {
 		this("");
 	}
 
-	DateParser(String taskDetails) {
-
+	DateParser(String newTaskDetails) {
+		setTaskDetails(newTaskDetails);
+	}
+	
+	protected void setTaskDetails(String newTaskDetails) {
+		this.taskDetails = newTaskDetails;
+	}
+	
+	public String getTaskDetails(){
+		return this.taskDetails;
 	}
 
 	// incomplete
-	protected ArrayList<LocalDate> getDates(String taskDetails) {
-		ArrayList<String> stringDateList = getDateList(taskDetails);
+	protected ArrayList<LocalDate> getDates() {
+		ArrayList<String> stringDateList = getDateList(getTaskDetails());
 		if (hasDateList(stringDateList)) {
 			ArrayList<LocalDate> dateList = getLocalDateList(stringDateList);
 			return dateList;
@@ -64,7 +73,7 @@ class DateParser {
 	 * @param stringDateList
 	 * 				is the list of dates contained in the user statement.
 	 */
-	protected boolean hasDateList(ArrayList<String> stringDateList) {
+	private boolean hasDateList(ArrayList<String> stringDateList) {
 		if(stringDateList.isEmpty()) {
 			return true;
 		}
