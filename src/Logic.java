@@ -1,25 +1,24 @@
+import java.util.*;
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.*;
+import java.time.format.*;
 
 import ScheduleHacks.Task;
-import Parser.Command;
-import Parser.CommandParser;
+import Parser.*;
 
 class Logic {
 	
-	Command.COMMAND_TYPE executeCommand;
-	Command existingCommand;
-	Task executeTask;
+	private Command.COMMAND_TYPE executeCommand;
+	private Command existingCommand;
+	private Task executeTask;
+	private boolean digitFound = false;
+	private boolean letterFound = false;
 	
 	private ArrayList<Task> floatingTasksToDo = new ArrayList<Task>();
 	private ArrayList<Task> floatingTasksComplete = new ArrayList<Task>();
 	private ArrayList<Task> scheduledTasksToDo = new ArrayList<Task>();
 	private ArrayList<Task> scheduledTasksComplete = new ArrayList<Task>();
 	private ArrayList<Task> scheduledTasksOverDue = new ArrayList<Task>();
-	private String originalDescription, commandFirstWord;
-	private LocalDate start_date, due_date;
-	private LocalTime start_time, due_time;
 	
 	public void getParsedCommand(String originalDescription){
 		existingCommand = new Command(CommandParser.getParsedCommand(originalDescription));
@@ -31,7 +30,8 @@ class Logic {
 	}
 	
 	public Task getTaskDescription() {
-		return executeTask = existingCommand.getTaskDetails();
+		executeTask = existingCommand.getTaskDetails();
+		return executeTask;
 	}
 	
 	public void execute(Command.COMMAND_TYPE executeCommand,Task executeTask) {
@@ -54,20 +54,15 @@ class Logic {
 	}
 
 	private void addTask(Task executeTask) {
-		start_date = executeTask.getStartDate();
-		due_date = executeTask.getDueDate();
-		start_time = executeTask.getStartTime();
-		due_time = executeTask.getDueTime();
-		
 		if (executeTask.isScheduledTask()){
-			if ((due_date.compareTo(start_date)>0)) {
+			if ((executeTask.getDueDate().compareTo(executeTask.getStartDate())>0)) {
 				scheduledTasksToDo.add(executeTask);
 			}
-			else if (due_date.compareTo(start_date)<0) {
+			else if (executeTask.getDueDate().compareTo(executeTask.getStartDate())<0) {
 				scheduledTasksOverDue.add(executeTask);
 			}
 			else {
-				if (start_time.compareTo(due_time)<0){
+				if (executeTask.getStartTime().compareTo(executeTask.getDueTime())<0){
 					scheduledTasksToDo.add(executeTask);
 				}
 				else {
@@ -76,22 +71,101 @@ class Logic {
 			}
 		}
 		else if (executeTask.isFloatingTask()) {
-			/*floating tasks will always automatically be todo unless marked as complete, therefore
-			 * should have an if condition marking floating task as complete and in else statement
-			 * floating task automatically is added to floatingtasktodo array list
-			 */
+			floatingTasksToDo.add(executeTask);
 		}
 	}
 	
 	private void deleteTask(Task executeTask) {
+		if ((executeTask.getDescription().length() == 2)) {
+			if(Character.isDigit(executeTask.getDescription().charAt(0))) {
+				digitFound = true;
+			}
+			else if(Character.isLetter(executeTask.getDescription().charAt(1))) {
+				letterFound = true;
+			}
+			if (digitFound && letterFound) {
+				int digitOfTask = (int)executeTask.getDescription().charAt(0);
+				char firstLetterOfTask = executeTask.getDescription().charAt(1);
+				
+				if (firstLetterOfTask == 'u') {
+					scheduledTasksToDo.remove(digitOfTask-1);//only can remove scheduledTasksToDo using this method
+				}
+				else if (firstLetterOfTask == 'f') {
+					floatingTasksToDo.remove(digitOfTask-1);//only can remove incomplete floating tasks with this method
+				}
+			}
+			digitFound = false;
+			letterFound = false;
+		}
+		
+		else {
+			if (scheduledTasksToDo.contains(executeTask)) {
+				scheduledTasksToDo.remove(executeTask);
+			}
+			else if (scheduledTasksOverDue.contains(executeTask)) {
+				scheduledTasksOverDue.remove(executeTask);
+			}
+			else if (scheduledTasksComplete.contains(executeTask)) {
+				scheduledTasksComplete.remove(executeTask);
+			}
+			else if (floatingTasksToDo.contains(executeTask)) {
+				floatingTasksToDo.remove(executeTask);
+			}
+			else if (floatingTasksComplete.contains(executeTask)) {
+				floatingTasksComplete.remove(executeTask);
+			}
+			else if (executeTask.getDescription().equalsIgnoreCase("all")) {
+				scheduledTasksToDo.clear();//not too sure about this aspect as we
+				scheduledTasksOverDue.clear();//are maintaining 5 different sets of ArrayLists
+				scheduledTasksComplete.clear();//perhaps the command can be modified to
+				floatingTasksToDo.clear();//"clear all upcoming s/completed s/overdue s/incomplete f/complete f" 
+				floatingTasksComplete.clear();//so we will know which ArrayList to clear
+			}
+		}
 	}
 	
 	private void modifyTask(Task executeTask) {
+		String modifiedTaskDescription = executeTask.getDescription().replaceAll("\\s","");
+		
+		if ((Character.isDigit(modifiedTaskDescription.charAt(0))) && (Character.isLetter
+			(modifiedTaskDescription.charAt(1)))) {
+			switch (modifiedTaskDescription.substring(2,6)) {
+				case ("desc"): 
+					executeTask.setDescription(modifiedTaskDescription.substring(6));
+					break;
+				case ("date"):
+					DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyy-MMM-dd");
+					LocalDate editedDate = (LocalDate) df.parse(modifiedTaskDescription.substring(6));
+					executeTask.setDueDate(editedDate);
+					break;
+				case ("time"):
+					DateTimeFormatter tf  = DateTimeFormatter.ofPattern("hh:mm");
+					LocalTime editedTime = (LocalTime) tf.parse(modifiedTaskDescription.substring(6));
+					executeTask.setDueTime(editedTime);
+					break;
+			}
+		}
 	}
 	
 	private void completeTask(Task executeTask) {
+		if (executeTask.isScheduledTask()){
+			scheduledTasksComplete.add(executeTask);
+			if (scheduledTasksToDo.contains(executeTask)) {
+				scheduledTasksToDo.remove(executeTask);
+			}
+			else if (scheduledTasksOverDue.contains(executeTask)) {
+				scheduledTasksOverDue.remove(executeTask);
+			}
+		}
+		else if (executeTask.isFloatingTask()) {
+			floatingTasksComplete.add(executeTask);
+			if (floatingTasksToDo.contains(executeTask)) {
+				floatingTasksToDo.remove(executeTask);
+			}
+		}
 	}
 	
 	private void exit() {
+		System.exit(0);//how to save everything and exit?
 	}
 }
