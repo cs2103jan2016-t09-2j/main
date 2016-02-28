@@ -8,11 +8,7 @@ import Parser.*;
 
 class Logic {
 	
-	private Command.COMMAND_TYPE executeCommand;
 	private Command existingCommand;
-	private Task executeTask;
-	private boolean digitFound = false;
-	private boolean letterFound = false;
 	
 	private ArrayList<Task> floatingTasksToDo = new ArrayList<Task>();
 	private ArrayList<Task> floatingTasksComplete = new ArrayList<Task>();
@@ -20,20 +16,24 @@ class Logic {
 	private ArrayList<Task> scheduledTasksComplete = new ArrayList<Task>();
 	private ArrayList<Task> scheduledTasksOverDue = new ArrayList<Task>();
 	
+	/*this method gets back the parsed Command class from parser*/
 	public void getParsedCommand(String originalDescription){
 		existingCommand = new Command(CommandParser.getParsedCommand(originalDescription));
 	}
 	
+	/*this method gets the specific command type to be executed such as add, delete, modify etc*/
 	public Command.COMMAND_TYPE getCommand() {
-		executeCommand = existingCommand.getCommandType();
+		Command.COMMAND_TYPE executeCommand = existingCommand.getCommandType();
 		return executeCommand;
 	}
 	
+	/*this method retrieves all relevant task details from task class*/
 	public Task getTaskDescription() {
-		executeTask = existingCommand.getTaskDetails();
+		Task executeTask = existingCommand.getTaskDetails();
 		return executeTask;
 	}
 	
+	/*this method calls the respective execution methods for the respective command types*/
 	public void execute(Command.COMMAND_TYPE executeCommand,Task executeTask) {
 		switch (executeCommand) {
 		case ADD_TASK:
@@ -52,17 +52,20 @@ class Logic {
 			exit();	
 		}
 	}
-
+	
+	/*adds task based on the startdate, enddate, starttime and endtime for scheduled tasks into either
+	 scheduledtodo or scheduledoverdue arraylist while floating tasks are auto added into floatingtodo
+	 arraylist*/
 	private void addTask(Task executeTask) {
 		if (executeTask.isScheduledTask()){
-			if ((executeTask.getEndDate().compareTo(executeTask.getStartDate())>0)) {
+			if ((executeTask.getEndDate().compareTo(executeTask.getStartDate()))>0) {
 				scheduledTasksToDo.add(executeTask);
 			}
-			else if (executeTask.getEndDate().compareTo(executeTask.getStartDate())<0) {
+			else if ((executeTask.getEndDate().compareTo(executeTask.getStartDate()))<0) {
 				scheduledTasksOverDue.add(executeTask);
 			}
 			else {
-				if (executeTask.getStartTime().compareTo(executeTask.getEndTime())<0){
+				if ((executeTask.getStartTime().compareTo(executeTask.getEndTime()))<0){
 					scheduledTasksToDo.add(executeTask);
 				}
 				else {
@@ -75,27 +78,18 @@ class Logic {
 		}
 	}
 	
+	/*deleteTask can be done either by typing only 2 characters, indicating the task number and task
+	 type, or it can be done by typing the task description itself*/
 	private void deleteTask(Task executeTask) {
 		if ((executeTask.getDescription().length() == 2)) {
-			if(Character.isDigit(executeTask.getDescription().charAt(0))) {
-				digitFound = true;
+			int taskDigit = existingCommand.getTaskIndex();
+			
+			if (executeTask.isScheduledTask()) {
+				scheduledTasksToDo.remove(taskDigit-1);
 			}
-			else if(Character.isLetter(executeTask.getDescription().charAt(1))) {
-				letterFound = true;
+			else if (executeTask.isFloatingTask()) {
+				floatingTasksToDo.remove(taskDigit-1);
 			}
-			if (digitFound && letterFound) {
-				int digitOfTask = (int)executeTask.getDescription().charAt(0);
-				char firstLetterOfTask = executeTask.getDescription().charAt(1);
-				
-				if (firstLetterOfTask == 'u') {
-					scheduledTasksToDo.remove(digitOfTask-1);//only can remove scheduledTasksToDo using this method
-				}
-				else if (firstLetterOfTask == 'f') {
-					floatingTasksToDo.remove(digitOfTask-1);//only can remove incomplete floating tasks with this method
-				}
-			}
-			digitFound = false;
-			letterFound = false;
 		}
 		
 		else {
@@ -124,6 +118,7 @@ class Logic {
 		}
 	}
 	
+	/*modifies task by editing description, date or time*/
 	private void modifyTask(Task executeTask) {
 		String modifiedTaskDescription = executeTask.getDescription().replaceAll("\\s","");
 		
@@ -147,6 +142,8 @@ class Logic {
 		}
 	}
 	
+	/*adds task into the respective completearraylist and removes that same task from the arraylist that 
+	 it is currently residing in*/
 	private void completeTask(Task executeTask) {
 		if (executeTask.isScheduledTask()){
 			scheduledTasksComplete.add(executeTask);
@@ -165,7 +162,32 @@ class Logic {
 		}
 	}
 	
+	/*this method shd be called in main at the start of the prog and shd run all the way till system
+	 exits. This method automatically shifts scheduledtaskstodo to scheduledtasksoverdue when date and
+	 time has exceeded due date and due time specified for scheduled task*/
+	public void autoChangeTaskStatus(Task executeTask) {
+		if (executeTask.isScheduledTask()) {
+			LocalDate dateToday = LocalDate.now();
+			LocalTime timeToday = LocalTime.now();
+			
+			if (scheduledTasksToDo.contains(executeTask)) {
+				if (((executeTask.getEndDate()).compareTo(dateToday))<0) {
+					scheduledTasksOverDue.add(executeTask);
+					scheduledTasksToDo.remove(executeTask);
+				}
+				else if (((executeTask.getEndDate()).compareTo(dateToday)) == 0) {
+					if ((timeToday.compareTo(executeTask.getEndTime())) >= 0) {
+						scheduledTasksOverDue.add(executeTask);
+						scheduledTasksToDo.remove(executeTask);
+					}
+				}
+			}
+		}
+	}
+	
+	/*exiting of program. Shd save all arraylists and updated info abt the tasks before exiting*/
 	private void exit() {
 		System.exit(0);//how to save everything and exit?
 	}
 }
+
