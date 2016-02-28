@@ -6,6 +6,9 @@ package Parser;
 import java.util.Date;
 import java.util.List;
 
+import java.util.regex.Pattern;
+import java.util.regex.Matcher;
+
 //import org.ocpsoft.prettytime.PrettyTime;
 import org.ocpsoft.prettytime.nlp.PrettyTimeParser;
 
@@ -24,8 +27,10 @@ public class CommandParser {
 	private static final int FIRST_INDEX = 0;
 	private static final char WHITE_SPACE = ' ';
 
+	private static final String REGEX_EXTRA_WHITESPACE = "\\s{2,}";
+
 	public static Command getParsedCommand(String newUserCommand) {
-		return parseCommand(newUserCommand);
+		return parseCommand(cleanupExtraWhitespace(newUserCommand));
 	}
 
 	private static Command parseCommand(String userCommand) {
@@ -84,11 +89,11 @@ public class CommandParser {
 	 */
 	// incomplete
 	private static boolean isScheduledTask(List<Date> dateList) {
-		for(int index = dateList.size()-1; index>=0; index--) {
-			Date dateTime =  dateList.get(index);
+		for (int index = dateList.size() - 1; index >= 0; index--) {
+			Date dateTime = dateList.get(index);
 			String stringDateTime = dateTime.toString();
 		}
-		
+
 		return true;
 	}
 
@@ -126,6 +131,20 @@ public class CommandParser {
 		}
 
 		return null;
+	}
+
+	/**
+	 * This method removes the unnecesarry white spaces present in the string.
+	 * 
+	 * @param someText
+	 *            is any string with several white spaces.
+	 * @return someText excluding the extra unnecessary white spaces.
+	 */
+	static String cleanupExtraWhitespace(String someText) {
+		Pattern extraSpace = Pattern.compile(REGEX_EXTRA_WHITESPACE);
+		Matcher regexMatcher = extraSpace.matcher(someText.trim());
+		String cleanText = regexMatcher.replaceAll(" ");
+		return cleanText;
 	}
 
 }

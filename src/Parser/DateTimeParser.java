@@ -19,10 +19,5 @@ class DateTimeParser {
 	
 	private static final String REGEX_EXTRA_WHITESPACE = "\\s{2,}";
 	
-	static String cleanup(String someText) {
-		Pattern extraSpace = Pattern.compile(REGEX_EXTRA_WHITESPACE);
-		Matcher regexMatcher = extraSpace.matcher(someText.trim());
-		String cleanText = regexMatcher.replaceAll(" ");
-		return cleanText;
-	}
+
 }

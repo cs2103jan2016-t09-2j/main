@@ -36,4 +36,28 @@ public class TestParser {
 		String testString = "add Meet Robin Hood thurs";
 		assertEquals(false, CommandParser.isFloatingTask(testString));
 	}
+	
+	@Test
+	public void testCleanupExtraWhitespace1() {
+		String testString = "  checking   random text  123   321       ";
+		String output = CommandParser.cleanupExtraWhitespace(testString);
+		String expected = "checking random text 123 321";
+		assertEquals(expected, output);
+	}
+	
+	@Test
+	public void testCleanupExtraWhitespace2() {
+		String testString = "textwithoutspace           ";
+		String output = CommandParser.cleanupExtraWhitespace(testString);
+		String expected = "textwithoutspace";
+		assertEquals(expected, output);
+	}
+	
+	@Test
+	public void testCleanupExtraWhitespace3() {
+		String testString = "           ";
+		String output = CommandParser.cleanupExtraWhitespace(testString);
+		String expected = "";
+		assertEquals(expected, output);
+	}
 }
