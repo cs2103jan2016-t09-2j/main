@@ -13,7 +13,7 @@ public class TestTimeParser {
 	public void testFindTime1(){
 		String output = "";
 		String testString = "Meet ABCD at 16:00 on 14/05/1234";
-		ArrayList<String> outList = obj.findTime(testString);
+		ArrayList<String> outList = obj.getTimeList(testString);
 		for(String s : outList ) {
 			output = output + s; 
 		}
@@ -25,7 +25,7 @@ public class TestTimeParser {
 	public void testFindTime2(){
 		String output = "";
 		String testString = "Meet ABCD 16.00";
-		ArrayList<String> outList = obj.findTime(testString);
+		ArrayList<String> outList = obj.getTimeList(testString);
 		for(String s : outList ) {
 			output = output + s; 
 		}
@@ -37,7 +37,7 @@ public class TestTimeParser {
 	public void testFindTime3(){
 		String output = "";
 		String testString = "Meet ABCD at 14:00 15.00  ";
-		ArrayList<String> outList = obj.findTime(testString);
+		ArrayList<String> outList = obj.getTimeList(testString);
 		for(String s : outList ) {
 			output = output + s; 
 		}
@@ -49,7 +49,7 @@ public class TestTimeParser {
 	public void testFindTime4(){
 		String output = "";
 		String testString = "Meet ABCD 14/05/1234";
-		ArrayList<String> outList = obj.findTime(testString);
+		ArrayList<String> outList = obj.getTimeList(testString);
 		for(String s : outList ) {
 			output = output + s; 
 		}
