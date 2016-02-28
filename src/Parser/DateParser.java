@@ -38,11 +38,11 @@ class DateParser {
 	//incomplete
 	protected ArrayList<LocalDate> getDates(String taskDetails) {
 		ArrayList<String> stringDateList = getDateList(taskDetails);
-		ArrayList<LocalDate> dateList = getRealDateList(stringDateList);
+		ArrayList<LocalDate> dateList = getLocalDateList(stringDateList);
 		return dateList;
 	}
 
-	private ArrayList<String> getDateList(String taskDetails) {
+	ArrayList<String> getDateList(String taskDetails) {
 		ArrayList<String> dateList = new ArrayList<String>();
 		Pattern datePattern = Pattern.compile(REGEX_DATE);
 		Matcher dateMatcher = datePattern.matcher(taskDetails);
@@ -52,7 +52,7 @@ class DateParser {
 		return dateList;
 	}
 	
-	private ArrayList<LocalDate> getRealDateList(ArrayList<String> stringDateList) {
+	private ArrayList<LocalDate> getLocalDateList(ArrayList<String> stringDateList) {
 		return null;
 	}
 }
