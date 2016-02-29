@@ -1,16 +1,16 @@
 package Parser;
 
-//import java.time.LocalDate;
-//import java.time.LocalTime;
-
-import java.util.Date;
-import java.util.List;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.util.ArrayList;
+//import java.util.Date;
+//import java.util.List;
 
 import java.util.regex.Pattern;
 import java.util.regex.Matcher;
 
 //import org.ocpsoft.prettytime.PrettyTime;
-import org.ocpsoft.prettytime.nlp.PrettyTimeParser;
+//import org.ocpsoft.prettytime.nlp.PrettyTimeParser;
 
 import ScheduleHacks.Task;
 
@@ -45,52 +45,50 @@ public class CommandParser {
 
 	// incomplete
 	private static Task setTaskDetails(String taskStatement) {
-		Task newTask = new Task();
 		if (!taskStatement.isEmpty()) {
-			if (isFloatingTask(taskStatement)) {
-				newTask.setDescription(taskStatement);
-				newTask.setFloatingTask();
-				return newTask;
-			} else {
+			Task newTask = new Task();
 
+			// Getting date and time lists from task statement
+			DateParser dateParser = new DateParser(taskStatement);
+			ArrayList<LocalDate> dateList = dateParser.getDates();
+			TimeParser timeParser = new TimeParser(dateParser.getTaskDetails());
+			ArrayList<LocalTime> timeList = timeParser.getTimes();
+
+			if (dateList == null && timeList == null) {
+				newTask = addFloatingTaskDetails(taskStatement);
+			} else {
+				newTask = addScheduledTaskDetails(timeParser.getTaskDetails(), dateList, timeList);
 			}
+			return newTask;
 		}
 		return null;
 	}
 
-	/**
-	 * This method checks if the task statement as any dates as a part of its
-	 * description. If there are no date/time values in the description, then
-	 * task is of floating type.
-	 * 
-	 * @param taskStatement
-	 *            which is the user command input, exclusive of the first word
-	 *            (which is the command type)
-	 * @return true, if the task is of Floating type false, otherwise.
-	 */
-	// incomplete
-	protected static boolean isFloatingTask(String taskStatement) {
-		PrettyTimeParser timeParse = new PrettyTimeParser();
-		List<Date> dateList = timeParse.parse(taskStatement);
-		if (dateList.isEmpty()) {
-			return true;
-		}
-		isScheduledTask(dateList);
-		return false;
+	protected static Task addFloatingTaskDetails(String taskStatement) {
+		Task newTask = new Task();
+		newTask.setDescription(taskStatement);
+		newTask.setFloatingTask();
+		return newTask;
 	}
 
-	/**
-	 * This method is invoked only when the task is not of floating type.
-	 * 
-	 * @param dateList
-	 *            is the list of all dates and times contained in the task
-	 *            statement entered by the user as the command
-	 * @return true, stating that the purpose of the method is served
-	 */
-	// incomplete
-	private static boolean isScheduledTask(List<Date> dateList) {
-		return true;
+	//incomplete
+	protected static Task addScheduledTaskDetails(String taskStatement, 
+													ArrayList<LocalDate> dateList,
+													ArrayList<LocalTime> timeList) {
+		Task newTask = new Task();
+		newTask.setDescription(taskStatement);
+		newTask.setScheduledTask();
+		newTask.setEndDate(dateList.get(dateList.size()-1));
+		newTask.setEndTime(timeList.get(timeList.size()-1));
+		if(dateList.size() > 1) {
+			newTask.setStartDate(dateList.get(FIRST_INDEX));
+		}
+		if(timeList.size() > 1) {
+			newTask.setStartTime(timeList.get(FIRST_INDEX));
+		}
+		return newTask;
 	}
+
 
 	/**
 	 * This method is used to retrieve the first word from the user's command,

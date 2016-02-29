@@ -18,24 +18,6 @@ public class TestParser {
 		String output = CommandParser.removeFirstWord(testString);
 		assertEquals(output, "life is great");
 	}
-
-	@Test
-	public void testIsFloatingTask1() {
-		String testString = "add life is great";
-		assertEquals(true, CommandParser.isFloatingTask(testString));
-	}
-
-	@Test
-	public void testIsFloatingTask2() {
-		String testString = "add Meet Robin Hood at 4pm on thurs";
-		assertEquals(false, CommandParser.isFloatingTask(testString));
-	}
-
-	@Test
-	public void testIsFloatingTask3() {
-		String testString = "add Meet Robin Hood thurs";
-		assertEquals(false, CommandParser.isFloatingTask(testString));
-	}
 	
 	@Test
 	public void testCleanupExtraWhitespace1() {
