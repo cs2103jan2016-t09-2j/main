@@ -3,6 +3,7 @@ package Parser;
 import org.junit.Test;
 import static org.junit.Assert.assertEquals;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 
 public class TestDateParser {
@@ -54,6 +55,24 @@ public class TestDateParser {
 			output = output + s; 
 		}
 		String expected = "";
+		assertEquals(expected, output);
+	}
+	
+	@Test
+	public void testGetLocalDateObject1() {
+		String testString = "12/02/2016";
+		LocalDate dateObject = ob.getLocalDateObject(testString);
+		String output = dateObject.toString();
+		String expected = "2016-02-12";
+		assertEquals(expected, output);
+	}
+	
+	@Test
+	public void testGetLocalDateObject2() {
+		String testString = "1/2/2016";
+		LocalDate dateObject = ob.getLocalDateObject(testString);
+		String output = dateObject.toString();
+		String expected = "2016-02-01";
 		assertEquals(expected, output);
 	}
 }

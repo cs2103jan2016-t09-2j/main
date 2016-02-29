@@ -41,7 +41,7 @@ public class TimeParser {
 		return this.taskDetails;
 	}
 
-	// incomplete
+	
 	protected ArrayList<LocalTime> getTimes() {
 		ArrayList<String> stringTimeList = getTimeList(getTaskDetails());
 		if (hasTimeList(stringTimeList)) {
@@ -70,7 +70,6 @@ public class TimeParser {
 		this.taskDetails = CommandParser.cleanupExtraWhitespace(taskDetails);
 	}
 
-	// incomplete
 	private ArrayList<LocalTime> getLocalTimeList(ArrayList<String> stringTimeList) {
 		ArrayList<LocalTime> localTimeList = new ArrayList<LocalTime>();
 		for (String time : stringTimeList) {	

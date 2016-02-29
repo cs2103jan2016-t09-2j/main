@@ -14,14 +14,14 @@ public class Test {
 	
 	PrettyTimeParser timeParse = new PrettyTimeParser();
 	
-	private static final String REGEX_DATE = "\\d{1,2}(-|/)\\d{1,2}(-|/)\\d{2,4}";
+	private static final String REGEX_DATE = "\\d{1,2}(-|/)\\d{1,2}(-|/)(\\d{4}|\\d{2})";
 	private static final String REGEX_TIME = "(\\d{1,2}(:|\\.)\\d{1,2})|(\\s\\d{3,4})";
 	
 	
 	public static void main(String[] args) {
 		Test obj = new Test();
-		//obj.checkdate("Meet ABCD at 16.00 on 14/05/1234 and 14/08/1273");
-		obj.checktime("Meet ABCD at 1600 on 14/05/11234");
+		obj.checkdate("Meet ABCD at 16.00 on 14/05/1234 and 14/08/1273 1/3/12");
+		//obj.checktime("Meet ABCD at 1600 on 14/05/11234");
 	}
 	
 	void checkdate(String taskDetails) {

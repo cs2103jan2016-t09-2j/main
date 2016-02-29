@@ -22,7 +22,7 @@ import java.time.LocalDate;
  */
 class DateParser {
 
-	private static final String REGEX_DATE = "\\d{1,2}(-|/)\\d{1,2}(-|/)\\d{2,4}";
+	private static final String REGEX_DATE = "\\d{1,2}(-|/)\\d{1,2}(-|/)(\\d{4}|\\d{2})";
 
 	// private static final String REGEX_EXTRA_WHITESPACE = "\\s{2,}";
 
@@ -45,7 +45,6 @@ class DateParser {
 		return this.taskDetails;
 	}
 
-	// incomplete
 	protected ArrayList<LocalDate> getDates() {
 		ArrayList<String> stringDateList = getDateList(getTaskDetails());
 		if (hasDateList(stringDateList)) {
@@ -89,23 +88,23 @@ class DateParser {
 	private ArrayList<LocalDate> getLocalDateList(ArrayList<String> stringDateList) {
 		ArrayList<LocalDate> localDateList = new ArrayList<LocalDate>();
 		for (String date : stringDateList) {
-			localDateList.add(LocalDate.of(getYear(date), getMonth(date), getDayOfMonth(date)));
+			localDateList.add(getLocalDateObject(date));
 		}
 		return localDateList;
 	}
-
-	private int getYear(String date) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	private int getMonth(String date) {
-		// TODO Auto-generated method stub
-		return 1;
-	}
-
-	private int getDayOfMonth(String date) {
-		// TODO Auto-generated method stub
-		return 0;
+	
+	protected LocalDate getLocalDateObject(String date) {
+		date = date.trim();
+		int[] dateMonthYear = {1,1,1}; //{dayOfMonth, month, year}
+		for(int index = 0, counter = 0, beginIndex = 0; index < date.length(); index++) {
+			if(!Character.isDigit(date.charAt(index))) {
+				dateMonthYear[counter++] = Integer.parseInt(date.substring(beginIndex, index));
+				beginIndex = index + 1;
+			}
+			if(counter == 2) {
+				dateMonthYear[counter] = Integer.parseInt(date.substring(beginIndex));
+			}
+		}
+		return LocalDate.of(dateMonthYear[2], dateMonthYear[1], dateMonthYear[0]);
 	}
 }
