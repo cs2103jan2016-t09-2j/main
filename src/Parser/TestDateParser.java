@@ -75,4 +75,22 @@ public class TestDateParser {
 		String expected = "2016-02-01";
 		assertEquals(expected, output);
 	}
+	
+	@Test
+	public void testGetLocalDateObject3() {
+		String testString = "1/2/12";
+		LocalDate dateObject = ob.getLocalDateObject(testString);
+		String output = dateObject.toString();
+		String expected = "2112-02-01";
+		assertEquals(expected, output);
+	}
+	
+	@Test
+	public void testGetLocalDateObject4() {
+		String testString = "1/2/17";
+		LocalDate dateObject = ob.getLocalDateObject(testString);
+		String output = dateObject.toString();
+		String expected = "2017-02-01";
+		assertEquals(expected, output);
+	}
 }

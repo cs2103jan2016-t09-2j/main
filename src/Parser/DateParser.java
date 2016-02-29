@@ -22,6 +22,8 @@ import java.time.LocalDate;
  */
 class DateParser {
 
+	private static final int CENTURY = 100;
+
 	private static final String REGEX_DATE = "\\d{1,2}(-|/)\\d{1,2}(-|/)(\\d{4}|\\d{2})";
 
 	// private static final String REGEX_EXTRA_WHITESPACE = "\\s{2,}";
@@ -105,6 +107,20 @@ class DateParser {
 				dateMonthYear[counter] = Integer.parseInt(date.substring(beginIndex));
 			}
 		}
+		dateMonthYear[2] = getValidYear(dateMonthYear[2], dateMonthYear[1], dateMonthYear[0]);
 		return LocalDate.of(dateMonthYear[2], dateMonthYear[1], dateMonthYear[0]);
+	}
+	
+	public static int getValidYear(int year, int month, int dayOfMonth) {
+		if((year/CENTURY) == 0) {
+			LocalDate todayDate = LocalDate.now();
+			int thisYear = todayDate.getYear();
+			year += (thisYear/CENTURY)*CENTURY;
+			LocalDate newDate = LocalDate.of(year, month, dayOfMonth);
+			if(newDate.isBefore(todayDate)) {
+				year = year + CENTURY;
+			}
+		}
+		return year;
 	}
 }
