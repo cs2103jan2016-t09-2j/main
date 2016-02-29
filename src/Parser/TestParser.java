@@ -1,7 +1,12 @@
 package Parser;
 
 import org.junit.Test;
+
+import Parser.Command.COMMAND_TYPE;
+
 import static org.junit.Assert.assertEquals;
+
+import ScheduleHacks.Task;
 
 public class TestParser {
 
@@ -41,5 +46,30 @@ public class TestParser {
 		String output = CommandParser.cleanupExtraWhitespace(testString);
 		String expected = "";
 		assertEquals(expected, output);
+	}
+	
+	@Test
+	public void checkGetParsedCommand1() {
+		String testString = "+ Meet ABCD   16.00 14/05/16 14/08/16";
+		Command cmd = CommandParser.getParsedCommand(testString);
+		Task newTask = cmd.getTaskDetails();
+		assertEquals(false, newTask.isFloatingTask());
+		assertEquals(true, newTask.isScheduledTask());
+		assertEquals(COMMAND_TYPE.ADD_TASK, cmd.getCommandType());
+		assertEquals("Meet ABCD", newTask.getDescription());
+		assertEquals("16:00", newTask.getEndTime().toString());
+		assertEquals("2016-05-14", newTask.getStartDate().toString());
+		assertEquals("2016-08-14", newTask.getEndDate().toString());
+	}
+	
+	@Test
+	public void checkGetParsedCommand2() {
+		String testString = "+ Meet ABCD   16";
+		Command cmd = CommandParser.getParsedCommand(testString);
+		Task newTask = cmd.getTaskDetails();
+		assertEquals(true, newTask.isFloatingTask());
+		assertEquals(false, newTask.isScheduledTask());
+		assertEquals(COMMAND_TYPE.ADD_TASK, cmd.getCommandType());
+		assertEquals("Meet ABCD 16", newTask.getDescription());
 	}
 }
