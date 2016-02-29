@@ -69,24 +69,27 @@ public class CommandParser {
 		return newTask;
 	}
 
-	//incomplete
-	protected static Task addScheduledTaskDetails(String taskStatement, 
-													ArrayList<LocalDate> dateList,
-													ArrayList<LocalTime> timeList) {
+	// incomplete
+	protected static Task addScheduledTaskDetails(String taskStatement, ArrayList<LocalDate> dateList,
+			ArrayList<LocalTime> timeList) {
 		Task newTask = new Task();
 		newTask.setDescription(taskStatement);
 		newTask.setScheduledTask();
-		newTask.setEndDate(dateList.get(dateList.size()-1));
-		newTask.setEndTime(timeList.get(timeList.size()-1));
-		if(dateList.size() > 1) {
-			newTask.setStartDate(dateList.get(FIRST_INDEX));
+		if (dateList != null) {
+			newTask.setEndDate(dateList.get(dateList.size() - 1));
+			if (dateList.size() > 1) {
+				newTask.setStartDate(dateList.get(FIRST_INDEX));
+			}
 		}
-		if(timeList.size() > 1) {
-			newTask.setStartTime(timeList.get(FIRST_INDEX));
+		if (timeList != null) {
+			newTask.setEndTime(timeList.get(timeList.size() - 1));
+			if (timeList.size() > 1) {
+				newTask.setStartTime(timeList.get(FIRST_INDEX));
+			}
 		}
+
 		return newTask;
 	}
-
 
 	/**
 	 * This method is used to retrieve the first word from the user's command,

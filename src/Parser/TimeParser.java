@@ -18,7 +18,7 @@ import java.util.regex.Matcher;
  */
 public class TimeParser {
 
-	private static final String REGEX_TIME = "(\\d{1,2}(:|\\.)\\d{1,2})|(\\s\\d{3,4})";
+	private static final String REGEX_TIME = "(\\s\\d{1,2}(:|\\.)\\d{2}\\s)|(\\s\\d{3,4}\\s)";
 
 	// Instance Variables
 	private String taskDetails;
@@ -34,7 +34,7 @@ public class TimeParser {
 	}
 
 	protected void setTaskDetails(String newTaskDetails) {
-		this.taskDetails = newTaskDetails;
+		this.taskDetails = " "+newTaskDetails+" ";
 	}
 
 	public String getTaskDetails() {

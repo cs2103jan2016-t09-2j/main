@@ -24,7 +24,7 @@ public class Test {
 		// obj.checkdate("Meet ABCD at 16.00 on 14/05/1234 and 14/08/1273
 		// 1/3/12");
 		// obj.checktime("Meet ABCD at 1600 on 14/05/11234");
-		obj.checkingcommandparser("add Meet ABCD 12");
+		obj.checkingcommandparser("add Meet ABCD 0:09 01/01/99");
 	}
 
 	void checkdate(String taskDetails) {
