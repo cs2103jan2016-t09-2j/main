@@ -62,7 +62,13 @@ class DateParser {
 		while (dateMatcher.find()) {
 			dateList.add(dateMatcher.group());
 		}
+		removeDatesFromTaskDetails();
 		return dateList;
+	}
+	
+	protected void removeDatesFromTaskDetails() {
+		this.taskDetails = taskDetails.replaceAll(REGEX_DATE, " ");
+		this.taskDetails = CommandParser.cleanupExtraWhitespace(taskDetails);
 	}
 	
 	/**
@@ -75,9 +81,9 @@ class DateParser {
 	 */
 	private boolean hasDateList(ArrayList<String> stringDateList) {
 		if(stringDateList.isEmpty()) {
-			return true;
+			return false;
 		}
-		return false;
+		return true;
 	}
 
 	private ArrayList<LocalDate> getLocalDateList(ArrayList<String> stringDateList) {

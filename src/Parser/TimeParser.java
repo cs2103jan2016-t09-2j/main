@@ -7,28 +7,37 @@ import java.util.regex.Pattern;
 import java.util.regex.Matcher;
 //import java.time.LocalDate;
 
+/**
+ * This class contains all possible combinations of time, that the user can
+ * input as command into Schedule Hacks.
+ * 
+ * Accepted Time Formats -> HH:MM HH.MM HHMM
+ * 
+ * 
+ * @author Snigdha Singhania
+ */
 public class TimeParser {
 
-	private static final String REGEX_TIME = "\\d{1,2}(:|\\.)\\d{1,2}";
-	
+	private static final String REGEX_TIME = "(\\d{1,2}(:|\\.)\\d{1,2})|(\\s\\d{3,4})";
+
 	// Instance Variables
 	private String taskDetails;
-	
+
 	// Default Constructor
 	TimeParser() {
 		this("");
 	}
-	
+
 	// Parameterized Constructor
 	TimeParser(String newTaskDetails) {
 		setTaskDetails(newTaskDetails);
 	}
-	
+
 	protected void setTaskDetails(String newTaskDetails) {
 		this.taskDetails = newTaskDetails;
 	}
-	
-	public String getTaskDetails(){
+
+	public String getTaskDetails() {
 		return this.taskDetails;
 	}
 
@@ -48,23 +57,47 @@ public class TimeParser {
 		Matcher timeMatcher = timePattern.matcher(taskDetails);
 		while (timeMatcher.find()) {
 			String newTime = timeMatcher.group();
-			//int startIndex = timeMatcher.start();
-			//int endIndex = timeMatcher.end();
+			// int startIndex = timeMatcher.start();
+			// int endIndex = timeMatcher.end();
 			timeList.add(newTime);
 		}
 		removeTimesFromTaskDetails();
 		return timeList;
 	}
-	
 
-	private void removeTimesFromTaskDetails() {
+	protected void removeTimesFromTaskDetails() {
 		this.taskDetails = taskDetails.replaceAll(REGEX_TIME, " ");
 		this.taskDetails = CommandParser.cleanupExtraWhitespace(taskDetails);
 	}
 
+	// incomplete
 	private ArrayList<LocalTime> getLocalTimeList(ArrayList<String> stringTimeList) {
-		// TODO Auto-generated method stub
-		return null;
+		ArrayList<LocalTime> localTimeList = new ArrayList<LocalTime>();
+		for (String time : stringTimeList) {	
+			localTimeList.add(getLocalTimeObject(time));
+		}
+		return localTimeList;
+	}
+	
+	/**
+	 * This method converts String time to LocalTime object
+	 * @param time
+	 * 			 which is contained in the usercommand
+	 * @return
+	 * 		LocalTime Object
+	 */
+	protected LocalTime getLocalTimeObject(String time) {
+		int hour =0,minute = 00;
+		time = time.trim();
+		minute = Integer.parseInt(time.substring(time.length() - 2));
+		time = time.substring(0, time.length() - 2);
+		for (int index = time.length() - 1; index >= 0; index--) {
+			if (Character.isDigit(time.charAt(index))) {
+				hour = Integer.parseInt(time.substring(0, index+1));
+				break;
+			}
+		}
+		return LocalTime.of(hour, minute);
 	}
 
 	/**
@@ -76,8 +109,8 @@ public class TimeParser {
 	 */
 	private boolean hasTimeList(ArrayList<String> stringTimeList) {
 		if (stringTimeList.isEmpty()) {
-			return true;
+			return false;
 		}
-		return false;
+		return true;
 	}
 }

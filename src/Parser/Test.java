@@ -15,13 +15,13 @@ public class Test {
 	PrettyTimeParser timeParse = new PrettyTimeParser();
 	
 	private static final String REGEX_DATE = "\\d{1,2}(-|/)\\d{1,2}(-|/)\\d{2,4}";
-	private static final String REGEX_TIME = "\\d{1,2}(:|\\.)\\d{1,2}";
+	private static final String REGEX_TIME = "(\\d{1,2}(:|\\.)\\d{1,2})|(\\s\\d{3,4})";
 	
 	
 	public static void main(String[] args) {
 		Test obj = new Test();
-		obj.checkdate("Meet ABCD at 16.00 on 14/05/1234 and 14/08/1273");
-		obj.checktime("Meet ABCD at 16:00 on 14/05/1234");
+		//obj.checkdate("Meet ABCD at 16.00 on 14/05/1234 and 14/08/1273");
+		obj.checktime("Meet ABCD at 1600 on 14/05/11234");
 	}
 	
 	void checkdate(String taskDetails) {
@@ -51,20 +51,6 @@ public class Test {
 			String s = i.toString();
 			System.out.println(s);
 		}
-		/*
-			Calendar c = Calendar.getInstance();
-			s = c.get(Calendar.YEAR)+"-0"+c.get(Calendar.MONTH)+"-"+c.get(Calendar.DAY_OF_MONTH);
-			
-			LocalDate date = LocalDate.parse(s, DateTimeFormatter.ISO_LOCAL_DATE);
-			System.out.println(date.toString());
-			
-			*/
-			//s=s.substring(8,10)+" "+s.substring(4,7)+" "+s.substring(24)+" " + s.substring(11, 16);
-			//System.out.println(s);
-			/*DateTimeFormatter dateformat = DateTimeFormatter.ofPattern("dd MMM uuuu");
-			DateTimeFormatter timeformat = DateTimeFormatter.ofPattern("HH:mm");
-			LocalDate date = LocalDate.parse(s, DateTimeFormatter.ofLocalizedDateTime(dateformat, timeformat));
-			System.out.println(date.toString());*/
 	}
 	
 	void printDates2() {
