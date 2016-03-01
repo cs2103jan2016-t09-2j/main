@@ -63,7 +63,7 @@ public class Storage {
         return taskSystem;
     }
     
-	private Storage(){
+	protected Storage(){
 		try {
 			currentFile = new File(CURRENT_FILE);
 			if(!currentFile.exists()){
