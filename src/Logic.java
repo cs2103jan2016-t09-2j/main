@@ -1,10 +1,11 @@
-import java.util.*;
+import java.util.ArrayList;
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.time.format.*;
+import java.time.format.DateTimeFormatter;
 
 import ScheduleHacks.Task;
-import Parser.*;
+import Parser.CommandParser;
+import Parser.Command;
 
 class Logic {
 	
@@ -17,8 +18,8 @@ class Logic {
 	private ArrayList<Task> scheduledTasksOverDue = new ArrayList<Task>();
 	
 	/*this method gets back the parsed Command class from parser*/
-	public void getParsedCommand(String originalDescription){
-		existingCommand = new Command(CommandParser.getParsedCommand(originalDescription));
+	public void retrieveParsedCommand(String originalDescription){
+		existingCommand = CommandParser.getParsedCommand(originalDescription);
 	}
 	
 	/*this method gets the specific command type to be executed such as add, delete, modify etc*/
@@ -34,22 +35,23 @@ class Logic {
 	}
 	
 	/*this method calls the respective execution methods for the respective command types*/
-	public void execute(Command.COMMAND_TYPE executeCommand,Task executeTask) {
+	public void execute(Command.COMMAND_TYPE executeCommand,Task executeTask, String originalDescription) {
 		switch (executeCommand) {
 		case ADD_TASK:
 			addTask(executeTask);
 			break;
 		case DELETE_TASK:
-			deleteTask(executeTask);
+			deleteTask(executeTask, originalDescription);
 			break;
 		case MODIFY_TASK:
-			modifyTask(executeTask);
+			modifyTask(executeTask, originalDescription);
 			break;
 		case COMPLETE_TASK:
 			completeTask(executeTask);
 			break;
 		case EXIT:
 			exit();	
+			break;
 		}
 	}
 	
@@ -57,22 +59,45 @@ class Logic {
 	 scheduledtodo or scheduledoverdue arraylist while floating tasks are auto added into floatingtodo
 	 arraylist*/
 	private void addTask(Task executeTask) {
+		LocalDate dateToday = LocalDate.now();
+		LocalTime timeToday = LocalTime.now();
+		
 		if (executeTask.isScheduledTask()){
-			if ((executeTask.getEndDate().compareTo(executeTask.getStartDate()))>0) {
-				scheduledTasksToDo.add(executeTask);
-			}
-			else if ((executeTask.getEndDate().compareTo(executeTask.getStartDate()))<0) {
-				scheduledTasksOverDue.add(executeTask);
-			}
-			else {
-				if ((executeTask.getStartTime().compareTo(executeTask.getEndTime()))<0){
-					scheduledTasksToDo.add(executeTask);
+			if (((executeTask.getEndDate() != null) && (executeTask.getStartDate() != null)) ||
+			((executeTask.getEndDate() != null) && (executeTask.getStartDate() == null))) {
+				if (((executeTask.getEndDate()).compareTo(dateToday))>0) {
+						scheduledTasksToDo.add(executeTask);
 				}
-				else {
+				else if (((executeTask.getEndDate()).compareTo(dateToday))<0) {
 					scheduledTasksOverDue.add(executeTask);
+				}
+				
+				//assuming that endDate is today
+				else if ((executeTask.getEndDate().compareTo(dateToday)) == 0) {
+					if (((executeTask.getEndTime() != null) && (executeTask.getStartTime() != null)) || 
+					   ((executeTask.getEndTime() != null) && (executeTask.getStartTime() == null))) {
+						if ((executeTask.getEndTime().compareTo(timeToday))>0){
+							scheduledTasksToDo.add(executeTask);
+						}
+						else {
+							scheduledTasksOverDue.add(executeTask);
+						}
+					}
+					else if ((executeTask.getEndTime() == null) && (executeTask.getStartTime() == null)) {
+						DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:MM");
+						LocalTime defaultTime = (LocalTime) formatter.parse("23:59");
+						
+						if (defaultTime.compareTo(timeToday)>0) {
+							scheduledTasksToDo.add(executeTask);
+						}
+						else {
+							scheduledTasksOverDue.add(executeTask);
+						}
+					}
 				}
 			}
 		}
+			
 		else if (executeTask.isFloatingTask()) {
 			floatingTasksToDo.add(executeTask);
 		}
@@ -80,15 +105,30 @@ class Logic {
 	
 	/*deleteTask can be done either by typing only 2 characters, indicating the task number and task
 	 type, or it can be done by typing the task description itself*/
-	private void deleteTask(Task executeTask) {
-		if ((executeTask.getDescription().length() == 2)) {
-			int taskDigit = existingCommand.getTaskIndex();
-			
-			if (executeTask.isScheduledTask()) {
-				scheduledTasksToDo.remove(taskDigit-1);
-			}
-			else if (executeTask.isFloatingTask()) {
-				floatingTasksToDo.remove(taskDigit-1);
+	private void deleteTask(Task executeTask, String originalUserInput) {
+		String modifiedUserInput = originalUserInput.replaceAll("\\s","");
+		
+		if ((originalUserInput.startsWith("delete")) || (originalUserInput.startsWith("remove"))) {
+			modifiedUserInput = originalUserInput.substring(6);
+		}
+		else if (originalUserInput.startsWith("clear")) {
+			modifiedUserInput = originalUserInput.substring(5);
+		}
+		else {
+			modifiedUserInput = originalUserInput.substring(1);
+		}
+		
+		if (modifiedUserInput.length() == 2) {
+			if (Character.isDigit(modifiedUserInput.charAt(0)) && (Character.isLetter
+					(modifiedUserInput.charAt(1)))) {
+				int taskDigit = existingCommand.getTaskIndex();
+				
+				if (executeTask.isScheduledTask()) {
+					scheduledTasksToDo.remove(taskDigit-1);
+				}
+				else if (executeTask.isFloatingTask()) {
+					floatingTasksToDo.remove(taskDigit-1);
+				}
 			}
 		}
 		
@@ -119,25 +159,38 @@ class Logic {
 	}
 	
 	/*modifies task by editing description, date or time*/
-	private void modifyTask(Task executeTask) {
-		String modifiedTaskDescription = executeTask.getDescription().replaceAll("\\s","");
+	private void modifyTask(Task executeTask, String originalUserInput) {
+		String editedUserInput = originalUserInput.replaceAll("\\s","");
 		
-		if ((Character.isDigit(modifiedTaskDescription.charAt(0))) && (Character.isLetter
-			(modifiedTaskDescription.charAt(1)))) {
-			switch (modifiedTaskDescription.substring(2,6)) {
-				case ("desc"): 
-					executeTask.setDescription(modifiedTaskDescription.substring(6));
-					break;
-				case ("date"):
-					DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyy-MMM-dd");
-					LocalDate editedDate = (LocalDate) df.parse(modifiedTaskDescription.substring(6));
-					executeTask.setEndDate(editedDate);
-					break;
-				case ("time"):
-					DateTimeFormatter tf  = DateTimeFormatter.ofPattern("hh:mm");
-					LocalTime editedTime = (LocalTime) tf.parse(modifiedTaskDescription.substring(6));
-					executeTask.setEndTime(editedTime);
-					break;
+		if (originalUserInput.startsWith("edit")) {
+			editedUserInput = originalUserInput.substring(4);
+		}
+		else {
+			editedUserInput = originalUserInput.substring(6);
+		}
+		
+		if (executeTask.isScheduledTask()) {
+			if ((Character.isDigit(editedUserInput.charAt(0))) && ((editedUserInput.charAt(1)) == 'u')) {
+				switch (editedUserInput.substring(2,6)) {
+					case ("desc"): 
+						executeTask.setDescription(editedUserInput.substring(6));
+						break;
+					case ("date"):
+						DateTimeFormatter df = DateTimeFormatter.ofPattern("DD-MM-YYYY");
+						LocalDate editedDate = (LocalDate) df.parse(editedUserInput.substring(6));
+						executeTask.setEndDate(editedDate);
+						break;
+					case ("time"):
+						DateTimeFormatter tf  = DateTimeFormatter.ofPattern("HH:MM");
+						LocalTime editedTime = (LocalTime) tf.parse(editedUserInput.substring(6));
+						executeTask.setEndTime(editedTime);
+						break;
+				}
+			}
+		}
+		else if (executeTask.isFloatingTask()) {
+			if ((Character.isDigit(editedUserInput.charAt(0))) && ((editedUserInput.charAt(1)) == 'f')) {
+				executeTask.setDescription(editedUserInput.substring(2));
 			}
 		}
 	}
