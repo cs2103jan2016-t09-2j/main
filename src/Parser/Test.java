@@ -19,7 +19,7 @@ public class Test {
 	private static final String REGEX_DATE = "\\d{1,2}(-|/)\\d{1,2}(-|/)(\\d{4}|\\d{2})";
 	private static final String REGEX_TIME = "(^|\\s|\\G)((\\d{1,2}(:|\\.)\\d{1,2})|(\\d{3,4}))(\\s|$)";
 
-	public static void main(String[] args) {
+	public static void main(String[] args)throws Exception {
 		Test obj = new Test();
 		// obj.checkdate("Meet ABCD at 16.00 on 14/05/1234 and 14/08/1273
 		// 1/3/12");
@@ -48,7 +48,7 @@ public class Test {
 		}
 	}
 
-	void checkingcommandparser(String s) {
+	void checkingcommandparser(String s)throws Exception {
 		Command cmd = CommandParser.getParsedCommand(s);
 		Task t = cmd.getTaskDetails();
 		System.out.println("DESCRIPTION: " + t.getDescription());

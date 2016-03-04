@@ -27,23 +27,20 @@ public class CommandParser {
 
 	private static final String REGEX_EXTRA_WHITESPACE = "\\s{2,}";
 
-	public static Command getParsedCommand(String newUserCommand) {
+	public static Command getParsedCommand(String newUserCommand)throws Exception {
 		return parseCommand(cleanupExtraWhitespace(newUserCommand));
 	}
 
-	private static Command parseCommand(String userCommand) {
-		try {
+	private static Command parseCommand(String userCommand)throws Exception {
+		
 		String commandType = getFirstWord(userCommand);
 		String taskStatement = removeFirstWord(userCommand);
 		Task taskDetails = setTaskDetails(taskStatement);
+		
 		// Why return null everytime ?
 		Command parsedCommand = new Command(commandType, taskDetails, null);
 		return parsedCommand;
-		}
-		catch(Exception e) {
-			e.getMessage();
-		}
-		return null;
+		
 	}
 
 	// incomplete
@@ -63,7 +60,7 @@ public class CommandParser {
 			}
 			return newTask;
 		}
-		throw (new Exception("Command Invalid"));
+		throw new Exception("Empty Task Description.");
 	}
 
 	protected static Task addFloatingTaskDetails(String taskStatement) {

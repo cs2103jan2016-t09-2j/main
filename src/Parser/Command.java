@@ -17,37 +17,35 @@ public class Command {
 	
 	private Task taskDescription;
 	private COMMAND_TYPE commandType;
-	private Integer taskIndex;
 	
 	public Command() {
 		this.taskDescription = null;
 		this.commandType = null;
-		this.taskIndex = null;
 	}
 	
 	// Parameterized Constructor that accepts a command word and task details
-	public Command(String commandFirstWord, Task newTaskDetails, Integer newTaskIndex) {
+	public Command(String commandFirstWord, Task newTaskDetails, Integer newTaskIndex)throws Exception{
 		setCommandType(commandFirstWord);
 		setTaskDetails(newTaskDetails);
-		setTaskIndex(newTaskIndex);
+		//setTaskIndex(newTaskIndex);
 	}
 
 	//Parameterized Constructor that accepts another Command
 	public Command(Command newCommand) {
 		this.commandType = newCommand.commandType;
 		this.taskDescription = newCommand.taskDescription;
-		this.taskIndex = newCommand.taskIndex;
+		//this.taskIndex = newCommand.taskIndex;
 	}
 	
-	private void setCommandType(String commandFirstWord){
+	private void setCommandType(String commandFirstWord)throws Exception{
 		this.commandType = determineCommandType(commandFirstWord);
 	}
 	
 	// It throws an error when the command type is Invalid.
 	// Need to change it later on.
-	public COMMAND_TYPE getCommandType(){
+	public COMMAND_TYPE getCommandType()throws Exception{
 		if(commandType == null) {
-			throw new Error("Invalid Command Type");
+			throw new Exception("Invalid Command Type");
 		}
 		return this.commandType;
 	}
@@ -60,14 +58,6 @@ public class Command {
 		return this.taskDescription;
 	}
 	
-	private void setTaskIndex(Integer newTaskIndex) {
-		this.taskIndex = newTaskIndex;
-	}
-	
-	public Integer getTaskIndex() {
-		return this.taskIndex;
-	}
-	
 	/**
 	 * This operation is used to find what does the user want to do to the Task.
 	 * 
@@ -77,9 +67,9 @@ public class Command {
 	 *            Eg.; both "add" and "create" are reassigned as "add"
 	 * @return the commandType, so that necessary actions can be performed.
 	 */
-	private COMMAND_TYPE determineCommandType(String commandFirstWord) {
+	private COMMAND_TYPE determineCommandType(String commandFirstWord)throws Exception {
 		if(commandFirstWord.equals(COMMAND_INVALID)) {
-			throw new Error("command type string cannot be null!");
+			throw new Exception("command type string cannot be null!");
 		}
 		
 		if(hasInDictionary(COMMAND_ADD, commandFirstWord)) {
@@ -93,7 +83,7 @@ public class Command {
 		} else if(hasInDictionary(COMMAND_EXIT, commandFirstWord)) {
 			return COMMAND_TYPE.EXIT;
 		}
-		return null;
+		throw new Exception("Invalid Command Type.");
 	}
 
 	/**
