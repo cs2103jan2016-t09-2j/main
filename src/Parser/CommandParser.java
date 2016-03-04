@@ -9,7 +9,6 @@ import java.util.regex.Matcher;
 
 import Parser.Command.COMMAND_TYPE;
 
-
 //import org.ocpsoft.prettytime.PrettyTime;
 //import org.ocpsoft.prettytime.nlp.PrettyTimeParser;
 
@@ -32,40 +31,42 @@ public class CommandParser {
 	private static final String REGEX_EXTRA_WHITESPACE = "\\s{2,}";
 	private static final String REGEX_DIGITS = "\\d+";
 
-	public static Command getParsedCommand(String newUserCommand)throws Exception {
+	public static Command getParsedCommand(String newUserCommand) throws Exception {
 		return parseCommand(cleanupExtraWhitespace(newUserCommand));
 	}
 
-	private static Command parseCommand(String userCommand)throws Exception {
+	private static Command parseCommand(String userCommand) throws Exception {
 		Command parsedCommand = new Command();
 
 		String commandType = getFirstWord(userCommand);
 		parsedCommand.setCommandType(commandType);
 
-		String taskStatement = removeFirstWord(userCommand);
-		Task taskDetails = findTaskDetails(parsedCommand, taskStatement);
+		if (parsedCommand.isFirstWordCommand) {
+			userCommand = removeFirstWord(userCommand);
+		}
+		Task taskDetails = findTaskDetails(parsedCommand, userCommand);
 		parsedCommand.setTaskDetails(taskDetails);
 
 		return parsedCommand;
 	}
 
 	// incomplete
-	public static Task findTaskDetails(Command command, String taskStatement)throws Exception {
+	public static Task findTaskDetails(Command command, String taskStatement) throws Exception {
 		COMMAND_TYPE commandType = command.getCommandType();
 		if (!hasTaskDetails(commandType)) {
-			if(hasIndexNumber(commandType)) {
+			if (hasIndexNumber(commandType)) {
 				command.setIndexNumber(findIndexNumber(command, taskStatement));
 			}
 			return null;
 		} else {
 			if (!taskStatement.isEmpty()) {
 				Task newTask = new Task();
-				if(commandType.equals(COMMAND_TYPE.ADD_TASK)) {
+				if (commandType.equals(COMMAND_TYPE.ADD_TASK)) {
 					newTask = addNewTask(taskStatement);
 				} else if (commandType.equals(COMMAND_TYPE.MODIFY_TASK)) {
 					newTask = editExistingTask(taskStatement);
 					command.setIndexNumber(findIndexNumber(command, taskStatement));
-				} 
+				}
 				return newTask;
 			}
 		}
@@ -87,13 +88,13 @@ public class CommandParser {
 		}
 		return newTask;
 	}
-	
-	//incomplete
-	public static Task editExistingTask(String taskStatement){
+
+	// incomplete
+	public static Task editExistingTask(String taskStatement) {
 		return null;
 	}
 
-	public static int findIndexNumber(Command thisCommand, String taskDetails)throws Exception {
+	public static int findIndexNumber(Command thisCommand, String taskDetails) throws Exception {
 		Command.COMMAND_TYPE commandType = thisCommand.getCommandType();
 		if (commandType.equals(COMMAND_TYPE.DELETE_TASK) || commandType.equals(COMMAND_TYPE.COMPLETE_TASK)) {
 			taskDetails = cleanupExtraWhitespace(taskDetails);
@@ -124,17 +125,17 @@ public class CommandParser {
 		}
 		return true;
 	}
-	
+
 	/**
 	 * This method is used to check if the corresponding command types require
 	 * an attached task index number.
 	 * 
 	 * @param commandType
-	 * @return true, if the command type requires index number
-	 *         false, otherwise 
-	 *         Complete, delete and modify functionalities require index numbers.
+	 * @return true, if the command type requires index number false, otherwise
+	 *         Complete, delete and modify functionalities require index
+	 *         numbers.
 	 */
-	public static boolean hasIndexNumber(COMMAND_TYPE commandType){
+	public static boolean hasIndexNumber(COMMAND_TYPE commandType) {
 		if (commandType.equals(COMMAND_TYPE.COMPLETE_TASK)) {
 			return true;
 		} else if (commandType.equals(COMMAND_TYPE.DELETE_TASK)) {
@@ -162,7 +163,7 @@ public class CommandParser {
 
 		return newTask;
 	}
-	
+
 	public static void setDates(ArrayList<LocalDate> dateList, Task newTask) {
 		if (dateList != null) {
 			newTask.setEndDate(dateList.get(dateList.size() - 1));

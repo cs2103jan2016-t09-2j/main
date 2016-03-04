@@ -17,6 +17,9 @@ public class Command {
 								                      "completed", "finished"};
 	private static final String[] COMMAND_EXIT = {"exit", "close", "quit"};
 	private static final String   COMMAND_INVALID = null;
+	private static final String   COMMAND_EMPTY = "";
+	
+	public boolean isFirstWordCommand;
 	
 	private Task taskDescription;
 	private COMMAND_TYPE commandType;
@@ -94,7 +97,11 @@ public class Command {
 		if(commandFirstWord.equals(COMMAND_INVALID)) {
 			throw new Exception("command type string cannot be null!");
 		}
+		if(commandFirstWord.equals(COMMAND_EMPTY)) {
+			throw new Exception("command type string cannot be empty!");
+		}
 		
+		isFirstWordCommand = true;
 		if(hasInDictionary(COMMAND_ADD, commandFirstWord)) {
 			return COMMAND_TYPE.ADD_TASK;
 		} else if(hasInDictionary(COMMAND_DELETE, commandFirstWord)) {
@@ -105,8 +112,10 @@ public class Command {
 			return COMMAND_TYPE.COMPLETE_TASK;
 		} else if(hasInDictionary(COMMAND_EXIT, commandFirstWord)) {
 			return COMMAND_TYPE.EXIT;
+		} else {
+			isFirstWordCommand = false;
+			return COMMAND_TYPE.ADD_TASK;
 		}
-		throw new Exception("Invalid Command Type.");
 	}
 
 	/**
