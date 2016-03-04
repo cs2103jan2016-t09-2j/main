@@ -17,14 +17,15 @@ public class Test {
 	PrettyTimeParser timeParse = new PrettyTimeParser();
 
 	private static final String REGEX_DATE = "\\d{1,2}(-|/)\\d{1,2}(-|/)(\\d{4}|\\d{2})";
-	private static final String REGEX_TIME = "(\\d{1,2}(:|\\.)\\d{1,2})|(\\s\\d{3,4})";
+	private static final String REGEX_TIME = "(^|\\s|\\G)((\\d{1,2}(:|\\.)\\d{1,2})|(\\d{3,4}))(\\s|$)";
 
 	public static void main(String[] args) {
 		Test obj = new Test();
 		// obj.checkdate("Meet ABCD at 16.00 on 14/05/1234 and 14/08/1273
 		// 1/3/12");
-		// obj.checktime("Meet ABCD at 1600 on 14/05/11234");
-		obj.checkingcommandparser("add Meet ABCD 0:09 01/01/99");
+		//obj.checktime("1600 1700 on 14/05/11234");
+		obj.checkingcommandparser("add Meet ABCD 00.09 12.40 9/2/17");
+		//System.out.println("End");
 	}
 
 	void checkdate(String taskDetails) {

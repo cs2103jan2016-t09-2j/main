@@ -32,20 +32,24 @@ public class CommandParser {
 	}
 
 	private static Command parseCommand(String userCommand) {
+		try {
 		String commandType = getFirstWord(userCommand);
 		String taskStatement = removeFirstWord(userCommand);
 		Task taskDetails = setTaskDetails(taskStatement);
-
 		// Why return null everytime ?
 		Command parsedCommand = new Command(commandType, taskDetails, null);
 		return parsedCommand;
+		}
+		catch(Exception e) {
+			e.getMessage();
+		}
+		return null;
 	}
 
 	// incomplete
-	private static Task setTaskDetails(String taskStatement) {
+	private static Task setTaskDetails(String taskStatement)throws Exception {
 		if (!taskStatement.isEmpty()) {
 			Task newTask = new Task();
-
 			// Getting date and time lists from task statement
 			DateParser dateParser = new DateParser(taskStatement);
 			ArrayList<LocalDate> dateList = dateParser.getDates();
@@ -59,7 +63,7 @@ public class CommandParser {
 			}
 			return newTask;
 		}
-		return null;
+		throw (new Exception("Command Invalid"));
 	}
 
 	protected static Task addFloatingTaskDetails(String taskStatement) {
@@ -128,7 +132,7 @@ public class CommandParser {
 	}
 
 	/**
-	 * This method removes the unnecesarry white spaces present in the string.
+	 * This method removes the unneccesarry white spaces present in the string.
 	 * 
 	 * @param someText
 	 *            is any string with several white spaces.

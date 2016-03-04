@@ -18,7 +18,9 @@ import java.util.regex.Matcher;
  */
 public class TimeParser {
 
-	private static final String REGEX_TIME = "(\\s\\d{1,2}(:|\\.)\\d{2}\\s)|(\\s\\d{3,4}\\s)";
+	// private static final String REGEX_TIME =
+	// "(\\s\\d{1,2}(:|\\.)\\d{2}\\s)|(\\s\\d{3,4}\\s)";
+	private static final String REGEX_TIME = "(^|\\s|\\G)((\\d{1,2}(:|\\.)\\d{1,2})|(\\d{3,4}))(\\s|$)";
 
 	// Instance Variables
 	private String taskDetails;
@@ -34,14 +36,13 @@ public class TimeParser {
 	}
 
 	protected void setTaskDetails(String newTaskDetails) {
-		this.taskDetails = " "+newTaskDetails+" ";
+		this.taskDetails = newTaskDetails;
 	}
 
 	public String getTaskDetails() {
 		return this.taskDetails;
 	}
 
-	
 	protected ArrayList<LocalTime> getTimes() {
 		ArrayList<String> stringTimeList = getTimeList(getTaskDetails());
 		if (hasTimeList(stringTimeList)) {
@@ -57,42 +58,40 @@ public class TimeParser {
 		Matcher timeMatcher = timePattern.matcher(taskDetails);
 		while (timeMatcher.find()) {
 			String newTime = timeMatcher.group();
-			// int startIndex = timeMatcher.start();
-			// int endIndex = timeMatcher.end();
 			timeList.add(newTime);
 		}
 		removeTimesFromTaskDetails();
 		return timeList;
 	}
 
-	protected void removeTimesFromTaskDetails() {
+	public void removeTimesFromTaskDetails() {
 		this.taskDetails = taskDetails.replaceAll(REGEX_TIME, " ");
 		this.taskDetails = CommandParser.cleanupExtraWhitespace(taskDetails);
 	}
 
 	private ArrayList<LocalTime> getLocalTimeList(ArrayList<String> stringTimeList) {
 		ArrayList<LocalTime> localTimeList = new ArrayList<LocalTime>();
-		for (String time : stringTimeList) {	
+		for (String time : stringTimeList) {
 			localTimeList.add(getLocalTimeObject(time));
 		}
 		return localTimeList;
 	}
-	
+
 	/**
 	 * This method converts String time to LocalTime object
+	 * 
 	 * @param time
-	 * 			 which is contained in the usercommand
-	 * @return
-	 * 		LocalTime Object
+	 *            which is contained in the usercommand
+	 * @return LocalTime Object
 	 */
 	protected LocalTime getLocalTimeObject(String time) {
-		int hour =0,minute = 00;
+		int hour = 0, minute = 00;
 		time = time.trim();
 		minute = Integer.parseInt(time.substring(time.length() - 2));
 		time = time.substring(0, time.length() - 2);
 		for (int index = time.length() - 1; index >= 0; index--) {
 			if (Character.isDigit(time.charAt(index))) {
-				hour = Integer.parseInt(time.substring(0, index+1));
+				hour = Integer.parseInt(time.substring(0, index + 1));
 				break;
 			}
 		}

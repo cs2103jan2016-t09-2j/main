@@ -50,7 +50,7 @@ public class TestParser {
 	
 	@Test
 	public void checkGetParsedCommand1() {
-		String testString = "+ Meet ABCD   16.00 14/05/16 14/08/16";
+		String testString = "+ Meet ABCD   16.00 14/05/16 14/08/16 ";
 		Command cmd = CommandParser.getParsedCommand(testString);
 		Task newTask = cmd.getTaskDetails();
 		assertEquals(false, newTask.isFloatingTask());

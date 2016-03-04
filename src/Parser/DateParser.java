@@ -24,7 +24,7 @@ class DateParser {
 
 	private static final int CENTURY = 100;
 
-	private static final String REGEX_DATE = "\\s\\d{1,2}(-|/)\\d{1,2}(-|/)(\\d{4}|\\d{2})\\s";
+	private static final String REGEX_DATE = "(\\s|^|\\G)\\d{1,2}(-|/)\\d{1,2}(-|/)(\\d{4}|\\d{2})(\\s|$)";
 
 	// private static final String REGEX_EXTRA_WHITESPACE = "\\s{2,}";
 
@@ -40,7 +40,7 @@ class DateParser {
 	}
 	
 	protected void setTaskDetails(String newTaskDetails) {
-		this.taskDetails = " "+newTaskDetails+" ";
+		this.taskDetails = newTaskDetails;
 	}
 	
 	public String getTaskDetails(){
