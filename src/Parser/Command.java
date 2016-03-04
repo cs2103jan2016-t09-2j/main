@@ -7,6 +7,9 @@ public class Command {
 		ADD_TASK, DELETE_TASK, MODIFY_TASK, COMPLETE_TASK, EXIT
 	};
 	
+	private static final int DEFAULT_INDEX_NUMBER = -1;
+	//private static final int FIRST_INDEX = 0;
+	
 	private static final String[] COMMAND_ADD = {"add", "create", "+", "a"};
 	private static final String[] COMMAND_DELETE = {"delete", "d", "-", "clear", "remove"};
 	private static final String[] COMMAND_MODIFY = {"modify", "edit", "update", "change"};
@@ -17,17 +20,27 @@ public class Command {
 	
 	private Task taskDescription;
 	private COMMAND_TYPE commandType;
+	private int indexNumber;
 	
 	public Command() {
-		this.taskDescription = null;
 		this.commandType = null;
+		this.taskDescription = null;
+		this.indexNumber = DEFAULT_INDEX_NUMBER;
 	}
 	
 	// Parameterized Constructor that accepts a command word and task details
-	public Command(String commandFirstWord, Task newTaskDetails, Integer newTaskIndex)throws Exception{
+	public Command(String commandFirstWord, Task newTaskDetails)throws Exception{
 		setCommandType(commandFirstWord);
 		setTaskDetails(newTaskDetails);
-		//setTaskIndex(newTaskIndex);
+		setIndexNumber(DEFAULT_INDEX_NUMBER);
+	}
+	
+	
+	
+	public Command(String commandFirstWord, Task newTaskDetails, int newTaskIndex)throws Exception{
+		setCommandType(commandFirstWord);
+		setTaskDetails(newTaskDetails);
+		setIndexNumber(newTaskIndex);
 	}
 
 	//Parameterized Constructor that accepts another Command
@@ -37,8 +50,12 @@ public class Command {
 		//this.taskIndex = newCommand.taskIndex;
 	}
 	
-	private void setCommandType(String commandFirstWord)throws Exception{
+	public void setCommandType(String commandFirstWord)throws Exception{
 		this.commandType = determineCommandType(commandFirstWord);
+	}
+	
+	public void setCommandType(COMMAND_TYPE commandFirstWord)throws Exception{
+		this.commandType = commandFirstWord;
 	}
 	
 	// It throws an error when the command type is Invalid.
@@ -50,12 +67,20 @@ public class Command {
 		return this.commandType;
 	}
 
-	private void setTaskDetails(Task newTaskDetails){
+	public void setTaskDetails(Task newTaskDetails){
 		this.taskDescription = newTaskDetails;
 	}
 	
 	public Task getTaskDetails() {
 		return this.taskDescription;
+	}
+	
+	public void setIndexNumber(int index) {
+		this.indexNumber = index;
+	}
+	
+	public int getIndexNumber() {
+		return this.indexNumber;
 	}
 	
 	/**
