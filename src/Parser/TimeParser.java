@@ -20,7 +20,7 @@ public class TimeParser {
 
 	// private static final String REGEX_TIME =
 	// "(\\s\\d{1,2}(:|\\.)\\d{2}\\s)|(\\s\\d{3,4}\\s)";
-	private static final String REGEX_TIME = "(^|\\s|\\G)((\\d{1,2}(:|\\.)\\d{1,2})|(\\d{3,4}))(\\s|$)";
+	private static final String REGEX_TIME = "(^|\\s|\\G)((\\d{1,2}(:|\\.)\\d{2})|(\\d{3,4}))(\\s|$)";
 
 	// Instance Variables
 	private String taskDetails;
