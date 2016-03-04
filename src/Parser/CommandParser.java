@@ -122,6 +122,10 @@ public class CommandParser {
 			return false;
 		} else if (commandType.equals(COMMAND_TYPE.EXIT)) {
 			return false;
+		} else if (commandType.equals(COMMAND_TYPE.UNDO_TASK)) {
+			return false;
+		} else if (commandType.equals(COMMAND_TYPE.REDO_TASK)) {
+			return false;
 		}
 		return true;
 	}
