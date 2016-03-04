@@ -43,17 +43,19 @@ public class CommandParser {
 		parsedCommand.setCommandType(commandType);
 
 		String taskStatement = removeFirstWord(userCommand);
-		Task taskDetails = findTaskDetails(parsedCommand.getCommandType(), taskStatement);
+		Task taskDetails = findTaskDetails(parsedCommand, taskStatement);
 		parsedCommand.setTaskDetails(taskDetails);
-
-		parsedCommand.setIndexNumber(findIndexNumber(taskStatement, parsedCommand));
 
 		return parsedCommand;
 	}
 
 	// incomplete
-	public static Task findTaskDetails(COMMAND_TYPE commandType, String taskStatement)throws Exception {
+	public static Task findTaskDetails(Command command, String taskStatement)throws Exception {
+		COMMAND_TYPE commandType = command.getCommandType();
 		if (!hasTaskDetails(commandType)) {
+			if(hasIndexNumber(commandType)) {
+				command.setIndexNumber(findIndexNumber(command, taskStatement));
+			}
 			return null;
 		} else {
 			if (!taskStatement.isEmpty()) {
@@ -62,6 +64,7 @@ public class CommandParser {
 					newTask = addNewTask(taskStatement);
 				} else if (commandType.equals(COMMAND_TYPE.MODIFY_TASK)) {
 					newTask = editExistingTask(taskStatement);
+					command.setIndexNumber(findIndexNumber(command, taskStatement));
 				} 
 				return newTask;
 			}
@@ -90,7 +93,7 @@ public class CommandParser {
 		return null;
 	}
 
-	public static int findIndexNumber(String taskDetails, Command thisCommand) throws Exception {
+	public static int findIndexNumber(Command thisCommand, String taskDetails)throws Exception {
 		Command.COMMAND_TYPE commandType = thisCommand.getCommandType();
 		if (commandType.equals(COMMAND_TYPE.DELETE_TASK) || commandType.equals(COMMAND_TYPE.COMPLETE_TASK)) {
 			taskDetails = cleanupExtraWhitespace(taskDetails);
@@ -120,6 +123,26 @@ public class CommandParser {
 			return false;
 		}
 		return true;
+	}
+	
+	/**
+	 * This method is used to check if the corresponding command types require
+	 * an attached task index number.
+	 * 
+	 * @param commandType
+	 * @return true, if the command type requires index number
+	 *         false, otherwise 
+	 *         Complete, delete and modify functionalities require index numbers.
+	 */
+	public static boolean hasIndexNumber(COMMAND_TYPE commandType){
+		if (commandType.equals(COMMAND_TYPE.COMPLETE_TASK)) {
+			return true;
+		} else if (commandType.equals(COMMAND_TYPE.DELETE_TASK)) {
+			return true;
+		} else if (commandType.equals(COMMAND_TYPE.MODIFY_TASK)) {
+			return true;
+		}
+		return false;
 	}
 
 	protected static Task addFloatingTaskDetails(String taskStatement) {
