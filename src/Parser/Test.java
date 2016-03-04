@@ -37,7 +37,7 @@ public class Test {
 	
 	void checkIndexNumber(String str)throws Exception {
 		Command cmd = new Command("finish", null);
-		int index = CommandParser.findIndexNumber(str, cmd);
+		int index = CommandParser.findIndexNumber(cmd, str);
 		System.out.println(index);
 	}
 

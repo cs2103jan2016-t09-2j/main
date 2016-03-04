@@ -71,4 +71,22 @@ public class TestParser {
 		assertEquals(COMMAND_TYPE.ADD_TASK, cmd.getCommandType());
 		assertEquals("Meet ABCD 16", newTask.getDescription());
 	}
+	
+	@Test
+	public void checkGetParsedCommand3()throws Exception {
+		String testString = "-  16";
+		Command cmd = CommandParser.getParsedCommand(testString);
+		assertEquals(COMMAND_TYPE.DELETE_TASK, cmd.getCommandType());
+		assertEquals(16, cmd.getIndexNumber());
+		assertEquals(null, cmd.getTaskDetails());
+	}
+	
+	@Test
+	public void checkGetParsedCommand4()throws Exception {
+		String testString = "done  16";
+		Command cmd = CommandParser.getParsedCommand(testString);
+		assertEquals(COMMAND_TYPE.COMPLETE_TASK, cmd.getCommandType());
+		assertEquals(16, cmd.getIndexNumber());
+		assertEquals(null, cmd.getTaskDetails());
+	}
 }

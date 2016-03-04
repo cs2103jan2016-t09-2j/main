@@ -5,10 +5,10 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 
 import java.util.regex.Pattern;
+import java.util.regex.Matcher;
 
 import Parser.Command.COMMAND_TYPE;
 
-import java.util.regex.Matcher;
 
 //import org.ocpsoft.prettytime.PrettyTime;
 //import org.ocpsoft.prettytime.nlp.PrettyTimeParser;
@@ -32,11 +32,11 @@ public class CommandParser {
 	private static final String REGEX_EXTRA_WHITESPACE = "\\s{2,}";
 	private static final String REGEX_DIGITS = "\\d+";
 
-	public static Command getParsedCommand(String newUserCommand) throws Exception {
+	public static Command getParsedCommand(String newUserCommand)throws Exception {
 		return parseCommand(cleanupExtraWhitespace(newUserCommand));
 	}
 
-	private static Command parseCommand(String userCommand) throws Exception {
+	private static Command parseCommand(String userCommand)throws Exception {
 		Command parsedCommand = new Command();
 
 		String commandType = getFirstWord(userCommand);
@@ -157,20 +157,28 @@ public class CommandParser {
 		Task newTask = new Task();
 		newTask.setDescription(taskStatement);
 		newTask.setScheduledTask();
+		setDates(dateList, newTask);
+		setTimes(timeList, newTask);
+
+		return newTask;
+	}
+	
+	public static void setDates(ArrayList<LocalDate> dateList, Task newTask) {
 		if (dateList != null) {
 			newTask.setEndDate(dateList.get(dateList.size() - 1));
 			if (dateList.size() > 1) {
 				newTask.setStartDate(dateList.get(FIRST_INDEX));
 			}
 		}
+	}
+
+	public static void setTimes(ArrayList<LocalTime> timeList, Task newTask) {
 		if (timeList != null) {
 			newTask.setEndTime(timeList.get(timeList.size() - 1));
 			if (timeList.size() > 1) {
 				newTask.setStartTime(timeList.get(FIRST_INDEX));
 			}
 		}
-
-		return newTask;
 	}
 
 	/**
