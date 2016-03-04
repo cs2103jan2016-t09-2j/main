@@ -11,7 +11,7 @@ public class Command {
 	//private static final int FIRST_INDEX = 0;
 	
 	private static final String[] COMMAND_ADD = {"add", "create", "+", "a"};
-	private static final String[] COMMAND_DELETE = {"delete", "d", "-", "clear", "remove"};
+	private static final String[] COMMAND_DELETE = {"delete", "d", "del", "-", "clear", "remove"};
 	private static final String[] COMMAND_MODIFY = {"modify", "edit", "update", "change"};
 	private static final String[] COMMAND_COMPLETE = {"complete", "done", "finish", 
 								                      "completed", "finished"};
@@ -35,8 +35,6 @@ public class Command {
 		setIndexNumber(DEFAULT_INDEX_NUMBER);
 	}
 	
-	
-	
 	public Command(String commandFirstWord, Task newTaskDetails, int newTaskIndex)throws Exception{
 		setCommandType(commandFirstWord);
 		setTaskDetails(newTaskDetails);
@@ -47,7 +45,7 @@ public class Command {
 	public Command(Command newCommand) {
 		this.commandType = newCommand.commandType;
 		this.taskDescription = newCommand.taskDescription;
-		//this.taskIndex = newCommand.taskIndex;
+		this.indexNumber = newCommand.indexNumber;
 	}
 	
 	public void setCommandType(String commandFirstWord)throws Exception{
