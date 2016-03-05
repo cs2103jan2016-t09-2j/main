@@ -29,7 +29,8 @@ public class CommandParser {
 	private static final char WHITE_SPACE = ' ';
 
 	private static final String REGEX_EXTRA_WHITESPACE = "\\s{2,}";
-	private static final String REGEX_DIGITS = "\\d+";
+	private static final String REGEX_DIGITS = "(\\s|^|,|-|\\G)\\d+(\\s|$|,|-)";
+	private static final String REGEX_DIGITS_AT_START = "^\\d+\\s";
 
 	public static Command getParsedCommand(String newUserCommand) throws Exception {
 		return parseCommand(cleanupExtraWhitespace(newUserCommand));
@@ -50,8 +51,7 @@ public class CommandParser {
 		return parsedCommand;
 	}
 
-	// incomplete
-	public static Task findTaskDetails(Command command, String taskStatement) throws Exception {
+	public static Task findTaskDetails(Command command, String taskStatement)throws Exception {
 		COMMAND_TYPE commandType = command.getCommandType();
 		if (!hasTaskDetails(commandType)) {
 			if (hasIndexNumber(commandType)) {
@@ -64,8 +64,9 @@ public class CommandParser {
 				if (commandType.equals(COMMAND_TYPE.ADD_TASK)) {
 					newTask = addNewTask(taskStatement);
 				} else if (commandType.equals(COMMAND_TYPE.MODIFY_TASK)) {
-					newTask = editExistingTask(taskStatement);
 					command.setIndexNumber(findIndexNumber(command, taskStatement));
+					taskStatement = removeFirstIndexNumberFromTaskDetails(command, taskStatement);
+					newTask = editExistingTask(taskStatement);
 				}
 				return newTask;
 			}
@@ -91,7 +92,23 @@ public class CommandParser {
 
 	// incomplete
 	public static Task editExistingTask(String taskStatement) {
-		return null;
+		Task newTask = new Task();
+		DateParser dateParser = new DateParser(taskStatement);
+		ArrayList<LocalDate> dateList = dateParser.getDates();
+		TimeParser timeParser = new TimeParser(dateParser.getTaskDetails());
+		ArrayList<LocalTime> timeList = timeParser.getTimes();
+		taskStatement = timeParser.getTaskDetails();
+		if(dateList != null) {
+			
+		}
+		if(timeList != null) {
+			
+		}
+		if(!taskStatement.isEmpty() && taskStatement != null) {
+			
+		}
+		
+		return newTask;
 	}
 
 	public static int findIndexNumber(Command thisCommand, String taskDetails) throws Exception {
@@ -104,6 +121,14 @@ public class CommandParser {
 			}
 		}
 		return DEFAULT_INDEX_NUMBER;
+	}
+	
+	public static String removeFirstIndexNumberFromTaskDetails(Command command, String taskStatement)throws Exception {
+		if(command.getCommandType().equals(COMMAND_TYPE.MODIFY_TASK)) {
+			taskStatement = taskStatement.replaceAll(REGEX_DIGITS_AT_START, "");
+			taskStatement = cleanupExtraWhitespace(taskStatement);
+		}
+		return taskStatement;
 	}
 
 	/**
