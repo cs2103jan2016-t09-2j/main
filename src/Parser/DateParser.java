@@ -1,6 +1,8 @@
 package Parser;
 
 import java.util.ArrayList;
+//import java.util.Comparator;
+import java.util.Collections;
 
 import java.util.regex.Pattern;
 import java.util.regex.Matcher;
@@ -20,7 +22,7 @@ import java.time.LocalDate;
  * 
  * @author Snigdha Singhania
  */
-class DateParser {
+class DateParser /*implements Comparator<LocalDate>*/  {
 
 	private static final int CENTURY = 100;
 
@@ -51,6 +53,7 @@ class DateParser {
 		ArrayList<String> stringDateList = getDateList(getTaskDetails());
 		if (hasDateList(stringDateList)) {
 			ArrayList<LocalDate> dateList = getLocalDateList(stringDateList);
+			dateList = sortDateList(dateList);
 			return dateList;
 		}
 		return null;
@@ -109,6 +112,11 @@ class DateParser {
 		}
 		dateMonthYear[2] = getValidYear(dateMonthYear[2], dateMonthYear[1], dateMonthYear[0]);
 		return LocalDate.of(dateMonthYear[2], dateMonthYear[1], dateMonthYear[0]);
+	}
+	
+	public ArrayList<LocalDate> sortDateList(ArrayList<LocalDate> dates) {
+		Collections.sort(dates);
+		return dates;
 	}
 	
 	public static int getValidYear(int year, int month, int dayOfMonth) {

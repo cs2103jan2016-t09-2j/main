@@ -152,4 +152,13 @@ public class TestParser {
 		assertEquals("06:00", newTask.getStartTime().toString());
 		assertEquals("18:00", newTask.getEndTime().toString());
 	}
+	
+	@Test
+	public void checkGetParsedCommand9()throws Exception {
+		String testString = "del 178";
+		Command cmd = CommandParser.getParsedCommand(testString);
+		assertEquals(COMMAND_TYPE.DELETE_TASK, cmd.getCommandType());
+		assertEquals(178, cmd.getIndexNumber());
+		assertEquals(null, cmd.getTaskDetails());
+	}
 }
