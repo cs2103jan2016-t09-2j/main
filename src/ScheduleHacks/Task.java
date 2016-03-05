@@ -7,13 +7,14 @@ import java.time.LocalTime;
 public class Task {
 	
 	private String description;
-	private boolean isFloatingType, isScheduledType;
+	private boolean isFloatingType, isScheduledType, isComplete;
 	private LocalDate startDate, endDate;
 	private LocalTime startTime, endTime;
 	
 	public Task()  {
 		setDescription(null);
 		isFloatingType = false; isScheduledType = false;
+		isComplete = false;
 		setStartDate(null); setEndDate(null);
 		setStartTime(null); setEndTime(null);
 	}
@@ -35,12 +36,24 @@ public class Task {
 		isScheduledType = true;
 	}
 	
+	public void setAsComplete(){
+		isComplete = true;
+	}
+	
+	public void setAsIncomplete(){
+		isComplete = false;
+	}
+	
 	public boolean isFloatingTask() {
 		return isFloatingType;
 	}
 	
 	public boolean isScheduledTask() {
 		return isScheduledType;
+	}
+	
+	public boolean isComplete() {
+		return isComplete;
 	}
 	
 	public void setStartDate(LocalDate startDate) {

@@ -79,7 +79,7 @@ public class CommandParser {
 		// Getting date and time lists from task statement
 		DateParser dateParser = new DateParser(taskStatement);
 		ArrayList<LocalDate> dateList = dateParser.getDates();
-		TimeParser timeParser = new TimeParser(dateParser.getTaskDetails(), dateList);
+		TimeParser timeParser = new TimeParser(dateParser.getTaskDetails());
 		ArrayList<LocalTime> timeList = timeParser.getTimes();
 
 		if (dateList == null && timeList == null) {
@@ -94,7 +94,7 @@ public class CommandParser {
 		Task newTask = new Task();
 		DateParser dateParser = new DateParser(taskStatement);
 		ArrayList<LocalDate> dateList = dateParser.getDates();
-		TimeParser timeParser = new TimeParser(dateParser.getTaskDetails(), dateList);
+		TimeParser timeParser = new TimeParser(dateParser.getTaskDetails());
 		ArrayList<LocalTime> timeList = timeParser.getTimes();
 		taskStatement = timeParser.getTaskDetails();
 		setDates(dateList, newTask);

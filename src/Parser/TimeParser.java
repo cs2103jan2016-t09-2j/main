@@ -2,12 +2,11 @@ package Parser;
 
 import java.util.ArrayList;
 import java.time.LocalTime;
-import java.time.LocalDate;
 
 import java.util.regex.Pattern;
 import java.util.regex.Matcher;
 
-/**
+/*
  * This class contains all possible combinations of time, that the user can
  * input as command into Schedule Hacks.
  * 
@@ -21,52 +20,46 @@ public class TimeParser {
 	private static final String REGEX_TIME = "(^|\\s|\\G)((\\d{1,2}(:|\\.)\\d{2})|(\\d{3,4}))(\\s|$)";
 	
 	private static final int FIRST_INDEX = 0;
+	//private static final int INVALID_SIZE = -1;
+	
 	private static final int MAX_MINUTES = 59;
 	private static final int MAX_HOUR = 23;
 
 	// Instance Variables
 	private String taskDetails;
-	private ArrayList<LocalDate> dateList;
 
+	/**************** CONSTRUCTORS *********************/
 	// Default Constructor
 	TimeParser() {
 		this("");
-		dateList = new ArrayList<LocalDate>();
 	}
 
 	// Parameterized Constructor
 	TimeParser(String newTaskDetails) {
 		setTaskDetails(newTaskDetails);
 	}
-	
-	TimeParser(String newTaskDetails, ArrayList<LocalDate> newDateList) {
-		setTaskDetails(newTaskDetails);
-		setDateList(newDateList);
-	}
 
+
+	/****************** SETTER METHODS ***********************/
 	protected void setTaskDetails(String newTaskDetails) {
 		this.taskDetails = newTaskDetails;
 	}
 	
-	public void setDateList(ArrayList<LocalDate> newDateList){
-		this.dateList = newDateList;
-	}
-
+	/******************* GETTER METHODS ***********************/
 	public String getTaskDetails() {
 		return this.taskDetails;
 	}
 	
-	public ArrayList<LocalDate> getDateList() {
-		return this.dateList;
-	}
-
+	/**************** OTHER METHODS ***********************/
 	protected ArrayList<LocalTime> getTimes() {
+		ArrayList<LocalTime> timeList;
 		ArrayList<String> stringTimeList = getTimeList(getTaskDetails());
 		if (hasTimeList(stringTimeList)) {
-			ArrayList<LocalTime> timeList = getLocalTimeList(stringTimeList);
-			return timeList;
+			timeList = getLocalTimeList(stringTimeList);			
+		} else {
+			timeList = null;
 		}
-		return null;
+		return timeList;
 	}
 
 	ArrayList<String> getTimeList(String taskDetails) {
@@ -119,9 +112,11 @@ public class TimeParser {
 		}
 		return LocalTime.of(hour, minute);
 	}
+	
+	
 
 	/**
-	 * This method checks if the time input by the user is of acceptable format
+	 * This method checks if the time input by the user is in acceptable format and range
 	 * or not
 	 * 
 	 * @param newTime
