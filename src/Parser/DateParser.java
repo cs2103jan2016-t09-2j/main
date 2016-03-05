@@ -1,7 +1,6 @@
 package Parser;
 
 import java.util.ArrayList;
-//import java.util.Comparator;
 import java.util.Collections;
 
 import java.util.regex.Pattern;
@@ -22,7 +21,7 @@ import java.time.LocalDate;
  * 
  * @author Snigdha Singhania
  */
-class DateParser /*implements Comparator<LocalDate>*/  {
+class DateParser {
 
 	private static final int CENTURY = 100;
 
