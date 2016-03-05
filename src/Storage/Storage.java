@@ -152,23 +152,33 @@ private void writeToDoScheduledFile(ArrayList<Task> toDoScheduledList) throws IO
 		
 	}	
 
-	private ArrayList<Task> readToCompleteFloatingFile(File completeScheduled) throws FileNotFoundException {
+	private ArrayList<Task> readToCompleteFloatingFile(File completeScheduled) throws IOException {
 		
-		BufferedReader br = new BufferedReader(new FileReader(completeScheduledFile));
+		ArrayList<Task> completeFloatingFile = new ArrayList<Task>();
+		
+		completeFloatingFile = taskReader(completeScheduled);
+		
 		return null;
 	}
 
-	private ArrayList<Task> readToCompleteScheduledFile(File completeScheduled) throws FileNotFoundException {
+	private ArrayList<Task> readToCompleteScheduledFile(File completeScheduled) throws IOException {
 	
-		BufferedReader br = new BufferedReader(new FileReader(completeScheduledFile));
+		
+		ArrayList<Task> completeScheduledFile = new ArrayList<Task>();
+		
+		completeScheduledFile = taskReader(completeScheduled);
+		
 		return null;
 	}
 	
 	
 
-	private ArrayList<Task> readToOverdueScheduledFile(File overdueScheduled) throws FileNotFoundException {
+	private ArrayList<Task> readToOverdueScheduledFile(File overdueScheduled) throws IOException {
+	
+		ArrayList<Task> overdueScheduledFile = new ArrayList<Task>();
 		
-		BufferedReader br = new BufferedReader(new FileReader(overdueScheduledFile));
+		overdueScheduledFile = taskReader(overdueScheduled);
+		
 		return null;
 		
 	}
@@ -176,6 +186,8 @@ private void writeToDoScheduledFile(ArrayList<Task> toDoScheduledList) throws IO
 	private ArrayList<Task>readToDoFloatingListFile(File toDofFloating) throws FileNotFoundException {
 	
 		BufferedReader br = new BufferedReader(new FileReader(toDoFloatingFile));
+		ArrayList<Task> toDoFloatingFile = new ArrayList<Task>();
+		
 		return null;
 	
 		
@@ -184,6 +196,8 @@ private void writeToDoScheduledFile(ArrayList<Task> toDoScheduledList) throws IO
 	private ArrayList<Task> readToDoScheduledFile(File toDoScheduled) throws FileNotFoundException {
 		
 		BufferedReader br = new BufferedReader(new FileReader(toDoScheduledFile));
+		ArrayList<Task> toDoScheduledList = new ArrayList<Task>();
+		
 		return null;
 		
 	}
@@ -196,13 +210,15 @@ private void writeToDoScheduledFile(ArrayList<Task> toDoScheduledList) throws IO
 	 bw.write(json);
 	
 	 }
-	 private ArrayList<Task> taskReader(BufferedReader br ,Task task) throws IOException{
+	 private ArrayList<Task> taskReader(File file) throws IOException{
+				
+				BufferedReader br = new BufferedReader(new FileReader(file));
 				
 		        String text = "";
 		        ArrayList<Task> taskList = new ArrayList<Task>();
 		        
 		        while ((text = br.readLine()) != null) {
-		                task = gson.fromJson(text, Task.class);
+		                Task task = gson.fromJson(text, Task.class);
 		                taskList.add(task);
 		        }
 		         		        
