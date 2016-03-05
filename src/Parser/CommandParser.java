@@ -90,7 +90,6 @@ public class CommandParser {
 		return newTask;
 	}
 
-	// incomplete
 	public static Task editExistingTask(String taskStatement) {
 		Task newTask = new Task();
 		DateParser dateParser = new DateParser(taskStatement);
@@ -98,16 +97,11 @@ public class CommandParser {
 		TimeParser timeParser = new TimeParser(dateParser.getTaskDetails());
 		ArrayList<LocalTime> timeList = timeParser.getTimes();
 		taskStatement = timeParser.getTaskDetails();
-		if(dateList != null) {
-			
-		}
-		if(timeList != null) {
-			
-		}
+		setDates(dateList, newTask);
+		setTimes(timeList, newTask);
 		if(!taskStatement.isEmpty() && taskStatement != null) {
-			
+			newTask.setDescription(taskStatement);
 		}
-		
 		return newTask;
 	}
 
