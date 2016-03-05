@@ -24,14 +24,12 @@ import ScheduleHacks.Task;
 public class CommandParser {
 
 	private static final int NO_WHITE_SPACE = -1;
-	private static final int DEFAULT_INDEX_NUMBER = -1;
+	//private static final int DEFAULT_INDEX_NUMBER = -1;
 	private static final int FIRST_INDEX = 0;
 	private static final char WHITE_SPACE = ' ';
 
 	private static final String REGEX_EXTRA_WHITESPACE = "\\s{2,}";
-	private static final String REGEX_DIGITS = "(\\s|^|,|-|\\G)\\d+(\\s|$|,|-)";
-	private static final String REGEX_DIGITS_AT_START = "^\\d+\\s";
-
+	
 	public static Command getParsedCommand(String newUserCommand) throws Exception {
 		return parseCommand(cleanupExtraWhitespace(newUserCommand));
 	}
@@ -51,11 +49,12 @@ public class CommandParser {
 		return parsedCommand;
 	}
 
-	public static Task findTaskDetails(Command command, String taskStatement)throws Exception {
+	public static Task findTaskDetails(Command command, String taskStatement) throws Exception {
 		COMMAND_TYPE commandType = command.getCommandType();
 		if (!hasTaskDetails(commandType)) {
 			if (hasIndexNumber(commandType)) {
-				command.setIndexNumber(findIndexNumber(command, taskStatement));
+				IndexParser indexParser = new IndexParser(command, taskStatement);
+				command.setIndexNumber(indexParser.getIndex());
 			}
 			return null;
 		} else {
@@ -64,8 +63,9 @@ public class CommandParser {
 				if (commandType.equals(COMMAND_TYPE.ADD_TASK)) {
 					newTask = addNewTask(taskStatement);
 				} else if (commandType.equals(COMMAND_TYPE.MODIFY_TASK)) {
-					command.setIndexNumber(findIndexNumber(command, taskStatement));
-					taskStatement = removeFirstIndexNumberFromTaskDetails(command, taskStatement);
+					IndexParser indexParser = new IndexParser(command, taskStatement);
+					command.setIndexNumber(indexParser.getIndex());
+					taskStatement = indexParser.getTaskDetails();
 					newTask = editExistingTask(taskStatement);
 				}
 				return newTask;
@@ -99,30 +99,10 @@ public class CommandParser {
 		taskStatement = timeParser.getTaskDetails();
 		setDates(dateList, newTask);
 		setTimes(timeList, newTask);
-		if(!taskStatement.isEmpty() && taskStatement != null) {
+		if (!taskStatement.isEmpty() && taskStatement != null) {
 			newTask.setDescription(taskStatement);
 		}
 		return newTask;
-	}
-
-	public static int findIndexNumber(Command thisCommand, String taskDetails) throws Exception {
-		Command.COMMAND_TYPE commandType = thisCommand.getCommandType();
-		if (commandType.equals(COMMAND_TYPE.DELETE_TASK) || commandType.equals(COMMAND_TYPE.COMPLETE_TASK)) {
-			taskDetails = cleanupExtraWhitespace(taskDetails);
-			if (Pattern.matches(REGEX_DIGITS, taskDetails)) {
-				int indexNumber = Integer.parseInt(taskDetails);
-				return indexNumber;
-			}
-		}
-		return DEFAULT_INDEX_NUMBER;
-	}
-	
-	public static String removeFirstIndexNumberFromTaskDetails(Command command, String taskStatement)throws Exception {
-		if(command.getCommandType().equals(COMMAND_TYPE.MODIFY_TASK)) {
-			taskStatement = taskStatement.replaceAll(REGEX_DIGITS_AT_START, "");
-			taskStatement = cleanupExtraWhitespace(taskStatement);
-		}
-		return taskStatement;
 	}
 
 	/**

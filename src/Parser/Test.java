@@ -21,8 +21,6 @@ public class Test {
 		// 1/3/12");
 		//obj.checktime("1600 1700 on 14/05/11234");
 		obj.checkingcommandparser("aa bb cc 22/3/10 23:09 10:09");
-		//obj.checkIndexNumber(" d 313241   ");
-		//System.out.println("End");
 	}
 
 	void checkdate(String taskDetails) {
@@ -35,11 +33,6 @@ public class Test {
 		}
 	}
 	
-	void checkIndexNumber(String str)throws Exception {
-		Command cmd = new Command("finish", null);
-		int index = CommandParser.findIndexNumber(cmd, str);
-		System.out.println(index);
-	}
 
 	void checktime(String str) {
 		String time = "";
