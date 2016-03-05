@@ -1,9 +1,13 @@
+/*********************** DO NOT DELETE *************************/
+
 /*
  * This is a temporary User Interface while the GUI prepares the final.
  * DO NOT DELETE THIS FILE.
  * 
  * @author Snigdha Singhania
  */
+
+/*********************** DO NOT DELETE *************************/
 
 package GUI;
 
