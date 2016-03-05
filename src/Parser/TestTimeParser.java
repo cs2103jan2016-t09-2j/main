@@ -38,24 +38,28 @@ public class TestTimeParser {
 	public void testFindTime3(){
 		String output = "";
 		String testString = "Meet ABCD at 14:00 15.00 ";
+		obj = new TimeParser(testString);
 		ArrayList<String> outList = obj.getTimeList(testString);
 		for(String s : outList ) {
 			output = output + s; 
 		}
 		String expected = "14:0015.00";
 		assertEquals(expected, output.trim());
+		assertEquals("Meet ABCD at", obj.getTaskDetails());
 	}
 	
 	@Test
 	public void testFindTime4(){
 		String output = "";
 		String testString = "Meet ABCD 14/05/1234";
+		obj = new TimeParser(testString);
 		ArrayList<String> outList = obj.getTimeList(testString);
 		for(String s : outList ) {
 			output = output + s; 
 		}
 		String expected = "";
 		assertEquals(expected, output);
+		assertEquals("Meet ABCD 14/05/1234", obj.getTaskDetails());
 	}
 	
 	@Test
@@ -68,6 +72,20 @@ public class TestTimeParser {
 		}
 		String expected = "23.59";
 		assertEquals(expected, output);
+	}
+	
+	@Test
+	public void testFindTime6(){
+		String output = "";
+		String testString = "Meet ABCD 14/05/1234 23.59 24.55";
+		obj = new TimeParser(testString);
+		ArrayList<String> outList = obj.getTimeList(testString);
+		for(String s : outList ) {
+			output = output + s; 
+		}
+		String expected = "23.59";
+		assertEquals(expected, output);
+		assertEquals("Meet ABCD 14/05/1234 24.55", obj.getTaskDetails());
 	}
 	
 	@Test

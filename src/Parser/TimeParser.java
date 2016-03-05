@@ -64,13 +64,16 @@ public class TimeParser {
 				timeList.add(newTime.trim());
 			}
 		}
-		removeTimesFromTaskDetails();
+		removeFromTaskDetails(timeList);
 		return timeList;
 	}
 
-	public void removeTimesFromTaskDetails() {
-		this.taskDetails = taskDetails.replaceAll(REGEX_TIME, " ");
-		this.taskDetails = CommandParser.cleanupExtraWhitespace(taskDetails);
+	public void removeFromTaskDetails(ArrayList<String> timeList) {
+		String taskDetails = getTaskDetails();
+		for(String time: timeList) {
+			taskDetails = taskDetails.replace(time, ""); 
+		}
+		setTaskDetails(CommandParser.cleanupExtraWhitespace(taskDetails));
 	}
 
 	private ArrayList<LocalTime> getLocalTimeList(ArrayList<String> stringTimeList) {
