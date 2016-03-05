@@ -26,26 +26,41 @@ public class TimeParser {
 
 	// Instance Variables
 	private String taskDetails;
+	private ArrayList<LocalDate> dateList;
 
 	// Default Constructor
 	TimeParser() {
 		this("");
+		dateList = new ArrayList<LocalDate>();
 	}
 
 	// Parameterized Constructor
 	TimeParser(String newTaskDetails) {
 		setTaskDetails(newTaskDetails);
 	}
+	
+	TimeParser(String newTaskDetails, ArrayList<LocalDate> newDateList) {
+		setTaskDetails(newTaskDetails);
+		setDateList(newDateList);
+	}
 
 	protected void setTaskDetails(String newTaskDetails) {
 		this.taskDetails = newTaskDetails;
+	}
+	
+	public void setDateList(ArrayList<LocalDate> newDateList){
+		this.dateList = newDateList;
 	}
 
 	public String getTaskDetails() {
 		return this.taskDetails;
 	}
+	
+	public ArrayList<LocalDate> getDateList() {
+		return this.dateList;
+	}
 
-	protected ArrayList<LocalTime> getTimes(ArrayList<LocalDate> dateList) {
+	protected ArrayList<LocalTime> getTimes() {
 		ArrayList<String> stringTimeList = getTimeList(getTaskDetails());
 		if (hasTimeList(stringTimeList)) {
 			ArrayList<LocalTime> timeList = getLocalTimeList(stringTimeList);

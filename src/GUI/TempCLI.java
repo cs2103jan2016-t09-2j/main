@@ -8,6 +8,7 @@
 package GUI;
 
 import java.util.Scanner;
+import Logic;
 
 public class TempCLI {
 	
@@ -43,7 +44,8 @@ public class TempCLI {
 	}
 	
 	public void executeInput() {
-		
+		Logic logicObj = new Logic();
+		startExecution
 		
 	}
 	
