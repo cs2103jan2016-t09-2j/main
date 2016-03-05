@@ -3,12 +3,16 @@ package Parser;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Collections;
 
 public class DateTimeParser {
 
 	private static final int INVALID_SIZE = -1;
+	private static final int FIRST_INDEX = 0;
+	private static final int ONE_DAY = 1;
+
 	private ArrayList<LocalDate> dateList;
 	private ArrayList<LocalTime> timeList;
 
@@ -26,10 +30,16 @@ public class DateTimeParser {
 
 	/****************** SETTER METHODS ***********************/
 	protected void setDateList(ArrayList<LocalDate> newDateList) {
+		if (newDateList == null) {
+			this.dateList = new ArrayList<LocalDate>();
+		}
 		this.dateList = newDateList;
 	}
-	
+
 	protected void setTimeList(ArrayList<LocalTime> newTimeList) {
+		if (newTimeList == null) {
+			this.timeList = new ArrayList<LocalTime>();
+		}
 		this.timeList = newTimeList;
 	}
 
@@ -37,7 +47,7 @@ public class DateTimeParser {
 	public ArrayList<LocalDate> getDateList() {
 		return this.dateList;
 	}
-	
+
 	public ArrayList<LocalTime> getTimeList() {
 		return this.timeList;
 	}
@@ -47,42 +57,52 @@ public class DateTimeParser {
 		ArrayList<LocalDateTime> alist;
 		int aListSize = getDateTimeListSize(getDateList(), getTimeList());
 		alist = createDateTimeList(aListSize);
-		Collections.sort(alist);
+		separateDateAndTime(alist);
+	}
+	
+	void separateDateAndTime(ArrayList<LocalDateTime> alist) {
+		
 	}
 
 	public ArrayList<LocalDateTime> createDateTimeList(int size) {
-		if (getDateList() == null) {
+		ArrayList<LocalDateTime> alist = new ArrayList<LocalDateTime>();
+		if (dateList.isEmpty()) {
 			generateDateList(size);
-		}
-		if (getTimeList() == null) {
+		} else if (timeList.isEmpty()) {
 			generateTimeList(size);
+		} else if (dateList.size() > timeList.size()) {
+			generateTimeList(dateList.size() - timeList.size());
+		} else if (dateList.size() < timeList.size()) {
+			generateDateList(timeList.size() - dateList.size());
 		}
-		for (int index = 0; index < size; index++) {
-
+		for (int index = FIRST_INDEX; index < size; index++) {
+			alist.add(LocalDateTime.of(dateList.get(index), timeList.get(index)));
 		}
-		return null;
+		Collections.sort(alist);
+		return alist;
 	}
 
-	private void generateDateList(int size) {
-		ArrayList<LocalTime> timeList = getTimeList();
-
+	public void generateDateList(int size) {
+		for (int index = dateList.size(); index < size; index++) {
+			LocalDate tempDate = LocalDate.now();
+			LocalDateTime tempDateTime = LocalDateTime.of(tempDate, timeList.get(index));
+			if (tempDateTime.isBefore(LocalDateTime.now())) {
+				tempDate = tempDate.plusDays(ONE_DAY);
+			}
+			dateList.add(tempDate);
+		}
 	}
 
-	private void generateTimeList(int size) {
-		ArrayList<LocalDate> dateList = getDateList();
-		for (int index = 0; index < size; index++) {
-
+	public void generateTimeList(int size) {
+		for (int index = timeList.size(); index < size; index++) {
+			timeList.add(LocalTime.MAX.truncatedTo(ChronoUnit.MINUTES));
 		}
 	}
 
 	public int getDateTimeListSize(ArrayList<LocalDate> dateList, ArrayList<LocalTime> timeList) {
-		if (dateList != null && timeList != null) {
-			return (dateList.size() > timeList.size()) ? dateList.size() : timeList.size();
-		} else if (dateList == null && timeList != null) {
-			return timeList.size();
-		} else if (dateList != null && timeList == null) {
-			return dateList.size();
+		if (dateList == null || timeList == null) {
+			return INVALID_SIZE;
 		}
-		return INVALID_SIZE;
+		return (dateList.size() > timeList.size()) ? dateList.size() : timeList.size();
 	}
 }
