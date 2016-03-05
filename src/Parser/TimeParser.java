@@ -1,13 +1,15 @@
 package Parser;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.time.LocalTime;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import java.util.regex.Pattern;
 import java.util.regex.Matcher;
 
-/**
+/*
  * This class contains all possible combinations of time, that the user can
  * input as command into Schedule Hacks.
  * 
@@ -21,29 +23,35 @@ public class TimeParser {
 	private static final String REGEX_TIME = "(^|\\s|\\G)((\\d{1,2}(:|\\.)\\d{2})|(\\d{3,4}))(\\s|$)";
 	
 	private static final int FIRST_INDEX = 0;
+	private static final int INVALID_SIZE = -1;
+	
 	private static final int MAX_MINUTES = 59;
 	private static final int MAX_HOUR = 23;
 
 	// Instance Variables
 	private String taskDetails;
 	private ArrayList<LocalDate> dateList;
+	private ArrayList<LocalTime> timeList;
 
+	/**************** CONSTRUCTORS *********************/
 	// Default Constructor
 	TimeParser() {
-		this("");
-		dateList = new ArrayList<LocalDate>();
+		this("", null);
 	}
 
 	// Parameterized Constructor
 	TimeParser(String newTaskDetails) {
-		setTaskDetails(newTaskDetails);
+		this(newTaskDetails, null);
 	}
 	
+	// Parameterized Constructor
 	TimeParser(String newTaskDetails, ArrayList<LocalDate> newDateList) {
 		setTaskDetails(newTaskDetails);
 		setDateList(newDateList);
+		timeList = null;
 	}
 
+	/****************** SETTER METHODS ***********************/
 	protected void setTaskDetails(String newTaskDetails) {
 		this.taskDetails = newTaskDetails;
 	}
@@ -51,7 +59,12 @@ public class TimeParser {
 	public void setDateList(ArrayList<LocalDate> newDateList){
 		this.dateList = newDateList;
 	}
+	
+	public void setTimeList(ArrayList<LocalTime> newTimeList){
+		this.timeList = newTimeList;
+	}
 
+	/******************* GETTER METHODS ***********************/
 	public String getTaskDetails() {
 		return this.taskDetails;
 	}
@@ -59,14 +72,22 @@ public class TimeParser {
 	public ArrayList<LocalDate> getDateList() {
 		return this.dateList;
 	}
+	
+	public ArrayList<LocalTime> getTimeList() {
+		return this.timeList;
+	}
 
+	/**************** OTHER METHODS ***********************/
 	protected ArrayList<LocalTime> getTimes() {
+		ArrayList<LocalTime> timeList;
 		ArrayList<String> stringTimeList = getTimeList(getTaskDetails());
 		if (hasTimeList(stringTimeList)) {
-			ArrayList<LocalTime> timeList = getLocalTimeList(stringTimeList);
-			return timeList;
+			timeList = getLocalTimeList(stringTimeList);			
+		} else {
+			timeList = null;
 		}
-		return null;
+		arrangeDateTimeList();
+		return timeList;
 	}
 
 	ArrayList<String> getTimeList(String taskDetails) {
@@ -96,6 +117,7 @@ public class TimeParser {
 		for (String time : stringTimeList) {
 			localTimeList.add(getLocalTimeObject(time));
 		}
+		setTimeList(timeList);
 		return localTimeList;
 	}
 
@@ -118,6 +140,31 @@ public class TimeParser {
 			}
 		}
 		return LocalTime.of(hour, minute);
+	}
+	
+	/**
+	 * This method sorts the date and time list
+	 */
+	public void arrangeDateTimeList() {
+		ArrayList<LocalDateTime> alist;
+		int aListSize = getDateTimeListSize(getDateList(), getTimeList());
+		alist = createDateTimeList(aListSize);
+		Collections.sort(alist);
+	}
+	
+	 public ArrayList<LocalDateTime> createDateTimeList(int size){
+		 return null;
+	 }
+	
+	public int getDateTimeListSize(ArrayList<LocalDate> dateList, ArrayList<LocalTime> timeList) {
+		if(dateList != null && timeList != null) {
+			return (dateList.size() > timeList.size()) ? dateList.size() : timeList.size() ;
+		} else if(dateList == null && timeList != null) {
+			return timeList.size();
+		} else if(dateList != null && timeList == null) {
+			return dateList.size();
+		}
+		return INVALID_SIZE;
 	}
 
 	/**

@@ -32,6 +32,7 @@ class DateParser {
 	// Instance Variables
 	private String taskDetails;
 
+	/**************** CONSTRUCTORS *********************/
 	DateParser() {
 		this("");
 	}
@@ -40,19 +41,22 @@ class DateParser {
 		setTaskDetails(newTaskDetails);
 	}
 	
+	/****************** SETTER METHOD ***********************/
 	protected void setTaskDetails(String newTaskDetails) {
 		this.taskDetails = newTaskDetails;
 	}
 	
+	/****************** GETTER METHOD ***********************/
 	public String getTaskDetails(){
 		return this.taskDetails;
 	}
 
+	/****************** OTHER METHODS ***********************/
 	protected ArrayList<LocalDate> getDates() {
 		ArrayList<String> stringDateList = getDateList(getTaskDetails());
 		if (hasDateList(stringDateList)) {
 			ArrayList<LocalDate> dateList = getLocalDateList(stringDateList);
-			dateList = sortDateList(dateList);
+			//dateList = sortDateList(dateList);
 			return dateList;
 		}
 		return null;
