@@ -22,7 +22,7 @@ public class Test {
 		// obj.checkdate("Meet ABCD at 16.00 on 14/05/1234 and 14/08/1273
 		// 1/3/12");
 		//obj.checktime("1600 1700 on 14/05/11234");
-		//obj.checkingcommandparser("aa bb cc 22/3/10 23:09 10:09");
+		obj.checkingcommandparser("aa bb cc 22/3/10 23:09 10:09");
 		System.out.println(LocalTime.MAX.truncatedTo(ChronoUnit.MINUTES).toString());
 		System.out.println(LocalTime.parse("23:59").equals(LocalTime.MAX));
 	}

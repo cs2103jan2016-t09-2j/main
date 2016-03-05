@@ -24,12 +24,12 @@ import ScheduleHacks.Task;
 public class CommandParser {
 
 	private static final int NO_WHITE_SPACE = -1;
-	//private static final int DEFAULT_INDEX_NUMBER = -1;
+	// private static final int DEFAULT_INDEX_NUMBER = -1;
 	private static final int FIRST_INDEX = 0;
 	private static final char WHITE_SPACE = ' ';
 
 	private static final String REGEX_EXTRA_WHITESPACE = "\\s{2,}";
-	
+
 	public static Command getParsedCommand(String newUserCommand) throws Exception {
 		return parseCommand(cleanupExtraWhitespace(newUserCommand));
 	}
@@ -97,8 +97,12 @@ public class CommandParser {
 		TimeParser timeParser = new TimeParser(dateParser.getTaskDetails());
 		ArrayList<LocalTime> timeList = timeParser.getTimes();
 		taskStatement = timeParser.getTaskDetails();
-		setDates(dateList, newTask);
-		setTimes(timeList, newTask);
+
+		DateTimeParser objDateTime = new DateTimeParser(dateList, timeList);
+		objDateTime.arrangeDateTimeList();
+		setDates(objDateTime.getDateList(), newTask);
+		setTimes(objDateTime.getTimeList(), newTask);
+
 		if (!taskStatement.isEmpty() && taskStatement != null) {
 			newTask.setDescription(taskStatement);
 		}
@@ -158,11 +162,14 @@ public class CommandParser {
 
 	protected static Task addScheduledTaskDetails(String taskStatement, ArrayList<LocalDate> dateList,
 			ArrayList<LocalTime> timeList) {
+		DateTimeParser objDateTime = new DateTimeParser(dateList, timeList);
+		objDateTime.arrangeDateTimeList();
+
 		Task newTask = new Task();
 		newTask.setDescription(taskStatement);
 		newTask.setScheduledTask();
-		setDates(dateList, newTask);
-		setTimes(timeList, newTask);
+		setDates(objDateTime.getDateList(), newTask);
+		setTimes(objDateTime.getTimeList(), newTask);
 
 		return newTask;
 	}
