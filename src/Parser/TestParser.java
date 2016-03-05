@@ -104,4 +104,52 @@ public class TestParser {
 		assertEquals("2016-03-21", newTask.getEndDate().toString());
 		
 	}
+	
+	@Test
+	public void checkGetParsedCommand6()throws Exception {
+		String testString = "modify  16  21/3/16 600";
+		Command cmd = CommandParser.getParsedCommand(testString);
+		assertEquals(COMMAND_TYPE.MODIFY_TASK, cmd.getCommandType());
+		assertEquals(16, cmd.getIndexNumber());
+		Task newTask = cmd.getTaskDetails();
+		assertEquals(false, newTask.isFloatingTask());
+		assertEquals(false, newTask.isScheduledTask());
+		assertEquals(null, newTask.getDescription());
+		assertEquals(null, newTask.getStartDate());
+		assertEquals("2016-03-21", newTask.getEndDate().toString());
+		assertEquals(null, newTask.getStartTime());
+		assertEquals("06:00", newTask.getEndTime().toString());
+	}
+	
+	@Test
+	public void checkGetParsedCommand7()throws Exception {
+		String testString = "modify  16  21/3/16 600 1800";
+		Command cmd = CommandParser.getParsedCommand(testString);
+		assertEquals(COMMAND_TYPE.MODIFY_TASK, cmd.getCommandType());
+		assertEquals(16, cmd.getIndexNumber());
+		Task newTask = cmd.getTaskDetails();
+		assertEquals(false, newTask.isFloatingTask());
+		assertEquals(false, newTask.isScheduledTask());
+		assertEquals(null, newTask.getDescription());
+		assertEquals(null, newTask.getStartDate());
+		assertEquals("2016-03-21", newTask.getEndDate().toString());
+		assertEquals("06:00", newTask.getStartTime().toString());
+		assertEquals("18:00", newTask.getEndTime().toString());
+	}
+	
+	@Test
+	public void checkGetParsedCommand8()throws Exception {
+		String testString = "modify  16  21/3/16 600 1800 submit work";
+		Command cmd = CommandParser.getParsedCommand(testString);
+		assertEquals(COMMAND_TYPE.MODIFY_TASK, cmd.getCommandType());
+		assertEquals(16, cmd.getIndexNumber());
+		Task newTask = cmd.getTaskDetails();
+		assertEquals(false, newTask.isFloatingTask());
+		assertEquals(false, newTask.isScheduledTask());
+		assertEquals("submit work", newTask.getDescription());
+		assertEquals(null, newTask.getStartDate());
+		assertEquals("2016-03-21", newTask.getEndDate().toString());
+		assertEquals("06:00", newTask.getStartTime().toString());
+		assertEquals("18:00", newTask.getEndTime().toString());
+	}
 }
