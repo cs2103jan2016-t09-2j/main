@@ -61,7 +61,14 @@ public class DateTimeParser {
 	}
 	
 	void separateDateAndTime(ArrayList<LocalDateTime> alist) {
-		
+		ArrayList<LocalDate> newDateList = new ArrayList<LocalDate>();
+		ArrayList<LocalTime> newTimeList = new ArrayList<LocalTime>();
+		for (int index = FIRST_INDEX; index < alist.size(); index++) {
+			newDateList.add(alist.get(index).toLocalDate());
+			newTimeList.add(alist.get(index).toLocalTime());
+		}
+		setDateList(newDateList);
+		setTimeList(newTimeList);
 	}
 
 	public ArrayList<LocalDateTime> createDateTimeList(int size) {
@@ -71,9 +78,9 @@ public class DateTimeParser {
 		} else if (timeList.isEmpty()) {
 			generateTimeList(size);
 		} else if (dateList.size() > timeList.size()) {
-			generateTimeList(dateList.size() - timeList.size());
+			generateTimeList(size);
 		} else if (dateList.size() < timeList.size()) {
-			generateDateList(timeList.size() - dateList.size());
+			generateDateList(size);
 		}
 		for (int index = FIRST_INDEX; index < size; index++) {
 			alist.add(LocalDateTime.of(dateList.get(index), timeList.get(index)));
