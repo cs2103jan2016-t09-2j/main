@@ -56,7 +56,8 @@ public class Storage {
 					bw.write(toDoScheduledTask.getStartDate().toString());
 					bw.write(toDoScheduledTask.getEndDate().toString());
 				}				
-			}	
+			}
+			taskWriter(bw,toDoScheduledTask);
 		}
 		for(Task toDoFloatingTask: toDoFloatingList){
 			if(toDoFloatingTask.getDescription() != null){
@@ -64,6 +65,7 @@ public class Storage {
 					bw.write("To Do Floating Task: " + toDoFloatingTask.getDescription());
 				}
 			}
+			taskWriter(bw,toDoFloatingTask);
 		}
 		
 		for(Task overdueScheduledTask: overdueScheduledList){
@@ -77,7 +79,7 @@ public class Storage {
 						bw.write(overdueScheduledTask.getEndDate().toString());
 				}			
 			}
-			
+			taskWriter(bw,overdueScheduledTask);
 		}
 		
 		
@@ -101,12 +103,14 @@ public class Storage {
 						bw.write(completeScheduledTask.getEndDate().toString());
 				}			
 			}
+			taskWriter(bw,completeScheduledTask);
 
 		}
 		for(Task completeFloatingTask: completeFloatingList){
 			if(completeFloatingTask.getDescription() != null){
 				bw.write("Complete Floating Task: " + completeFloatingTask.getDescription());
 			}
+			taskWriter(bw,completeFloatingTask);
 		}
 		
 		
