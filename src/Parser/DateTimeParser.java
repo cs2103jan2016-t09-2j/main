@@ -3,7 +3,7 @@ package Parser;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.time.temporal.ChronoUnit;
+//import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Collections;
 
@@ -102,7 +102,7 @@ public class DateTimeParser {
 
 	public void generateTimeList(int size) {
 		for (int index = timeList.size(); index < size; index++) {
-			timeList.add(LocalTime.MAX.truncatedTo(ChronoUnit.MINUTES));
+			timeList.add(LocalTime.MAX);
 		}
 	}
 
