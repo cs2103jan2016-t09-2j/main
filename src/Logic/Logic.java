@@ -14,11 +14,11 @@ class Logic {
 	private String feedBack;
 	private ArrayList<Task> updatedTaskList;
 	
-	private static final ArrayList<Task> floatingTasksToDo = new ArrayList<Task>();
-	private static final ArrayList<Task> floatingTasksComplete = new ArrayList<Task>();
-	private static final ArrayList<Task> scheduledTasksToDo = new ArrayList<Task>();
-	private static final ArrayList<Task> scheduledTasksComplete = new ArrayList<Task>();
-	private static final ArrayList<Task> scheduledTasksOverDue = new ArrayList<Task>();
+	private static ArrayList<Task> floatingTasksToDo = new ArrayList<Task>();
+	private static ArrayList<Task> floatingTasksComplete = new ArrayList<Task>();
+	private static ArrayList<Task> scheduledTasksToDo = new ArrayList<Task>();
+	private static ArrayList<Task> scheduledTasksComplete = new ArrayList<Task>();
+	private static ArrayList<Task> scheduledTasksOverDue = new ArrayList<Task>();
 	
 	private static final String FEEDBACK_INVALID_COMMAND = "Invalid Command!";
 	private static final String FEEDBACK_INVALID_COMMAND_TYPE = "Invalid command type entered!";
