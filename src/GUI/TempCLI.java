@@ -8,7 +8,7 @@
 package GUI;
 
 import java.util.Scanner;
-import Logic;
+//import Logic.Logic;
 
 public class TempCLI {
 	
