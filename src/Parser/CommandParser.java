@@ -98,10 +98,14 @@ public class CommandParser {
 		ArrayList<LocalTime> timeList = timeParser.getTimes();
 		taskStatement = timeParser.getTaskDetails();
 
+		if(dateList != null && timeList != null) {
 		DateTimeParser objDateTime = new DateTimeParser(dateList, timeList);
 		objDateTime.arrangeDateTimeList();
-		setDates(objDateTime.getDateList(), newTask);
-		setTimes(objDateTime.getTimeList(), newTask);
+		dateList = objDateTime.getDateList();
+		timeList = objDateTime.getTimeList();
+		}
+		setDates(dateList, newTask);
+		setTimes(timeList, newTask);
 
 		if (!taskStatement.isEmpty() && taskStatement != null) {
 			newTask.setDescription(taskStatement);
