@@ -6,7 +6,7 @@ import static org.junit.Assert.assertEquals;
 import java.time.LocalTime;
 import java.util.ArrayList;
 
-public class TestTimeParser { 
+public class TimeParserTest { 
 	
 	TimeParser obj = new TimeParser();
 	

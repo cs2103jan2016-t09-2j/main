@@ -7,7 +7,7 @@ import Parser.Command.COMMAND_TYPE;
 
 import ScheduleHacks.Task;
 
-public class TestParser {
+public class CommandParserTest {
 
 	@Test
 	public void testGetFirstWord() {
