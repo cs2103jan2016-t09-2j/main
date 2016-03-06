@@ -197,9 +197,9 @@ public class Logic {
 		}
 	}
 
-	private void addTaskInOrder(ArrayList<Task> sortTaskList, Task executeTask) {
-		int position = sortTaskList(sortTaskList, executeTask);
-		sortTaskList.add(position, executeTask);
+	private void addTaskInOrder(ArrayList<Task> taskListToSort, Task executeTask) {
+		int position = sortTaskList(taskListToSort, executeTask);
+		taskListToSort.add(position, executeTask);
 	}
 
 	private int sortTaskList(ArrayList<Task> taskList, Task task) {
@@ -339,29 +339,33 @@ public class Logic {
 
 		if (executeTask.getDescription() != null) {
 			taskToEdit.setDescription(executeTask.getDescription());
-			setFeedBack(FEEDBACK_TASK_MODIFIED);
-			/* setFloatingTasksToDo(floatingTasksToDo); */
 		}
 		if (executeTask.getEndDate() != null) {
 			taskToEdit.setEndDate(executeTask.getEndDate());
-			changeFloatingToScheduledProcedures(executeTask, taskToEdit);
 		}
 		if (executeTask.getEndTime() != null) {
 			taskToEdit.setEndTime(executeTask.getEndTime());
-			changeFloatingToScheduledProcedures(executeTask, taskToEdit);
 		}
 		if (executeTask.getStartDate() != null) {
 			taskToEdit.setStartDate(executeTask.getStartDate());
-			changeFloatingToScheduledProcedures(executeTask, taskToEdit);
 		}
 		if (executeTask.getStartTime() != null) {
 			taskToEdit.setStartTime(executeTask.getStartTime());
-			changeFloatingToScheduledProcedures(executeTask, taskToEdit);
 		}
+		
 		if ((executeTask.getDescription() == null) && (executeTask.getEndDate() == null)
 				&& (executeTask.getEndTime() == null) && (executeTask.getStartDate() == null)
 				&& (executeTask.getStartTime() == null)) {
 			setFeedBack(FEEDBACK_TASK_NOT_MODIFIED);
+		}
+		
+		else if ((taskToEdit.getDescription().equals(executeTask.getDescription())) && 
+		((taskToEdit.getEndDate()) == null) && ((taskToEdit.getEndTime()) == null) && 
+		((taskToEdit.getStartDate()) == null) && ((taskToEdit.getStartTime()) == null)) {
+			setFeedBack(FEEDBACK_TASK_MODIFIED);
+			/*setFloatingTasksToDo(floatingTasksToDo)*/
+		} else {
+			changeFloatingToScheduledProcedures(executeTask, taskToEdit);
 		}
 	}
 
@@ -427,26 +431,15 @@ public class Logic {
 	 * exceeded due date and due time specified for scheduled task
 	 */
 	public void autoChangeTaskStatus() {
-		LocalDate dateToday = LocalDate.now();
-		LocalTime timeToday = LocalTime.now();
+		LocalDateTime presentDateTime = LocalDateTime.now();
 
 		for (int i = 0; i < scheduledTasksToDo.size(); i++) {
-			if ((scheduledTasksToDo.get(i).getEndDate().compareTo(dateToday)) < 0) {
+			LocalDateTime scheduledEndDateTime = LocalDateTime.of(scheduledTasksToDo.get(i).getEndDate(),
+					scheduledTasksToDo.get(i).getEndTime());
+			
+			if ((scheduledEndDateTime.compareTo(presentDateTime)) <= 0) {
 				changeStatusToOverdue(i);
-			} else if ((scheduledTasksToDo.get(i).getEndDate().compareTo(dateToday)) == 0) {
-				if (scheduledTasksToDo.get(i).getEndTime() != null) {
-					if ((scheduledTasksToDo.get(i).getEndTime().compareTo(timeToday)) <= 0) {
-						changeStatusToOverdue(i);
-					}
-				} else if (scheduledTasksToDo.get(i).getEndTime() == null) {
-					DateTimeFormatter format = DateTimeFormatter.ofPattern("HH:MM");
-					LocalTime defaultEndTime = (LocalTime) format.parse("23:59");
-
-					if ((defaultEndTime.compareTo(timeToday)) <= 0) {
-						changeStatusToOverdue(i);
-					}
-				}
-			}
+			} 
 		}
 	}
 
