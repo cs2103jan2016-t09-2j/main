@@ -66,7 +66,7 @@ public class TempCLI {
 	}
 
 	public void showTimedTaskListToUser(ArrayList<Task> taskList) {
-		System.out.println("******** SCHEDULED TASKS ********");
+		System.out.println("******** UPCOMING TASKS ********");
 		for (Task task : taskList) {
 			System.out.println((count++) + ". " + task.getDescription());
 			if (task.getStartDate() != null && task.getStartTime() != null) {

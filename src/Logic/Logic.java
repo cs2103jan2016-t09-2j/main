@@ -202,35 +202,34 @@ public class Logic {
 		scheduledTasksToDo.add(position, executeTask);
 	}
 
-	private int sortTaskList(ArrayList<Task> toSortTaskList, Task task) {
+	private int sortTaskList(ArrayList<Task> taskList, Task task) {
+		LocalDateTime taskStartDateTime = null;
 		LocalDateTime taskEndDateTime = LocalDateTime.of(task.getEndDate(), task.getEndTime());
-		LocalDateTime taskStartDateTime = LocalDateTime.of(task.getStartDate(), task.getStartTime());
-		int taskPosition = 0;
+		if (task.getStartDate() != null) {
+			taskStartDateTime = LocalDateTime.of(task.getStartDate(), task.getStartTime());
+		}
+		int taskPosition = taskList.size();
 
-		if (toSortTaskList.size() == 0) {
-			return taskPosition;
-		} else {
-			for (int i = 0; i < toSortTaskList.size(); i++) {
-				LocalDateTime selectedTaskStartDateTime = LocalDateTime.of(toSortTaskList.get(i).getStartDate(),
-						toSortTaskList.get(i).getStartTime());
-				LocalDateTime selectedTaskEndDateTime = LocalDateTime.of(toSortTaskList.get(i).getEndDate(),
-						toSortTaskList.get(i).getEndTime());
-				if ((taskEndDateTime.compareTo(selectedTaskEndDateTime)) == -1) {
-					taskPosition = i;
-				} else if ((taskEndDateTime.compareTo(selectedTaskEndDateTime)) == 0) {
-					if ((taskStartDateTime.compareTo(selectedTaskStartDateTime)) == -1) {
-						taskPosition = i;
-					} else {
-						taskPosition = i + 1;
-					}
-				}
+		for (int i = 0; i < taskList.size(); i++) {
+			LocalDateTime selectedTaskStartDateTime = null;
+			if (taskList.get(i).getStartDate() != null) {
+				selectedTaskStartDateTime = LocalDateTime.of(taskList.get(i).getStartDate(),
+						taskList.get(i).getStartTime());
 			}
-			if (taskPosition == 0) {
-				return taskPosition = toSortTaskList.size();
-			} else {
-				return taskPosition;
+			LocalDateTime selectedTaskEndDateTime = LocalDateTime.of(taskList.get(i).getEndDate(),
+					taskList.get(i).getEndTime());
+
+			if ((taskEndDateTime.compareTo(selectedTaskEndDateTime)) < 0) {
+				return i;
+			} else if ((taskEndDateTime.compareTo(selectedTaskEndDateTime)) == 0) {
+				if (selectedTaskStartDateTime != null && taskStartDateTime != null) {
+					if ((taskStartDateTime.compareTo(selectedTaskStartDateTime)) < 0) {
+						return i;
+					}
+				} 
 			}
 		}
+			return taskPosition;
 	}
 
 	/*
