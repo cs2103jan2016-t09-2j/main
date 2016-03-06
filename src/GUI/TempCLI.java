@@ -16,7 +16,7 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 
 import ScheduleHacks.Task;
-//import Logic.Logic;
+import Logic.Logic;
 
 public class TempCLI {
 
@@ -58,8 +58,8 @@ public class TempCLI {
 	// what to do to print archive ?
 	public void executeInput() {
 		count = 1;
-		// Logic logicObj = new Logic();
-		// logicObj.startExecution(getUserCommand());
+		Logic logicObj = new Logic();
+		logicObj.startExecution(getUserCommand());
 		// showToUser(logicObj.getFeedBack());
 		// showTimedTaskListToUser(getScheduledTasksToDo());
 		// showUntimedTaskListToUser(getFloatingTasksToDo());

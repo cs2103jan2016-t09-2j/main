@@ -9,7 +9,7 @@ import ScheduleHacks.Task;
 import Parser.CommandParser;
 import Parser.Command;
 
-class Logic {
+public class Logic {
 	
 	private String feedBack;
 	private ArrayList<Task> updatedScheduledTasksToDo = new ArrayList<Task>();
