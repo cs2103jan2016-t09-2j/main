@@ -3,11 +3,9 @@ package Parser;
 import java.time.*;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
-import java.util.Collections;
 //import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
 
 import ScheduleHacks.Task;
 //import java.time.format.*;
@@ -17,24 +15,21 @@ public class Test {
 	private static final String REGEX_DATE = "\\d{1,2}(-|/)\\d{1,2}(-|/)(\\d{4}|\\d{2})";
 	private static final String REGEX_TIME = "(^|\\s|\\G)((\\d{1,2}(:|\\.)\\d{1,2})|(\\d{3,4}))(\\s|$)";
 
-	public static void main(String[] args)throws Exception {
+	public static void main(String[] args) throws Exception {
 		Test obj = new Test();
-		// obj.checkdate("Meet ABCD at 16.00 on 14/05/1234 and 14/08/1273
-		// 1/3/12");
-		//obj.checktime("1600 1700 on 14/05/11234");
-		obj.checkingcommandparser("aa bb cc 22/3/10 23:09 10:09");
+		
+		ArrayList<Integer> f = new ArrayList<Integer>();
+		f.add(5);
+		f.add(6);
+		ArrayList<Integer> k = obj.checkArrayList(f);
+		for(int i : k)
+			System.out.println(i);
 		System.out.println(LocalTime.MAX.truncatedTo(ChronoUnit.MINUTES).toString());
-		System.out.println(LocalTime.parse("23:59").equals(LocalTime.MAX));
 	}
-	
-	void sortDates() {
-		ArrayList<LocalDate> date = new ArrayList<LocalDate>();
-		date.add(LocalDate.of(2015, 12, 15));
-		date.add(LocalDate.of(2012, 12, 15));
-		Collections.sort(date);
-		for(LocalDate i : date) {
-			System.out.println(i.toString());
-		}
+
+	ArrayList<Integer> checkArrayList(ArrayList<Integer> a) {
+		ArrayList<Integer> x = a;
+		return x;
 	}
 
 	void checkdate(String taskDetails) {
@@ -46,7 +41,6 @@ public class Test {
 			System.out.println(date);
 		}
 	}
-	
 
 	void checktime(String str) {
 		String time = "";
@@ -58,7 +52,7 @@ public class Test {
 		}
 	}
 
-	void checkingcommandparser(String s)throws Exception {
+	void checkingcommandparser(String s) throws Exception {
 		Command cmd = CommandParser.getParsedCommand(s);
 		Task t = cmd.getTaskDetails();
 		System.out.println("DESCRIPTION: " + t.getDescription());
