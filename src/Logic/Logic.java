@@ -33,12 +33,9 @@ public class Logic {
 	private static final String FEEDBACK_TASK_ALREADY_COMPLETED = "Task entered by user has already been completed!";
 	private static final String FEEDBACK_TASK_OVERDUE = "Task has exceeded deadline!";
 	
+	/****************** SETTER METHODS ***********************/
 	private void setFeedBack(String feedBack) {
 		this.feedBack = feedBack;
-	}
-	
-	public String getFeedBack() {
-		return feedBack;
 	}
 	
 	private void setScheduledTasksToDo(ArrayList<Task> currentTaskList) { 
@@ -64,6 +61,11 @@ public class Logic {
 	private void setFloatingTasksComplete(ArrayList<Task> currentTaskList) {
 		floatingTasksComplete.clear();
 		floatingTasksComplete = currentTaskList;
+	}
+	
+	/****************** GETTER METHODS ***********************/
+	public String getFeedBack() {
+		return feedBack;
 	}
 	
 	public ArrayList<Task> getScheduledTasksToDo() {
