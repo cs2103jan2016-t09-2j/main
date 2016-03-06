@@ -3,9 +3,8 @@ package Parser;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-//import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
-import java.util.Collections;
+//import java.util.Collections;
 
 public class DateTimeParser {
 
@@ -59,7 +58,7 @@ public class DateTimeParser {
 		alist = createDateTimeList(aListSize);
 		separateDateAndTime(alist);
 	}
-	
+
 	void separateDateAndTime(ArrayList<LocalDateTime> alist) {
 		ArrayList<LocalDate> newDateList = new ArrayList<LocalDate>();
 		ArrayList<LocalTime> newTimeList = new ArrayList<LocalTime>();
@@ -85,15 +84,20 @@ public class DateTimeParser {
 		for (int index = FIRST_INDEX; index < size; index++) {
 			alist.add(LocalDateTime.of(dateList.get(index), timeList.get(index)));
 		}
-		Collections.sort(alist);
+		//Collections.sort(alist);
 		return alist;
 	}
 
 	public void generateDateList(int size) {
 		for (int index = dateList.size(); index < size; index++) {
-			LocalDate tempDate = LocalDate.now();
+			LocalDate tempDate;
+			if (index == FIRST_INDEX) {
+				tempDate = LocalDate.now();
+			} else {
+				tempDate = dateList.get(index - 1);
+			}
 			LocalDateTime tempDateTime = LocalDateTime.of(tempDate, timeList.get(index));
-			if (tempDateTime.isBefore(LocalDateTime.now())) {
+			if (tempDateTime.isBefore(LocalDateTime.of(tempDate, timeList.get(index - 1)))) {
 				tempDate = tempDate.plusDays(ONE_DAY);
 			}
 			dateList.add(tempDate);
