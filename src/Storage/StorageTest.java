@@ -1,22 +1,28 @@
-//package Storage;
+// package Storage;
 //
-//import static org.junit.Assert.*;
+// import static org.junit.Assert.*;
 //
-//import org.junit.Test;
+// import org.junit.Test;
+//
+//import java.io.File;
+//import java.io.IOException;
 //import java.util.ArrayList;
 //
-//import ScheduleHacks.Task;
+// import ScheduleHacks.Task;
 //
-//public class StorageTest {
+// public class StorageTest {
 //
-//	@Test
-//	public void testWriteToFile() throws NullPointerException {
-//		Storage data = new Storage();
-//		ArrayList<Task> taskList = new ArrayList<>();
+// @Test
+// public void testWriteToFile() throws NullPointerException, IOException {
+//	 
 //
-//		//taskList.add();
-//		//taskList.add();
-//		//taskList.add();
-//	}
+//	 
+//	 Storage storageTest= new Storage();
+//	 storageTest.floatingTasksComplete.add(test1);
+//	 storageTest.writeToCompleteFloatingFile("completeFloatingFile");
+//	 
+//	 
+//	 
+// }
 //
-//	}
+// }

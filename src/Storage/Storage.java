@@ -7,6 +7,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.Scanner;
 import java.io.FileReader;
 import java.io.FileWriter;
 
@@ -16,6 +17,7 @@ import java.time.LocalTime;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonSyntaxException;
 
 import java.util.logging.Logger;
 import java.util.logging.Level;
@@ -24,208 +26,211 @@ import ScheduleHacks.Task;
 
 public class Storage {
 
-	private static final File toDoScheduledFile = new File("toDoScheduled");
-	private static final File toDoFloatingFile = new File("toDoFloating");
-	private static final File overdueScheduledFile = new File("overdueScheduled");
-	private static final File completeScheduledFile = new File("completeScheduled");
-	private static final File completeFloatingFile = new File("completeFloating");
+	private static final String toDoScheduledFile = "toDoScheduled";
+	private static final String toDoFloatingFile = "toDoFloating";
+	private static final String overdueScheduledFile ="overdueScheduled";
+	private static final String completeScheduledFile = "completeScheduled";
+	private static final String completeFloatingFile = "completeFloating";
 
 	private Gson gson = new Gson();
+	private static Logger logger = Logger.getLogger("Storage");
 
+	/*
+	* Log messages
+	*/
+	
+	private static final String NULL_INPUT= "Null input passed.";
+	
+	ArrayList<Task> floatingTasksToDo = new ArrayList<Task>();
+	public ArrayList<Task> floatingTasksComplete = new ArrayList<Task>();
+	public ArrayList<Task> scheduledTasksToDo = new ArrayList<Task>();
+	public ArrayList<Task> scheduledTasksComplete = new ArrayList<Task>();
+	ArrayList<Task> scheduledTasksOverDue = new ArrayList<Task>();
+	
+	public Storage() {
+		
+	}
 	public void writeToFile(ArrayList<Task> toDoScheduledList, ArrayList<Task> toDoFloatingList,
 			ArrayList<Task> overdueScheduledList, ArrayList<Task> completeScheduledList,
 			ArrayList<Task> completeFloatingList) throws IOException {
-		
-		writeToDoScheduledFile(toDoScheduledList);
-		writeToDoFloatingListFile(toDoFloatingList);
-		writeToOverdueScheduledFile(overdueScheduledList);
-		writeToCompleteScheduledFile(completeScheduledList);
-		writeToCompleteFloatingFile(completeFloatingList);
+
+		writeToDoScheduledFile(toDoScheduledFile);
+		writeToDoFloatingFile(toDoFloatingFile);
+		writeToOverdueScheduledFile(overdueScheduledFile);
+		writeToCompleteScheduledFile(completeScheduledFile);
+		writeToCompleteFloatingFile(completeFloatingFile);
 
 	}
-
-	private void writeToCompleteFloatingFile(ArrayList<Task> completeFloatingList) throws IOException {
-		// TODO Auto-generated method stub
 	
-		assert completeFloatingList != null;   
+	public void writeToCompleteFloatingFile(String completeFloatingFile) throws IOException {
+
+		assert floatingTasksComplete != null;
 		
-		BufferedWriter bw = new BufferedWriter(new FileWriter(completeFloatingFile));
-		
-		for(Task completeFloatingTask: completeFloatingList){
-			if(completeFloatingTask.getDescription() != null){
-				bw.write("Complete Floating Task: " + completeFloatingTask.getDescription());
+		File f = new File(completeFloatingFile);
+		BufferedWriter bw = new BufferedWriter(new FileWriter(f));
+
+		for (Task completeFloatingTask : floatingTasksComplete) {
+			if (completeFloatingTask.getDescription() != null) {
+				bw.write("Completed Floatings Task: "+ "\t");
+				taskWriter(bw, completeFloatingTask);
 			}
-			taskWriter(bw,completeFloatingTask);
+			bw.close();
 		}
+	
 	}
 
-	private void writeToCompleteScheduledFile(ArrayList<Task> completeScheduledList) throws IOException {
-		// TODO Auto-generated method stub
-		assert completeScheduledList != null;
-		
+	public void writeToCompleteScheduledFile(String completeScheduledFile) throws IOException {		
+		assert completeScheduledFile != null;
+
 		BufferedWriter bw = new BufferedWriter(new FileWriter(completeScheduledFile));
-		
-		for(Task completeScheduledTask: completeScheduledList){
-			if( completeScheduledTask.getDescription() != null){
-				bw.write("Overdued Scheduled Task: " + completeScheduledTask.getDescription());
-					if(completeScheduledTask.getStartTime().toString() != null && completeScheduledTask.getStartTime().toString() != null){
-					
-						bw.write(completeScheduledTask.getStartTime().toString());
-						bw.write(completeScheduledTask.getEndTime().toString());
-						bw.write(completeScheduledTask.getStartDate().toString());
-						bw.write(completeScheduledTask.getEndDate().toString());
-				}			
-			}
-			taskWriter(bw,completeScheduledTask);
 
+		for (Task completeScheduledTask : scheduledTasksComplete) {
+			if (completeScheduledTask.getDescription() != null) {
+				if (completeScheduledTask.getStartTime() != null
+						&& completeScheduledTask.getStartTime() != null) {
+
+					bw.write("Completed Scheduled Task: " + "\t");
+					taskWriter(bw, completeScheduledTask);
+				}
+				bw.close();
+			}
 		}
 	}
 
-	private void writeToOverdueScheduledFile(ArrayList<Task> overdueScheduledList) throws IOException {
-	
-		assert overdueScheduledList != null;
+	public void writeToOverdueScheduledFile(String overdueScheduledFile) throws IOException {
+
+		assert overdueScheduledFile != null;
 		BufferedWriter bw = new BufferedWriter(new FileWriter(overdueScheduledFile));
-		
-		for(Task overdueScheduledTask: overdueScheduledList){
-			if( overdueScheduledTask.getDescription() != null){
-				bw.write("Overdued Scheduled Task: " + overdueScheduledTask.getDescription());
-					if(overdueScheduledTask.getStartTime() != null && overdueScheduledTask.getStartDate() != null){
-					
-						bw.write(overdueScheduledTask.getStartTime().toString());
-						bw.write(overdueScheduledTask.getEndTime().toString());
-						bw.write(overdueScheduledTask.getStartDate().toString());
-						bw.write(overdueScheduledTask.getEndDate().toString());
-				}			
+
+		for (Task overdueScheduledTask : scheduledTasksOverDue) {
+			if (overdueScheduledTask.getDescription() != null) {
+				if (overdueScheduledTask.getStartTime() != null && overdueScheduledTask.getStartDate() != null) {
+					bw.write("Overdued Scheduled Task: " + "\t");
+					taskWriter(bw, overdueScheduledTask);
+				}
 			}
-			taskWriter(bw,overdueScheduledTask);
+			bw.close();
 		}
-		
+
+	}
+
+	public void writeToDoFloatingFile(String toDoFloatingFile) throws IOException {
+
+		assert toDoFloatingFile != null;
+
+		BufferedWriter bw = new BufferedWriter(new FileWriter(toDoFloatingFile));
+
+		for (Task toDoFloatingTask : floatingTasksToDo) {
+			if (toDoFloatingTask.getDescription() != null) {
+				bw.write("To Do Floating Task: " + "\t");
+				taskWriter(bw, toDoFloatingTask);
+			}
+			bw.close();
+		}
 		
 	}
 
-	private void writeToDoFloatingListFile(ArrayList<Task> toDoFloatingList) throws IOException {
-	
-		assert toDoFloatingList != null;
+	public void writeToDoScheduledFile( String toDoScheduledFile) throws IOException {
 		
-		BufferedWriter bw = new BufferedWriter(new FileWriter(completeScheduledFile));
-		
-		for(Task toDoFloatingTask: toDoFloatingList){
-			if(toDoFloatingTask.getDescription() != null){			
-				bw.write("To Do Floating Task: " + toDoFloatingTask.getDescription());
-			}
-			taskWriter(bw,toDoFloatingTask);
-		}
-	}
+		assert scheduledTasksToDo!= null;
 
-private void writeToDoScheduledFile(ArrayList<Task> toDoScheduledList) throws IOException {
-		// TODO Auto-generated method stub
-		assert toDoScheduledList != null;
-		
 		BufferedWriter bw = new BufferedWriter(new FileWriter(toDoScheduledFile));
-		
-		for(Task toDoScheduledTask: toDoScheduledList){
-			if(toDoScheduledTask.getDescription() != null){
-				bw.write("To Do Scheduled Task: " + toDoScheduledTask.getDescription());
-				if(toDoScheduledTask.getStartTime() != null && toDoScheduledTask.getStartDate() != null){
-					
-					bw.write(toDoScheduledTask.getStartTime().toString());
-					bw.write(toDoScheduledTask.getEndTime().toString());
-					bw.write(toDoScheduledTask.getStartDate().toString());
-					bw.write(toDoScheduledTask.getEndDate().toString());
-				}				
+
+		for (Task toDoScheduledTask : scheduledTasksToDo) {
+			if (toDoScheduledTask.getDescription() != null) {
+				if (toDoScheduledTask.getStartTime() != null && toDoScheduledTask.getStartDate() != null) {
+					bw.write("To Do Scheduled Task: " + "\t");
+					taskWriter(bw, toDoScheduledTask);
+				}
 			}
-			taskWriter(bw,toDoScheduledTask);
+			bw.close();
 		}
+	
 	}
 
-	
 	public void readFromFile(ArrayList<Task> toDoScheduledList, ArrayList<Task> toDoFloatingList,
 			ArrayList<Task> overdueScheduledList, ArrayList<Task> completeScheduledList,
 			ArrayList<Task> completeFloatingList) throws IOException {
-		
-		readToDoScheduledFile(toDoScheduledFile);
-		readToDoFloatingListFile(toDoFloatingFile);
-		readToOverdueScheduledFile(overdueScheduledFile);
-		readToCompleteScheduledFile(completeScheduledFile);
+
+	//	readToDoScheduledFile(toDoScheduledFile);
+	//	readToDoFloatingFile(toDoFloatingFile);
+	//	readToOverdueScheduledFile(overdueScheduledFile);
+	//	readToCompleteScheduledFile(completeScheduledFile);
 		readToCompleteFloatingFile(completeFloatingFile);
 
-		
-	}	
-
-	private ArrayList<Task> readToCompleteFloatingFile(File completeScheduled) throws IOException {
-		
-		ArrayList<Task> completeFloatingFile = new ArrayList<Task>();
-		
-		completeFloatingFile = taskReader(completeScheduled);
-		
-		return null;
 	}
 
-	private ArrayList<Task> readToCompleteScheduledFile(File completeScheduled) throws IOException {
-	
-		
-		ArrayList<Task> completeScheduledFile = new ArrayList<Task>();
-		
-		completeScheduledFile = taskReader(completeScheduled);
-		
-		return null;
-	}
-	
-	
+	public void readToCompleteFloatingFile(String completeFloatingFile) throws JsonSyntaxException, IOException {
 
-	private ArrayList<Task> readToOverdueScheduledFile(File overdueScheduled) throws IOException {
-	
-		ArrayList<Task> overdueScheduledFile = new ArrayList<Task>();
-		
-		overdueScheduledFile = taskReader(overdueScheduled);
-		
-		return null;
-		
+		BufferedReader br = new BufferedReader(new FileReader(completeFloatingFile));
+		String text = "";
+
+		while ((text = br.readLine()) != null) {
+			Task task = gson.fromJson(text, Task.class);
+			floatingTasksComplete.add(task);
+		}
+		br.close();
+
+
 	}
 
-	private ArrayList<Task>readToDoFloatingListFile(File toDofFloating) throws FileNotFoundException {
-	
-		BufferedReader br = new BufferedReader(new FileReader(toDoFloatingFile));
-		ArrayList<Task> toDoFloatingFile = new ArrayList<Task>();
+//	private void readToCompleteScheduledFile(File completeScheduled) throws IOException {
+//
+//		ArrayList<Task> completeScheduledList = new ArrayList<Task>();
+//
+//		completeScheduledList = taskReader(completeScheduled);
+//
+//	}
+
+//	private ArrayList<Task> readToOverdueScheduledFile(File overdueScheduled) throws IOException {
+//
+//		ArrayList<Task> overdueScheduledFile = new ArrayList<Task>();
+//
+//		overdueScheduledFile = taskReader(overdueScheduled);
+//
+//		return null;
+//
+//	}
+//
+//	private ArrayList<Task> readToDoFloatingListFile(File toDofFloating) throws FileNotFoundException {
+//
+//		BufferedReader br = new BufferedReader(new FileReader(toDoFloatingFile));
+//		ArrayList<Task> toDoFloatingFile = new ArrayList<Task>();
+//
+//		return null;
+//
+//	}
+//
+//	private ArrayList<Task> readToDoScheduledFile(File toDoScheduled) throws FileNotFoundException {
+//
+//		BufferedReader br = new BufferedReader(new FileReader(toDoScheduledFile));
+//		ArrayList<Task> toDoScheduledList = new ArrayList<Task>();
+//
+//		return null;
+//
+//	}
+
+	private void taskWriter(BufferedWriter bw, Task task) throws IOException {
+
+		Gson gsonWrite = new Gson();
 		
-		return null;
-	
+		String json = gsonWrite.toJson(task) + "\n";
+		bw.append(json);
+		
 		
 	}
 
-	private ArrayList<Task> readToDoScheduledFile(File toDoScheduled) throws FileNotFoundException {
-		
-		BufferedReader br = new BufferedReader(new FileReader(toDoScheduledFile));
-		ArrayList<Task> toDoScheduledList = new ArrayList<Task>();
-		
-		return null;
-		
-	}
+	private void taskReader(String file) throws IOException {
 
-	
-	 private void taskWriter(BufferedWriter bw ,Task task) throws IOException{
-	
-	 Gson gsonWrite = new Gson();
-	 String json = gsonWrite.toJson(task) + "\t";
-	 bw.write(json);
-	
-	 }
-	 private ArrayList<Task> taskReader(File file) throws IOException{
-				
-				BufferedReader br = new BufferedReader(new FileReader(file));
-				
-		        String text = "";
-		        ArrayList<Task> taskList = new ArrayList<Task>();
-		        
-		        while ((text = br.readLine()) != null) {
-		                Task task = gson.fromJson(text, Task.class);
-		                taskList.add(task);
-		        }
-		         		        
-		        return taskList;
-		    
-		 }
-	
+		BufferedReader br = new BufferedReader(new FileReader(file));
+		String text = "";
+
+		while ((text = br.readLine()) != null) {
+			Task task = gson.fromJson(text, Task.class);
+			floatingTasksComplete.add(task);
+		}
+		br.close();
+	}
 	
 
 }
