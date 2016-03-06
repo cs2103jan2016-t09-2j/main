@@ -70,7 +70,7 @@ public class TempCLI {
 		for (Task task : taskList) {
 			System.out.println((count++) + ". " + task.getDescription());
 			if (task.getStartDate() != null && task.getStartTime() != null) {
-				System.out.print("\t\t\t From ");
+				System.out.print("\t From ");
 				if (!task.getStartTime().equals(LocalTime.MAX)) {
 					System.out.print(task.getStartTime().toString() + ", ");
 				}
