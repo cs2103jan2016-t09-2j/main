@@ -23,7 +23,7 @@ import ScheduleHacks.Task;
 
 public class CommandParser {
 
-		public static Command getParsedCommand(String newUserCommand) throws Exception {
+	public static Command getParsedCommand(String newUserCommand) throws Exception {
 		return parseCommand(cleanupExtraWhitespace(newUserCommand));
 	}
 
@@ -91,11 +91,11 @@ public class CommandParser {
 		ArrayList<LocalTime> timeList = timeParser.getTimes();
 		taskStatement = timeParser.getTaskDetails();
 
-		if(dateList != null && timeList != null) {
-		DateTimeParser objDateTime = new DateTimeParser(dateList, timeList);
-		objDateTime.arrangeDateTimeList();
-		dateList = objDateTime.getDateList();
-		timeList = objDateTime.getTimeList();
+		if (dateList != null && timeList != null) {
+			DateTimeParser objDateTime = new DateTimeParser(dateList, timeList);
+			objDateTime.arrangeDateTimeList();
+			dateList = objDateTime.getDateList();
+			timeList = objDateTime.getTimeList();
 		}
 		setDates(dateList, newTask);
 		setTimes(timeList, newTask);
@@ -171,6 +171,40 @@ public class CommandParser {
 		return newTask;
 	}
 
+	/**
+	 * This method helps convert a floating task to a scheduled/upcoming task
+	 * @param newTask
+	 * @return newTask with all adjusted Parameters
+	 */
+	public static Task convertFloatingToScheduled(Task newTask) {
+		ArrayList<LocalDate> dateList = new ArrayList<LocalDate>();
+		ArrayList<LocalTime> timeList = new ArrayList<LocalTime>();
+
+		if (newTask.getEndDate() != null) {
+			if (newTask.getStartDate() != null) {
+				dateList.add(newTask.getStartDate());
+			}
+			dateList.add(newTask.getEndDate());
+		}
+
+		if (newTask.getEndTime() != null) {
+			if (newTask.getStartTime() != null) {
+				timeList.add(newTask.getStartTime());
+			}
+			timeList.add(newTask.getEndTime());
+		}
+
+		if (!timeList.isEmpty() || !dateList.isEmpty()) {
+			DateTimeParser objDateTime = new DateTimeParser(dateList, timeList);
+			objDateTime.arrangeDateTimeList();
+			newTask.setScheduledTask();
+			setDates(objDateTime.getDateList(), newTask);
+			setTimes(objDateTime.getTimeList(), newTask);
+		}
+
+		return newTask;
+	}
+
 	public static void setDates(ArrayList<LocalDate> dateList, Task newTask) {
 		if (dateList != null) {
 			newTask.setEndDate(dateList.get(dateList.size() - 1));
@@ -203,10 +237,10 @@ public class CommandParser {
 
 		int splitPosition = userCommand.indexOf(ParserConstants.WHITE_SPACE);
 		if (splitPosition == ParserConstants.NO_WHITE_SPACE) {
-			if(userCommand.length() > 0) {
+			if (userCommand.length() > 0) {
 				splitPosition = userCommand.length();
 			} else {
-			throw new Exception("Empty User Command");
+				throw new Exception("Empty User Command");
 			}
 		}
 		return userCommand.substring(ParserConstants.FIRST_INDEX, splitPosition);
