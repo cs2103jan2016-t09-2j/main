@@ -88,6 +88,7 @@ public class Logic {
 		return floatingTasksComplete;
 	}
 	
+	/****************** OTHER METHODS ***********************/
 	/*this method is called in CLI by logic obj, hence transmitting string userInput from UI to Logic*/
 	/*calls retrieveParsedCommand, from which private methods are called in Logic class*/
 	public void startExecution(String userInput) {
