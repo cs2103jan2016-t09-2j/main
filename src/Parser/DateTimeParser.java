@@ -31,15 +31,17 @@ public class DateTimeParser {
 	protected void setDateList(ArrayList<LocalDate> newDateList) {
 		if (newDateList == null) {
 			this.dateList = new ArrayList<LocalDate>();
+		} else {
+			this.dateList = newDateList;
 		}
-		this.dateList = newDateList;
 	}
 
 	protected void setTimeList(ArrayList<LocalTime> newTimeList) {
 		if (newTimeList == null) {
 			this.timeList = new ArrayList<LocalTime>();
+		} else {
+			this.timeList = newTimeList;
 		}
-		this.timeList = newTimeList;
 	}
 
 	/******************* GETTER METHODS ***********************/
@@ -55,8 +57,11 @@ public class DateTimeParser {
 	public void arrangeDateTimeList() {
 		ArrayList<LocalDateTime> alist;
 		int aListSize = getDateTimeListSize(getDateList(), getTimeList());
-		alist = createDateTimeList(aListSize);
-		separateDateAndTime(alist);
+		//System.out.println(aListSize);
+		if (aListSize > INVALID_SIZE) {
+			alist = createDateTimeList(aListSize);
+			separateDateAndTime(alist);
+		}
 	}
 
 	void separateDateAndTime(ArrayList<LocalDateTime> alist) {
@@ -84,20 +89,23 @@ public class DateTimeParser {
 		for (int index = FIRST_INDEX; index < size; index++) {
 			alist.add(LocalDateTime.of(dateList.get(index), timeList.get(index)));
 		}
-		//Collections.sort(alist);
+		// Collections.sort(alist);
 		return alist;
 	}
 
 	public void generateDateList(int size) {
 		for (int index = dateList.size(); index < size; index++) {
 			LocalDate tempDate;
+			LocalTime tempTime;
 			if (index == FIRST_INDEX) {
 				tempDate = LocalDate.now();
+				tempTime = LocalTime.now();
 			} else {
 				tempDate = dateList.get(index - 1);
+				tempTime = timeList.get(index - 1);
 			}
 			LocalDateTime tempDateTime = LocalDateTime.of(tempDate, timeList.get(index));
-			if (tempDateTime.isBefore(LocalDateTime.of(tempDate, timeList.get(index - 1)))) {
+			if (tempDateTime.isBefore(LocalDateTime.of(tempDate, tempTime))) {
 				tempDate = tempDate.plusDays(ONE_DAY);
 			}
 			dateList.add(tempDate);
