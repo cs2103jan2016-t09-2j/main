@@ -363,7 +363,7 @@ public class Logic {
 			setFeedBack(FEEDBACK_TASK_MODIFIED);
 			/*setScheduledTasksToDo(scheduledTasksToDo);*/
 		}
-		else if ((executeTask.getDescription() == null) && (executeTask.getEndDate() == null) && 
+		if ((executeTask.getDescription() == null) && (executeTask.getEndDate() == null) && 
 				(executeTask.getEndTime() == null) && (executeTask.getStartDate() == null) && 
 				(executeTask.getStartTime() == null)) {
 			setFeedBack(FEEDBACK_TASK_NOT_MODIFIED);
@@ -379,11 +379,11 @@ public class Logic {
 			setFeedBack(FEEDBACK_TASK_MODIFIED);
 			/*setFloatingTasksToDo(floatingTasksToDo);*/
 		}
-		else if (executeTask.getEndDate() != null) {
+		if (executeTask.getEndDate() != null) {
 			taskToEdit.setEndDate(executeTask.getEndDate());
 			changeFloatingToScheduledProcedures(executeTask, taskToEdit);
 		}
-		else if (executeTask.getEndTime() != null) {
+		if (executeTask.getEndTime() != null) {
 			taskToEdit.setEndTime(executeTask.getEndTime());
 			changeFloatingToScheduledProcedures(executeTask, taskToEdit);
 		}
@@ -395,7 +395,7 @@ public class Logic {
 			taskToEdit.setStartTime(executeTask.getStartTime());
 			changeFloatingToScheduledProcedures(executeTask, taskToEdit);
 		}
-		else if ((executeTask.getDescription() == null) && (executeTask.getEndDate() == null) && 
+		if ((executeTask.getDescription() == null) && (executeTask.getEndDate() == null) && 
 				(executeTask.getEndTime() == null) && (executeTask.getStartDate() == null) && 
 				(executeTask.getStartTime() == null)) {
 			setFeedBack(FEEDBACK_TASK_NOT_MODIFIED);
