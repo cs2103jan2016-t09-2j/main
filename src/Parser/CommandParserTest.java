@@ -10,10 +10,17 @@ import ScheduleHacks.Task;
 public class CommandParserTest {
 
 	@Test
-	public void testGetFirstWord() {
+	public void testGetFirstWord1() throws Exception {
 		String testString = "add life is great";
 		String output = CommandParser.getFirstWord(testString);
 		assertEquals(output, "add");
+	}
+	
+	@Test
+	public void testGetFirstWord2() throws Exception {
+		String testString = "Schedule";
+		String output = CommandParser.getFirstWord(testString);
+		assertEquals(output, "Schedule");
 	}
 
 	@Test

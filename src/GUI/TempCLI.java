@@ -60,9 +60,9 @@ public class TempCLI {
 		count = 1;
 		Logic logicObj = new Logic();
 		logicObj.startExecution(getUserCommand());
-		// showToUser(logicObj.getFeedBack());
-		// showTimedTaskListToUser(getScheduledTasksToDo());
-		// showUntimedTaskListToUser(getFloatingTasksToDo());
+		showToUser(logicObj.getFeedBack());
+		showTimedTaskListToUser(logicObj.getScheduledTasksToDo());
+		showUntimedTaskListToUser(logicObj.getFloatingTasksToDo());
 	}
 
 	public void showTimedTaskListToUser(ArrayList<Task> taskList) {
@@ -94,6 +94,7 @@ public class TempCLI {
 	}
 
 	public void readInput() {
+		System.out.println("Enter Command here: ");
 		setUserCommand(scanner.nextLine());
 	}
 

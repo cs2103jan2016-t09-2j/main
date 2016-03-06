@@ -198,15 +198,18 @@ public class CommandParser {
 	 * 
 	 * @return the first word of the user command, which is the command type.
 	 */
-	static String getFirstWord(String userCommand) {
+	static String getFirstWord(String userCommand) throws Exception {
 		userCommand.trim();
 
-		int whiteSpacePosition = userCommand.indexOf(ParserConstants.WHITE_SPACE);
-		if (whiteSpacePosition == ParserConstants.NO_WHITE_SPACE) {
-			throw new Error("Empty User Command");
+		int splitPosition = userCommand.indexOf(ParserConstants.WHITE_SPACE);
+		if (splitPosition == ParserConstants.NO_WHITE_SPACE) {
+			if(userCommand.length() > 0) {
+				splitPosition = userCommand.length();
+			} else {
+			throw new Exception("Empty User Command");
+			}
 		}
-
-		return userCommand.substring(ParserConstants.FIRST_INDEX, whiteSpacePosition);
+		return userCommand.substring(ParserConstants.FIRST_INDEX, splitPosition);
 	}
 
 	/**
