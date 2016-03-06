@@ -185,4 +185,18 @@ public class CommandParserTest {
 		assertEquals(null, newTask.getStartTime());
 		assertEquals("10:30", newTask.getEndTime().toString());
 	}
+	
+	@Test
+	public void checkGetParsedCommand11()throws Exception{
+		String testString = "e 2 21/3/16 1700";
+		Command cmd = CommandParser.getParsedCommand(testString);
+		assertEquals(COMMAND_TYPE.MODIFY_TASK, cmd.getCommandType());
+		assertEquals(2, cmd.getIndexNumber());
+		Task newTask = cmd.getTaskDetails();
+		assertEquals(null, newTask.getDescription()); 
+		assertEquals(null, newTask.getStartDate());
+		assertEquals("2016-03-21", newTask.getEndDate().toString());
+		assertEquals(null, newTask.getStartTime());
+		assertEquals("17:00", newTask.getEndTime().toString());
+	}
 }
