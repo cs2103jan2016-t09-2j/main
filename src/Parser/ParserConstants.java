@@ -8,30 +8,39 @@ public class ParserConstants {
 	static final String REGEX_DATE = "(\\s|^|\\G)\\d{1,2}(-|/)\\d{1,2}(-|/)(\\d{4}|\\d{2})(\\s|$)";
 	static final String REGEX_DIGITS = "(\\s|^|,|-|\\G)\\d+(\\s|$|,|-)";
 	static final String REGEX_DIGITS_AT_START = "^\\d+\\s";
-	
 
 	// Position/Index based integer constants
 	static final int NO_WHITE_SPACE = -1;
 	static final int DEFAULT_INDEX_NUMBER = -1;
 	static final int FIRST_INDEX = 0;
 	static final int INVALID_SIZE = -1;
-	
-	// date related constants
+
+	// Date related constants
 	static final int CENTURY = 100;
 	static final int INDEX_DAY_OF_MONTH = 0;
 	static final int INDEX_MONTH = 1;
 	static final int INDEX_YEAR = 2;
-	
-	// time related constants
+
+	// Time related constants
 	static final int MAX_MINUTES = 59;
 	static final int MAX_HOUR = 23;
-	
+
 	static final char WHITE_SPACE = ' ';
-	
+
 	static final String STRING_EMPTY = "";
 	static final String STRING_WHITESPACE = " ";
 
-	
-	
-	
+	// Number in words
+	static final String[] NUM_TO_WORDS = { "", "one", "two", "three", "four", "five" };
+
+	// Months
+	static final String[] MONTHS_SHORT = { "", "jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct",
+			"nov", "dec" };
+	static final String[] MONTHS_LONG = { "", "january", "february", "march", "april", "may", "june", "july", "august",
+			"september", "october", "november", "december" };
+
+	// Days of the week
+	static final String[] DAYS_SHORT = { "sun", "mon", "tue", "wed", "thu", "fri", "sat" };
+	static final String[] DAYS_LONG = { "sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday" };
+
 }
