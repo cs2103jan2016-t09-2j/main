@@ -2,6 +2,7 @@ package Logic;
 
 import java.util.ArrayList;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 
@@ -40,22 +41,27 @@ public class Logic {
 	}
 	
 	private void setScheduledTasksToDo(ArrayList<Task> currentTaskList) { 
+		scheduledTasksToDo.clear();
 		scheduledTasksToDo = currentTaskList;
 	}
 	
 	private void setScheduledTasksOverDue(ArrayList<Task> currentTaskList) {
+		scheduledTasksOverDue.clear();
 		scheduledTasksOverDue = currentTaskList;
 	}
 	
 	private void setScheduledTasksComplete(ArrayList<Task> currentTaskList) {
+		scheduledTasksComplete.clear();
 		scheduledTasksComplete = currentTaskList;
 	}
 	
 	private void setFloatingTasksToDo(ArrayList<Task> currentTaskList) {
+		floatingTasksToDo.clear();
 		floatingTasksToDo = currentTaskList;
 	}
 	
 	private void setFloatingTasksComplete(ArrayList<Task> currentTaskList) {
+		floatingTasksComplete.clear();
 		floatingTasksComplete = currentTaskList;
 	}
 	
@@ -162,15 +168,15 @@ public class Logic {
 			if (((executeTask.getEndDate() != null) && (executeTask.getStartDate() != null)) ||
 			((executeTask.getEndDate() != null) && (executeTask.getStartDate() == null))) {
 				if (((executeTask.getEndDate()).compareTo(dateToday))>0) {
-						scheduledTasksToDo.add(executeTask);
-						setFeedBack(FEEDBACK_TASK_ADDED);
-						setScheduledTasksToDo(scheduledTasksToDo);
-						
+					addTaskInOrder(scheduledTasksToDo, executeTask);
+					setFeedBack(FEEDBACK_TASK_ADDED);
+					/*setScheduledTasksToDo(scheduledTasksToDo);*/
 				}
+				
 				else if (((executeTask.getEndDate()).compareTo(dateToday))<0) {
-					scheduledTasksOverDue.add(executeTask);
+					addTaskInOrder(scheduledTasksOverDue, executeTask);
 					setFeedBack(FEEDBACK_TASK_OVERDUE);
-					setScheduledTasksOverDue(scheduledTasksOverDue);
+					/*setScheduledTasksOverDue(scheduledTasksOverDue);*/
 				}
 				
 				//assuming that endDate is today
@@ -178,14 +184,14 @@ public class Logic {
 					if (((executeTask.getEndTime() != null) && (executeTask.getStartTime() != null)) || 
 					   ((executeTask.getEndTime() != null) && (executeTask.getStartTime() == null))) {
 						if ((executeTask.getEndTime().compareTo(timeToday))>0){
-							scheduledTasksToDo.add(executeTask);
+							addTaskInOrder(scheduledTasksToDo, executeTask);
 							setFeedBack(FEEDBACK_TASK_ADDED);
-							setScheduledTasksToDo(scheduledTasksToDo);
+							/*setScheduledTasksToDo(scheduledTasksToDo);*/
 						}
 						else {
-							scheduledTasksOverDue.add(executeTask);
+							addTaskInOrder(scheduledTasksOverDue, executeTask);
 							setFeedBack(FEEDBACK_TASK_OVERDUE);
-							setScheduledTasksOverDue(scheduledTasksOverDue);
+							/*setScheduledTasksOverDue(scheduledTasksOverDue);*/
 						}
 					}
 					else if ((executeTask.getEndTime() == null) && (executeTask.getStartTime() == null)) {
@@ -193,14 +199,14 @@ public class Logic {
 						LocalTime defaultTime = (LocalTime) formatter.parse("23:59");
 						
 						if (defaultTime.compareTo(timeToday)>0) {
-							scheduledTasksToDo.add(executeTask);
+							addTaskInOrder(scheduledTasksToDo, executeTask);
 							setFeedBack(FEEDBACK_TASK_ADDED);
-							setScheduledTasksToDo(scheduledTasksToDo);
+							/*setScheduledTasksToDo(scheduledTasksToDo);*/
 						}
 						else {
-							scheduledTasksOverDue.add(executeTask);
+							addTaskInOrder(scheduledTasksOverDue, executeTask);
 							setFeedBack(FEEDBACK_TASK_ADDED);
-							setScheduledTasksOverDue(scheduledTasksOverDue);
+							/*setScheduledTasksOverDue(scheduledTasksOverDue);*/
 						}
 					}
 				}
@@ -208,9 +214,55 @@ public class Logic {
 		}
 			
 		else if (executeTask.isFloatingTask()) {
-			floatingTasksToDo.add(executeTask);
+			addTaskInOrder(floatingTasksToDo, executeTask);
 			setFeedBack(FEEDBACK_TASK_ADDED);
-			setFloatingTasksToDo(floatingTasksToDo);
+			/*setFloatingTasksToDo(floatingTasksToDo);*/
+		}
+	}
+	
+	private void addTaskInOrder(ArrayList<Task> sortTaskList, Task executeTask) {
+		int position = sortTaskList(scheduledTasksToDo, executeTask);
+		
+		if ((position == 0) || (position == scheduledTasksToDo.size())) {
+			scheduledTasksToDo.add(executeTask);
+		}
+		else {
+			scheduledTasksToDo.add(position, executeTask);
+		}
+	}
+	
+	private int sortTaskList(ArrayList<Task> toSortTaskList, Task task) {
+		LocalDateTime taskEndDateTime = LocalDateTime.of(task.getEndDate(), task.getEndTime());
+		LocalDateTime taskStartDateTime = LocalDateTime.of(task.getStartDate(), task.getStartTime());
+		int taskPosition = 0;
+		
+		if (toSortTaskList.size() == 0) {
+			return taskPosition;
+		}
+		else {
+			for (int i=0; i<toSortTaskList.size(); i++) {
+				LocalDateTime selectedTaskStartDateTime = LocalDateTime.of(toSortTaskList.get(i).getStartDate(),
+				toSortTaskList.get(i).getStartTime());
+				LocalDateTime selectedTaskEndDateTime = LocalDateTime.of(toSortTaskList.get(i).getEndDate(),
+				toSortTaskList.get(i).getEndTime());
+				if ((taskEndDateTime.compareTo(selectedTaskEndDateTime)) == -1) {
+					taskPosition = i;
+				}
+				else if ((taskEndDateTime.compareTo(selectedTaskEndDateTime)) == 0) {
+					if ((taskStartDateTime.compareTo(selectedTaskStartDateTime)) == -1) {
+						taskPosition = i;
+					}
+					else {
+						taskPosition = i+1;
+					}
+				}
+			}
+			if (taskPosition == 0) {
+				return taskPosition = toSortTaskList.size();
+			}
+			else {
+				return taskPosition;
+			}
 		}
 	}
 	
@@ -222,13 +274,13 @@ public class Logic {
 				if (taskDigit <= scheduledTasksToDo.size()) {
 					scheduledTasksToDo.remove(taskDigit-1);
 					setFeedBack(FEEDBACK_TASK_DELETED);
-					setScheduledTasksToDo(scheduledTasksToDo);
+					/*setScheduledTasksToDo(scheduledTasksToDo);*/
 				}
 				else if ((taskDigit > scheduledTasksToDo.size()) && (taskDigit <= 
 						scheduledTasksToDo.size() + floatingTasksToDo.size())) {
 						floatingTasksToDo.remove(taskDigit - 1 - scheduledTasksToDo.size());
 						setFeedBack(FEEDBACK_TASK_DELETED);
-						setFloatingTasksToDo(floatingTasksToDo);
+						/*setFloatingTasksToDo(floatingTasksToDo);*/
 				}
 				else {
 						setFeedBack(FEEDBACK_NON_EXISTENT_TASK_NUM);
@@ -245,11 +297,11 @@ public class Logic {
 				floatingTasksToDo.clear();//"clear all upcoming s/completed s/overdue s/incomplete f/complete f" 
 				floatingTasksComplete.clear();//so we will know which ArrayList to clear
 				setFeedBack(FEEDBACK_CLEAR_ALL_TASKS);
-				setScheduledTasksToDo(scheduledTasksToDo);
+				/*setScheduledTasksToDo(scheduledTasksToDo);
 				setScheduledTasksOverDue(scheduledTasksOverDue);
 				setScheduledTasksComplete(scheduledTasksComplete);
 				setFloatingTasksToDo(floatingTasksToDo);
-				setFloatingTasksComplete(floatingTasksComplete);
+				setFloatingTasksComplete(floatingTasksComplete);*/
 			}
 			else if (!(executeTask.getDescription().equalsIgnoreCase("all")) && 
 					!(executeTask.getDescription().equals(null))) {
@@ -264,11 +316,11 @@ public class Logic {
 		
 		if (taskDigitToModify > 0) {
 			if (taskDigitToModify <= scheduledTasksToDo.size()) {
-				modifyScheduledTasksToDo(scheduledTasksToDo, executeTask, taskDigitToModify);
+				modifyScheduledTasksToDo(executeTask, taskDigitToModify);
 			}
 			else if ((taskDigitToModify > scheduledTasksToDo.size()) && (taskDigitToModify <= scheduledTasksToDo.size() + 
 					floatingTasksToDo.size())) {
-				modifyFloatingTasksToDo(floatingTasksToDo, executeTask, taskDigitToModify);
+				modifyFloatingTasksToDo(executeTask, taskDigitToModify);
 			}
 			else {
 				setFeedBack(FEEDBACK_NON_EXISTENT_TASK_NUM);
@@ -279,57 +331,84 @@ public class Logic {
 		}
 	}
 	
-	private void modifyScheduledTasksToDo(ArrayList<Task> ScheduledTasksToDo, Task executeTask, int taskNum) {
+	private void modifyScheduledTasksToDo(Task executeTask, int taskNum) {
+		Task taskToEdit = scheduledTasksToDo.get(taskNum-1);
+		
 		if (executeTask.getDescription() != null) {
-			ScheduledTasksToDo.get(taskNum-1).setDescription(executeTask.getDescription());
+			taskToEdit.setDescription(executeTask.getDescription());
 			setFeedBack(FEEDBACK_TASK_MODIFIED);
-			setScheduledTasksToDo(scheduledTasksToDo);
+			/*setScheduledTasksToDo(scheduledTasksToDo);*/
 		}
-		else if (executeTask.getEndDate() != null) {
-			ScheduledTasksToDo.get(taskNum-1).setEndDate(executeTask.getEndDate());
+		if (executeTask.getEndDate() != null) {
+			taskToEdit.setEndDate(executeTask.getEndDate());
+			addTaskInOrder(scheduledTasksToDo,taskToEdit);
 			setFeedBack(FEEDBACK_TASK_MODIFIED);
-			setScheduledTasksToDo(scheduledTasksToDo);
+			/*setScheduledTasksToDo(scheduledTasksToDo);*/
 		}
-		else if (executeTask.getEndTime() != null) {
-			ScheduledTasksToDo.get(taskNum-1).setEndTime(executeTask.getEndTime());
+		if (executeTask.getEndTime() != null) {
+			taskToEdit.setEndTime(executeTask.getEndTime());
+			addTaskInOrder(scheduledTasksToDo, taskToEdit);
 			setFeedBack(FEEDBACK_TASK_MODIFIED);
-			setScheduledTasksToDo(scheduledTasksToDo);
+			/*setScheduledTasksToDo(scheduledTasksToDo);*/
 		}
-		else if ((executeTask.getDescription() == null) && (executeTask.getEndDate() == null) && (executeTask.getEndTime() == null)) {
+		if (executeTask.getStartDate() != null) {
+			taskToEdit.setStartDate(executeTask.getStartDate());
+			addTaskInOrder(scheduledTasksToDo, taskToEdit);
+			setFeedBack(FEEDBACK_TASK_MODIFIED);
+			/*setScheduledTasksToDo(scheduledTasksToDo);*/
+		}
+		if (executeTask.getStartTime() != null) {
+			taskToEdit.setStartTime(executeTask.getStartTime());
+			addTaskInOrder(scheduledTasksToDo, taskToEdit);
+			setFeedBack(FEEDBACK_TASK_MODIFIED);
+			/*setScheduledTasksToDo(scheduledTasksToDo);*/
+		}
+		else if ((executeTask.getDescription() == null) && (executeTask.getEndDate() == null) && 
+				(executeTask.getEndTime() == null) && (executeTask.getStartDate() == null) && 
+				(executeTask.getStartTime() == null)) {
 			setFeedBack(FEEDBACK_TASK_NOT_MODIFIED);
 		}
 		
 	}
 	
-	private void modifyFloatingTasksToDo(ArrayList<Task> FloatingTasksToDo, Task executeTask, int taskNum) {
+	private void modifyFloatingTasksToDo(Task executeTask, int taskNum) {
+		Task taskToEdit = floatingTasksToDo.get(taskNum-1-scheduledTasksToDo.size());
+		
 		if (executeTask.getDescription() != null) {
-			FloatingTasksToDo.get(taskNum-1-scheduledTasksToDo.size()).setDescription(executeTask.getDescription());
+			taskToEdit.setDescription(executeTask.getDescription());
 			setFeedBack(FEEDBACK_TASK_MODIFIED);
-			setFloatingTasksToDo(floatingTasksToDo);
+			/*setFloatingTasksToDo(floatingTasksToDo);*/
 		}
 		else if (executeTask.getEndDate() != null) {
-			Task taskToModify = FloatingTasksToDo.get(taskNum-1-scheduledTasksToDo.size());
-			
-			taskToModify.setEndDate(executeTask.getEndDate());
-			scheduledTasksToDo.add(taskToModify);
-			floatingTasksToDo.remove(taskToModify);
-			setFeedBack(FEEDBACK_TASK_MODIFIED);
-			setScheduledTasksToDo(scheduledTasksToDo);
-			setFloatingTasksToDo(floatingTasksToDo);
+			taskToEdit.setEndDate(executeTask.getEndDate());
+			changeFloatingToScheduledProcedures(executeTask, taskToEdit);
 		}
 		else if (executeTask.getEndTime() != null) {
-			Task taskToModify = FloatingTasksToDo.get(taskNum-1-scheduledTasksToDo.size());
-			
-			taskToModify.setEndTime(executeTask.getEndTime());
-			scheduledTasksToDo.add(taskToModify);
-			floatingTasksToDo.remove(taskToModify);
-			setFeedBack(FEEDBACK_TASK_MODIFIED);
-			setScheduledTasksToDo(scheduledTasksToDo);
-			setFloatingTasksToDo(floatingTasksToDo);
+			taskToEdit.setEndTime(executeTask.getEndTime());
+			changeFloatingToScheduledProcedures(executeTask, taskToEdit);
 		}
-		else if ((executeTask.getDescription() == null) && (executeTask.getEndDate() == null) && (executeTask.getEndTime() == null)) {
+		if (executeTask.getStartDate() != null) {
+			taskToEdit.setStartDate(executeTask.getStartDate());
+			changeFloatingToScheduledProcedures(executeTask, taskToEdit);
+		}
+		if (executeTask.getStartTime() != null) {
+			taskToEdit.setStartTime(executeTask.getStartTime());
+			changeFloatingToScheduledProcedures(executeTask, taskToEdit);
+		}
+		else if ((executeTask.getDescription() == null) && (executeTask.getEndDate() == null) && 
+				(executeTask.getEndTime() == null) && (executeTask.getStartDate() == null) && 
+				(executeTask.getStartTime() == null)) {
 			setFeedBack(FEEDBACK_TASK_NOT_MODIFIED);
 		}
+	}
+	
+	private void changeFloatingToScheduledProcedures(Task executeTask, Task taskToModify) {
+		addTaskInOrder(scheduledTasksToDo, taskToModify);
+		taskToModify.isScheduledTask();
+		floatingTasksToDo.remove(taskToModify);
+		setFeedBack(FEEDBACK_TASK_MODIFIED);
+		/*setScheduledTasksToDo(scheduledTasksToDo);
+		setFloatingTasksToDo(floatingTasksToDo);*/
 	}
 	
 	/*adds task into the respective completeArrayList and removes that same task from the ArrayList that 
@@ -347,8 +426,8 @@ public class Logic {
 					scheduledTasksToDo.get(taskToBeCompleted-1).setAsComplete();
 					scheduledTasksToDo.remove(taskToBeCompleted-1);
 					setFeedBack(FEEDBACK_TASK_COMPLETED);
-					setScheduledTasksToDo(scheduledTasksToDo);
-					setScheduledTasksComplete(scheduledTasksComplete);
+					/*setScheduledTasksToDo(scheduledTasksToDo);
+					setScheduledTasksComplete(scheduledTasksComplete);*/
 				}
 			}
 			else if ((taskToBeCompleted > scheduledTasksToDo.size()) && (taskToBeCompleted
@@ -361,8 +440,8 @@ public class Logic {
 					floatingTasksToDo.get(taskToBeCompleted-1-scheduledTasksToDo.size()).setAsComplete();
 					floatingTasksToDo.remove(taskToBeCompleted-1-scheduledTasksToDo.size());
 					setFeedBack(FEEDBACK_TASK_COMPLETED);
-					setFloatingTasksToDo(floatingTasksToDo);
-					setFloatingTasksComplete(floatingTasksComplete);
+					/*setFloatingTasksToDo(floatingTasksToDo);
+					setFloatingTasksComplete(floatingTasksComplete);*/
 				}
 			}
 			else {
@@ -404,12 +483,12 @@ public class Logic {
 	}
 	
 	private void changeStatusToOverdue(int i) {
-		scheduledTasksOverDue.add(scheduledTasksToDo.get(i));
+		addTaskInOrder(scheduledTasksOverDue, scheduledTasksToDo.get(i));
 		setFeedBack("Task " + scheduledTasksToDo.get(i).getDescription() + 
 				" has exceeded deadline");
 		scheduledTasksToDo.remove(i);
-		setScheduledTasksToDo(scheduledTasksToDo);
-		setScheduledTasksOverDue(scheduledTasksOverDue);
+		/*setScheduledTasksToDo(scheduledTasksToDo);
+		setScheduledTasksOverDue(scheduledTasksOverDue);*/
 	}
 	
 	private void undoTask(Task executeTask) {
@@ -419,6 +498,7 @@ public class Logic {
 	private void redoTask(Task executeTask) {
 		
 	}
+
 	
 	/*exiting of program. Shd save all arraylists and updated info abt the tasks before exiting*/
 	private void exit() {
