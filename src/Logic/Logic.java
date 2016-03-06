@@ -8,6 +8,7 @@ import java.time.format.DateTimeFormatter;
 import ScheduleHacks.Task;
 import Parser.CommandParser;
 import Parser.Command;
+import GUI.TempCLI;
 
 public class Logic {
 	
@@ -421,6 +422,8 @@ public class Logic {
 	
 	/*exiting of program. Shd save all arraylists and updated info abt the tasks before exiting*/
 	private void exit() {
-		System.exit(0);//how to save everything and exit?
+		// Temporary CLI Exit. Need to change later.
+		TempCLI.exitScheduleHacks();
+		//System.exit(0);//how to save everything and exit?
 	}
 }

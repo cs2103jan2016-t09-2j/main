@@ -23,7 +23,7 @@ public class TempCLI {
 	private static final Scanner scanner = new Scanner(System.in);
 
 	private static final String MESSAGE_WELCOME = "Welcome to ScheduleHacks!";
-	// private static final String MESSAGE_BYE = "Good Bye!";
+	private static final String MESSAGE_BYE = "Good Bye!";
 
 	public static int count = 1;
 
@@ -91,6 +91,11 @@ public class TempCLI {
 		for (Task task : taskList) {
 			System.out.println((count++) + ". " + task.getDescription());
 		}
+	}
+	
+	public static void exitScheduleHacks() {
+		showToUser(MESSAGE_BYE);
+		System.exit(0);
 	}
 
 	public void readInput() {
