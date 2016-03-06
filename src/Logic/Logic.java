@@ -1,10 +1,7 @@
 package Logic;
 
 import java.util.ArrayList;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
 
 import ScheduleHacks.Task;
 import Parser.CommandParser;
@@ -365,11 +362,11 @@ public class Logic {
 			setFeedBack(FEEDBACK_TASK_MODIFIED);
 			/*setFloatingTasksToDo(floatingTasksToDo)*/
 		} else {
-			changeFloatingToScheduledProcedures(executeTask, taskToEdit);
+			changeFloatingToScheduledProcedures(taskToEdit);
 		}
 	}
 
-	private void changeFloatingToScheduledProcedures(Task executeTask, Task taskToModify) {
+	private void changeFloatingToScheduledProcedures(Task taskToModify) {
 		floatingTasksToDo.remove(taskToModify);
 		addTaskInOrder(scheduledTasksToDo, taskToModify);
 		taskToModify.isScheduledTask();
