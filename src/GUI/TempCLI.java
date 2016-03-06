@@ -72,7 +72,7 @@ public class TempCLI {
 			if (task.getStartDate() != null && task.getStartTime() != null) {
 				System.out.print("\t\t\t From ");
 				if (!task.getStartTime().equals(LocalTime.MAX)) {
-					System.out.print(task.getStartTime().toString() + ",");
+					System.out.print(task.getStartTime().toString() + ", ");
 				}
 				System.out.println(task.getStartDate());
 				System.out.print("\t To ");
@@ -80,7 +80,7 @@ public class TempCLI {
 				System.out.print("\t By ");
 			}
 			if (!task.getEndTime().equals(LocalTime.MAX)) {
-				System.out.print(task.getEndTime().toString() + ",");
+				System.out.print(task.getEndTime().toString() + ", ");
 			}
 			System.out.println(task.getEndDate());
 		}

@@ -41,44 +41,29 @@ public class Logic {
 		return feedBack;
 	}
 	
-	private void setScheduledTasksToDo(ArrayList<Task> currentTaskList) {
+	private void setScheduledTasksToDo(ArrayList<Task> currentTaskList) { 
 		scheduledTasksToDo.clear();
-		
-		for (int i=0; i<currentTaskList.size(); i++) {
-			scheduledTasksToDo.add(currentTaskList.get(i));
-		}
+		scheduledTasksToDo = currentTaskList;
 	}
 	
 	private void setScheduledTasksOverDue(ArrayList<Task> currentTaskList) {
 		scheduledTasksOverDue.clear();
-		
-		for (int i=0; i<currentTaskList.size(); i++) {
-			scheduledTasksOverDue.add(currentTaskList.get(i));
-		}
+		scheduledTasksOverDue = currentTaskList;
 	}
 	
 	private void setScheduledTasksComplete(ArrayList<Task> currentTaskList) {
 		scheduledTasksComplete.clear();
-		
-		for (int i=0; i<currentTaskList.size(); i++) {
-			scheduledTasksComplete.add(currentTaskList.get(i));
-		}
+		scheduledTasksComplete = currentTaskList;
 	}
 	
 	private void setFloatingTasksToDo(ArrayList<Task> currentTaskList) {
 		floatingTasksToDo.clear();
-		
-		for (int i=0; i<currentTaskList.size(); i++) {
-			floatingTasksToDo.add(currentTaskList.get(i));
-		}
+		floatingTasksToDo = currentTaskList;
 	}
 	
 	private void setFloatingTasksComplete(ArrayList<Task> currentTaskList) {
 		floatingTasksComplete.clear();
-		
-		for (int i=0; i<currentTaskList.size(); i++) {
-			floatingTasksComplete.add(currentTaskList.get(i));
-		}
+		floatingTasksComplete = currentTaskList;
 	}
 	
 	public ArrayList<Task> getScheduledTasksToDo() {
