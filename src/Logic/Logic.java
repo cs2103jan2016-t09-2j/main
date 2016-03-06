@@ -12,17 +12,12 @@ import Parser.Command;
 public class Logic {
 	
 	private String feedBack;
-	private ArrayList<Task> updatedScheduledTasksToDo = new ArrayList<Task>();
-	private ArrayList<Task> updatedScheduledTasksOverDue = new ArrayList<Task>();
-	private ArrayList<Task> updatedScheduledTasksComplete = new ArrayList<Task>();
-	private ArrayList<Task> updatedFloatingTasksToDo = new ArrayList<Task>();
-	private ArrayList<Task> updatedFloatingTasksComplete = new ArrayList<Task>();
 	
-	private static ArrayList<Task> floatingTasksToDo = new ArrayList<Task>();
-	private static ArrayList<Task> floatingTasksComplete = new ArrayList<Task>();
-	private static ArrayList<Task> scheduledTasksToDo = new ArrayList<Task>();
-	private static ArrayList<Task> scheduledTasksComplete = new ArrayList<Task>();
-	private static ArrayList<Task> scheduledTasksOverDue = new ArrayList<Task>();
+	private ArrayList<Task> floatingTasksToDo = new ArrayList<Task>();
+	private ArrayList<Task> floatingTasksComplete = new ArrayList<Task>();
+	private ArrayList<Task> scheduledTasksToDo = new ArrayList<Task>();
+	private ArrayList<Task> scheduledTasksComplete = new ArrayList<Task>();
+	private ArrayList<Task> scheduledTasksOverDue = new ArrayList<Task>();
 	
 	private static final String FEEDBACK_INVALID_COMMAND = "Invalid Command!";
 	private static final String FEEDBACK_INVALID_COMMAND_TYPE = "Invalid command type entered!";
@@ -47,63 +42,63 @@ public class Logic {
 	}
 	
 	private void setScheduledTasksToDo(ArrayList<Task> currentTaskList) {
-		updatedScheduledTasksToDo.clear();
+		scheduledTasksToDo.clear();
 		
 		for (int i=0; i<currentTaskList.size(); i++) {
-			updatedScheduledTasksToDo.add(currentTaskList.get(i));
+			scheduledTasksToDo.add(currentTaskList.get(i));
 		}
 	}
 	
 	private void setScheduledTasksOverDue(ArrayList<Task> currentTaskList) {
-		updatedScheduledTasksOverDue.clear();
+		scheduledTasksOverDue.clear();
 		
 		for (int i=0; i<currentTaskList.size(); i++) {
-			updatedScheduledTasksOverDue.add(currentTaskList.get(i));
+			scheduledTasksOverDue.add(currentTaskList.get(i));
 		}
 	}
 	
 	private void setScheduledTasksComplete(ArrayList<Task> currentTaskList) {
-		updatedScheduledTasksComplete.clear();
+		scheduledTasksComplete.clear();
 		
 		for (int i=0; i<currentTaskList.size(); i++) {
-			updatedScheduledTasksComplete.add(currentTaskList.get(i));
+			scheduledTasksComplete.add(currentTaskList.get(i));
 		}
 	}
 	
 	private void setFloatingTasksToDo(ArrayList<Task> currentTaskList) {
-		updatedFloatingTasksToDo.clear();
+		floatingTasksToDo.clear();
 		
 		for (int i=0; i<currentTaskList.size(); i++) {
-			updatedFloatingTasksToDo.add(currentTaskList.get(i));
+			floatingTasksToDo.add(currentTaskList.get(i));
 		}
 	}
 	
 	private void setFloatingTasksComplete(ArrayList<Task> currentTaskList) {
-		updatedFloatingTasksComplete.clear();
+		floatingTasksComplete.clear();
 		
 		for (int i=0; i<currentTaskList.size(); i++) {
-			updatedFloatingTasksComplete.add(currentTaskList.get(i));
+			floatingTasksComplete.add(currentTaskList.get(i));
 		}
 	}
 	
 	public ArrayList<Task> getScheduledTasksToDo() {
-		return updatedScheduledTasksToDo;
+		return scheduledTasksToDo;
 	}
 	
 	public ArrayList<Task> getScheduledTasksOverDue() {
-		return updatedScheduledTasksOverDue;
+		return scheduledTasksOverDue;
 	}
 	
 	public ArrayList<Task> getScheduledTasksComplete() {
-		return updatedScheduledTasksComplete;
+		return scheduledTasksComplete;
 	}
 	
 	public ArrayList<Task> getFloatingTasksToDo() {
-		return updatedFloatingTasksToDo;
+		return floatingTasksToDo;
 	}
 	
 	public ArrayList<Task> getFloatingTasksComplete() {
-		return updatedFloatingTasksComplete;
+		return floatingTasksComplete;
 	}
 	
 	/*this method is called in CLI by logic obj, hence transmitting string userInput from UI to Logic*/
