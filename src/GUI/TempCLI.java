@@ -32,13 +32,14 @@ public class TempCLI {
 	public static void main(String[] args) {
 		showToUser(MESSAGE_WELCOME);
 		TempCLI taskManager = new TempCLI();
-		taskManager.startScheduleHacks();
+		Logic logicObj = new Logic();
+		taskManager.startScheduleHacks(logicObj);
 	}
 
-	private void startScheduleHacks() {
+	private void startScheduleHacks(Logic logicObj) {
 		while (true) {
 			readInput();
-			executeInput();
+			executeInput(logicObj);
 		}
 	}
 
@@ -56,9 +57,8 @@ public class TempCLI {
 
 	// incomplete
 	// what to do to print archive ?
-	public void executeInput() {
+	public void executeInput(Logic logicObj) {
 		count = 1;
-		Logic logicObj = new Logic();
 		logicObj.startExecution(getUserCommand());
 		showToUser(logicObj.getFeedBack());
 		showTimedTaskListToUser(logicObj.getScheduledTasksToDo());
