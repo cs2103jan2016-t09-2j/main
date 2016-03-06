@@ -296,7 +296,7 @@ public class Logic {
 			} else {
 				setFeedBack(FEEDBACK_NON_EXISTENT_TASK_NUM);
 			}
-		} else if (taskDigitToModify <= 0) {
+		} else {
 			setFeedBack(FEEDBACK_NEGATIVE_TASK_NUM + " Else, " + FEEDBACK_TASK_NUM_NOT_FOUND);
 		}
 	}
@@ -422,7 +422,7 @@ public class Logic {
 			} else {
 				setFeedBack(FEEDBACK_NON_EXISTENT_TASK_NUM);
 			}
-		} else if (taskToBeCompleted <= 0) {
+		} else {
 			setFeedBack(FEEDBACK_NEGATIVE_TASK_NUM + " Else, " + FEEDBACK_TASK_NUM_NOT_FOUND);
 		}
 	}
