@@ -220,14 +220,14 @@ public class Logic {
 		}
 	}
 	
-	private void addTaskInOrder(ArrayList<Task> sortTaskList, Task executeTask) {
-		int position = sortTaskList(scheduledTasksToDo, executeTask);
+	private void addTaskInOrder(ArrayList<Task> taskListSort, Task executeTask) {
+		int position = sortTaskList(taskListSort, executeTask);
 		
-		if ((position == 0) || (position == scheduledTasksToDo.size())) {
-			scheduledTasksToDo.add(executeTask);
+		if ((position == 0) || (position == taskListSort.size())) {
+			taskListSort.add(executeTask);
 		}
 		else {
-			scheduledTasksToDo.add(position, executeTask);
+			taskListSort.add(position, executeTask);
 		}
 	}
 	
@@ -326,7 +326,7 @@ public class Logic {
 				setFeedBack(FEEDBACK_NON_EXISTENT_TASK_NUM);
 			}
 		}
-		else if (taskDigitToModify <= 0) {
+		else {
 			setFeedBack(FEEDBACK_NEGATIVE_TASK_NUM + " Else, " + FEEDBACK_TASK_NUM_NOT_FOUND);
 		}
 	}
