@@ -302,10 +302,11 @@ public class Logic {
 	}
 
 	private void modifyScheduledTasksToDo(Task executeTask, int taskNum) {
-		Task taskToEdit = scheduledTasksToDo.get(taskNum - 1);
+		Task taskToEdit = scheduledTasksToDo.remove(taskNum - 1);
 
 		if (executeTask.getDescription() != null) {
 			taskToEdit.setDescription(executeTask.getDescription());
+			addTaskInOrder(scheduledTasksToDo, taskToEdit);
 			setFeedBack(FEEDBACK_TASK_MODIFIED);
 			/* setScheduledTasksToDo(scheduledTasksToDo); */
 		}
@@ -373,9 +374,9 @@ public class Logic {
 	}
 
 	private void changeFloatingToScheduledProcedures(Task executeTask, Task taskToModify) {
+		floatingTasksToDo.remove(taskToModify);
 		addTaskInOrder(scheduledTasksToDo, taskToModify);
 		taskToModify.isScheduledTask();
-		floatingTasksToDo.remove(taskToModify);
 		setFeedBack(FEEDBACK_TASK_MODIFIED);
 		/*
 		 * setScheduledTasksToDo(scheduledTasksToDo);
