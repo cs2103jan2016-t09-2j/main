@@ -306,34 +306,26 @@ public class Logic {
 
 		if (executeTask.getDescription() != null) {
 			taskToEdit.setDescription(executeTask.getDescription());
-			addTaskInOrder(scheduledTasksToDo, taskToEdit);
-			setFeedBack(FEEDBACK_TASK_MODIFIED);
 			/* setScheduledTasksToDo(scheduledTasksToDo); */
 		}
 		if (executeTask.getEndDate() != null) {
 			taskToEdit.setEndDate(executeTask.getEndDate());
-			addTaskInOrder(scheduledTasksToDo, taskToEdit);
-			setFeedBack(FEEDBACK_TASK_MODIFIED);
 			/* setScheduledTasksToDo(scheduledTasksToDo); */
 		}
 		if (executeTask.getEndTime() != null) {
 			taskToEdit.setEndTime(executeTask.getEndTime());
-			addTaskInOrder(scheduledTasksToDo, taskToEdit);
-			setFeedBack(FEEDBACK_TASK_MODIFIED);
 			/* setScheduledTasksToDo(scheduledTasksToDo); */
 		}
 		if (executeTask.getStartDate() != null) {
 			taskToEdit.setStartDate(executeTask.getStartDate());
-			addTaskInOrder(scheduledTasksToDo, taskToEdit);
-			setFeedBack(FEEDBACK_TASK_MODIFIED);
 			/* setScheduledTasksToDo(scheduledTasksToDo); */
 		}
 		if (executeTask.getStartTime() != null) {
 			taskToEdit.setStartTime(executeTask.getStartTime());
-			addTaskInOrder(scheduledTasksToDo, taskToEdit);
-			setFeedBack(FEEDBACK_TASK_MODIFIED);
 			/* setScheduledTasksToDo(scheduledTasksToDo); */
 		}
+		addTaskInOrder(scheduledTasksToDo, taskToEdit);
+		setFeedBack(FEEDBACK_TASK_MODIFIED);
 		if ((executeTask.getDescription() == null) && (executeTask.getEndDate() == null)
 				&& (executeTask.getEndTime() == null) && (executeTask.getStartDate() == null)
 				&& (executeTask.getStartTime() == null)) {
