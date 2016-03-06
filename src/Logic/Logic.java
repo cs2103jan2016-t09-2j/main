@@ -9,10 +9,14 @@ import ScheduleHacks.Task;
 import Parser.CommandParser;
 import Parser.Command;
 
-public class Logic {
+class Logic {
 	
 	private String feedBack;
-	private ArrayList<Task> updatedTaskList;
+	private ArrayList<Task> updatedScheduledTasksToDo = new ArrayList<Task>();
+	private ArrayList<Task> updatedScheduledTasksOverDue = new ArrayList<Task>();
+	private ArrayList<Task> updatedScheduledTasksComplete = new ArrayList<Task>();
+	private ArrayList<Task> updatedFloatingTasksToDo = new ArrayList<Task>();
+	private ArrayList<Task> updatedFloatingTasksComplete = new ArrayList<Task>();
 	
 	private static ArrayList<Task> floatingTasksToDo = new ArrayList<Task>();
 	private static ArrayList<Task> floatingTasksComplete = new ArrayList<Task>();
@@ -25,13 +29,13 @@ public class Logic {
 	private static final String FEEDBACK_TASK_ADDED = "Task Added Successfully";
 	private static final String FEEDBACK_CLEAR_ALL_TASKS = "All tasks deleted!";
 	private static final String FEEDBACK_TASK_DELETED = "Task Deleted Successfully";
-	private static final String FEEDBACK_TASK_NOT_FOUND = "Task not found!";
 	private static final String FEEDBACK_NON_EXISTENT_TASK_NUM = "Task number entered was not found!";
-	private static final String FEEDBACK_TASK_NUM_NOT_FOUND = "Task number is not present!";
+	private static final String FEEDBACK_NEGATIVE_TASK_NUM = "Task number entered cannot be 0 or negative!";
+	private static final String FEEDBACK_TASK_NUM_NOT_FOUND = "Task number is not present! Task not found!";
 	private static final String FEEDBACK_TASK_MODIFIED = "Task Edited Successfully";
 	private static final String FEEDBACK_TASK_NOT_MODIFIED = "Task was not modified";
-	private static final String FEEDBACK_NO_MODIFICATION_NUM_FOUND = "No modification number was found!";
 	private static final String FEEDBACK_TASK_COMPLETED = "Task Completed Successfully";
+	private static final String FEEDBACK_TASK_ALREADY_COMPLETED = "Task entered by user has already been completed!";
 	private static final String FEEDBACK_TASK_OVERDUE = "Task has exceeded deadline!";
 	
 	private void setFeedBack(String feedBack) {
@@ -42,16 +46,75 @@ public class Logic {
 		return feedBack;
 	}
 	
-	private void setTaskList(ArrayList<Task> updatedTaskList) {
-		this.updatedTaskList = updatedTaskList;
+	private void setScheduledTasksToDo(ArrayList<Task> currentTaskList) {
+		updatedScheduledTasksToDo.clear();
+		
+		for (int i=0; i<currentTaskList.size(); i++) {
+			updatedScheduledTasksToDo.add(currentTaskList.get(i));
+		}
 	}
 	
-	public ArrayList<Task> getTaskList() {
-		return updatedTaskList;
+	private void setScheduledTasksOverDue(ArrayList<Task> currentTaskList) {
+		updatedScheduledTasksOverDue.clear();
+		
+		for (int i=0; i<currentTaskList.size(); i++) {
+			updatedScheduledTasksOverDue.add(currentTaskList.get(i));
+		}
 	}
 	
-	/*this method gets back the parsed Command class from parser*/
-	public void retrieveParsedCommand(String originalDescription){
+	private void setScheduledTasksComplete(ArrayList<Task> currentTaskList) {
+		updatedScheduledTasksComplete.clear();
+		
+		for (int i=0; i<currentTaskList.size(); i++) {
+			updatedScheduledTasksComplete.add(currentTaskList.get(i));
+		}
+	}
+	
+	private void setFloatingTasksToDo(ArrayList<Task> currentTaskList) {
+		updatedFloatingTasksToDo.clear();
+		
+		for (int i=0; i<currentTaskList.size(); i++) {
+			updatedFloatingTasksToDo.add(currentTaskList.get(i));
+		}
+	}
+	
+	private void setFloatingTasksComplete(ArrayList<Task> currentTaskList) {
+		updatedFloatingTasksComplete.clear();
+		
+		for (int i=0; i<currentTaskList.size(); i++) {
+			updatedFloatingTasksComplete.add(currentTaskList.get(i));
+		}
+	}
+	
+	public ArrayList<Task> getScheduledTasksToDo() {
+		return updatedScheduledTasksToDo;
+	}
+	
+	public ArrayList<Task> getScheduledTasksOverDue() {
+		return updatedScheduledTasksOverDue;
+	}
+	
+	public ArrayList<Task> getScheduledTasksComplete() {
+		return updatedScheduledTasksComplete;
+	}
+	
+	public ArrayList<Task> getFloatingTasksToDo() {
+		return updatedFloatingTasksToDo;
+	}
+	
+	public ArrayList<Task> getFloatingTasksComplete() {
+		return updatedFloatingTasksComplete;
+	}
+	
+	/*this method is called in CLI by logic obj, hence transmitting string userInput from UI to Logic*/
+	/*calls retrieveParsedCommand, from which private methods are called in Logic class*/
+	public void startExecution(String userInput) {
+		retrieveParsedCommand(userInput);
+	}
+	
+	/*this method gets back the parsed Command class from parser. Proceeds to execute function aft
+	 obtaining COMMAND_TYPE and Task classes*/
+	private void retrieveParsedCommand(String originalDescription){
 		try {
 			Command.COMMAND_TYPE typeCommand = null;
 
@@ -95,7 +158,7 @@ public class Logic {
 			modifyTask(executeTask, retrievedCommand);
 			break;
 		case COMPLETE_TASK:
-			completeTask(executeTask);
+			completeTask(retrievedCommand);
 			break;
 		case UNDO_TASK:
 			undoTask(executeTask);
@@ -122,13 +185,13 @@ public class Logic {
 				if (((executeTask.getEndDate()).compareTo(dateToday))>0) {
 						scheduledTasksToDo.add(executeTask);
 						setFeedBack(FEEDBACK_TASK_ADDED);
-						setTaskList(scheduledTasksToDo);
+						setScheduledTasksToDo(scheduledTasksToDo);
 						
 				}
 				else if (((executeTask.getEndDate()).compareTo(dateToday))<0) {
 					scheduledTasksOverDue.add(executeTask);
 					setFeedBack(FEEDBACK_TASK_OVERDUE);
-					setTaskList(scheduledTasksOverDue);
+					setScheduledTasksOverDue(scheduledTasksOverDue);
 				}
 				
 				//assuming that endDate is today
@@ -138,12 +201,12 @@ public class Logic {
 						if ((executeTask.getEndTime().compareTo(timeToday))>0){
 							scheduledTasksToDo.add(executeTask);
 							setFeedBack(FEEDBACK_TASK_ADDED);
-							setTaskList(scheduledTasksToDo);
+							setScheduledTasksToDo(scheduledTasksToDo);
 						}
 						else {
 							scheduledTasksOverDue.add(executeTask);
 							setFeedBack(FEEDBACK_TASK_OVERDUE);
-							setTaskList(scheduledTasksOverDue);
+							setScheduledTasksOverDue(scheduledTasksOverDue);
 						}
 					}
 					else if ((executeTask.getEndTime() == null) && (executeTask.getStartTime() == null)) {
@@ -153,12 +216,12 @@ public class Logic {
 						if (defaultTime.compareTo(timeToday)>0) {
 							scheduledTasksToDo.add(executeTask);
 							setFeedBack(FEEDBACK_TASK_ADDED);
-							setTaskList(scheduledTasksToDo);
+							setScheduledTasksToDo(scheduledTasksToDo);
 						}
 						else {
 							scheduledTasksOverDue.add(executeTask);
 							setFeedBack(FEEDBACK_TASK_ADDED);
-							setTaskList(scheduledTasksOverDue);
+							setScheduledTasksOverDue(scheduledTasksOverDue);
 						}
 					}
 				}
@@ -168,40 +231,34 @@ public class Logic {
 		else if (executeTask.isFloatingTask()) {
 			floatingTasksToDo.add(executeTask);
 			setFeedBack(FEEDBACK_TASK_ADDED);
-			setTaskList(floatingTasksToDo);
+			setFloatingTasksToDo(floatingTasksToDo);
 		}
 	}
 	
-	/*deleteTask can be done either by typing only 2 characters, indicating the task number and task
-	 type, or it can be done by typing the task descript*/
+	/*deleteTask from scheduledTasksToDo or floatingTasksToDo based on task number*/
 	private void deleteTask(Task executeTask, Command retrievedCommand) {
 			int taskDigit = retrievedCommand.getIndexNumber();
 			
-			if ((taskDigit != -1) || (taskDigit != 0)) {
-				if (executeTask.isScheduledTask()) {
-					if (taskDigit <= scheduledTasksToDo.size()) {
-						scheduledTasksToDo.remove(taskDigit-1);
-						setFeedBack(FEEDBACK_TASK_DELETED);
-						setTaskList(scheduledTasksToDo);
-					}
-					else {
-						setFeedBack(FEEDBACK_TASK_NOT_FOUND);
-					}
+			if (taskDigit > 0) {
+				if (taskDigit <= scheduledTasksToDo.size()) {
+					scheduledTasksToDo.remove(taskDigit-1);
+					setFeedBack(FEEDBACK_TASK_DELETED);
+					setScheduledTasksToDo(scheduledTasksToDo);
 				}
-				else if (executeTask.isFloatingTask()) {
-					if ((taskDigit > scheduledTasksToDo.size()) && (taskDigit <= scheduledTasksToDo.size() + 
-							floatingTasksToDo.size())) {
-							floatingTasksToDo.remove(taskDigit - 1 - scheduledTasksToDo.size());
-							setFeedBack(FEEDBACK_TASK_DELETED);
-							setTaskList(floatingTasksToDo);
-					}
-					else {
+				else if ((taskDigit > scheduledTasksToDo.size()) && (taskDigit <= 
+						scheduledTasksToDo.size() + floatingTasksToDo.size())) {
+						floatingTasksToDo.remove(taskDigit - 1 - scheduledTasksToDo.size());
+						setFeedBack(FEEDBACK_TASK_DELETED);
+						setFloatingTasksToDo(floatingTasksToDo);
+				}
+				else {
 						setFeedBack(FEEDBACK_NON_EXISTENT_TASK_NUM);
-					}
 				}
 			}
-		
-		else {
+			else {
+				setFeedBack(FEEDBACK_NEGATIVE_TASK_NUM);
+			}
+			
 			if (executeTask.getDescription().equalsIgnoreCase("all")) {
 				scheduledTasksToDo.clear();//not too sure about this aspect as we
 				scheduledTasksOverDue.clear();//are maintaining 5 different sets of ArrayLists
@@ -209,23 +266,24 @@ public class Logic {
 				floatingTasksToDo.clear();//"clear all upcoming s/completed s/overdue s/incomplete f/complete f" 
 				floatingTasksComplete.clear();//so we will know which ArrayList to clear
 				setFeedBack(FEEDBACK_CLEAR_ALL_TASKS);
-				setTaskList(scheduledTasksToDo);
-				setTaskList(scheduledTasksOverDue);
-				setTaskList(scheduledTasksComplete);
-				setTaskList(floatingTasksToDo);
-				setTaskList(floatingTasksComplete);
+				setScheduledTasksToDo(scheduledTasksToDo);
+				setScheduledTasksOverDue(scheduledTasksOverDue);
+				setScheduledTasksComplete(scheduledTasksComplete);
+				setFloatingTasksToDo(floatingTasksToDo);
+				setFloatingTasksComplete(floatingTasksComplete);
 			}
-			else {
+			else if (!(executeTask.getDescription().equalsIgnoreCase("all")) && 
+					!(executeTask.getDescription().equals(null))) {
 				setFeedBack(FEEDBACK_TASK_NUM_NOT_FOUND);
 			}
-		}
 	}
 	
-	/*modifies task by editing description, date or time*/
+	/*modifies scheduledTasksToDo/floatingTasksToDo by looking at class number. Edits corresponding task
+	 based on description, date or time*/
 	private void modifyTask(Task executeTask, Command retrievedCommand) {
 		int taskDigitToModify = retrievedCommand.getIndexNumber();
 		
-		if ((taskDigitToModify != -1) || (taskDigitToModify != 0)) {
+		if (taskDigitToModify > 0) {
 			if (taskDigitToModify <= scheduledTasksToDo.size()) {
 				modifyScheduledTasksToDo(scheduledTasksToDo, executeTask, taskDigitToModify);
 			}
@@ -233,9 +291,12 @@ public class Logic {
 					floatingTasksToDo.size())) {
 				modifyFloatingTasksToDo(floatingTasksToDo, executeTask, taskDigitToModify);
 			}
+			else {
+				setFeedBack(FEEDBACK_NON_EXISTENT_TASK_NUM);
+			}
 		}
-		else {
-			setFeedBack(FEEDBACK_NO_MODIFICATION_NUM_FOUND);
+		else if (taskDigitToModify <= 0) {
+			setFeedBack(FEEDBACK_NEGATIVE_TASK_NUM + " Else, " + FEEDBACK_TASK_NUM_NOT_FOUND);
 		}
 	}
 	
@@ -243,17 +304,17 @@ public class Logic {
 		if (executeTask.getDescription() != null) {
 			ScheduledTasksToDo.get(taskNum-1).setDescription(executeTask.getDescription());
 			setFeedBack(FEEDBACK_TASK_MODIFIED);
-			setTaskList(scheduledTasksToDo);
+			setScheduledTasksToDo(scheduledTasksToDo);
 		}
 		else if (executeTask.getEndDate() != null) {
 			ScheduledTasksToDo.get(taskNum-1).setEndDate(executeTask.getEndDate());
 			setFeedBack(FEEDBACK_TASK_MODIFIED);
-			setTaskList(scheduledTasksToDo);
+			setScheduledTasksToDo(scheduledTasksToDo);
 		}
 		else if (executeTask.getEndTime() != null) {
 			ScheduledTasksToDo.get(taskNum-1).setEndTime(executeTask.getEndTime());
 			setFeedBack(FEEDBACK_TASK_MODIFIED);
-			setTaskList(scheduledTasksToDo);
+			setScheduledTasksToDo(scheduledTasksToDo);
 		}
 		else if ((executeTask.getDescription() == null) && (executeTask.getEndDate() == null) && (executeTask.getEndTime() == null)) {
 			setFeedBack(FEEDBACK_TASK_NOT_MODIFIED);
@@ -265,7 +326,7 @@ public class Logic {
 		if (executeTask.getDescription() != null) {
 			FloatingTasksToDo.get(taskNum-1-scheduledTasksToDo.size()).setDescription(executeTask.getDescription());
 			setFeedBack(FEEDBACK_TASK_MODIFIED);
-			setTaskList(floatingTasksToDo);
+			setFloatingTasksToDo(floatingTasksToDo);
 		}
 		else if (executeTask.getEndDate() != null) {
 			Task taskToModify = FloatingTasksToDo.get(taskNum-1-scheduledTasksToDo.size());
@@ -274,8 +335,8 @@ public class Logic {
 			scheduledTasksToDo.add(taskToModify);
 			floatingTasksToDo.remove(taskToModify);
 			setFeedBack(FEEDBACK_TASK_MODIFIED);
-			setTaskList(scheduledTasksToDo);
-			setTaskList(floatingTasksToDo);
+			setScheduledTasksToDo(scheduledTasksToDo);
+			setFloatingTasksToDo(floatingTasksToDo);
 		}
 		else if (executeTask.getEndTime() != null) {
 			Task taskToModify = FloatingTasksToDo.get(taskNum-1-scheduledTasksToDo.size());
@@ -284,55 +345,92 @@ public class Logic {
 			scheduledTasksToDo.add(taskToModify);
 			floatingTasksToDo.remove(taskToModify);
 			setFeedBack(FEEDBACK_TASK_MODIFIED);
-			setTaskList(scheduledTasksToDo);
-			setTaskList(floatingTasksToDo);
+			setScheduledTasksToDo(scheduledTasksToDo);
+			setFloatingTasksToDo(floatingTasksToDo);
 		}
 		else if ((executeTask.getDescription() == null) && (executeTask.getEndDate() == null) && (executeTask.getEndTime() == null)) {
 			setFeedBack(FEEDBACK_TASK_NOT_MODIFIED);
 		}
 	}
 	
-	/*adds task into the respective completearraylist and removes that same task from the arraylist that 
-	 it is currently residing in*/
-	private void completeTask(Task executeTask) {
-		if (executeTask.isScheduledTask()){
-			scheduledTasksComplete.add(executeTask);
-			if (scheduledTasksToDo.contains(executeTask)) {
-				scheduledTasksToDo.remove(executeTask);
+	/*adds task into the respective completeArrayList and removes that same task from the ArrayList that 
+	 it is currently residing in based on task number entered by user*/
+	private void completeTask(Command retrievedCommand) {
+		int taskToBeCompleted = retrievedCommand.getIndexNumber();
+		
+		if (taskToBeCompleted > 0) {
+			if (taskToBeCompleted <= scheduledTasksToDo.size()) {
+				if (scheduledTasksToDo.get(taskToBeCompleted-1).isComplete()) {
+					setFeedBack(FEEDBACK_TASK_ALREADY_COMPLETED);
+				}
+				else {
+					scheduledTasksComplete.add(scheduledTasksToDo.get(taskToBeCompleted-1));
+					scheduledTasksToDo.get(taskToBeCompleted-1).setAsComplete();
+					scheduledTasksToDo.remove(taskToBeCompleted-1);
+					setFeedBack(FEEDBACK_TASK_COMPLETED);
+					setScheduledTasksToDo(scheduledTasksToDo);
+					setScheduledTasksComplete(scheduledTasksComplete);
+				}
 			}
-			else if (scheduledTasksOverDue.contains(executeTask)) {
-				scheduledTasksOverDue.remove(executeTask);
+			else if ((taskToBeCompleted > scheduledTasksToDo.size()) && (taskToBeCompleted
+					<= scheduledTasksToDo.size() + floatingTasksToDo.size())) {
+				if (floatingTasksToDo.get(taskToBeCompleted-1-scheduledTasksToDo.size()).isComplete()) {
+					setFeedBack(FEEDBACK_TASK_ALREADY_COMPLETED);
+				}
+				else {
+					floatingTasksComplete.add(floatingTasksToDo.get(taskToBeCompleted-1-scheduledTasksToDo.size()));
+					floatingTasksToDo.get(taskToBeCompleted-1-scheduledTasksToDo.size()).setAsComplete();
+					floatingTasksToDo.remove(taskToBeCompleted-1-scheduledTasksToDo.size());
+					setFeedBack(FEEDBACK_TASK_COMPLETED);
+					setFloatingTasksToDo(floatingTasksToDo);
+					setFloatingTasksComplete(floatingTasksComplete);
+				}
+			}
+			else {
+				setFeedBack(FEEDBACK_NON_EXISTENT_TASK_NUM);
 			}
 		}
-		else if (executeTask.isFloatingTask()) {
-			floatingTasksComplete.add(executeTask);
-			if (floatingTasksToDo.contains(executeTask)) {
-				floatingTasksToDo.remove(executeTask);
-			}
+		else if (taskToBeCompleted <= 0) {
+			setFeedBack(FEEDBACK_NEGATIVE_TASK_NUM + " Else, " + FEEDBACK_TASK_NUM_NOT_FOUND);
 		}
 	}
 	
 	/*this method shd be called in main at the start of the prog and shd run all the way till system
 	 exits. This method automatically shifts scheduledtaskstodo to scheduledtasksoverdue when date and
 	 time has exceeded due date and due time specified for scheduled task*/
-	public void autoChangeTaskStatus(Task executeTask) {
-		if (executeTask.isScheduledTask()) {
-			LocalDate dateToday = LocalDate.now();
-			LocalTime timeToday = LocalTime.now();
-			
-			if (scheduledTasksToDo.contains(executeTask)) {
-				if (((executeTask.getEndDate()).compareTo(dateToday))<0) {
-					scheduledTasksOverDue.add(executeTask);
-					scheduledTasksToDo.remove(executeTask);
+	public void autoChangeTaskStatus() {
+		LocalDate dateToday = LocalDate.now();
+		LocalTime timeToday = LocalTime.now();
+		
+		for (int i=0; i<scheduledTasksToDo.size(); i++) {
+			if ((scheduledTasksToDo.get(i).getEndDate().compareTo(dateToday))<0) {
+				changeStatusToOverdue(i);	
+			}
+			else if ((scheduledTasksToDo.get(i).getEndDate().compareTo(dateToday)) == 0) {
+				if (scheduledTasksToDo.get(i).getEndTime() != null) {
+					if ((scheduledTasksToDo.get(i).getEndTime().compareTo(timeToday)) <= 0) {
+						changeStatusToOverdue(i);
+					}
 				}
-				else if (((executeTask.getEndDate()).compareTo(dateToday)) == 0) {
-					if ((timeToday.compareTo(executeTask.getEndTime())) >= 0) {
-						scheduledTasksOverDue.add(executeTask);
-						scheduledTasksToDo.remove(executeTask);
+				else if (scheduledTasksToDo.get(i).getEndTime() == null) {
+					DateTimeFormatter format = DateTimeFormatter.ofPattern("HH:MM");
+					LocalTime defaultEndTime = (LocalTime) format.parse("23:59");
+					
+					if ((defaultEndTime.compareTo(timeToday)) <= 0) {
+						changeStatusToOverdue(i);
 					}
 				}
 			}
 		}
+	}
+	
+	private void changeStatusToOverdue(int i) {
+		scheduledTasksOverDue.add(scheduledTasksToDo.get(i));
+		setFeedBack("Task " + scheduledTasksToDo.get(i).getDescription() + 
+				" has exceeded deadline");
+		scheduledTasksToDo.remove(i);
+		setScheduledTasksToDo(scheduledTasksToDo);
+		setScheduledTasksOverDue(scheduledTasksOverDue);
 	}
 	
 	private void undoTask(Task executeTask) {
