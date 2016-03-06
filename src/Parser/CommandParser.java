@@ -23,14 +23,7 @@ import ScheduleHacks.Task;
 
 public class CommandParser {
 
-	private static final int NO_WHITE_SPACE = -1;
-	// private static final int DEFAULT_INDEX_NUMBER = -1;
-	private static final int FIRST_INDEX = 0;
-	private static final char WHITE_SPACE = ' ';
-
-	private static final String REGEX_EXTRA_WHITESPACE = "\\s{2,}";
-
-	public static Command getParsedCommand(String newUserCommand) throws Exception {
+		public static Command getParsedCommand(String newUserCommand) throws Exception {
 		return parseCommand(cleanupExtraWhitespace(newUserCommand));
 	}
 
@@ -182,7 +175,7 @@ public class CommandParser {
 		if (dateList != null) {
 			newTask.setEndDate(dateList.get(dateList.size() - 1));
 			if (dateList.size() > 1) {
-				newTask.setStartDate(dateList.get(FIRST_INDEX));
+				newTask.setStartDate(dateList.get(ParserConstants.FIRST_INDEX));
 			}
 		}
 	}
@@ -191,7 +184,7 @@ public class CommandParser {
 		if (timeList != null) {
 			newTask.setEndTime(timeList.get(timeList.size() - 1));
 			if (timeList.size() > 1) {
-				newTask.setStartTime(timeList.get(FIRST_INDEX));
+				newTask.setStartTime(timeList.get(ParserConstants.FIRST_INDEX));
 			}
 		}
 	}
@@ -208,12 +201,12 @@ public class CommandParser {
 	static String getFirstWord(String userCommand) {
 		userCommand.trim();
 
-		int whiteSpacePosition = userCommand.indexOf(WHITE_SPACE);
-		if (whiteSpacePosition == NO_WHITE_SPACE) {
+		int whiteSpacePosition = userCommand.indexOf(ParserConstants.WHITE_SPACE);
+		if (whiteSpacePosition == ParserConstants.NO_WHITE_SPACE) {
 			throw new Error("Empty User Command");
 		}
 
-		return userCommand.substring(FIRST_INDEX, whiteSpacePosition);
+		return userCommand.substring(ParserConstants.FIRST_INDEX, whiteSpacePosition);
 	}
 
 	/**
@@ -223,9 +216,9 @@ public class CommandParser {
 	 * @return taskStatement which is exclusive of the command type.
 	 */
 	static String removeFirstWord(String userCommand) {
-		int whiteSpacePosition = userCommand.indexOf(WHITE_SPACE);
+		int whiteSpacePosition = userCommand.indexOf(ParserConstants.WHITE_SPACE);
 
-		if (whiteSpacePosition != NO_WHITE_SPACE) {
+		if (whiteSpacePosition != ParserConstants.NO_WHITE_SPACE) {
 			return userCommand.substring(whiteSpacePosition).trim();
 		}
 
@@ -240,9 +233,9 @@ public class CommandParser {
 	 * @return someText excluding the extra unnecessary white spaces.
 	 */
 	public static String cleanupExtraWhitespace(String someText) {
-		Pattern extraSpace = Pattern.compile(REGEX_EXTRA_WHITESPACE);
+		Pattern extraSpace = Pattern.compile(ParserConstants.REGEX_EXTRA_WHITESPACE);
 		Matcher regexMatcher = extraSpace.matcher(someText.trim());
-		String cleanText = regexMatcher.replaceAll(" ");
+		String cleanText = regexMatcher.replaceAll(ParserConstants.STRING_WHITESPACE);
 		return cleanText;
 	}
 

@@ -6,6 +6,8 @@ import java.time.LocalTime;
 import java.util.regex.Pattern;
 import java.util.regex.Matcher;
 
+import Parser.ParserConstants;
+
 /*
  * This class contains all possible combinations of time, that the user can
  * input as command into Schedule Hacks.
@@ -17,21 +19,13 @@ import java.util.regex.Matcher;
  */
 public class TimeParser {
 
-	private static final String REGEX_TIME = "(^|\\s|\\G)((\\d{1,2}(:|\\.)\\d{2})|(\\d{3,4}))(\\s|$)";
-	
-	private static final int FIRST_INDEX = 0;
-	//private static final int INVALID_SIZE = -1;
-	
-	private static final int MAX_MINUTES = 59;
-	private static final int MAX_HOUR = 23;
-
 	// Instance Variables
 	private String taskDetails;
 
 	/**************** CONSTRUCTORS *********************/
 	// Default Constructor
 	TimeParser() {
-		this("");
+		this(ParserConstants.STRING_EMPTY);
 	}
 
 	// Parameterized Constructor
@@ -39,23 +33,22 @@ public class TimeParser {
 		setTaskDetails(newTaskDetails);
 	}
 
-
 	/****************** SETTER METHODS ***********************/
 	protected void setTaskDetails(String newTaskDetails) {
 		this.taskDetails = newTaskDetails;
 	}
-	
+
 	/******************* GETTER METHODS ***********************/
 	public String getTaskDetails() {
 		return this.taskDetails;
 	}
-	
+
 	/**************** OTHER METHODS ***********************/
 	protected ArrayList<LocalTime> getTimes() {
 		ArrayList<LocalTime> timeList;
 		ArrayList<String> stringTimeList = getTimeList(getTaskDetails());
 		if (hasTimeList(stringTimeList)) {
-			timeList = getLocalTimeList(stringTimeList);			
+			timeList = getLocalTimeList(stringTimeList);
 		} else {
 			timeList = null;
 		}
@@ -64,7 +57,7 @@ public class TimeParser {
 
 	ArrayList<String> getTimeList(String taskDetails) {
 		ArrayList<String> timeList = new ArrayList<String>();
-		Pattern timePattern = Pattern.compile(REGEX_TIME);
+		Pattern timePattern = Pattern.compile(ParserConstants.REGEX_TIME);
 		Matcher timeMatcher = timePattern.matcher(taskDetails);
 		while (timeMatcher.find()) {
 			String newTime = timeMatcher.group();
@@ -78,8 +71,8 @@ public class TimeParser {
 
 	public void removeFromTaskDetails(ArrayList<String> timeList) {
 		String taskDetails = getTaskDetails();
-		for(String time: timeList) {
-			taskDetails = taskDetails.replace(time, ""); 
+		for (String time : timeList) {
+			taskDetails = taskDetails.replace(time, "");
 		}
 		setTaskDetails(CommandParser.cleanupExtraWhitespace(taskDetails));
 	}
@@ -104,49 +97,47 @@ public class TimeParser {
 		time = time.trim();
 		minute = Integer.parseInt(time.substring(time.length() - 2));
 		time = time.substring(0, time.length() - 2);
-		for (int index = time.length() - 1; index >= FIRST_INDEX; index--) {
+		for (int index = time.length() - 1; index >= ParserConstants.FIRST_INDEX; index--) {
 			if (Character.isDigit(time.charAt(index))) {
-				hour = Integer.parseInt(time.substring(FIRST_INDEX, index + 1));
+				hour = Integer.parseInt(time.substring(ParserConstants.FIRST_INDEX, index + 1));
 				break;
 			}
 		}
 		return LocalTime.of(hour, minute);
 	}
-	
-	
 
 	/**
-	 * This method checks if the time input by the user is in acceptable format and range
-	 * or not
+	 * This method checks if the time input by the user is in acceptable format
+	 * and range or not
 	 * 
 	 * @param newTime
 	 *            is the time to check for validity
 	 * @return true if the time is valid, otherwise false
 	 */
 	public boolean isValidTime(String newTime) {
-		if(isValidMinutes(newTime.trim()) && (isValidHour(newTime.trim()))) {
+		if (isValidMinutes(newTime.trim()) && (isValidHour(newTime.trim()))) {
 			return true;
 		}
 		return false;
 	}
 
 	public boolean isValidMinutes(String newTime) {
-		if (Integer.parseInt(newTime.substring(newTime.length() - 2, newTime.length())) > MAX_MINUTES) {
+		if (Integer.parseInt(newTime.substring(newTime.length() - 2, newTime.length())) > ParserConstants.MAX_MINUTES) {
 			return false;
 		}
 		return true;
 	}
-	
+
 	public boolean isValidHour(String newTime) {
-		int hour = MAX_HOUR + 1;
+		int hour = ParserConstants.MAX_HOUR + 1;
 		int index;
-		for(index = FIRST_INDEX; index < newTime.length()-2; index++) {
-			if(!Character.isDigit(newTime.charAt(index))) {
+		for (index = ParserConstants.FIRST_INDEX; index < newTime.length() - 2; index++) {
+			if (!Character.isDigit(newTime.charAt(index))) {
 				break;
 			}
 		}
-		hour = Integer.parseInt(newTime.substring(FIRST_INDEX,index));
-		if(hour > MAX_HOUR) {
+		hour = Integer.parseInt(newTime.substring(ParserConstants.FIRST_INDEX, index));
+		if (hour > ParserConstants.MAX_HOUR) {
 			return false;
 		}
 		return true;

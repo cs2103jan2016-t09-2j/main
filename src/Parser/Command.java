@@ -8,9 +8,6 @@ public class Command {
 		ADD_TASK, DELETE_TASK, MODIFY_TASK, COMPLETE_TASK, UNDO_TASK, REDO_TASK, EXIT
 	};
 
-	private static final int DEFAULT_INDEX_NUMBER = -1;
-	// private static final int FIRST_INDEX = 0;
-
 	private static final String[] COMMAND_ADD = { "add", "create", "+", "a" };
 	private static final String[] COMMAND_DELETE = { "delete", "d", "del", "-", "clear", "remove" };
 	private static final String[] COMMAND_MODIFY = { "modify", "edit", "update", "change", "e" };
@@ -30,14 +27,14 @@ public class Command {
 	public Command() {
 		this.commandType = null;
 		this.taskDescription = null;
-		this.indexNumber = DEFAULT_INDEX_NUMBER;
+		this.indexNumber = ParserConstants.DEFAULT_INDEX_NUMBER;
 	}
 
 	// Parameterized Constructor that accepts a command word and task details
 	public Command(String commandFirstWord, Task newTaskDetails) throws Exception {
 		setCommandType(commandFirstWord);
 		setTaskDetails(newTaskDetails);
-		setIndexNumber(DEFAULT_INDEX_NUMBER);
+		setIndexNumber(ParserConstants.DEFAULT_INDEX_NUMBER);
 	}
 
 	public Command(String commandFirstWord, Task newTaskDetails, int newTaskIndex) throws Exception {

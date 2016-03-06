@@ -23,31 +23,25 @@ import java.time.LocalDate;
  */
 class DateParser {
 
-	private static final int CENTURY = 100;
-
-	private static final String REGEX_DATE = "(\\s|^|\\G)\\d{1,2}(-|/)\\d{1,2}(-|/)(\\d{4}|\\d{2})(\\s|$)";
-
-	// private static final String REGEX_EXTRA_WHITESPACE = "\\s{2,}";
-
 	// Instance Variables
 	private String taskDetails;
 
 	/**************** CONSTRUCTORS *********************/
 	DateParser() {
-		this("");
+		this(ParserConstants.STRING_EMPTY);
 	}
 
 	DateParser(String newTaskDetails) {
 		setTaskDetails(newTaskDetails);
 	}
-	
+
 	/****************** SETTER METHOD ***********************/
 	protected void setTaskDetails(String newTaskDetails) {
 		this.taskDetails = newTaskDetails;
 	}
-	
+
 	/****************** GETTER METHOD ***********************/
-	public String getTaskDetails(){
+	public String getTaskDetails() {
 		return this.taskDetails;
 	}
 
@@ -56,7 +50,7 @@ class DateParser {
 		ArrayList<String> stringDateList = getDateList(getTaskDetails());
 		if (hasDateList(stringDateList)) {
 			ArrayList<LocalDate> dateList = getLocalDateList(stringDateList);
-			//dateList = sortDateList(dateList);
+			// dateList = sortDateList(dateList);
 			return dateList;
 		}
 		return null;
@@ -64,7 +58,7 @@ class DateParser {
 
 	ArrayList<String> getDateList(String taskDetails) {
 		ArrayList<String> dateList = new ArrayList<String>();
-		Pattern datePattern = Pattern.compile(REGEX_DATE);
+		Pattern datePattern = Pattern.compile(ParserConstants.REGEX_DATE);
 		Matcher dateMatcher = datePattern.matcher(taskDetails);
 		while (dateMatcher.find()) {
 			dateList.add(dateMatcher.group());
@@ -72,22 +66,21 @@ class DateParser {
 		removeDatesFromTaskDetails();
 		return dateList;
 	}
-	
+
 	protected void removeDatesFromTaskDetails() {
-		this.taskDetails = taskDetails.replaceAll(REGEX_DATE, " ");
+		this.taskDetails = taskDetails.replaceAll(ParserConstants.REGEX_DATE, ParserConstants.STRING_WHITESPACE);
 		this.taskDetails = CommandParser.cleanupExtraWhitespace(taskDetails);
 	}
-	
+
 	/**
-	 * This method returns true if the input string has any dates,
-	 * otherwise false.
-	 * If no time and date means it is a floating task.
+	 * This method returns true if the input string has any dates, otherwise
+	 * false. If no time and date means it is a floating task.
 	 * 
 	 * @param stringDateList
-	 * 				is the list of dates contained in the user statement.
+	 *            is the list of dates contained in the user statement.
 	 */
 	private boolean hasDateList(ArrayList<String> stringDateList) {
-		if(stringDateList.isEmpty()) {
+		if (stringDateList.isEmpty()) {
 			return false;
 		}
 		return true;
@@ -100,36 +93,40 @@ class DateParser {
 		}
 		return localDateList;
 	}
-	
+
 	protected LocalDate getLocalDateObject(String date) {
 		date = date.trim();
-		int[] dateMonthYear = {1,1,1}; //{dayOfMonth, month, year}
-		for(int index = 0, counter = 0, beginIndex = 0; index < date.length(); index++) {
-			if(!Character.isDigit(date.charAt(index))) {
+		int[] dateMonthYear = { 1, 1, 1 }; // {dayOfMonth, month, year}
+		for (int index = ParserConstants.FIRST_INDEX, counter = 0, beginIndex = ParserConstants.FIRST_INDEX; index < date
+				.length(); index++) {
+			if (!Character.isDigit(date.charAt(index))) {
 				dateMonthYear[counter++] = Integer.parseInt(date.substring(beginIndex, index));
 				beginIndex = index + 1;
 			}
-			if(counter == 2) {
+			if (counter == ParserConstants.INDEX_YEAR) {
 				dateMonthYear[counter] = Integer.parseInt(date.substring(beginIndex));
 			}
 		}
-		dateMonthYear[2] = getValidYear(dateMonthYear[2], dateMonthYear[1], dateMonthYear[0]);
-		return LocalDate.of(dateMonthYear[2], dateMonthYear[1], dateMonthYear[0]);
+		int dayOfMonth = dateMonthYear[ParserConstants.INDEX_DAY_OF_MONTH];
+		int month = dateMonthYear[ParserConstants.INDEX_MONTH];
+		int year = dateMonthYear[ParserConstants.INDEX_YEAR];
+		year = getValidYear(year, month, dayOfMonth);
+		return LocalDate.of(year, month, dayOfMonth);
 	}
-	
+
 	public ArrayList<LocalDate> sortDateList(ArrayList<LocalDate> dates) {
 		Collections.sort(dates);
 		return dates;
 	}
-	
+
 	public static int getValidYear(int year, int month, int dayOfMonth) {
-		if((year/CENTURY) == 0) {
+		if ((year / ParserConstants.CENTURY) == 0) {
 			LocalDate todayDate = LocalDate.now();
 			int thisYear = todayDate.getYear();
-			year += (thisYear/CENTURY)*CENTURY;
+			year += (thisYear / ParserConstants.CENTURY) * ParserConstants.CENTURY;
 			LocalDate newDate = LocalDate.of(year, month, dayOfMonth);
-			if(newDate.isBefore(todayDate)) {
-				year = year + CENTURY;
+			if (newDate.isBefore(todayDate)) {
+				year = year + ParserConstants.CENTURY;
 			}
 		}
 		return year;
