@@ -75,9 +75,9 @@ public class TempCLI {
 					System.out.print(task.getStartTime().toString() + ",");
 				}
 				System.out.println(task.getStartDate());
-				System.out.print("\t\t\t To ");
+				System.out.print("\t To ");
 			} else {
-				System.out.print("\t\t\t By ");
+				System.out.print("\t By ");
 			}
 			if (!task.getEndTime().equals(LocalTime.MAX)) {
 				System.out.print(task.getEndTime().toString() + ",");
@@ -94,7 +94,7 @@ public class TempCLI {
 	}
 
 	public void readInput() {
-		System.out.println("Enter Command here: ");
+		System.out.print("Enter Command here: ");
 		setUserCommand(scanner.nextLine());
 	}
 
