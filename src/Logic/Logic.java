@@ -198,8 +198,8 @@ public class Logic {
 	}
 
 	private void addTaskInOrder(ArrayList<Task> sortTaskList, Task executeTask) {
-		int position = sortTaskList(scheduledTasksToDo, executeTask);
-		scheduledTasksToDo.add(position, executeTask);
+		int position = sortTaskList(sortTaskList, executeTask);
+		sortTaskList.add(position, executeTask);
 	}
 
 	private int sortTaskList(ArrayList<Task> taskList, Task task) {
