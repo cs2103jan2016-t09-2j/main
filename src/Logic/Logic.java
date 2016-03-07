@@ -358,6 +358,7 @@ public class Logic {
 			setFeedBack(FEEDBACK_TASK_MODIFIED);
 			/*setFloatingTasksToDo(floatingTasksToDo)*/
 		} else {
+			taskToEdit = CommandParser.convertFloatingToScheduled(taskToEdit);
 			changeFloatingToScheduledProcedures(taskToEdit);
 		}
 	}
@@ -365,7 +366,6 @@ public class Logic {
 	private void changeFloatingToScheduledProcedures(Task taskToModify) {
 		floatingTasksToDo.remove(taskToModify);
 		addTaskInOrder(scheduledTasksToDo, taskToModify);
-		taskToModify.isScheduledTask();
 		setFeedBack(FEEDBACK_TASK_MODIFIED);
 		/*
 		 * setScheduledTasksToDo(scheduledTasksToDo);
