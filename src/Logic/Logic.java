@@ -232,6 +232,7 @@ public class Logic {
 	 */
 	private void deleteTask(Task executeTask, Command retrievedCommand) {
 		int taskDigit = retrievedCommand.getIndexNumber();
+		int maxIndex = scheduledTasksOverDue.size() + scheduledTasksToDo.size() + floatingTasksToDo.size();
 
 		if (taskDigit > 0) {
 			if (taskDigit <= scheduledTasksOverDue.size()) {
@@ -261,20 +262,17 @@ public class Logic {
 	 */
 	private void modifyTask(Task executeTask, Command retrievedCommand) {
 		int taskDigitToModify = retrievedCommand.getIndexNumber() - 1;
+		int maxIndex = scheduledTasksOverDue.size() + scheduledTasksToDo.size() + floatingTasksToDo.size();
 
-		if (taskDigitToModify >= 0) {
-			if (taskDigitToModify <= scheduledTasksOverDue.size()) {
+		if (taskDigitToModify >= 0 && taskDigitToModify < maxIndex) {
+			if (taskDigitToModify < scheduledTasksOverDue.size()) {
 				modifyScheduledTask(executeTask, taskDigitToModify, scheduledTasksOverDue);
-			} else if (taskDigitToModify <= scheduledTasksToDo.size() + scheduledTasksOverDue.size()) {
-				taskDigitToModify -= (scheduledTasksOverDue.size() + scheduledTasksToDo.size());
+			} else if (taskDigitToModify < scheduledTasksToDo.size() + scheduledTasksOverDue.size()) {
+				taskDigitToModify -= (scheduledTasksOverDue.size());
 				modifyScheduledTask(executeTask, taskDigitToModify, scheduledTasksToDo);
-			} else if (taskDigitToModify <= scheduledTasksOverDue.size() + scheduledTasksToDo.size()
-					+ floatingTasksToDo.size()) {
-				taskDigitToModify -= (scheduledTasksOverDue.size() + scheduledTasksToDo.size()
-						+ floatingTasksToDo.size());
+			} else{
+				taskDigitToModify -= (scheduledTasksOverDue.size() + scheduledTasksToDo.size());
 				modifyFloatingTasksToDo(executeTask, taskDigitToModify);
-			} else {
-				setFeedBack(FEEDBACK_NON_EXISTENT_TASK_NUM);
 			}
 		} else {
 			setFeedBack(FEEDBACK_NEGATIVE_TASK_NUM + " Else, " + FEEDBACK_TASK_NUM_NOT_FOUND);
