@@ -21,6 +21,8 @@ import com.google.gson.JsonSyntaxException;
 import java.util.logging.Logger;
 import java.util.logging.Level;
 
+import ScheduleHacks.Task;
+
 public class Storage {
 
 	private static final String toDoScheduledFile = "toDoScheduled";

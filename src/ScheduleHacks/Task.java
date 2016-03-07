@@ -20,6 +20,17 @@ public class Task {
 		setStartTime(null);
 		setEndTime(null);
 	}
+	
+	public Task(String desc, LocalDate startDate, LocalDate endDate, LocalTime startTime, LocalTime endTime) {
+		setDescription(desc);
+		isFloatingType = false;
+		isScheduledType = false;
+		isComplete = false;
+		setStartDate(startDate);
+		setEndDate(endDate);
+		setStartTime(startTime);
+		setEndTime(endTime);
+	}
 
 	public void setDescription(String description) {
 		this.description = description;
@@ -90,7 +101,7 @@ public class Task {
 		return this.endTime;
 	}
 
-	//@Override
+	/*//@Override
 	public String toString() {
 		String taskDetails = "";
 		taskDetails += "Description: " + this.getDescription();
@@ -102,5 +113,5 @@ public class Task {
 		}
 		taskDetails += " Complete?" + isComplete();
 		return taskDetails;
-	}
+	}*/
 }
