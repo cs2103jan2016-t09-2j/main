@@ -298,6 +298,7 @@ public class Logic {
 			oldTask.setStartTime(newTask.getStartTime());
 		}
 
+		addTaskInOrder(oldTask);
 		setFeedBack(FEEDBACK_TASK_MODIFIED);
 
 		if ((newTask.getDescription() == null) && (newTask.getEndDate() == null) && (newTask.getEndTime() == null)
