@@ -15,11 +15,9 @@
 // @Test
 // public void testWriteToFile() throws NullPointerException, IOException {
 //	 
-//
-//	 
 //	 Storage storageTest= new Storage();
-//	 storageTest.floatingTasksComplete.add(test1);
-//	 storageTest.writeToCompleteFloatingFile("completeFloatingFile");
+//	 
+//	 
 //	 
 //	 
 //	 
