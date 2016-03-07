@@ -4,6 +4,11 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8"/>
+<<<<<<< HEAD
 	<classpathentry kind="lib" path="C:/Users/Jonathan/Desktop/NUS/Yr 2 Sem 2/CS2103/gson-2.6.1.jar"/>
+=======
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="C:/Users/Chill_Corners_2/Downloads/gson-2.6.2.jar"/>
+>>>>>>> 90f0827fbd3a961577f3e48ff0056f154f23a3d7
 	<classpathentry kind="output" path="bin"/>
 </classpath>

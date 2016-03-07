@@ -14,16 +14,18 @@ package GUI;
 import java.util.Scanner;
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.TimerTask;
 
 import ScheduleHacks.Task;
 import Logic.Logic;
 
-public class TempCLI {
+public class TempCLI extends TimerTask {
 
 	private static final Scanner scanner = new Scanner(System.in);
 
 	private static final String MESSAGE_WELCOME = "Welcome to ScheduleHacks!";
 	private static final String MESSAGE_BYE = "Good Bye!";
+	private static Logic logicObj = new Logic ();
 
 	public static int count = 1;
 
@@ -32,7 +34,6 @@ public class TempCLI {
 	public static void main(String[] args) {
 		showToUser(MESSAGE_WELCOME);
 		TempCLI taskManager = new TempCLI();
-		Logic logicObj = new Logic();
 		taskManager.startScheduleHacks(logicObj);
 	}
 
@@ -40,9 +41,10 @@ public class TempCLI {
 		while (true) {
 			readInput();
 			executeInput(logicObj);
+			run ();
 		}
 	}
-
+	
 	public void setUserCommand(String newCommand) {
 		this.userCommand = newCommand;
 	}
@@ -95,6 +97,9 @@ public class TempCLI {
 		}
 	}
 	
+	public Logic getLogicObj (Logic logicObj) {
+		return logicObj;
+	}
 	public static void exitScheduleHacks() {
 		showToUser(MESSAGE_BYE);
 		System.exit(0);
@@ -107,5 +112,11 @@ public class TempCLI {
 
 	public static void showToUser(String someText) {
 		System.out.println(someText);
+	}
+
+	public void run() {
+		Logic periodicLogicObj = logicObj;
+		periodicLogicObj.autoChangeTaskStatus();
+		
 	}
 }
