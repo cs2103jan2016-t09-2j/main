@@ -1,7 +1,6 @@
 package Logic;
 
 import java.util.ArrayList;
-import java.util.Scanner;
 import java.time.LocalDateTime;
 
 import ScheduleHacks.Task;
@@ -25,7 +24,6 @@ public class Logic {
 	private static final String FEEDBACK_INVALID_COMMAND = "Invalid Command!";
 	private static final String FEEDBACK_INVALID_COMMAND_TYPE = "Invalid command type entered!";
 	private static final String FEEDBACK_TASK_ADDED = "Task Added Successfully";
-	private static final String FEEDBACK_CLEAR_ALL_TASKS = "All tasks deleted!";
 	private static final String FEEDBACK_TASK_DELETED = "Task Deleted Successfully";
 	private static final String FEEDBACK_NON_EXISTENT_TASK_NUM = "Task number entered was not found!";
 	private static final String FEEDBACK_NEGATIVE_TASK_NUM = "Task number entered cannot be 0 or negative!";
@@ -248,7 +246,6 @@ public class Logic {
 	 */
 	private void deleteTask(Task executeTask, Command retrievedCommand) {
 		int taskDigit = retrievedCommand.getIndexNumber();
-		int maxIndex = scheduledTasksOverDue.size() + scheduledTasksToDo.size() + floatingTasksToDo.size();
 
 		if (taskDigit > 0) {
 			if (taskDigit <= scheduledTasksOverDue.size()) {
