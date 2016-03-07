@@ -165,11 +165,15 @@ public class CommandParserTest {
 	
 	@Test
 	public void checkGetParsedCommand9()throws Exception {
-		String testString = "del 178";
+		try {
+			String testString = "del 5";
 		Command cmd = CommandParser.getParsedCommand(testString);
 		assertEquals(COMMAND_TYPE.DELETE_TASK, cmd.getCommandType());
-		assertEquals(178, cmd.getIndexNumber());
+		assertEquals(5, cmd.getIndexNumber());
 		assertEquals(null, cmd.getTaskDetails());
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
+		}
 	}
 	
 	@Test

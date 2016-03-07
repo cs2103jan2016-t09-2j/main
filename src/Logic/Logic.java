@@ -113,6 +113,7 @@ public class Logic {
 			Task getTaskToExecute = getTaskDescription(existingCommand);
 			execute(typeCommand, existingCommand, getTaskToExecute);
 		} catch (Exception e) {
+			// System.out.println(e.getMessage());
 			setFeedBack(FEEDBACK_INVALID_COMMAND);
 		}
 	}
@@ -223,10 +224,10 @@ public class Logic {
 					if ((taskStartDateTime.compareTo(selectedTaskStartDateTime)) < 0) {
 						return i;
 					}
-				} 
+				}
 			}
 		}
-			return taskPosition;
+		return taskPosition;
 	}
 
 	/*
@@ -237,13 +238,17 @@ public class Logic {
 		int taskDigit = retrievedCommand.getIndexNumber();
 
 		if (taskDigit > 0) {
-			if (taskDigit <= scheduledTasksToDo.size()) {
-				scheduledTasksToDo.remove(taskDigit - 1);
+			if (taskDigit <= scheduledTasksOverDue.size()) {
+				scheduledTasksOverDue.remove(taskDigit - 1);
+				setFeedBack(FEEDBACK_TASK_DELETED);
+				/* setScheduledTasksOverDue(scheduledTasksOverDue); */
+			} else if (taskDigit <= scheduledTasksOverDue.size() + scheduledTasksToDo.size()) {
+				scheduledTasksToDo.remove(taskDigit - 1 - scheduledTasksOverDue.size());
 				setFeedBack(FEEDBACK_TASK_DELETED);
 				/* setScheduledTasksToDo(scheduledTasksToDo); */
-			} else if ((taskDigit > scheduledTasksToDo.size())
-					&& (taskDigit <= scheduledTasksToDo.size() + floatingTasksToDo.size())) {
-				floatingTasksToDo.remove(taskDigit - 1 - scheduledTasksToDo.size());
+			} else if (taskDigit <= scheduledTasksToDo.size() + floatingTasksToDo.size()
+					+ scheduledTasksOverDue.size()) {
+				floatingTasksToDo.remove(taskDigit - 1 - scheduledTasksToDo.size() - scheduledTasksOverDue.size());
 				setFeedBack(FEEDBACK_TASK_DELETED);
 				/* setFloatingTasksToDo(floatingTasksToDo); */
 			} else {
@@ -252,25 +257,6 @@ public class Logic {
 		} else {
 			setFeedBack(FEEDBACK_NEGATIVE_TASK_NUM);
 		}
-
-		if (executeTask.getDescription().equalsIgnoreCase("all")) {
-			scheduledTasksToDo.clear();
-			scheduledTasksOverDue.clear();
-			scheduledTasksComplete.clear();
-			floatingTasksToDo.clear();
-			floatingTasksComplete.clear();
-			setFeedBack(FEEDBACK_CLEAR_ALL_TASKS);
-			/*
-			 * setScheduledTasksToDo(scheduledTasksToDo);
-			 * setScheduledTasksOverDue(scheduledTasksOverDue);
-			 * setScheduledTasksComplete(scheduledTasksComplete);
-			 * setFloatingTasksToDo(floatingTasksToDo);
-			 * setFloatingTasksComplete(floatingTasksComplete);
-			 */
-		} else if (!(executeTask.getDescription().equalsIgnoreCase("all"))
-				&& !(executeTask.getDescription().equals(null))) {
-			setFeedBack(FEEDBACK_TASK_NUM_NOT_FOUND);
-		}
 	}
 
 	/*
@@ -278,13 +264,18 @@ public class Logic {
 	 * Edits corresponding task based on description, date or time
 	 */
 	private void modifyTask(Task executeTask, Command retrievedCommand) {
-		int taskDigitToModify = retrievedCommand.getIndexNumber();
+		int taskDigitToModify = retrievedCommand.getIndexNumber() - 1;
 
-		if (taskDigitToModify > 0) {
-			if (taskDigitToModify <= scheduledTasksToDo.size()) {
-				modifyScheduledTasksToDo(executeTask, taskDigitToModify);
-			} else if ((taskDigitToModify > scheduledTasksToDo.size())
-					&& (taskDigitToModify <= scheduledTasksToDo.size() + floatingTasksToDo.size())) {
+		if (taskDigitToModify >= 0) {
+			if (taskDigitToModify <= scheduledTasksOverDue.size()) {
+				modifyScheduledTask(executeTask, taskDigitToModify, scheduledTasksOverDue);
+			} else if (taskDigitToModify <= scheduledTasksToDo.size() + scheduledTasksOverDue.size()) {
+				taskDigitToModify -= (scheduledTasksOverDue.size() + scheduledTasksToDo.size());
+				modifyScheduledTask(executeTask, taskDigitToModify, scheduledTasksToDo);
+			} else if (taskDigitToModify <= scheduledTasksOverDue.size() + scheduledTasksToDo.size()
+					+ floatingTasksToDo.size()) {
+				taskDigitToModify -= (scheduledTasksOverDue.size() + scheduledTasksToDo.size()
+						+ floatingTasksToDo.size());
 				modifyFloatingTasksToDo(executeTask, taskDigitToModify);
 			} else {
 				setFeedBack(FEEDBACK_NON_EXISTENT_TASK_NUM);
@@ -294,8 +285,8 @@ public class Logic {
 		}
 	}
 
-	private void modifyScheduledTasksToDo(Task executeTask, int taskNum) {
-		Task taskToEdit = scheduledTasksToDo.remove(taskNum - 1);
+	private void modifyScheduledTask(Task executeTask, int taskNum, ArrayList<Task> listToModify) {
+		Task taskToEdit = listToModify.remove(taskNum);
 
 		if (executeTask.getDescription() != null) {
 			taskToEdit.setDescription(executeTask.getDescription());
@@ -317,7 +308,7 @@ public class Logic {
 			taskToEdit.setStartTime(executeTask.getStartTime());
 			/* setScheduledTasksToDo(scheduledTasksToDo); */
 		}
-		addTaskInOrder(scheduledTasksToDo, taskToEdit);
+		addTaskInOrder(listToModify, taskToEdit);
 		setFeedBack(FEEDBACK_TASK_MODIFIED);
 		if ((executeTask.getDescription() == null) && (executeTask.getEndDate() == null)
 				&& (executeTask.getEndTime() == null) && (executeTask.getStartDate() == null)
@@ -328,7 +319,7 @@ public class Logic {
 	}
 
 	private void modifyFloatingTasksToDo(Task executeTask, int taskNum) {
-		Task taskToEdit = floatingTasksToDo.get(taskNum - 1 - scheduledTasksToDo.size());
+		Task taskToEdit = floatingTasksToDo.get(taskNum);
 
 		if (executeTask.getDescription() != null) {
 			taskToEdit.setDescription(executeTask.getDescription());
@@ -345,18 +336,18 @@ public class Logic {
 		if (executeTask.getStartTime() != null) {
 			taskToEdit.setStartTime(executeTask.getStartTime());
 		}
-		
+
 		if ((executeTask.getDescription() == null) && (executeTask.getEndDate() == null)
 				&& (executeTask.getEndTime() == null) && (executeTask.getStartDate() == null)
 				&& (executeTask.getStartTime() == null)) {
 			setFeedBack(FEEDBACK_TASK_NOT_MODIFIED);
 		}
-		
-		else if ((taskToEdit.getDescription().equals(executeTask.getDescription())) && 
-		((taskToEdit.getEndDate()) == null) && ((taskToEdit.getEndTime()) == null) && 
-		((taskToEdit.getStartDate()) == null) && ((taskToEdit.getStartTime()) == null)) {
+
+		else if ((taskToEdit.getDescription().equals(executeTask.getDescription()))
+				&& ((taskToEdit.getEndDate()) == null) && ((taskToEdit.getEndTime()) == null)
+				&& ((taskToEdit.getStartDate()) == null) && ((taskToEdit.getStartTime()) == null)) {
 			setFeedBack(FEEDBACK_TASK_MODIFIED);
-			/*setFloatingTasksToDo(floatingTasksToDo)*/
+			/* setFloatingTasksToDo(floatingTasksToDo) */
 		} else {
 			taskToEdit = CommandParser.convertFloatingToScheduled(taskToEdit);
 			changeFloatingToScheduledProcedures(taskToEdit);
@@ -429,10 +420,10 @@ public class Logic {
 		for (int i = 0; i < scheduledTasksToDo.size(); i++) {
 			LocalDateTime scheduledEndDateTime = LocalDateTime.of(scheduledTasksToDo.get(i).getEndDate(),
 					scheduledTasksToDo.get(i).getEndTime());
-			
+
 			if ((scheduledEndDateTime.compareTo(presentDateTime)) < 0) {
 				changeStatusToOverdue(i);
-			} 
+			}
 		}
 	}
 

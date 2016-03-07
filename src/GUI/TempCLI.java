@@ -61,12 +61,15 @@ public class TempCLI {
 		count = 1;
 		logicObj.startExecution(getUserCommand());
 		showToUser(logicObj.getFeedBack());
+		System.out.println("******** OVERDUE TASKS ********");
+		showTimedTaskListToUser(logicObj.getScheduledTasksOverDue());
+		System.out.println("******** UPCOMING TASKS ********");
 		showTimedTaskListToUser(logicObj.getScheduledTasksToDo());
+		System.out.println("******** FLOATING TASKS ********");
 		showUntimedTaskListToUser(logicObj.getFloatingTasksToDo());
 	}
 
 	public void showTimedTaskListToUser(ArrayList<Task> taskList) {
-		System.out.println("******** UPCOMING TASKS ********");
 		for (Task task : taskList) {
 			System.out.println((count++) + ". " + task.getDescription());
 			if (task.getStartDate() != null && task.getStartTime() != null) {
@@ -77,7 +80,7 @@ public class TempCLI {
 				System.out.println(task.getStartDate());
 				System.out.print("\t To ");
 			} else {
-				System.out.print("\t By ");
+				System.out.print("\t At ");
 			}
 			if (!task.getEndTime().equals(LocalTime.MAX)) {
 				System.out.print(task.getEndTime().toString() + ", ");
@@ -87,7 +90,6 @@ public class TempCLI {
 	}
 
 	public void showUntimedTaskListToUser(ArrayList<Task> taskList) {
-		System.out.println("******** FLOATING TASKS ********");
 		for (Task task : taskList) {
 			System.out.println((count++) + ". " + task.getDescription());
 		}
