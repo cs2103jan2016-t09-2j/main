@@ -5,7 +5,6 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Scanner;
 import java.io.FileReader;
@@ -22,8 +21,6 @@ import com.google.gson.JsonSyntaxException;
 import java.util.logging.Logger;
 import java.util.logging.Level;
 
-import ScheduleHacks.Task;
-
 public class Storage {
 
 	private static final String toDoScheduledFile = "toDoScheduled";
@@ -31,8 +28,10 @@ public class Storage {
 	private static final String overdueScheduledFile ="overdueScheduled";
 	private static final String completeScheduledFile = "completeScheduled";
 	private static final String completeFloatingFile = "completeFloating";
+	
 
-	private Gson gson = new Gson();
+//	private static final Gson gson = new GsonBuilder().registerTypeAdapter(Task.class, 
+//			new TaskAdapter<Task>()).create();
 	private static Logger logger = Logger.getLogger("Storage");
 
 	/*
@@ -42,14 +41,15 @@ public class Storage {
 	private static final String NULL_INPUT= "Null input passed.";
 	
 	ArrayList<Task> floatingTasksToDo = new ArrayList<Task>();
-	public ArrayList<Task> floatingTasksComplete = new ArrayList<Task>();
-	public ArrayList<Task> scheduledTasksToDo = new ArrayList<Task>();
-	public ArrayList<Task> scheduledTasksComplete = new ArrayList<Task>();
+	ArrayList<Task> floatingTasksComplete = new ArrayList<Task>();
+	ArrayList<Task> scheduledTasksToDo = new ArrayList<Task>();
+	ArrayList<Task> scheduledTasksComplete = new ArrayList<Task>();
 	ArrayList<Task> scheduledTasksOverDue = new ArrayList<Task>();
 	
 	public Storage() {
 		
 	}
+	
 	public void writeToFile(ArrayList<Task> toDoScheduledList, ArrayList<Task> toDoFloatingList,
 			ArrayList<Task> overdueScheduledList, ArrayList<Task> completeScheduledList,
 			ArrayList<Task> completeFloatingList) throws IOException {
@@ -62,7 +62,8 @@ public class Storage {
 
 	}
 	
-	public void writeToCompleteFloatingFile(String completeFloatingFile) throws IOException {
+	
+	public void writeToCompleteFloatingFile( String completeFloatingFile) throws IOException {
 
 		assert floatingTasksComplete != null;
 		
@@ -71,7 +72,6 @@ public class Storage {
 
 		for (Task completeFloatingTask : floatingTasksComplete) {
 			if (completeFloatingTask.getDescription() != null) {
-				bw.write("Completed Floatings Task: "+ "\t");
 				taskWriter(bw, completeFloatingTask);
 			}
 			bw.close();
@@ -89,7 +89,6 @@ public class Storage {
 				if (completeScheduledTask.getStartTime() != null
 						&& completeScheduledTask.getStartTime() != null) {
 
-					bw.write("Completed Scheduled Task: " + "\t");
 					taskWriter(bw, completeScheduledTask);
 				}
 				bw.close();
@@ -105,7 +104,7 @@ public class Storage {
 		for (Task overdueScheduledTask : scheduledTasksOverDue) {
 			if (overdueScheduledTask.getDescription() != null) {
 				if (overdueScheduledTask.getStartTime() != null && overdueScheduledTask.getStartDate() != null) {
-					bw.write("Overdued Scheduled Task: " + "\t");
+
 					taskWriter(bw, overdueScheduledTask);
 				}
 			}
@@ -122,7 +121,7 @@ public class Storage {
 
 		for (Task toDoFloatingTask : floatingTasksToDo) {
 			if (toDoFloatingTask.getDescription() != null) {
-				bw.write("To Do Floating Task: " + "\t");
+
 				taskWriter(bw, toDoFloatingTask);
 			}
 			bw.close();
@@ -139,7 +138,7 @@ public class Storage {
 		for (Task toDoScheduledTask : scheduledTasksToDo) {
 			if (toDoScheduledTask.getDescription() != null) {
 				if (toDoScheduledTask.getStartTime() != null && toDoScheduledTask.getStartDate() != null) {
-					bw.write("To Do Scheduled Task: " + "\t");
+					bw.write("To Do Scheduled Task: ");
 					taskWriter(bw, toDoScheduledTask);
 				}
 			}
@@ -148,32 +147,39 @@ public class Storage {
 	
 	}
 
-	public void readFromFile(ArrayList<Task> toDoScheduledList, ArrayList<Task> toDoFloatingList,
-			ArrayList<Task> overdueScheduledList, ArrayList<Task> completeScheduledList,
-			ArrayList<Task> completeFloatingList) throws IOException {
+//	public void readFromFile(ArrayList<Task> toDoScheduledList, ArrayList<Task> toDoFloatingList,
+//			ArrayList<Task> overdueScheduledList, ArrayList<Task> completeScheduledList,
+//			ArrayList<Task> completeFloatingList) throws IOException {
+//
+//	//	readToDoScheduledFile(toDoScheduledFile);
+//	//	readToDoFloatingFile(toDoFloatingFile);
+//	//	readToOverdueScheduledFile(overdueScheduledFile);
+//	//	readToCompleteScheduledFile(completeScheduledFile);
+//		readToCompleteFloatingFile(completeFloatingFile);
+//
+//	}
 
-	//	readToDoScheduledFile(toDoScheduledFile);
-	//	readToDoFloatingFile(toDoFloatingFile);
-	//	readToOverdueScheduledFile(overdueScheduledFile);
-	//	readToCompleteScheduledFile(completeScheduledFile);
-		readToCompleteFloatingFile(completeFloatingFile);
-
+	public void readToCompleteFloatingFile(String completeFloatingFile) throws FileNotFoundException, IOException {
+		
+		//ArrayList<Task> floatingTasksCompleteUpdated = new ArrayList<Task>();
+		
+	//	File completeFloating = new File(fileName);
+		//BufferedReader br = new BufferedReader(new FileReader(completeFloating));
+			
+		
+		 	File f = new File (completeFloatingFile);
+	        Scanner fileInput = new Scanner(f);
+	        Gson gson = new Gson();
+	        while (fileInput.hasNextLine()){
+	            String jsonLine = fileInput.nextLine();
+	            Task task = gson.fromJson(jsonLine, Task.class);
+	            floatingTasksComplete.add(task);
+	        }
+	        fileInput.close();  
+	    
 	}
-
-	public void readToCompleteFloatingFile(String completeFloatingFile) throws JsonSyntaxException, IOException {
-
-		BufferedReader br = new BufferedReader(new FileReader(completeFloatingFile));
-		String text = "";
-
-		while ((text = br.readLine()) != null) {
-			Task task = gson.fromJson(text, Task.class);
-			floatingTasksComplete.add(task);
-		}
-		br.close();
-
-
-	}
-
+	
+	
 //	private void readToCompleteScheduledFile(File completeScheduled) throws IOException {
 //
 //		ArrayList<Task> completeScheduledList = new ArrayList<Task>();
@@ -182,25 +188,34 @@ public class Storage {
 //
 //	}
 
-//	private ArrayList<Task> readToOverdueScheduledFile(File overdueScheduled) throws IOException {
+//	public void readToOverdueScheduledFile(String overdueScheduled) throws IOException {
 //
-//		ArrayList<Task> overdueScheduledFile = new ArrayList<Task>();
-//
-//		overdueScheduledFile = taskReader(overdueScheduled);
-//
-//		return null;
-//
-//	}
-//
-//	private ArrayList<Task> readToDoFloatingListFile(File toDofFloating) throws FileNotFoundException {
-//
-//		BufferedReader br = new BufferedReader(new FileReader(toDoFloatingFile));
-//		ArrayList<Task> toDoFloatingFile = new ArrayList<Task>();
-//
-//		return null;
+//	 	File f = new File (overdueScheduledFile);
+//        Scanner fileInput = new Scanner(f);
+//        Gson gson = new Gson();
+//        while (fileInput.hasNextLine()){
+//            String jsonLine = fileInput.nextLine();
+//            Task task = gson.fromJson(jsonLine, Task.class);
+//            scheduledTasksOverDue.add(task);
+//        }
+//        fileInput.close(); 
 //
 //	}
-//
+
+	public void readToDoFloatingListFile(String toDoFloatingFile) throws FileNotFoundException {
+		
+	 	File f = new File (toDoFloatingFile);
+        Scanner fileInput = new Scanner(f);
+        Gson gson = new Gson();
+        while (fileInput.hasNextLine()){
+            String jsonLine = fileInput.nextLine();
+            Task task = gson.fromJson(jsonLine, Task.class);
+            floatingTasksToDo.add(task);
+        }
+        fileInput.close();  
+
+	}
+
 //	private ArrayList<Task> readToDoScheduledFile(File toDoScheduled) throws FileNotFoundException {
 //
 //		BufferedReader br = new BufferedReader(new FileReader(toDoScheduledFile));
@@ -212,25 +227,24 @@ public class Storage {
 
 	private void taskWriter(BufferedWriter bw, Task task) throws IOException {
 
-		Gson gsonWrite = new Gson();
-		
+		Gson gsonWrite = new Gson();		
 		String json = gsonWrite.toJson(task) + "\n";
 		bw.append(json);
-		
-		
+
 	}
 
-	private void taskReader(String file) throws IOException {
 
-		BufferedReader br = new BufferedReader(new FileReader(file));
-		String text = "";
-
-		while ((text = br.readLine()) != null) {
-			Task task = gson.fromJson(text, Task.class);
-			floatingTasksComplete.add(task);
-		}
-		br.close();
-	}
-	
+//	private void taskReader(String file) throws IOException {
+//
+//		BufferedReader br = new BufferedReader(new FileReader(file));
+//		String text = "";
+//
+//		while ((text = br.readLine()) != null) {
+//			Task task = gson.fromJson(text, Task.class);
+//			floatingTasksComplete.add(task);
+//		}
+//		br.close();
+//	}
+//	
 
 }
