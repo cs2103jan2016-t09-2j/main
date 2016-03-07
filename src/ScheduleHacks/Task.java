@@ -1,90 +1,106 @@
 package ScheduleHacks;
 
-
 import java.time.LocalDate;
 import java.time.LocalTime;
 
 public class Task {
-	
+
 	private String description;
 	private boolean isFloatingType, isScheduledType, isComplete;
 	private LocalDate startDate, endDate;
 	private LocalTime startTime, endTime;
-	
-	public Task()  {
+
+	public Task() {
 		setDescription(null);
-		isFloatingType = false; isScheduledType = false;
+		isFloatingType = false;
+		isScheduledType = false;
 		isComplete = false;
-		setStartDate(null); setEndDate(null);
-		setStartTime(null); setEndTime(null);
+		setStartDate(null);
+		setEndDate(null);
+		setStartTime(null);
+		setEndTime(null);
 	}
-	
-	public void setDescription(String description){
+
+	public void setDescription(String description) {
 		this.description = description;
 	}
-	
-	public String getDescription(){
+
+	public String getDescription() {
 		return this.description;
 	}
-	
-	public void setFloatingTask(){
-		isFloatingType = true; 
+
+	public void setFloatingTask() {
+		isFloatingType = true;
 	}
-	
-	public void setScheduledTask(){
-		isFloatingType = false; 
+
+	public void setScheduledTask() {
+		isFloatingType = false;
 		isScheduledType = true;
 	}
-	
-	public void setAsComplete(){
+
+	public void setAsComplete() {
 		isComplete = true;
 	}
-	
-	public void setAsIncomplete(){
+
+	public void setAsIncomplete() {
 		isComplete = false;
 	}
-	
+
 	public boolean isFloatingTask() {
 		return isFloatingType;
 	}
-	
+
 	public boolean isScheduledTask() {
 		return isScheduledType;
 	}
-	
+
 	public boolean isComplete() {
 		return isComplete;
 	}
-	
+
 	public void setStartDate(LocalDate startDate) {
-		this.startDate = startDate; 
+		this.startDate = startDate;
 	}
-	
+
 	public void setEndDate(LocalDate endDate) {
-		this.endDate = endDate; 
+		this.endDate = endDate;
 	}
-	
+
 	public LocalDate getStartDate() {
-		return this.startDate; 
+		return this.startDate;
 	}
-	
+
 	public LocalDate getEndDate() {
-		return this.endDate; 
+		return this.endDate;
 	}
-	
+
 	public void setStartTime(LocalTime startTime) {
-		this.startTime = startTime; 
+		this.startTime = startTime;
 	}
-	
+
 	public void setEndTime(LocalTime endTime) {
-		this.endTime = endTime; 
+		this.endTime = endTime;
 	}
-	
+
 	public LocalTime getStartTime() {
-		return this.startTime; 
+		return this.startTime;
 	}
-	
+
 	public LocalTime getEndTime() {
-		return this.endTime; 
+		return this.endTime;
+	}
+
+	//@Override
+	public String toString() {
+		String taskDetails = "";
+		taskDetails += "Description: " + this.getDescription();
+		if (this.getEndDate() != null) {
+			if (this.getStartDate() != null) {
+				taskDetails += " " + this.getStartTime().toString() + ", " + this.getStartDate().toString();
+			}
+			taskDetails += " " + this.getEndTime().toString() + ", " + this.getEndDate().toString();
+		}
+		taskDetails += " Complete?" + isComplete();
+		return taskDetails;
 	}
 }
