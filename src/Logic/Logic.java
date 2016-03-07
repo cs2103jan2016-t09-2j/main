@@ -1,16 +1,20 @@
 package Logic;
 
 import java.util.ArrayList;
+import java.util.Scanner;
 import java.time.LocalDateTime;
 
 import ScheduleHacks.Task;
 import Parser.CommandParser;
 import Parser.Command;
 import GUI.TempCLI;
+import Storage.SnigdhaTempStorage;
 
 public class Logic {
 
 	private String feedBack;
+	
+	static SnigdhaTempStorage storage = new SnigdhaTempStorage();
 
 	private ArrayList<Task> floatingTasksToDo = new ArrayList<Task>();
 	private ArrayList<Task> floatingTasksComplete = new ArrayList<Task>();
@@ -21,6 +25,7 @@ public class Logic {
 	private static final String FEEDBACK_INVALID_COMMAND = "Invalid Command!";
 	private static final String FEEDBACK_INVALID_COMMAND_TYPE = "Invalid command type entered!";
 	private static final String FEEDBACK_TASK_ADDED = "Task Added Successfully";
+	private static final String FEEDBACK_CLEAR_ALL_TASKS = "All tasks deleted!";
 	private static final String FEEDBACK_TASK_DELETED = "Task Deleted Successfully";
 	private static final String FEEDBACK_NON_EXISTENT_TASK_NUM = "Task number entered was not found!";
 	private static final String FEEDBACK_NEGATIVE_TASK_NUM = "Task number entered cannot be 0 or negative!";
@@ -96,7 +101,18 @@ public class Logic {
 	 * Logic class
 	 */
 	public void startExecution(String userInput) {
+		try {
+		storage.loadToList();
+		setFloatingTasksComplete(storage.getFloatingTasksComplete());
+		setFloatingTasksToDo(storage.getFloatingTasksToDo());
+		setScheduledTasksComplete(storage.getScheduledTasksComplete());
+		setScheduledTasksToDo(storage.getScheduledTasksToDo());
+		setScheduledTasksOverDue(storage.getScheduledTasksOverDue());
+		
 		retrieveParsedCommand(userInput);
+		} catch(Exception e) {
+			System.out.println(e.getMessage());
+		}
 	}
 
 	/*
@@ -111,6 +127,8 @@ public class Logic {
 			typeCommand = getCommand(existingCommand);
 			Task getTaskToExecute = getTaskDescription(existingCommand);
 			execute(typeCommand, existingCommand, getTaskToExecute);
+			storage.storeToFiles(getFloatingTasksToDo(), getFloatingTasksComplete(), getScheduledTasksToDo(),
+					getScheduledTasksComplete(), getScheduledTasksOverDue());
 		} catch (Exception e) {
 			// System.out.println(e.getMessage());
 			setFeedBack(FEEDBACK_INVALID_COMMAND);
@@ -230,6 +248,7 @@ public class Logic {
 	 */
 	private void deleteTask(Task executeTask, Command retrievedCommand) {
 		int taskDigit = retrievedCommand.getIndexNumber();
+		int maxIndex = scheduledTasksOverDue.size() + scheduledTasksToDo.size() + floatingTasksToDo.size();
 
 		if (taskDigit > 0) {
 			if (taskDigit <= scheduledTasksOverDue.size()) {
@@ -267,7 +286,7 @@ public class Logic {
 			} else if (taskDigitToModify < scheduledTasksToDo.size() + scheduledTasksOverDue.size()) {
 				taskDigitToModify -= (scheduledTasksOverDue.size());
 				modifyScheduledTask(executeTask, taskDigitToModify, scheduledTasksToDo);
-			} else{
+			} else {
 				taskDigitToModify -= (scheduledTasksOverDue.size() + scheduledTasksToDo.size());
 				modifyFloatingTasksToDo(executeTask, taskDigitToModify);
 			}
@@ -363,11 +382,11 @@ public class Logic {
 			if (taskIndex < scheduledTasksOverDue.size()) {
 				markAsComplete(scheduledTasksOverDue, scheduledTasksComplete, taskIndex);
 			} else if (taskIndex < scheduledTasksToDo.size() + scheduledTasksOverDue.size()) {
-				taskIndex -= (scheduledTasksOverDue.size());
+				taskIndex -= (scheduledTasksToDo.size() + scheduledTasksOverDue.size());
 				markAsComplete(scheduledTasksToDo, scheduledTasksComplete, taskIndex);
 			} else if (taskIndex < scheduledTasksOverDue.size() + scheduledTasksToDo.size()
 					+ floatingTasksToDo.size()) {
-				taskIndex -= (scheduledTasksToDo.size() + scheduledTasksOverDue.size());
+				taskIndex -= (floatingTasksToDo.size() + scheduledTasksToDo.size() + scheduledTasksOverDue.size());
 				markAsComplete(floatingTasksToDo, floatingTasksComplete, taskIndex);
 			} else {
 				setFeedBack(FEEDBACK_NON_EXISTENT_TASK_NUM);
@@ -431,4 +450,3 @@ public class Logic {
 		// System.exit(0);//how to save everything and exit?
 	}
 }
-

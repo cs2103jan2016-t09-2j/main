@@ -25,11 +25,11 @@ public class SnigdhaTempStorage {
 	private ArrayList<Task> scheduledTasksOverDue = new ArrayList<Task>();
 
 	// Files to Store and Restore data
-	private static final String toDoScheduledFile = "toDoScheduled";
-	private static final String toDoFloatingFile = "toDoFloating";
-	private static final String overdueScheduledFile = "overdueScheduled";
-	private static final String completeScheduledFile = "completeScheduled";
-	private static final String completeFloatingFile = "completeFloating";
+	private static final String toDoScheduledFile = "toDoScheduled.json";
+	private static final String toDoFloatingFile = "toDoFloating.json";
+	private static final String overdueScheduledFile = "overdueScheduled.json";
+	private static final String completeScheduledFile = "completeScheduled.json";
+	private static final String completeFloatingFile = "completeFloating.json";
 
 	/****************** SETTER METHODS ***********************/
 	private void setScheduledTasksToDo(ArrayList<Task> currentTaskList) {
@@ -82,11 +82,11 @@ public class SnigdhaTempStorage {
 	public void storeToFiles(ArrayList<Task> floatingTasksToDo, ArrayList<Task> floatingTasksComplete,
 			ArrayList<Task> scheduledTasksToDo, ArrayList<Task> scheduledTasksComplete,
 			ArrayList<Task> scheduledTasksOverDue) throws Exception {
-		setFloatingTasksToDo(floatingTasksToDo);
+		/*setFloatingTasksToDo(floatingTasksToDo);
 		setFloatingTasksComplete(floatingTasksComplete);
 		setScheduledTasksToDo(scheduledTasksToDo);
 		setScheduledTasksComplete(scheduledTasksComplete);
-		setScheduledTasksOverDue(scheduledTasksOverDue);
+		setScheduledTasksOverDue(scheduledTasksOverDue);*/
 
 		writeToFile(toDoFloatingFile, floatingTasksToDo);
 		writeToFile(toDoScheduledFile, scheduledTasksToDo);
@@ -115,8 +115,9 @@ public class SnigdhaTempStorage {
 		BufferedWriter bw = new BufferedWriter(new FileWriter(f));
 
 		for (Task newTask : taskList) {
-			String json1 = gson.toJson(newTask) + "\n";
-			bw.append(json1);
+			String json1 = gson.toJson(newTask);
+			bw.write(json1);
+			bw.newLine();
 		}
 
 		bw.close();
