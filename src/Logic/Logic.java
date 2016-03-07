@@ -254,15 +254,11 @@ public class Logic {
 		}
 
 		if (executeTask.getDescription().equalsIgnoreCase("all")) {
-			scheduledTasksToDo.clear();// not too sure about this aspect as we
-			scheduledTasksOverDue.clear();// are maintaining 5 different sets of
-											// ArrayLists
-			scheduledTasksComplete.clear();// perhaps the command can be
-											// modified to
-			floatingTasksToDo.clear();// "clear all upcoming s/completed
-										// s/overdue s/incomplete f/complete f"
-			floatingTasksComplete.clear();// so we will know which ArrayList to
-											// clear
+			scheduledTasksToDo.clear();
+			scheduledTasksOverDue.clear();
+			scheduledTasksComplete.clear();
+			floatingTasksToDo.clear();
+			floatingTasksComplete.clear();
 			setFeedBack(FEEDBACK_CLEAR_ALL_TASKS);
 			/*
 			 * setScheduledTasksToDo(scheduledTasksToDo);
@@ -434,7 +430,7 @@ public class Logic {
 			LocalDateTime scheduledEndDateTime = LocalDateTime.of(scheduledTasksToDo.get(i).getEndDate(),
 					scheduledTasksToDo.get(i).getEndTime());
 			
-			if ((scheduledEndDateTime.compareTo(presentDateTime)) <= 0) {
+			if ((scheduledEndDateTime.compareTo(presentDateTime)) < 0) {
 				changeStatusToOverdue(i);
 			} 
 		}
