@@ -121,11 +121,11 @@ class DateParser {
 
 	public static int getValidYear(int year, int month, int dayOfMonth) {
 		if ((year / ParserConstants.CENTURY) == 0) {
-			LocalDate todayDate = LocalDate.now();
-			int thisYear = todayDate.getYear();
+			LocalDate dateFifteenYearsAgo = LocalDate.now().minusYears(15);
+			int thisYear = dateFifteenYearsAgo.getYear();
 			year += (thisYear / ParserConstants.CENTURY) * ParserConstants.CENTURY;
 			LocalDate newDate = LocalDate.of(year, month, dayOfMonth);
-			if (newDate.isBefore(todayDate)) {
+			if (newDate.isBefore(dateFifteenYearsAgo)) {
 				year = year + ParserConstants.CENTURY;
 			}
 		}

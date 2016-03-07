@@ -7,13 +7,13 @@ import ScheduleHacks.Task;
 import Parser.CommandParser;
 import Parser.Command;
 import GUI.TempCLI;
-import Storage.SnigdhaTempStorage;
+import Storage.Storage;
 
 public class Logic {
 
 	private String feedBack;
 	
-	static SnigdhaTempStorage storage = new SnigdhaTempStorage();
+	static Storage storage = new Storage();
 
 	private ArrayList<Task> floatingTasksToDo = new ArrayList<Task>();
 	private ArrayList<Task> floatingTasksComplete = new ArrayList<Task>();
