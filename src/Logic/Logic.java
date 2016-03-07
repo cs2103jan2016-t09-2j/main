@@ -7,10 +7,13 @@ import ScheduleHacks.Task;
 import Parser.CommandParser;
 import Parser.Command;
 import GUI.TempCLI;
+import Storage.SnigdhaTempStorage;
 
 public class Logic {
 
 	private String feedBack;
+	
+	static SnigdhaTempStorage storage = new SnigdhaTempStorage();
 
 	private ArrayList<Task> floatingTasksToDo = new ArrayList<Task>();
 	private ArrayList<Task> floatingTasksComplete = new ArrayList<Task>();
@@ -96,7 +99,18 @@ public class Logic {
 	 * Logic class
 	 */
 	public void startExecution(String userInput) {
+		try {
+		storage.loadToList();
+		setFloatingTasksComplete(storage.getFloatingTasksComplete());
+		setFloatingTasksToDo(storage.getFloatingTasksToDo());
+		setScheduledTasksComplete(storage.getScheduledTasksComplete());
+		setScheduledTasksToDo(storage.getScheduledTasksToDo());
+		setScheduledTasksOverDue(storage.getScheduledTasksOverDue());
+		
 		retrieveParsedCommand(userInput);
+		} catch(Exception e) {
+			System.out.println(e.getMessage());
+		}
 	}
 
 	/*
@@ -111,6 +125,8 @@ public class Logic {
 			typeCommand = getCommand(existingCommand);
 			Task getTaskToExecute = getTaskDescription(existingCommand);
 			execute(typeCommand, existingCommand, getTaskToExecute);
+			storage.storeToFiles(getFloatingTasksToDo(), getFloatingTasksComplete(), getScheduledTasksToDo(),
+					getScheduledTasksComplete(), getScheduledTasksOverDue());
 		} catch (Exception e) {
 			// System.out.println(e.getMessage());
 			setFeedBack(FEEDBACK_INVALID_COMMAND);
@@ -267,7 +283,7 @@ public class Logic {
 			} else if (taskDigitToModify < scheduledTasksToDo.size() + scheduledTasksOverDue.size()) {
 				taskDigitToModify -= (scheduledTasksOverDue.size());
 				modifyScheduledTask(executeTask, taskDigitToModify, scheduledTasksToDo);
-			} else{
+			} else {
 				taskDigitToModify -= (scheduledTasksOverDue.size() + scheduledTasksToDo.size());
 				modifyFloatingTasksToDo(executeTask, taskDigitToModify);
 			}
@@ -363,11 +379,11 @@ public class Logic {
 			if (taskIndex < scheduledTasksOverDue.size()) {
 				markAsComplete(scheduledTasksOverDue, scheduledTasksComplete, taskIndex);
 			} else if (taskIndex < scheduledTasksToDo.size() + scheduledTasksOverDue.size()) {
-				taskIndex -= (scheduledTasksOverDue.size());
+				taskIndex -= (scheduledTasksToDo.size() + scheduledTasksOverDue.size());
 				markAsComplete(scheduledTasksToDo, scheduledTasksComplete, taskIndex);
 			} else if (taskIndex < scheduledTasksOverDue.size() + scheduledTasksToDo.size()
 					+ floatingTasksToDo.size()) {
-				taskIndex -= (scheduledTasksToDo.size() + scheduledTasksOverDue.size());
+				taskIndex -= (floatingTasksToDo.size() + scheduledTasksToDo.size() + scheduledTasksOverDue.size());
 				markAsComplete(floatingTasksToDo, floatingTasksComplete, taskIndex);
 			} else {
 				setFeedBack(FEEDBACK_NON_EXISTENT_TASK_NUM);
@@ -431,4 +447,3 @@ public class Logic {
 		// System.exit(0);//how to save everything and exit?
 	}
 }
-

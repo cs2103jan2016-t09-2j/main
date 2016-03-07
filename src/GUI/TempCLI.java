@@ -25,7 +25,7 @@ public class TempCLI extends TimerTask {
 
 	private static final String MESSAGE_WELCOME = "Welcome to ScheduleHacks!";
 	private static final String MESSAGE_BYE = "Good Bye!";
-	private static Logic logicObj = new Logic();
+	private static Logic logicObj = new Logic ();
 
 	public static int count = 1;
 
@@ -41,10 +41,10 @@ public class TempCLI extends TimerTask {
 		while (true) {
 			readInput();
 			executeInput(logicObj);
-			run();
+			run ();
 		}
 	}
-
+	
 	public void setUserCommand(String newCommand) {
 		this.userCommand = newCommand;
 	}
@@ -96,11 +96,10 @@ public class TempCLI extends TimerTask {
 			System.out.println((count++) + ". " + task.getDescription());
 		}
 	}
-
-	public Logic getLogicObj(Logic logicObj) {
+	
+	public Logic getLogicObj (Logic logicObj) {
 		return logicObj;
 	}
-
 	public static void exitScheduleHacks() {
 		showToUser(MESSAGE_BYE);
 		System.exit(0);
@@ -118,6 +117,6 @@ public class TempCLI extends TimerTask {
 	public void run() {
 		Logic periodicLogicObj = logicObj;
 		periodicLogicObj.autoChangeTaskStatus();
-
+		
 	}
 }
