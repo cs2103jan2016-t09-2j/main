@@ -82,11 +82,11 @@ public class SnigdhaTempStorage {
 	public void storeToFiles(ArrayList<Task> floatingTasksToDo, ArrayList<Task> floatingTasksComplete,
 			ArrayList<Task> scheduledTasksToDo, ArrayList<Task> scheduledTasksComplete,
 			ArrayList<Task> scheduledTasksOverDue) throws Exception {
-		setFloatingTasksToDo(floatingTasksToDo);
+		/*setFloatingTasksToDo(floatingTasksToDo);
 		setFloatingTasksComplete(floatingTasksComplete);
 		setScheduledTasksToDo(scheduledTasksToDo);
 		setScheduledTasksComplete(scheduledTasksComplete);
-		setScheduledTasksOverDue(scheduledTasksOverDue);
+		setScheduledTasksOverDue(scheduledTasksOverDue);*/
 
 		writeToFile(toDoFloatingFile, floatingTasksToDo);
 		writeToFile(toDoScheduledFile, scheduledTasksToDo);
