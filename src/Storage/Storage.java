@@ -34,11 +34,15 @@ public class Storage {
 	
 	
 	// create Directory
+
 	public void setDirectory(){
 		
-		fileDirectory.createDirectory();
-		
+		fileDirectory.createMainDirectory();
+		fileDirectory.createArchiveSubDirectory();
+		fileDirectory.createOverduedSubDirectory();
+		fileDirectory.createToDoSubDirectory();
 	}
+	
 	
 	
 	//Setter Methods
