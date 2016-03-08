@@ -31,7 +31,16 @@ public class Storage {
 	private static final String overdueScheduledFile = "overdueScheduled.json";
 	private static final String completeScheduledFile = "completeScheduled.json";
 	private static final String completeFloatingFile = "completeFloating.json";
-
+	
+	
+	// create Directory
+	public void setDirectory(){
+		
+		fileDirectory.createDirectory();
+		
+	}
+	
+	
 	//Setter Methods
 	private void setScheduledTasksToDo(ArrayList<Task> currentTaskList) {
 		scheduledTasksToDo.clear();
@@ -92,6 +101,7 @@ public class Storage {
 	}
 	
 	public void loadToList() throws Exception{
+		
 		setFloatingTasksComplete(new ArrayList<Task>());
 		setFloatingTasksToDo(new ArrayList<Task>());
 		setScheduledTasksComplete(new ArrayList<Task>());
