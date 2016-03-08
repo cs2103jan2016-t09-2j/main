@@ -25,7 +25,11 @@ public class Storage {
 	private ArrayList<Task> scheduledTasksToDo = new ArrayList<Task>();
 	private ArrayList<Task> scheduledTasksComplete = new ArrayList<Task>();
 	private ArrayList<Task> scheduledTasksOverDue = new ArrayList<Task>();
-
+	
+	private static final String archiveDirectory = "C:\\ScheduleHacksFile\\Archive\\";
+	private static final String ToDoDirectory = "C:\\ScheduleHacksFile\\ToDo\\";
+	private static final String oveduedDirectory = "C:\\ScheduleHacksFile\\Overdued\\";
+	
 	private static final String toDoScheduledFile = "toDoScheduled.json";
 	private static final String toDoFloatingFile = "toDoFloating.json";
 	private static final String overdueScheduledFile = "overdueScheduled.json";
@@ -33,7 +37,7 @@ public class Storage {
 	private static final String completeFloatingFile = "completeFloating.json";
 	
 	
-	// create Directory
+	// create and store files in respective Directory
 
 	public void setDirectory(){
 		
@@ -43,7 +47,11 @@ public class Storage {
 		fileDirectory.createToDoSubDirectory();
 	}
 	
-	
+	public void storeDirectory(){
+		
+		
+		
+	}
 	
 	//Setter Methods
 	private void setScheduledTasksToDo(ArrayList<Task> currentTaskList) {
