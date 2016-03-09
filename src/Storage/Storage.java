@@ -26,6 +26,9 @@ public class Storage {
 	private ArrayList<Task> scheduledTasksComplete = new ArrayList<Task>();
 	private ArrayList<Task> scheduledTasksOverDue = new ArrayList<Task>();
 	
+	private ArrayList<ArrayList<Task>> archiveList = new ArrayList<ArrayList<Task>>();
+	private ArrayList<ArrayList<Task>> currentList = new ArrayList<ArrayList<Task>>();
+	
 	private static final String archiveFilename = "C:\\ScheduleHacksFile\\Archive\\";
 	private static final String ToDoDirectory = "C:\\ScheduleHacksFile\\ToDo\\";
 	private static final String oveduedDirectory = "C:\\ScheduleHacksFile\\Overdued\\";
@@ -118,13 +121,19 @@ public class Storage {
 		setScheduledTasksOverDue(new ArrayList<Task>());
 		setScheduledTasksToDo(new ArrayList<Task>());
 
-		readFromFile(toDoFloatingFile, floatingTasksToDo);
-		readFromFile(toDoScheduledFile, scheduledTasksToDo);
-		readFromFile(completeFloatingFile, floatingTasksComplete);
-		readFromFile(completeScheduledFile, scheduledTasksComplete);
-		readFromFile(overdueScheduledFile, scheduledTasksOverDue);
+//		readFromFile(toDoFloatingFile, floatingTasksToDo);
+//		readFromFile(toDoScheduledFile, scheduledTasksToDo);
+//		readFromFile(completeFloatingFile, floatingTasksComplete);
+//		readFromFile(completeScheduledFile, scheduledTasksComplete);
+//		readFromFile(overdueScheduledFile, scheduledTasksOverDue);
 		
-//		readFromArchiveFile(archiveFilename, floatingTasksComplete,scheduledTasksComplete);
+		readFromArchiveFile(completeScheduledFile, completeFloatingFile,
+				floatingTasksComplete,scheduledTasksComplete);
+		readFromCurrentFile(toDoScheduledFile, toDoFloatingFile,overdueScheduledFile,
+				scheduledTasksToDo,floatingTasksToDo,scheduledTasksOverDue);
+		
+		loadArchiveList(archiveList,floatingTasksComplete,scheduledTasksComplete);
+		loadCurrentList(currentList,scheduledTasksToDo,floatingTasksToDo,scheduledTasksOverDue);
 		
 		
 	}
@@ -142,26 +151,9 @@ public class Storage {
 		bw.close();
 	}
 
-	public void readFromFile(String fileName, ArrayList<Task> taskList) throws Exception {
-		try {
-			File file = new File(fileName);
-			if (file.exists()) {
-				String taskDetails = "";
-				BufferedReader br = new BufferedReader(new FileReader(file));
-				while ((taskDetails = br.readLine()) != null) {
-					Task task = gson.fromJson(taskDetails, Task.class);
-					taskList.add(task);
-				}
-				br.close();
-			}
-		} catch (FileNotFoundException f) {
-			System.out.println("File " + fileName + " cannot be found.");
-		}
-	}
-	
-//	public void readFromArchiveFile(String archiveFile, ArrayList<Task> floatingTasksComplete, ArrayList<Task> scheduledTasksComplete) throws Exception {
+//	public void readFromFile(String fileName, ArrayList<Task> taskList) throws Exception {
 //		try {
-//			File file = new File(archiveFileName);
+//			File file = new File(fileName);
 //			if (file.exists()) {
 //				String taskDetails = "";
 //				BufferedReader br = new BufferedReader(new FileReader(file));
@@ -175,6 +167,104 @@ public class Storage {
 //			System.out.println("File " + fileName + " cannot be found.");
 //		}
 //	}
+	
+	public void readFromArchiveFile(String completeScheduled, String completeFloating,
+			ArrayList<Task> scheduledTasksComplete,ArrayList<Task> floatingTasksComplete) throws Exception {
+		
+		try {
+			File file1 = new File(completeScheduled);
+			File file2 = new File(completeFloating);
+			if (file1.exists()) {
+				String taskDetails = "";
+				BufferedReader br = new BufferedReader(new FileReader(file1));
+				while ((taskDetails = br.readLine()) != null) {
+					Task task = gson.fromJson(taskDetails, Task.class);
+					scheduledTasksComplete.add(task);
+				}
+				
+				br.close();
+			}
+			
+			if (file2.exists()) {
+				String taskDetails = "";
+				BufferedReader br = new BufferedReader(new FileReader(file2));
+				while ((taskDetails = br.readLine()) != null) {
+					Task task = gson.fromJson(taskDetails, Task.class);
+					 floatingTasksComplete.add(task);
+				}
+				br.close();
+			} 
+	
+		}
+			
+			catch (FileNotFoundException f) {
+				
+			System.out.println("File " + completeScheduled + " cannot be found.");
+		}
 
+	}
+	
+	public void readFromCurrentFile(String toDoScheduled, String toDoFloating,String overdueScheduled,
+			ArrayList<Task> toDoScheduledFile,ArrayList<Task> toDoFloatingFile,ArrayList<Task> overdueScheduledFile) throws Exception {		
+		try {
+			File file1 = new File(toDoScheduled);
+			File file2 = new File(toDoFloating);
+			File file3 = new File(overdueScheduled);
+			
+			if (file1.exists()) {
+				String taskDetails = "";
+				BufferedReader br = new BufferedReader(new FileReader(file1));
+				while ((taskDetails = br.readLine()) != null) {
+					Task task = gson.fromJson(taskDetails, Task.class);
+					toDoScheduledFile.add(task);
+				}
+				
+				br.close();
+			}
+			
+			if (file2.exists()) {
+				String taskDetails = "";
+				BufferedReader br = new BufferedReader(new FileReader(file2));
+				while ((taskDetails = br.readLine()) != null) {
+					Task task = gson.fromJson(taskDetails, Task.class);
+					toDoFloatingFile.add(task);
+				}
+				br.close();
+			} 
+			
+			if (file3.exists()) {
+				String taskDetails = "";
+				BufferedReader br = new BufferedReader(new FileReader(file3));
+				while ((taskDetails = br.readLine()) != null) {
+					Task task = gson.fromJson(taskDetails, Task.class);
+					overdueScheduledFile.add(task);
+				}
+				br.close();
+			} 
+		}
+			
+			catch (FileNotFoundException f) {
+				
+			System.out.println("File " + " cannot be found.");
+		}
+
+	}
+	
+	public void loadArchiveList(ArrayList<ArrayList<Task>> archiveList,ArrayList<Task> scheduledTasksComplete,
+			ArrayList<Task> floatingTasksComplete){
+		
+		archiveList.add(scheduledTasksComplete);
+		archiveList.add(floatingTasksComplete);
+
+	}
+	
+	public void loadCurrentList(ArrayList<ArrayList<Task>> currentList,ArrayList<Task> toDoScheduledTasks,
+			ArrayList<Task> toDoFloatingTask, ArrayList<Task> overdueScheduledTask ){
+		
+		currentList.add(toDoScheduledTasks);
+		currentList.add(toDoFloatingTask);
+		currentList.add(overdueScheduledTask);
+		
+	}
 
 }
