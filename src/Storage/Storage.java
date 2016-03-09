@@ -26,7 +26,7 @@ public class Storage {
 	private ArrayList<Task> scheduledTasksComplete = new ArrayList<Task>();
 	private ArrayList<Task> scheduledTasksOverDue = new ArrayList<Task>();
 	
-	private static final String archiveDirectory = "C:\\ScheduleHacksFile\\Archive\\";
+	private static final String archiveFilename = "C:\\ScheduleHacksFile\\Archive\\";
 	private static final String ToDoDirectory = "C:\\ScheduleHacksFile\\ToDo\\";
 	private static final String oveduedDirectory = "C:\\ScheduleHacksFile\\Overdued\\";
 	
@@ -124,6 +124,9 @@ public class Storage {
 		readFromFile(completeScheduledFile, scheduledTasksComplete);
 		readFromFile(overdueScheduledFile, scheduledTasksOverDue);
 		
+//		readFromArchiveFile(archiveFilename, floatingTasksComplete,scheduledTasksComplete);
+		
+		
 	}
 
 	public void writeToFile(String fileName, ArrayList<Task> taskList) throws Exception {
@@ -155,7 +158,23 @@ public class Storage {
 			System.out.println("File " + fileName + " cannot be found.");
 		}
 	}
-
+	
+//	public void readFromArchiveFile(String archiveFile, ArrayList<Task> floatingTasksComplete, ArrayList<Task> scheduledTasksComplete) throws Exception {
+//		try {
+//			File file = new File(archiveFileName);
+//			if (file.exists()) {
+//				String taskDetails = "";
+//				BufferedReader br = new BufferedReader(new FileReader(file));
+//				while ((taskDetails = br.readLine()) != null) {
+//					Task task = gson.fromJson(taskDetails, Task.class);
+//					taskList.add(task);
+//				}
+//				br.close();
+//			}
+//		} catch (FileNotFoundException f) {
+//			System.out.println("File " + fileName + " cannot be found.");
+//		}
+//	}
 
 
 }
