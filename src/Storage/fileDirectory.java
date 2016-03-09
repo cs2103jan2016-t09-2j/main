@@ -3,13 +3,21 @@ package Storage;
 import java.io.File;
 
 public class fileDirectory {
+	
 	public static void main(String args[]){
+		
+		createAllDirectories();
+		
+	}
+	
+	public static void createAllDirectories(){
 		
 		createMainDirectory();
 		createArchiveSubDirectory();
 		createOverduedSubDirectory();
+		createToDoSubDirectory();
+		
 	}
-	
 	public static void createMainDirectory(){
 		String pathName = "C:\\ScheduleHacksFiles";
 		

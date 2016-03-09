@@ -41,10 +41,8 @@ public class Storage {
 
 	public void setDirectory(){
 		
-		fileDirectory.createMainDirectory();
-		fileDirectory.createArchiveSubDirectory();
-		fileDirectory.createOverduedSubDirectory();
-		fileDirectory.createToDoSubDirectory();
+		fileDirectory.createAllDirectories();
+		
 	}
 	
 	public void storeDirectory(){
