@@ -171,7 +171,9 @@ public class Storage {
 	public void readFromArchiveFile(String completeScheduled, String completeFloating,
 			ArrayList<Task> scheduledTasksComplete,ArrayList<Task> floatingTasksComplete) throws Exception {
 		
+		
 		try {
+			
 			File file1 = new File(completeScheduled);
 			File file2 = new File(completeFloating);
 			if (file1.exists()) {
