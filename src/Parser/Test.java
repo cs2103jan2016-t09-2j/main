@@ -7,49 +7,43 @@ import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import Parser.Command.COMMAND_TYPE;
 import ScheduleHacks.Task;
 //import java.time.format.*;
 
 public class Test {
 
-	private static final String REGEX_DATE = "\\d{1,2}(-|/)\\d{1,2}(-|/)(\\d{4}|\\d{2})";
-	private static final String REGEX_TIME = "(^|\\s|\\G)((\\d{1,2}(:|\\.)\\d{1,2})|(\\d{3,4}))(\\s|$)";
+	//private static final String REGEX_DATE = "\\d{1,2}(-|/)\\d{1,2}(-|/)(\\d{4}|\\d{2})";
+	//private static final String REGEX_TIME = "(^|\\s|\\G)((\\d{1,2}(:|\\.)\\d{1,2})|(\\d{3,4}))(\\s|$)";
 
 	public static void main(String[] args) throws Exception {
 		Test obj = new Test();
 		
-		ArrayList<Integer> f = new ArrayList<Integer>();
-		f.add(5);
-		f.add(6);
-		ArrayList<Integer> k = obj.checkArrayList(f);
-		for(int i : k)
-			System.out.println(i);
-		System.out.println(LocalTime.MAX.truncatedTo(ChronoUnit.MINUTES).toString());
+		//System.out.println(LocalTime.MAX.truncatedTo(ChronoUnit.MINUTES).toString());
 	}
-
-	ArrayList<Integer> checkArrayList(ArrayList<Integer> a) {
-		ArrayList<Integer> x = a;
-		return x;
-	}
-
-	void checkdate(String taskDetails) {
-		String date = "";
-		Pattern datePattern = Pattern.compile(REGEX_DATE);
-		Matcher dateMatcher = datePattern.matcher(taskDetails);
-		while (dateMatcher.find()) {
-			date = dateMatcher.group();
-			System.out.println(date);
+	
+	public Task findTaskDetails(Command command, String taskStatement) throws Exception {
+		COMMAND_TYPE commandType = command.getCommandType();
+		
+		if(CommandParser.hasIndexNumber(commandType)) {
+			IndexParser indexParser = new IndexParser(command, taskStatement);
+			command.setIndexNumber(indexParser.getIndex());
+			taskStatement = indexParser.getTaskDetails();
 		}
-	}
-
-	void checktime(String str) {
-		String time = "";
-		Pattern timePattern = Pattern.compile(REGEX_TIME);
-		Matcher timeMatcher = timePattern.matcher(str);
-		while (timeMatcher.find()) {
-			time = timeMatcher.group();
-			System.out.println(time);
+		if (!CommandParser.hasTaskDetails(commandType)) {
+			return null;
+		} else {
+			if (!taskStatement.isEmpty()) {
+				Task newTask = new Task();
+				if (commandType.equals(COMMAND_TYPE.ADD_TASK)) {
+					newTask = CommandParser.addNewTask(taskStatement);
+				} else if (commandType.equals(COMMAND_TYPE.MODIFY_TASK)) {
+					newTask = CommandParser.editExistingTask(taskStatement);
+				}
+				return newTask;
+			}
 		}
+		throw new Exception("Empty Task Description/Index Number");
 	}
 
 	void checkingcommandparser(String s) throws Exception {
@@ -74,9 +68,4 @@ public class Test {
 			System.out.println(t.getEndTime().toString());
 	}
 
-	void printDates2() {
-		String s = "tuesday";
-		LocalDate date = LocalDate.parse(s);
-		System.out.println(date.toString());
-	}
 }

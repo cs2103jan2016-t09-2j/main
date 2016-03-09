@@ -81,7 +81,7 @@ public class DateParserTest {
 		String testString = "1/2/12";
 		LocalDate dateObject = ob.getLocalDateObject(testString);
 		String output = dateObject.toString();
-		String expected = "2112-02-01";
+		String expected = "2012-02-01";
 		assertEquals(expected, output);
 	}
 	

@@ -8,17 +8,10 @@ import java.util.regex.Pattern;
 import java.util.regex.Matcher;
 
 import Parser.Command.COMMAND_TYPE;
-
-//import org.ocpsoft.prettytime.PrettyTime;
-//import org.ocpsoft.prettytime.nlp.PrettyTimeParser;
-
 import ScheduleHacks.Task;
 
-/**
- * Only implementing add task for now
- * 
- * @author Snigdha Singhania
- *
+/*
+ * Can Perform basic CRUD functionalities
  */
 
 public class CommandParser {
@@ -41,32 +34,31 @@ public class CommandParser {
 
 		return parsedCommand;
 	}
-
+	
 	public static Task findTaskDetails(Command command, String taskStatement) throws Exception {
 		COMMAND_TYPE commandType = command.getCommandType();
-		if (!hasTaskDetails(commandType)) {
-			if (hasIndexNumber(commandType)) {
-				IndexParser indexParser = new IndexParser(command, taskStatement);
-				command.setIndexNumber(indexParser.getIndex());
-			}
+		
+		if(CommandParser.hasIndexNumber(commandType)) {
+			IndexParser indexParser = new IndexParser(command, taskStatement);
+			command.setIndexNumber(indexParser.getIndex());
+			taskStatement = indexParser.getTaskDetails();
+		}
+		if (!CommandParser.hasTaskDetails(commandType)) {
 			return null;
 		} else {
 			if (!taskStatement.isEmpty()) {
 				Task newTask = new Task();
 				if (commandType.equals(COMMAND_TYPE.ADD_TASK)) {
-					newTask = addNewTask(taskStatement);
+					newTask = CommandParser.addNewTask(taskStatement);
 				} else if (commandType.equals(COMMAND_TYPE.MODIFY_TASK)) {
-					IndexParser indexParser = new IndexParser(command, taskStatement);
-					command.setIndexNumber(indexParser.getIndex());
-					taskStatement = indexParser.getTaskDetails();
-					newTask = editExistingTask(taskStatement);
+					newTask = CommandParser.editExistingTask(taskStatement);
 				}
 				return newTask;
 			}
 		}
 		throw new Exception("Empty Task Description/Index Number");
 	}
-
+	
 	public static Task addNewTask(String taskStatement) {
 		Task newTask = new Task();
 		// Getting date and time lists from task statement

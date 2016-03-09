@@ -13,6 +13,7 @@ public class IndexParser {
 	private String taskDetails;
 	private Command command;
 
+	/**************** CONSTRUCTORS *********************/
 	// Default Constructor
 	IndexParser() {
 		this(null, ParserConstants.STRING_EMPTY);
@@ -24,6 +25,7 @@ public class IndexParser {
 		setCommandDetails(newCommandDetails);
 	}
 
+	/****************** SETTER METHODS ***********************/
 	protected void setTaskDetails(String newTaskDetails) {
 		this.taskDetails = newTaskDetails;
 	}
@@ -32,6 +34,7 @@ public class IndexParser {
 		this.command = newCommandDetails;
 	}
 
+	/******************* GETTER METHODS ***********************/
 	public String getTaskDetails() {
 		return this.taskDetails;
 	}
@@ -45,8 +48,9 @@ public class IndexParser {
 		return index;
 	}
 
+	/**************** OTHER METHODS ***********************/
 	/*
-	 * public ArrayList<Integer> getIndexes(){ ArrayList<Integer> indexList =
+	 * public ArrayList<Integer> getIndexList(){ ArrayList<Integer> indexList =
 	 * getIndexList(getTaskDetails()); if(hasIndexList(indexList)) { return
 	 * indexList; } return null; }
 	 * 
@@ -60,6 +64,7 @@ public class IndexParser {
 			taskDetails = CommandParser.cleanupExtraWhitespace(taskDetails);
 			if (Pattern.matches(ParserConstants.REGEX_DIGITS, taskDetails)) {
 				int indexNumber = Integer.parseInt(taskDetails);
+				//setTaskDetails(taskDetails.replace(arg0, ParserConstants.STRING_WHITESPACE));
 				return indexNumber;
 			}
 		} else if (commandType.equals(COMMAND_TYPE.MODIFY_TASK)) {

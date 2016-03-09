@@ -62,13 +62,16 @@ public class TempCLI extends TimerTask {
 	public void executeInput(Logic logicObj) {
 		count = 1;
 		logicObj.startExecution(getUserCommand());
-		showToUser(logicObj.getFeedBack());
+		
 		System.out.println("******** OVERDUE TASKS ********");
 		showTimedTaskListToUser(logicObj.getScheduledTasksOverDue());
 		System.out.println("******** UPCOMING TASKS ********");
 		showTimedTaskListToUser(logicObj.getScheduledTasksToDo());
 		System.out.println("******** FLOATING TASKS ********");
 		showUntimedTaskListToUser(logicObj.getFloatingTasksToDo());
+		
+		showToUser(logicObj.getFeedBack());
+		
 	}
 
 	public void showTimedTaskListToUser(ArrayList<Task> taskList) {
