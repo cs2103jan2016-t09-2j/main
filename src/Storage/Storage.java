@@ -29,9 +29,9 @@ public class Storage {
 	private ArrayList<ArrayList<Task>> archiveList = new ArrayList<ArrayList<Task>>();
 	private ArrayList<ArrayList<Task>> currentList = new ArrayList<ArrayList<Task>>();
 	
-	private static final String archiveFilename = "C:\\ScheduleHacksFile\\Archive\\";
-	private static final String ToDoDirectory = "C:\\ScheduleHacksFile\\ToDo\\";
-	private static final String oveduedDirectory = "C:\\ScheduleHacksFile\\Overdued\\";
+	private static final String archiveDirectory = "C:\\ScheduleHacksFile\\Archive\\";
+	private static final String currentDirectory = "C:\\ScheduleHacksFile\\Current\\";
+
 	
 	private static final String toDoScheduledFile = "toDoScheduled.json";
 	private static final String toDoFloatingFile = "toDoFloating.json";
