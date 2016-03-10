@@ -120,7 +120,7 @@ public class DateParserTest {
 	@Test
 	public void testFinDates4() {
 		String output = "";
-		String testString = "Meet ABCD at 16:00 on 2-1-16 and 3-1-16 ";
+		String testString = "Meet ABCD at 16:00 on 2-1-16 and 3-1-16 at the hotel ";
 		dateObj = new DateParser(testString);
 		dateObj.findDates();
 		ArrayList<LocalDate> outList = dateObj.getDateList();
@@ -129,6 +129,37 @@ public class DateParserTest {
 		}
 		String expected = "2016-01-022016-01-03";
 		assertEquals(expected, output.trim());
-		assertEquals("Meet ABCD at 16:00 on and", dateObj.getTaskDetails());
+		assertEquals("Meet ABCD at 16:00 on and at the hotel", dateObj.getTaskDetails());
 	}
+	
+	@Test
+	public void testGetUpComingDayDate1() {
+		String output = "";
+		String testString = "Meet ABCD tomorrow at the hotel ";
+		dateObj = new DateParser(testString);
+		dateObj.findDates();
+		ArrayList<LocalDate> outList = dateObj.getDateList();
+		for (LocalDate s : outList) {
+			output = output + s.toString();
+		}
+		String expected = LocalDate.now().plusDays(1).toString();
+		assertEquals(expected, output.trim());
+		assertEquals("Meet ABCD at the hotel", dateObj.getTaskDetails());
+	}
+	
+	@Test
+	public void testGetUpComingDayDate2() {
+		String output = "";
+		String testString = "Meet ABCD today and tomorrow at the hotel ";
+		dateObj = new DateParser(testString);
+		dateObj.findDates();
+		ArrayList<LocalDate> outList = dateObj.getDateList();
+		for (LocalDate s : outList) {
+			output = output + s.toString();
+		}
+		String expected = LocalDate.now().toString() + LocalDate.now().plusDays(1).toString();
+		assertEquals(expected, output.trim());
+		assertEquals("Meet ABCD and at the hotel", dateObj.getTaskDetails());
+	}
+	
 }

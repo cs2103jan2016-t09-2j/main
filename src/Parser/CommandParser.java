@@ -1,6 +1,5 @@
 package Parser;
 
-import java.text.ParsePosition;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
@@ -35,11 +34,11 @@ public class CommandParser {
 
 		return parsedCommand;
 	}
-	
+
 	public static Task findTaskDetails(Command command, String taskStatement) throws Exception {
 		COMMAND_TYPE commandType = command.getCommandType();
-		
-		if(CommandParser.hasIndexNumber(commandType)) {
+
+		if (CommandParser.hasIndexNumber(commandType)) {
 			IndexParser indexParser = new IndexParser(command, taskStatement);
 			command.setIndexNumber(indexParser.getIndex());
 			taskStatement = indexParser.getTaskDetails();
@@ -70,7 +69,7 @@ public class CommandParser {
 		DateParser dateParser = new DateParser(taskStatement);
 		dateParser.findDates();
 		ArrayList<LocalDate> dateList = dateParser.getDateList();
-		
+
 		TimeParser timeParser = new TimeParser(dateParser.getTaskDetails());
 		ArrayList<LocalTime> timeList = timeParser.getTimes();
 
@@ -84,11 +83,11 @@ public class CommandParser {
 
 	public static Task editExistingTask(String taskStatement) {
 		Task newTask = new Task();
-		
+
 		DateParser dateParser = new DateParser(taskStatement);
 		dateParser.findDates();
 		ArrayList<LocalDate> dateList = dateParser.getDateList();
-		
+
 		TimeParser timeParser = new TimeParser(dateParser.getTaskDetails());
 		ArrayList<LocalTime> timeList = timeParser.getTimes();
 		taskStatement = timeParser.getTaskDetails();
@@ -107,30 +106,62 @@ public class CommandParser {
 		}
 		return newTask;
 	}
-	
+
 	public static Task getSearchCriteria(String taskStatement) {
 		Task newTask = new Task();
-		/*DateParser dateParser = new DateParser(taskStatement);
-		ArrayList<LocalDate> dateList = dateParser.getDates();
-		TimeParser timeParser = new TimeParser(dateParser.getTaskDetails());
-		ArrayList<LocalTime> timeList = timeParser.getTimes();
-		taskStatement = timeParser.getTaskDetails();*/
-		
+		/*
+		 * DateParser dateParser = new DateParser(taskStatement);
+		 * ArrayList<LocalDate> dateList = dateParser.getDates(); TimeParser
+		 * timeParser = new TimeParser(dateParser.getTaskDetails());
+		 * ArrayList<LocalTime> timeList = timeParser.getTimes(); taskStatement
+		 * = timeParser.getTaskDetails();
+		 */
+
 		DateParser dateObj = new DateParser(taskStatement);
 		dateObj.findDates();
-		if(dateObj.getDateList() != null) {
+		if (dateObj.getDateList() != null) {
 			newTask.setEndDate(dateObj.getDateList().get(ParserConstants.FIRST_INDEX));
 			taskStatement = dateObj.getTaskDetails();
 		}
-		
+
 		if (!taskStatement.isEmpty() && taskStatement != null) {
 			newTask.setDescription(taskStatement);
 		}
 		return newTask;
 	}
-	
-	public static Task getViewCriteria(String taskStatement) {
+
+	/**
+	 * This method helps in parsing view commands.
+	 * 
+	 * Acceptable formats are: 
+	 * view archive/complete/finish 
+	 * view today 
+	 * view tomorrow/tmr/tmrw 
+	 * view next week/month 
+	 * view <date>
+	 * 
+	 * @param taskStatement
+	 * @return
+	 */
+	//incomplete
+	public static Task getViewCriteria(String taskStatement) throws Exception {
 		Task newTask = new Task();
+		DateParser dateObj = new DateParser();
+		
+		taskStatement = cleanupExtraWhitespace(taskStatement);
+		String firstWord = getFirstWord(taskStatement);
+
+		if (firstWord.equalsIgnoreCase("next")) {
+			String secondWord = removeFirstWord(taskStatement);
+		} else {
+			if(dateObj.isUpcomingDayWord(firstWord)) {
+				newTask.setEndDate(dateObj.getUpcomingDayDate(firstWord));
+			} else if() {
+				//if it is a date
+			}
+		}
+		
+
 		return newTask;
 	}
 
@@ -201,6 +232,7 @@ public class CommandParser {
 
 	/**
 	 * This method helps convert a floating task to a scheduled/upcoming task
+	 * 
 	 * @param newTask
 	 * @return newTask with all adjusted Parameters
 	 */
@@ -261,7 +293,7 @@ public class CommandParser {
 	 * @return the first word of the user command, which is the command type.
 	 */
 	static String getFirstWord(String userCommand) throws Exception {
-		userCommand.trim();
+		userCommand = userCommand.trim();
 
 		int splitPosition = userCommand.indexOf(ParserConstants.WHITE_SPACE);
 		if (splitPosition == ParserConstants.NO_WHITE_SPACE) {

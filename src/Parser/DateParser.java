@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
 import java.text.ParsePosition;
 import java.time.DateTimeException;
 import java.time.LocalDate;
@@ -62,10 +63,19 @@ public class DateParser {
 		Pattern datePattern = Pattern.compile(ParserConstants.REGEX_POSSIBLE_DATE);
 		Matcher dateMatcher = datePattern.matcher(taskDetails);
 		while (dateMatcher.find()) {
-			String tempString = taskDetails.substring(dateMatcher.start());
+			String tempString = CommandParser.cleanupExtraWhitespace(taskDetails.substring(dateMatcher.start()));
 			ParsePosition parsePos = new ParsePosition(ParserConstants.FIRST_INDEX);
 			if (isValidDate(tempString, parsePos)) {
 				removeDateFromTaskDetails(tempString, parsePos);
+			} else {
+				String firstWord = CommandParser.cleanupExtraWhitespace(getFirstWord(tempString));
+				if (isDayOfWeek(firstWord)) {
+					dateList.add(getDayOfWeekDate(firstWord));
+					removeDateFromTaskDetails(firstWord);
+				} else if (isUpcomingDayWord(firstWord)) {
+					dateList.add(getUpcomingDayDate(firstWord));
+					removeDateFromTaskDetails(firstWord);
+				}
 			}
 		}
 	}
@@ -74,6 +84,11 @@ public class DateParser {
 		String validDate = statement.substring(ParserConstants.FIRST_INDEX, parsePos.getIndex());
 		taskDetails = CommandParser
 				.cleanupExtraWhitespace(taskDetails.replace(validDate, ParserConstants.STRING_WHITESPACE));
+	}
+
+	public void removeDateFromTaskDetails(String textToRemove) {
+		taskDetails = CommandParser
+				.cleanupExtraWhitespace(taskDetails.replace(textToRemove, ParserConstants.STRING_WHITESPACE));
 	}
 
 	/**
@@ -102,6 +117,95 @@ public class DateParser {
 		return false;
 	}
 
+	public boolean isAcceptableDate(String statement, ParsePosition pos) {
+		String firstWord = CommandParser.cleanupExtraWhitespace(getFirstWord(statement));
+		return isValidDate(statement, pos) || isUpcomingDayWord(firstWord) || isDayOfWeek(firstWord);
+	}
+
+	public LocalDate getDayOfWeekDate(String dayOfWeek) {
+		LocalDate newDate = null;
+		if (isDayOfWeek(dayOfWeek)) {
+			newDate = LocalDate.now();
+			int dayOfWeekNumToday = newDate.getDayOfWeek().getValue();
+			int dayOfWeekValue = indexOf(dayOfWeek, ParserConstants.DAYS_OF_WEEK_LONG);
+			if (dayOfWeekValue < 0) {
+				dayOfWeekValue = indexOf(dayOfWeek, ParserConstants.DAYS_OF_WEEK_SHORT);
+			}
+			int daysToAdd = dayOfWeekValue - dayOfWeekNumToday;
+			if (daysToAdd <= 0) {
+				daysToAdd += 7;
+			}
+			newDate = newDate.plusDays(daysToAdd);
+		}
+		return newDate;
+	}
+
+	public boolean isDayOfWeek(String expectedDayOfWeek) {
+		return isDayOfWeekLong(expectedDayOfWeek) || isDayOfWeekShort(expectedDayOfWeek);
+	}
+
+	/**
+	 * This method checks if statement contains a day of the week which is
+	 * written in full form
+	 * 
+	 * @param statement
+	 * @return true if is either of {"monday", "tuesday", "wednesday",
+	 *         "thursday", "friday", "saturday", "sunday"}; false, otherwise
+	 */
+	public boolean isDayOfWeekLong(String expectedDayOfWeek) {
+		return hasInDictionary(ParserConstants.DAYS_OF_WEEK_LONG, expectedDayOfWeek);
+	}
+
+	/**
+	 * This method checks if statement contains a day of the week written in
+	 * short
+	 * 
+	 * @param statement
+	 * @return true if is either of { "mon", "tue", "wed", "thu", "fri", "sat",
+	 *         "sun" } ;false, otherwise
+	 */
+	public boolean isDayOfWeekShort(String expectedDayOfWeek) {
+		return hasInDictionary(ParserConstants.DAYS_OF_WEEK_SHORT, expectedDayOfWeek);
+	}
+
+	/**
+	 * This method is used to convert today, tomorrow and overmorrow to their
+	 * respective dates
+	 * 
+	 * @param upcomingDay
+	 * @return LocalDate of the upcomingDay relative to today's date
+	 */
+	public LocalDate getUpcomingDayDate(String upcomingDay) {
+		LocalDate todayDate = LocalDate.now();
+		int index = indexOf(upcomingDay, ParserConstants.UPCOMING_DAYS);
+		if (index >= 0) { /* If upcomingDay is a valid entry */
+			if (index < 3) {
+				return todayDate.plusDays(index);
+			} else {
+				return todayDate.plusDays(1);
+			}
+		}
+		return null;
+	}
+
+	public boolean isUpcomingDayWord(String firstWord) {
+		if (hasInDictionary(ParserConstants.UPCOMING_DAYS, firstWord)) {
+			return true;
+		}
+		return false;
+	}
+
+	public int indexOf(String word, String[] array) {
+		if (hasInDictionary(array, word)) {
+			for (int index = ParserConstants.FIRST_INDEX; index < array.length; index++) {
+				if (word.equalsIgnoreCase(array[index])) {
+					return index;
+				}
+			}
+		}
+		return -1; // if absent
+	}
+
 	public void addValidDateToList(LocalDate parsedDate) {
 		dateList.add(parsedDate);
 	}
@@ -109,6 +213,30 @@ public class DateParser {
 	public ArrayList<LocalDate> sortDateList(ArrayList<LocalDate> dates) {
 		Collections.sort(dates);
 		return dates;
+	}
+
+	private boolean hasInDictionary(String[] dictionary, String wordToFind) {
+		if (wordToFind != null && !wordToFind.isEmpty()) {
+			for (String dictionaryWords : dictionary) {
+				if (dictionaryWords.equalsIgnoreCase(wordToFind))
+					return true;
+			}
+		}
+		return false;
+	}
+
+	String getFirstWord(String inputString) {
+		inputString = inputString.trim();
+
+		int splitPosition = inputString.indexOf(ParserConstants.WHITE_SPACE);
+		if (splitPosition == ParserConstants.NO_WHITE_SPACE) {
+			if (inputString.length() > 0) {
+				splitPosition = inputString.length();
+			} else {
+				return ParserConstants.STRING_EMPTY;
+			}
+		}
+		return inputString.substring(ParserConstants.FIRST_INDEX, splitPosition);
 	}
 
 	/**

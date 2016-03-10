@@ -8,18 +8,6 @@ public class Command {
 		ADD_TASK, DELETE_TASK, MODIFY_TASK, COMPLETE_TASK, SEARCH_TASK, VIEW_LIST, UNDO_TASK, REDO_TASK, EXIT
 	};
 
-	private static final String[] COMMAND_ADD = { "add", "create", "+", "a" };
-	private static final String[] COMMAND_DELETE = { "delete", "d", "del", "-", "clear", "remove" };
-	private static final String[] COMMAND_MODIFY = { "modify", "edit", "update", "change", "e" };
-	private static final String[] COMMAND_COMPLETE = { "complete", "done", "finish", "completed", "finished" };
-	private static final String[] COMMAND_VIEW = { "view", "v", "show", "display" };
-	private static final String[] COMMAND_SEARCH = { "search", "find" };
-	private static final String[] COMMAND_EXIT = { "exit", "close", "quit", "q" };
-	private static final String[] COMMAND_UNDO = { "undo", "u", "z" };
-	private static final String[] COMMAND_REDO = { "redo" };
-	private static final String COMMAND_INVALID = null;
-	private static final String COMMAND_EMPTY = "";
-
 	public boolean isFirstWordCommand;
 
 	/************** INSTANCE VARIABLES ********************/
@@ -103,31 +91,31 @@ public class Command {
 	 * @return the commandType, so that necessary actions can be performed.
 	 */
 	private COMMAND_TYPE determineCommandType(String commandFirstWord) throws Exception {
-		if (commandFirstWord.equals(COMMAND_INVALID)) {
+		if (commandFirstWord.equals(ParserConstants.COMMAND_INVALID)) {
 			throw new Exception("command type string cannot be null!");
 		}
-		if (commandFirstWord.equals(COMMAND_EMPTY)) {
+		if (commandFirstWord.equals(ParserConstants.COMMAND_EMPTY)) {
 			throw new Exception("command type string cannot be empty!");
 		}
 
 		isFirstWordCommand = true;
-		if (hasInDictionary(COMMAND_ADD, commandFirstWord)) {
+		if (hasInDictionary(ParserConstants.COMMAND_ADD, commandFirstWord)) {
 			return COMMAND_TYPE.ADD_TASK;
-		} else if (hasInDictionary(COMMAND_DELETE, commandFirstWord)) {
+		} else if (hasInDictionary(ParserConstants.COMMAND_DELETE, commandFirstWord)) {
 			return COMMAND_TYPE.DELETE_TASK;
-		} else if (hasInDictionary(COMMAND_MODIFY, commandFirstWord)) {
+		} else if (hasInDictionary(ParserConstants.COMMAND_MODIFY, commandFirstWord)) {
 			return COMMAND_TYPE.MODIFY_TASK;
-		} else if (hasInDictionary(COMMAND_COMPLETE, commandFirstWord)) {
+		} else if (hasInDictionary(ParserConstants.COMMAND_COMPLETE, commandFirstWord)) {
 			return COMMAND_TYPE.COMPLETE_TASK;
-		} else if (hasInDictionary(COMMAND_SEARCH, commandFirstWord)) {
+		} else if (hasInDictionary(ParserConstants.COMMAND_SEARCH, commandFirstWord)) {
 			return COMMAND_TYPE.SEARCH_TASK;
-		} else if (hasInDictionary(COMMAND_VIEW, commandFirstWord)) {
+		} else if (hasInDictionary(ParserConstants.COMMAND_VIEW, commandFirstWord)) {
 			return COMMAND_TYPE.VIEW_LIST;
-		} else if (hasInDictionary(COMMAND_UNDO, commandFirstWord)) {
+		} else if (hasInDictionary(ParserConstants.COMMAND_UNDO, commandFirstWord)) {
 			return COMMAND_TYPE.UNDO_TASK;
-		} else if (hasInDictionary(COMMAND_REDO, commandFirstWord)) {
+		} else if (hasInDictionary(ParserConstants.COMMAND_REDO, commandFirstWord)) {
 			return COMMAND_TYPE.REDO_TASK;
-		} else if (hasInDictionary(COMMAND_EXIT, commandFirstWord)) {
+		} else if (hasInDictionary(ParserConstants.COMMAND_EXIT, commandFirstWord)) {
 			return COMMAND_TYPE.EXIT;
 		} else {
 			isFirstWordCommand = false;

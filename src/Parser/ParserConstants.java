@@ -1,14 +1,25 @@
 package Parser;
 
-import java.util.ArrayList;
-
 public class ParserConstants {
+
+	// Command Class, primarily
+	static final String[] COMMAND_ADD = { "add", "create", "+", "a" };
+	static final String[] COMMAND_DELETE = { "delete", "d", "del", "-", "clear", "remove" };
+	static final String[] COMMAND_MODIFY = { "modify", "edit", "update", "change", "e" };
+	static final String[] COMMAND_COMPLETE = { "complete", "done", "finish", "completed", "finished", "archive" };
+	static final String[] COMMAND_VIEW = { "view", "v", "show", "display" };
+	static final String[] COMMAND_SEARCH = { "search", "find" };
+	static final String[] COMMAND_EXIT = { "exit", "quit", "q" };
+	static final String[] COMMAND_UNDO = { "undo", "u", "z" };
+	static final String[] COMMAND_REDO = { "redo" };
+	static final String COMMAND_INVALID = null;
+	static final String COMMAND_EMPTY = "";
 
 	// Regular Expressions
 	static final String REGEX_EXTRA_WHITESPACE = "\\s{2,}";
 	static final String REGEX_TIME = "(^|\\s|\\G)((\\d{1,2}(:|\\.)\\d{2})|(\\d{3,4}))(\\s|$)";
 	static final String REGEX_DATE = "(\\s|^|\\G)\\d{1,2}(-|/)\\d{1,2}(-|/)(\\d{4}|\\d{2})(\\s|$)";
-	static final String REGEX_POSSIBLE_DATE = "\\b\\d{1,2}";
+	static final String REGEX_POSSIBLE_DATE = "\\b\\w";
 	static final String REGEX_DIGITS = "(\\s|^|,|-|\\G)\\d+(\\s|$|,|-)";
 	static final String REGEX_DIGITS_AT_START = "^\\d+\\s";
 
@@ -36,11 +47,18 @@ public class ParserConstants {
 	static final String DATE_FORMAT_DAY_MONTH_SHORT_YEAR_SHORT = "d MMM uu";
 	static final String DATE_FORMAT_DAY_MONTH_SHORT = "d MMM";
 	static final String DATE_FORMAT_DAY_MONTH_LONG = "d MMMM";
-	/*static final String DATE_FORMAT_DAY_MONTH_LONG_COMMA_YEAR_LONG = "d MMMM, uuuu";
-	static final String DATE_FORMAT_DAY_MONTH_LONG_COMMA_YEAR_SHORT = "d MMMM, uu";
-	static final String DATE_FORMAT_DAY_MONTH_SHORT_COMMA_YEAR_LONG = "d MMM, uuuu";
-	static final String DATE_FORMAT_DAY_MONTH_SHORT_COMMA_YEAR_SHORT = "d MMM, uu";*/
-	static final String[] UPCOMING_DAYS = {"today", "tomorrow", "overmorrow", "tmr", "tmw", "tmrw"};
+	/*
+	 * static final String DATE_FORMAT_DAY_MONTH_LONG_COMMA_YEAR_LONG =
+	 * "d MMMM, uuuu"; static final String
+	 * DATE_FORMAT_DAY_MONTH_LONG_COMMA_YEAR_SHORT = "d MMMM, uu"; static final
+	 * String DATE_FORMAT_DAY_MONTH_SHORT_COMMA_YEAR_LONG = "d MMM, uuuu";
+	 * static final String DATE_FORMAT_DAY_MONTH_SHORT_COMMA_YEAR_SHORT =
+	 * "d MMM, uu";
+	 */
+	static final String[] UPCOMING_DAYS = { "today", "tomorrow", "overmorrow", "tmr", "tmw", "tmrw" };
+	// Days of the week
+	static final String[] DAYS_OF_WEEK_SHORT = { "", "mon", "tue", "wed", "thu", "fri", "sat", "sun" };
+	static final String[] DAYS_OF_WEEK_LONG = { "", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday" };
 
 	// Time related constants
 	static final int MAX_MINUTES = 59;
@@ -59,9 +77,5 @@ public class ParserConstants {
 			"nov", "dec" };
 	static final String[] MONTHS_LONG = { "", "january", "february", "march", "april", "may", "june", "july", "august",
 			"september", "october", "november", "december" };
-
-	// Days of the week
-	static final String[] DAYS_SHORT = { "sun", "mon", "tue", "wed", "thu", "fri", "sat" };
-	static final String[] DAYS_LONG = { "sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday" };
 
 }
