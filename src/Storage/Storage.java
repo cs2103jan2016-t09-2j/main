@@ -27,17 +27,15 @@ public class Storage {
 	private ArrayList<Task> scheduledTasksComplete = new ArrayList<Task>();
 	private ArrayList<Task> scheduledTasksOverDue = new ArrayList<Task>();
 
-	private static final String archiveDirectory = "C:\\ScheduleHacksFile\\Archive\\";
-	private static final String currentDirectory = "C:\\ScheduleHacksFile\\Current\\";
+	private static final String pathName = "C:\\ScheduleHacks";
 
 	private static final String currentFile = "currentFile.json";
 	private static final String archiveFile = "archiveFile.json";
 
 	// create and store files in respective Directory
+	
 	public void setDirectory() {
-
-		fileDirectory.createAllDirectories();
-
+		fileDirectory.createMainDirectory(pathName);
 	}
 
 	public void storeDirectory() {
@@ -99,6 +97,7 @@ public class Storage {
 			ArrayList<Task> scheduledTasksToDo, ArrayList<Task> scheduledTasksComplete,
 			ArrayList<Task> scheduledTasksOverDue) throws Exception {
 
+		setDirectory();
 		writeToArchiveFile(floatingTasksComplete, scheduledTasksComplete);
 		writeToCurrentFile(scheduledTasksToDo, floatingTasksToDo, scheduledTasksOverDue);
 
@@ -121,7 +120,8 @@ public class Storage {
 	public void writeToArchiveFile(ArrayList<Task> scheduledTasksComplete, ArrayList<Task> floatingTasksComplete)
 			throws Exception {
 
-		File f1 = new File(archiveFile);
+		File f1 = new File(pathName,archiveFile);
+		
 		BufferedWriter bw = new BufferedWriter(new FileWriter(f1));
 
 		for (Task newTask1 : scheduledTasksComplete) {
@@ -141,7 +141,7 @@ public class Storage {
 	public void writeToCurrentFile(ArrayList<Task> toDoScheduledFile, ArrayList<Task> toDoFloatingFile,
 			ArrayList<Task> overdueScheduledFile) throws Exception {
 
-		File f = new File(currentFile);
+		File f = new File(pathName,currentFile);
 		BufferedWriter bw = new BufferedWriter(new FileWriter(f));
 
 		for (Task newTask : toDoScheduledFile) {
@@ -171,7 +171,7 @@ public class Storage {
 
 		try {
 
-			File file = new File(archiveFile);
+			File file = new File(pathName,archiveFile);
 			
 			if (file.exists()) {
 				String taskDetails = "";
@@ -199,7 +199,7 @@ public class Storage {
 	public void readFromCurrentFile(ArrayList<Task> toDoScheduledFile, ArrayList<Task> toDoFloatingFile,
 			ArrayList<Task> overdueScheduledFile) throws Exception {
 		try {
-			File file = new File(currentFile);
+			File file = new File(pathName,currentFile);
 
 			if (file.exists()) {
 				String taskDetails = "";
