@@ -27,17 +27,17 @@ public class Storage {
 	private ArrayList<Task> scheduledTasksComplete = new ArrayList<Task>();
 	private ArrayList<Task> scheduledTasksOverDue = new ArrayList<Task>();
 
-	private ArrayList<ArrayList<Task>> archiveList = new ArrayList<ArrayList<Task>>();
-	private ArrayList<ArrayList<Task>> currentList = new ArrayList<ArrayList<Task>>();
-
 	private static final String archiveDirectory = "C:\\ScheduleHacksFile\\Archive\\";
 	private static final String currentDirectory = "C:\\ScheduleHacksFile\\Current\\";
 
-	private static final String toDoScheduledFile = "toDoScheduled.json";
-	private static final String toDoFloatingFile = "toDoFloating.json";
-	private static final String overdueScheduledFile = "overdueScheduled.json";
-	private static final String completeScheduledFile = "completeScheduled.json";
-	private static final String completeFloatingFile = "completeFloating.json";
+	// private static final String toDoScheduledFile = "toDoScheduled.json";
+	// private static final String toDoFloatingFile = "toDoFloating.json";
+	// private static final String overdueScheduledFile =
+	// "overdueScheduled.json";
+	// private static final String completeScheduledFile =
+	// "completeScheduled.json";
+	// private static final String completeFloatingFile =
+	// "completeFloating.json";
 
 	private static final String currentFile = "currentFile.json";
 	private static final String archiveFile = "archiveFile.json";
@@ -131,11 +131,10 @@ public class Storage {
 		// readFromFile(completeScheduledFile, scheduledTasksComplete);
 		// readFromFile(overdueScheduledFile, scheduledTasksOverDue);
 
-		readFromArchiveFile(completeScheduledFile, completeFloatingFile, floatingTasksComplete, scheduledTasksComplete);
+		readFromArchiveFile(floatingTasksComplete, scheduledTasksComplete);
 		readFromCurrentFile(scheduledTasksToDo, floatingTasksToDo, scheduledTasksOverDue);
 
-		// loadArchiveList(archiveList,floatingTasksComplete,scheduledTasksComplete);
-		// loadCurrentList(currentList,scheduledTasksToDo,floatingTasksToDo,scheduledTasksOverDue);
+
 
 	}
 
@@ -143,10 +142,10 @@ public class Storage {
 			throws Exception {
 
 		File f1 = new File(archiveFile);
-		// File f2 = new File(completeFloating);
+	
 
 		BufferedWriter bw = new BufferedWriter(new FileWriter(f1));
-		// BufferedWriter bw2 = new BufferedWriter(new FileWriter(f2));
+
 
 		for (Task newTask1 : scheduledTasksComplete) {
 			String json1 = gson.toJson(newTask1);
@@ -162,26 +161,15 @@ public class Storage {
 
 		bw.close();
 
-		// for (Task newTask2 : floatingTasksComplete) {
-		// String json2 = gson.toJson(newTask2);
-		// bw2.write(json2);
-		// bw2.newLine();
-		// }
-		//
-		//
-		// bw2.close();
 	}
 
 	public void writeToCurrentFile(ArrayList<Task> toDoScheduledFile, ArrayList<Task> toDoFloatingFile,
 			ArrayList<Task> overdueScheduledFile) throws Exception {
 
 		File f = new File(currentFile);
-		// File f2 = new File(toDoFloating);
-		// File f3 = new File(overdueScheduled);
-		//
+
 		BufferedWriter bw = new BufferedWriter(new FileWriter(f));
-		// BufferedWriter bw2 = new BufferedWriter(new FileWriter(f2));
-		// BufferedWriter bw3 = new BufferedWriter(new FileWriter(f2));
+
 
 		for (Task newTask1 : toDoScheduledFile) {
 			String json1 = gson.toJson(newTask1);
@@ -236,39 +224,34 @@ public class Storage {
 		}
 	}
 
-	public void readFromArchiveFile(String completeScheduled, String completeFloating,
-			ArrayList<Task> scheduledTasksComplete, ArrayList<Task> floatingTasksComplete) throws Exception {
+	public void readFromArchiveFile(ArrayList<Task> scheduledTasksComplete, ArrayList<Task> floatingTasksComplete)
+			throws Exception {
 
 		try {
 
-			File file1 = new File(completeScheduled);
-			File file2 = new File(completeFloating);
-			if (file1.exists()) {
+			File file = new File(archiveFile);
+			
+			if (file.exists()) {
 				String taskDetails = "";
-				BufferedReader br = new BufferedReader(new FileReader(file1));
+				BufferedReader br = new BufferedReader(new FileReader(file));
 				while ((taskDetails = br.readLine()) != null) {
 					Task task = gson.fromJson(taskDetails, Task.class);
+					if (task.isFloatingTask()) {
+						floatingTasksComplete.add(task);
+					} else {
+						scheduledTasksComplete.add(task);
+					}
 					scheduledTasksComplete.add(task);
 				}
-
 				br.close();
 			}
 
-			if (file2.exists()) {
-				String taskDetails = "";
-				BufferedReader br = new BufferedReader(new FileReader(file2));
-				while ((taskDetails = br.readLine()) != null) {
-					Task task = gson.fromJson(taskDetails, Task.class);
-					floatingTasksComplete.add(task);
-				}
-				br.close();
-			}
-
+		
 		}
 
 		catch (FileNotFoundException f) {
 
-			System.out.println("File " + completeScheduled + " cannot be found.");
+			System.out.println("File " + archiveFile + " cannot be found.");
 		}
 
 	}
@@ -302,25 +285,8 @@ public class Storage {
 
 		catch (FileNotFoundException f) {
 
-			System.out.println("File " + " cannot be found.");
+			System.out.println("File " + currentFile + " cannot be found.");
 		}
-
-	}
-
-	public void loadArchiveList(ArrayList<ArrayList<Task>> archiveList, ArrayList<Task> scheduledTasksComplete,
-			ArrayList<Task> floatingTasksComplete) {
-
-		archiveList.add(scheduledTasksComplete);
-		archiveList.add(floatingTasksComplete);
-
-	}
-
-	public void loadCurrentList(ArrayList<ArrayList<Task>> currentList, ArrayList<Task> toDoScheduledTasks,
-			ArrayList<Task> toDoFloatingTask, ArrayList<Task> overdueScheduledTask) {
-
-		currentList.add(toDoScheduledTasks);
-		currentList.add(toDoFloatingTask);
-		currentList.add(overdueScheduledTask);
 
 	}
 
