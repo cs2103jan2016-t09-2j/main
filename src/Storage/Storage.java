@@ -33,6 +33,9 @@ public class Storage {
 	private static final String currentFile = "currentFile.json";
 	private static final String archiveFile = "archiveFile.json";
 
+	public Storage(){}
+	
+	
 	// create and store files in respective Directory
 	public void setDirectory() {
 		
