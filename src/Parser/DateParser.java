@@ -2,116 +2,108 @@ package Parser;
 
 import java.util.ArrayList;
 import java.util.Collections;
-
-import java.util.regex.Pattern;
+import java.util.Locale;
 import java.util.regex.Matcher;
-
+import java.util.regex.Pattern;
+import java.text.ParsePosition;
+import java.time.DateTimeException;
 import java.time.LocalDate;
-//import java.time.Month;
-//import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeFormatterBuilder;
+import java.time.format.DateTimeParseException;
 
-/**
- * This class contains all possible combinations of date and time, that the user
- * can input as command into Schedule Hacks.
- * 
- * Accepted Date Formats -> DD/MM/YYYY DD/MM/YY DD-MM-YYYY DD-MM-YY
- * 
- * Accepted Time Formats -> HH:MM HH.MM
- * 
- * 
- * @author Snigdha Singhania
- */
-class DateParser {
+public class DateParser {
 
 	// Instance Variables
 	private String taskDetails;
+	private ArrayList<LocalDate> dateList = new ArrayList<LocalDate>();
 
-	/**************** CONSTRUCTORS *********************/
+	/****************** CONSTRUCTORS **********************/
 	DateParser() {
-		this(ParserConstants.STRING_EMPTY);
+		this(ParserConstants.STRING_EMPTY, new ArrayList<LocalDate>());
 	}
 
 	DateParser(String newTaskDetails) {
+		this(newTaskDetails, new ArrayList<LocalDate>());
+	}
+
+	DateParser(String newTaskDetails, ArrayList<LocalDate> newDateList) {
 		setTaskDetails(newTaskDetails);
+		setDateList(newDateList);
 	}
 
-	/****************** SETTER METHOD ***********************/
+	/****************** SETTER METHODS ***********************/
 	protected void setTaskDetails(String newTaskDetails) {
-		this.taskDetails = newTaskDetails;
+		this.taskDetails = CommandParser.cleanupExtraWhitespace(newTaskDetails);
 	}
 
-	/****************** GETTER METHOD ***********************/
+	protected void setDateList(ArrayList<LocalDate> dateList) {
+		this.dateList = dateList;
+	}
+
+	/****************** GETTER METHODS ***********************/
 	public String getTaskDetails() {
 		return this.taskDetails;
 	}
 
-	/****************** OTHER METHODS ***********************/
-	protected ArrayList<LocalDate> getDates() {
-		ArrayList<String> stringDateList = getDateList(getTaskDetails());
-		if (hasDateList(stringDateList)) {
-			ArrayList<LocalDate> dateList = getLocalDateList(stringDateList);
-			// dateList = sortDateList(dateList);
-			return dateList;
-		}
-		return null;
+	ArrayList<LocalDate> getDateList() {
+		if (dateList.isEmpty())
+			return null;
+		return this.dateList;
 	}
 
-	ArrayList<String> getDateList(String taskDetails) {
-		ArrayList<String> dateList = new ArrayList<String>();
-		Pattern datePattern = Pattern.compile(ParserConstants.REGEX_DATE);
+	/****************** OTHER METHODS ***********************/
+
+	/**
+	 * This method is used to extract all the dates from taskDetails
+	 */
+	public void findDates() {
+		String taskDetails = getTaskDetails();
+		Pattern datePattern = Pattern.compile(ParserConstants.REGEX_POSSIBLE_DATE);
 		Matcher dateMatcher = datePattern.matcher(taskDetails);
 		while (dateMatcher.find()) {
-			dateList.add(dateMatcher.group());
+			String tempString = taskDetails.substring(dateMatcher.start());
+			ParsePosition parsePos = new ParsePosition(ParserConstants.FIRST_INDEX);
+			if (isValidDate(tempString, parsePos)) {
+				removeDateFromTaskDetails(tempString, parsePos);
+			}
 		}
-		removeDatesFromTaskDetails();
-		return dateList;
 	}
 
-	protected void removeDatesFromTaskDetails() {
-		this.taskDetails = taskDetails.replaceAll(ParserConstants.REGEX_DATE, ParserConstants.STRING_WHITESPACE);
-		this.taskDetails = CommandParser.cleanupExtraWhitespace(taskDetails);
+	public void removeDateFromTaskDetails(String statement, ParsePosition parsePos) {
+		String validDate = statement.substring(ParserConstants.FIRST_INDEX, parsePos.getIndex());
+		taskDetails = CommandParser
+				.cleanupExtraWhitespace(taskDetails.replace(validDate, ParserConstants.STRING_WHITESPACE));
 	}
 
 	/**
-	 * This method returns true if the input string has any dates, otherwise
-	 * false. If no time and date means it is a floating task.
-	 * 
-	 * @param stringDateList
-	 *            is the list of dates contained in the user statement.
+	 * This method checks if the immediate String contains a date If it is a
+	 * Valid Date, it adds it to the List
 	 */
-	private boolean hasDateList(ArrayList<String> stringDateList) {
-		if (stringDateList.isEmpty()) {
-			return false;
-		}
-		return true;
-	}
-
-	private ArrayList<LocalDate> getLocalDateList(ArrayList<String> stringDateList) {
-		ArrayList<LocalDate> localDateList = new ArrayList<LocalDate>();
-		for (String date : stringDateList) {
-			localDateList.add(getLocalDateObject(date));
-		}
-		return localDateList;
-	}
-
-	protected LocalDate getLocalDateObject(String date) {
-		date = date.trim();
-		int[] dateMonthYear = { 1, 1, 1 }; // {dayOfMonth, month, year}
-		for (int index = ParserConstants.FIRST_INDEX, counter = 0, beginIndex = ParserConstants.FIRST_INDEX; index < date
-				.length(); index++) {
-			if (!Character.isDigit(date.charAt(index))) {
-				dateMonthYear[counter++] = Integer.parseInt(date.substring(beginIndex, index));
-				beginIndex = index + 1;
-			}
-			if (counter == ParserConstants.INDEX_YEAR) {
-				dateMonthYear[counter] = Integer.parseInt(date.substring(beginIndex));
+	public boolean isValidDate(String statement, ParsePosition parsePos) {
+		statement = CommandParser.cleanupExtraWhitespace(statement);
+		for (DateTimeFormatter format : generateDateFormatList()) {
+			DateTimeFormatter myFormatter = new DateTimeFormatterBuilder().parseCaseInsensitive().append(format)
+					.toFormatter(Locale.ENGLISH);
+			try {
+				ParsePosition index = new ParsePosition(ParserConstants.FIRST_INDEX);
+				LocalDate parsedDate = LocalDate.from(myFormatter.parse(statement.trim(), index));
+				parsePos.setIndex(index.getIndex());
+				addValidDateToList(parsedDate);
+				return true;
+			} catch (IndexOutOfBoundsException e) {
+				// do nothing
+			} catch (DateTimeParseException e) {
+				// do nothing
+			} catch (DateTimeException e) {
+				// do nothing
 			}
 		}
-		int dayOfMonth = dateMonthYear[ParserConstants.INDEX_DAY_OF_MONTH];
-		int month = dateMonthYear[ParserConstants.INDEX_MONTH];
-		int year = dateMonthYear[ParserConstants.INDEX_YEAR];
-		year = getValidYear(year, month, dayOfMonth);
-		return LocalDate.of(year, month, dayOfMonth);
+		return false;
+	}
+
+	public void addValidDateToList(LocalDate parsedDate) {
+		dateList.add(parsedDate);
 	}
 
 	public ArrayList<LocalDate> sortDateList(ArrayList<LocalDate> dates) {
@@ -119,16 +111,27 @@ class DateParser {
 		return dates;
 	}
 
-	public static int getValidYear(int year, int month, int dayOfMonth) {
-		if ((year / ParserConstants.CENTURY) == 0) {
-			LocalDate dateFifteenYearsAgo = LocalDate.now().minusYears(15);
-			int thisYear = dateFifteenYearsAgo.getYear();
-			year += (thisYear / ParserConstants.CENTURY) * ParserConstants.CENTURY;
-			LocalDate newDate = LocalDate.of(year, month, dayOfMonth);
-			if (newDate.isBefore(dateFifteenYearsAgo)) {
-				year = year + ParserConstants.CENTURY;
-			}
-		}
-		return year;
+	/**
+	 * This method returns an array list of possible date formats
+	 * 
+	 * @return dateFormatList, contains all acceptable date formats in
+	 *         DateTimeFormatter type ArrayList
+	 * 
+	 */
+	ArrayList<DateTimeFormatter> generateDateFormatList() {
+		ArrayList<DateTimeFormatter> dateFormatList = new ArrayList<DateTimeFormatter>();
+		dateFormatList.add(DateTimeFormatter.ofPattern(ParserConstants.DATE_FORMAT_HASH_DAY_MONTH_NUM_YEAR_LONG));
+		dateFormatList.add(DateTimeFormatter.ofPattern(ParserConstants.DATE_FORMAT_HASH_DAY_MONTH_NUM_YEAR_SHORT));
+		dateFormatList.add(DateTimeFormatter.ofPattern(ParserConstants.DATE_FORMAT_HASH_DAY_MONTH_NUM));
+		dateFormatList.add(DateTimeFormatter.ofPattern(ParserConstants.DATE_FORMAT_HYPHEN_DAY_MONTH_NUM_YEAR_LONG));
+		dateFormatList.add(DateTimeFormatter.ofPattern(ParserConstants.DATE_FORMAT_HYPHEN_DAY_MONTH_NUM_YEAR_SHORT));
+		dateFormatList.add(DateTimeFormatter.ofPattern(ParserConstants.DATE_FORMAT_HYPHEN_DAY_MONTH_NUM));
+		dateFormatList.add(DateTimeFormatter.ofPattern(ParserConstants.DATE_FORMAT_DAY_MONTH_LONG_YEAR_LONG));
+		dateFormatList.add(DateTimeFormatter.ofPattern(ParserConstants.DATE_FORMAT_DAY_MONTH_LONG_YEAR_SHORT));
+		dateFormatList.add(DateTimeFormatter.ofPattern(ParserConstants.DATE_FORMAT_DAY_MONTH_SHORT_YEAR_LONG));
+		dateFormatList.add(DateTimeFormatter.ofPattern(ParserConstants.DATE_FORMAT_DAY_MONTH_SHORT_YEAR_SHORT));
+		dateFormatList.add(DateTimeFormatter.ofPattern(ParserConstants.DATE_FORMAT_DAY_MONTH_LONG));
+		dateFormatList.add(DateTimeFormatter.ofPattern(ParserConstants.DATE_FORMAT_DAY_MONTH_SHORT));
+		return dateFormatList;
 	}
 }

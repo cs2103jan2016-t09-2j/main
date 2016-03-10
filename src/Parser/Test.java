@@ -13,13 +13,20 @@ import ScheduleHacks.Task;
 
 public class Test {
 
-	//private static final String REGEX_DATE = "\\d{1,2}(-|/)\\d{1,2}(-|/)(\\d{4}|\\d{2})";
-	//private static final String REGEX_TIME = "(^|\\s|\\G)((\\d{1,2}(:|\\.)\\d{1,2})|(\\d{3,4}))(\\s|$)";
-
 	public static void main(String[] args) throws Exception {
 		Test obj = new Test();
-		
+		obj.checkDateParser();
 		//System.out.println(LocalTime.MAX.truncatedTo(ChronoUnit.MINUTES).toString());
+	}
+	
+	public void checkDateParser() {
+		String text = " Holiday 2/3/14 5/12/14";
+		DateParser ob = new DateParser(text);
+		ob.findDates();
+		System.out.println(ob.getTaskDetails());
+		for(LocalDate d: ob.getDateList()) {
+			System.out.println(d.toString());
+		}
 	}
 	
 	public Task findTaskDetails(Command command, String taskStatement) throws Exception {

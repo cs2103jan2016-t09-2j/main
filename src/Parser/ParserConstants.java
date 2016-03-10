@@ -8,6 +8,7 @@ public class ParserConstants {
 	static final String REGEX_EXTRA_WHITESPACE = "\\s{2,}";
 	static final String REGEX_TIME = "(^|\\s|\\G)((\\d{1,2}(:|\\.)\\d{2})|(\\d{3,4}))(\\s|$)";
 	static final String REGEX_DATE = "(\\s|^|\\G)\\d{1,2}(-|/)\\d{1,2}(-|/)(\\d{4}|\\d{2})(\\s|$)";
+	static final String REGEX_POSSIBLE_DATE = "\\b\\d{1,2}";
 	static final String REGEX_DIGITS = "(\\s|^|,|-|\\G)\\d+(\\s|$|,|-)";
 	static final String REGEX_DIGITS_AT_START = "^\\d+\\s";
 
@@ -39,7 +40,7 @@ public class ParserConstants {
 	static final String DATE_FORMAT_DAY_MONTH_LONG_COMMA_YEAR_SHORT = "d MMMM, uu";
 	static final String DATE_FORMAT_DAY_MONTH_SHORT_COMMA_YEAR_LONG = "d MMM, uuuu";
 	static final String DATE_FORMAT_DAY_MONTH_SHORT_COMMA_YEAR_SHORT = "d MMM, uu";*/
-	
+	static final String[] UPCOMING_DAYS = {"today", "tomorrow", "overmorrow", "tmr", "tmw", "tmrw"};
 
 	// Time related constants
 	static final int MAX_MINUTES = 59;

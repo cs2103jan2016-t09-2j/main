@@ -1,5 +1,6 @@
 package Parser;
 
+import java.text.ParsePosition;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
@@ -52,18 +53,24 @@ public class CommandParser {
 					newTask = CommandParser.addNewTask(taskStatement);
 				} else if (commandType.equals(COMMAND_TYPE.MODIFY_TASK)) {
 					newTask = CommandParser.editExistingTask(taskStatement);
+				} else if (commandType.equals(COMMAND_TYPE.SEARCH_TASK)) {
+					newTask = CommandParser.getSearchCriteria(taskStatement);
+				} else if (commandType.equals(COMMAND_TYPE.VIEW_LIST)) {
+					newTask = CommandParser.getViewCriteria(taskStatement);
 				}
 				return newTask;
 			}
 		}
 		throw new Exception("Empty Task Description/Index Number");
 	}
-	
+
 	public static Task addNewTask(String taskStatement) {
 		Task newTask = new Task();
 		// Getting date and time lists from task statement
 		DateParser dateParser = new DateParser(taskStatement);
-		ArrayList<LocalDate> dateList = dateParser.getDates();
+		dateParser.findDates();
+		ArrayList<LocalDate> dateList = dateParser.getDateList();
+		
 		TimeParser timeParser = new TimeParser(dateParser.getTaskDetails());
 		ArrayList<LocalTime> timeList = timeParser.getTimes();
 
@@ -77,8 +84,11 @@ public class CommandParser {
 
 	public static Task editExistingTask(String taskStatement) {
 		Task newTask = new Task();
+		
 		DateParser dateParser = new DateParser(taskStatement);
-		ArrayList<LocalDate> dateList = dateParser.getDates();
+		dateParser.findDates();
+		ArrayList<LocalDate> dateList = dateParser.getDateList();
+		
 		TimeParser timeParser = new TimeParser(dateParser.getTaskDetails());
 		ArrayList<LocalTime> timeList = timeParser.getTimes();
 		taskStatement = timeParser.getTaskDetails();
@@ -95,6 +105,32 @@ public class CommandParser {
 		if (!taskStatement.isEmpty() && taskStatement != null) {
 			newTask.setDescription(taskStatement);
 		}
+		return newTask;
+	}
+	
+	public static Task getSearchCriteria(String taskStatement) {
+		Task newTask = new Task();
+		/*DateParser dateParser = new DateParser(taskStatement);
+		ArrayList<LocalDate> dateList = dateParser.getDates();
+		TimeParser timeParser = new TimeParser(dateParser.getTaskDetails());
+		ArrayList<LocalTime> timeList = timeParser.getTimes();
+		taskStatement = timeParser.getTaskDetails();*/
+		
+		DateParser dateObj = new DateParser(taskStatement);
+		dateObj.findDates();
+		if(dateObj.getDateList() != null) {
+			newTask.setEndDate(dateObj.getDateList().get(ParserConstants.FIRST_INDEX));
+			taskStatement = dateObj.getTaskDetails();
+		}
+		
+		if (!taskStatement.isEmpty() && taskStatement != null) {
+			newTask.setDescription(taskStatement);
+		}
+		return newTask;
+	}
+	
+	public static Task getViewCriteria(String taskStatement) {
+		Task newTask = new Task();
 		return newTask;
 	}
 

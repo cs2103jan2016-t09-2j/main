@@ -3,94 +3,132 @@ package Parser;
 import org.junit.Test;
 import static org.junit.Assert.assertEquals;
 
+import java.text.ParsePosition;
 import java.time.LocalDate;
 import java.util.ArrayList;
 
 public class DateParserTest {
-	
-	DateParser ob = new DateParser();
-	
+
+	DateParser dateObj;
+
 	@Test
-	public void testGetDateList1(){
-		String output = "";
-		String testString = "Meet ABCD at 16:00 on 14/05/1234 ";
-		ArrayList<String> outList = ob.getDateList(testString);
-		for(String s : outList ) {
-			output = output + s; 
-		}
-		String expected = "14/05/1234";
-		assertEquals(expected, output.trim());
+	public void testIsValidDate1() {
+		dateObj = new DateParser();
+		String testString = "3/6/2016";
+		assertEquals(true, dateObj.isValidDate(testString, new ParsePosition(0)));
+	}
+
+	@Test
+	public void testIsValidDate2() {
+		dateObj = new DateParser();
+		String testString = "3 june 2016";
+		assertEquals(true, dateObj.isValidDate(testString, new ParsePosition(0)));
+	}
+
+	@Test
+	public void testIsValidDate3() {
+		dateObj = new DateParser();
+		String testString = "3 June 26";
+		assertEquals(true, dateObj.isValidDate(testString, new ParsePosition(0)));
+	}
+
+	@Test
+	public void testIsValidDate4() {
+		dateObj = new DateParser();
+		String testString = "28 jun 16";
+		assertEquals(true, dateObj.isValidDate(testString, new ParsePosition(0)));
+	}
+
+	@Test
+	public void testIsValidDate5() {
+		dateObj = new DateParser();
+		String testString = "  3 june   2016";
+		assertEquals(true, dateObj.isValidDate(testString, new ParsePosition(0)));
+	}
+
+	@Test
+	public void testIsValidDate6() {
+		dateObj = new DateParser();
+		String testString = "3-6-2016";
+		assertEquals(true, dateObj.isValidDate(testString, new ParsePosition(0)));
+	}
+
+	@Test
+	public void testIsValidDate7() {
+		dateObj = new DateParser();
+		String testString = "3 janua 2016";
+		assertEquals(false, dateObj.isValidDate(testString, new ParsePosition(0)));
+	}
+
+	@Test
+	public void testIsValidDate8() {
+		dateObj = new DateParser();
+		String testString = "   3 abc 2016";
+		assertEquals(false, dateObj.isValidDate(testString, new ParsePosition(0)));
+	}
+
+	@Test
+	public void testIsValidDate9() {
+		dateObj = new DateParser();
+		String testString = "3-8-19 2016";
+		assertEquals(true, dateObj.isValidDate(testString, new ParsePosition(0)));
 	}
 	
+/*	@Test
+	public void testIsValidDate10() {
+		dateObj = new DateParser();
+		String testString = "3-8 2016";
+		assertEquals(true, dateObj.isValidDate(testString, new ParsePosition(0)));
+	}*/
+
 	@Test
-	public void testGetDateList2(){
+	public void testFinDates1() {
+		dateObj = new DateParser("She is getting married on 3 jun 2016   ");
+		dateObj.findDates();
 		String output = "";
-		String testString = "Meet ABCD at 16:00 on 14/5/34 ";
-		ArrayList<String> outList = ob.getDateList(testString);
-		for(String s : outList ) {
-			output = output + s; 
+		for (LocalDate date : dateObj.getDateList()) {
+			output = output + date.toString();
 		}
-		String expected = "14/5/34";
-		assertEquals(expected, output.trim());
+		assertEquals("She is getting married on", dateObj.getTaskDetails());
+		assertEquals("2016-06-03", output);
 	}
-	
+
 	@Test
-	public void testGetDateList3(){
+	public void testFinDates2() {
+		dateObj = new DateParser("She is getting married on 3 june 16   ");
+		dateObj.findDates();
+		String output = "";
+		for (LocalDate date : dateObj.getDateList()) {
+			output = output + date.toString();
+		}
+		assertEquals("She is getting married on", dateObj.getTaskDetails());
+		assertEquals("2016-06-03", output);
+	}
+
+	@Test
+	public void testFinDates3() {
+		dateObj = new DateParser("3 AUG 16   ");
+		dateObj.findDates();
+		String output = "";
+		for (LocalDate date : dateObj.getDateList()) {
+			output = output + date.toString();
+		}
+		assertEquals("", dateObj.getTaskDetails());
+		assertEquals("2016-08-03", output);
+	}
+
+	@Test
+	public void testFinDates4() {
 		String output = "";
 		String testString = "Meet ABCD at 16:00 on 2-1-16 and 3-1-16 ";
-		ArrayList<String> outList = ob.getDateList(testString);
-		for(String s : outList ) {
-			output = output + s; 
+		dateObj = new DateParser(testString);
+		dateObj.findDates();
+		ArrayList<LocalDate> outList = dateObj.getDateList();
+		for (LocalDate s : outList) {
+			output = output + s.toString();
 		}
-		String expected = "2-1-16  3-1-16";
+		String expected = "2016-01-022016-01-03";
 		assertEquals(expected, output.trim());
-	}
-	
-	@Test
-	public void testGetDateList4(){
-		String output = "";
-		String testString = "Meet ABCD at 16:00 on 14/25";
-		ArrayList<String> outList = ob.getDateList(testString);
-		for(String s : outList ) {
-			output = output + s; 
-		}
-		String expected = "";
-		assertEquals(expected, output);
-	}
-	
-	@Test
-	public void testGetLocalDateObject1() {
-		String testString = "12/02/2016";
-		LocalDate dateObject = ob.getLocalDateObject(testString);
-		String output = dateObject.toString();
-		String expected = "2016-02-12";
-		assertEquals(expected, output);
-	}
-	
-	@Test
-	public void testGetLocalDateObject2() {
-		String testString = "1/2/2016";
-		LocalDate dateObject = ob.getLocalDateObject(testString);
-		String output = dateObject.toString();
-		String expected = "2016-02-01";
-		assertEquals(expected, output);
-	}
-	
-	@Test
-	public void testGetLocalDateObject3() {
-		String testString = "1/2/12";
-		LocalDate dateObject = ob.getLocalDateObject(testString);
-		String output = dateObject.toString();
-		String expected = "2012-02-01";
-		assertEquals(expected, output);
-	}
-	
-	@Test
-	public void testGetLocalDateObject4() {
-		String testString = "1/2/17";
-		LocalDate dateObject = ob.getLocalDateObject(testString);
-		String output = dateObject.toString();
-		String expected = "2017-02-01";
-		assertEquals(expected, output);
+		assertEquals("Meet ABCD at 16:00 on and", dateObj.getTaskDetails());
 	}
 }

@@ -5,13 +5,15 @@ import ScheduleHacks.Task;
 public class Command {
 
 	public enum COMMAND_TYPE {
-		ADD_TASK, DELETE_TASK, MODIFY_TASK, COMPLETE_TASK, UNDO_TASK, REDO_TASK, EXIT
+		ADD_TASK, DELETE_TASK, MODIFY_TASK, COMPLETE_TASK, SEARCH_TASK, VIEW_LIST, UNDO_TASK, REDO_TASK, EXIT
 	};
 
 	private static final String[] COMMAND_ADD = { "add", "create", "+", "a" };
 	private static final String[] COMMAND_DELETE = { "delete", "d", "del", "-", "clear", "remove" };
 	private static final String[] COMMAND_MODIFY = { "modify", "edit", "update", "change", "e" };
 	private static final String[] COMMAND_COMPLETE = { "complete", "done", "finish", "completed", "finished" };
+	private static final String[] COMMAND_VIEW = { "view", "v", "show", "display" };
+	private static final String[] COMMAND_SEARCH = { "search", "find" };
 	private static final String[] COMMAND_EXIT = { "exit", "close", "quit", "q" };
 	private static final String[] COMMAND_UNDO = { "undo", "u", "z" };
 	private static final String[] COMMAND_REDO = { "redo" };
@@ -20,9 +22,12 @@ public class Command {
 
 	public boolean isFirstWordCommand;
 
+	/************** INSTANCE VARIABLES ********************/
 	private Task taskDescription;
 	private COMMAND_TYPE commandType;
 	private int indexNumber;
+
+	/****************** CONSTRUCTORS **********************/
 
 	public Command() {
 		this.commandType = null;
@@ -50,6 +55,7 @@ public class Command {
 		this.indexNumber = newCommand.indexNumber;
 	}
 
+	/****************** SETTER METHODS ***********************/
 	public void setCommandType(String commandFirstWord) throws Exception {
 		this.commandType = determineCommandType(commandFirstWord);
 	}
@@ -57,6 +63,16 @@ public class Command {
 	public void setCommandType(COMMAND_TYPE commandFirstWord) throws Exception {
 		this.commandType = commandFirstWord;
 	}
+
+	public void setTaskDetails(Task newTaskDetails) {
+		this.taskDescription = newTaskDetails;
+	}
+
+	public void setIndexNumber(int index) {
+		this.indexNumber = index;
+	}
+
+	/****************** GETTER METHODS ***********************/
 
 	// It throws an error when the command type is Invalid.
 	// Need to change it later on.
@@ -67,21 +83,15 @@ public class Command {
 		return this.commandType;
 	}
 
-	public void setTaskDetails(Task newTaskDetails) {
-		this.taskDescription = newTaskDetails;
-	}
-
 	public Task getTaskDetails() {
 		return this.taskDescription;
-	}
-
-	public void setIndexNumber(int index) {
-		this.indexNumber = index;
 	}
 
 	public int getIndexNumber() {
 		return this.indexNumber;
 	}
+
+	/****************** OTHER METHODS ***********************/
 
 	/**
 	 * This operation is used to find what does the user want to do to the Task.
@@ -109,6 +119,10 @@ public class Command {
 			return COMMAND_TYPE.MODIFY_TASK;
 		} else if (hasInDictionary(COMMAND_COMPLETE, commandFirstWord)) {
 			return COMMAND_TYPE.COMPLETE_TASK;
+		} else if (hasInDictionary(COMMAND_SEARCH, commandFirstWord)) {
+			return COMMAND_TYPE.SEARCH_TASK;
+		} else if (hasInDictionary(COMMAND_VIEW, commandFirstWord)) {
+			return COMMAND_TYPE.VIEW_LIST;
 		} else if (hasInDictionary(COMMAND_UNDO, commandFirstWord)) {
 			return COMMAND_TYPE.UNDO_TASK;
 		} else if (hasInDictionary(COMMAND_REDO, commandFirstWord)) {
