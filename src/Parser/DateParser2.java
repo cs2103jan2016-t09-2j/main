@@ -15,7 +15,7 @@ public class DateParser2 {
 	private String taskDetails;
 	private ArrayList<LocalDate> dateList = new ArrayList<LocalDate>();;
 
-	/**************** CONSTRUCTORS *********************/
+	/****************** CONSTRUCTORS **********************/
 	DateParser2() {
 		this(ParserConstants.STRING_EMPTY);
 	}
