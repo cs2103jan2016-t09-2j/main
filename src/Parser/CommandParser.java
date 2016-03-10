@@ -1,5 +1,6 @@
 package Parser;
 
+import java.text.ParsePosition;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
@@ -133,34 +134,43 @@ public class CommandParser {
 	/**
 	 * This method helps in parsing view commands.
 	 * 
-	 * Acceptable formats are: 
-	 * view archive/complete/finish 
-	 * view today 
-	 * view tomorrow/tmr/tmrw 
-	 * view next week/month 
-	 * view <date>
+	 * Acceptable formats are: view archive/complete/finish; view today; view
+	 * tomorrow/tmr/tmrw; view next week/month; view <date>
 	 * 
 	 * @param taskStatement
 	 * @return
 	 */
-	//incomplete
+	// incomplete
 	public static Task getViewCriteria(String taskStatement) throws Exception {
 		Task newTask = new Task();
 		DateParser dateObj = new DateParser();
-		
+
 		taskStatement = cleanupExtraWhitespace(taskStatement);
 		String firstWord = getFirstWord(taskStatement);
 
 		if (firstWord.equalsIgnoreCase("next")) {
 			String secondWord = removeFirstWord(taskStatement);
-		} else {
-			if(dateObj.isUpcomingDayWord(firstWord)) {
-				newTask.setEndDate(dateObj.getUpcomingDayDate(firstWord));
-			} else if() {
-				//if it is a date
+			if (secondWord.equalsIgnoreCase("month")) {
+				// incomplete
+			} else if (secondWord.equalsIgnoreCase("week")) {
+				// incomplete
+			} else if (secondWord.equalsIgnoreCase("year")) {
+				// incomplete
 			}
+		} else {
+			if (dateObj.isUpcomingDayWord(firstWord)) {
+				newTask.setEndDate(dateObj.getUpcomingDayDate(firstWord));
+			} else if (dateObj.isDayOfWeek(firstWord)) {
+				newTask.setEndDate(dateObj.getDayOfWeekDate(firstWord));
+			} else if (hasInDictionary(ParserConstants.COMMAND_COMPLETE, firstWord)) {
+				newTask.setAsComplete();
+				;
+			} else if (dateObj.isValidDate(taskStatement, new ParsePosition(0))) {
+				// if date
+				newTask.setEndDate(dateObj.getDateList().get(ParserConstants.FIRST_INDEX));
+			}
+			// if month
 		}
-		
 
 		return newTask;
 	}
@@ -320,6 +330,16 @@ public class CommandParser {
 		}
 
 		return null;
+	}
+
+	private static boolean hasInDictionary(String[] dictionary, String wordToFind) {
+		if (wordToFind != null && !wordToFind.isEmpty()) {
+			for (String dictionaryWords : dictionary) {
+				if (dictionaryWords.equalsIgnoreCase(wordToFind))
+					return true;
+			}
+		}
+		return false;
 	}
 
 	/**

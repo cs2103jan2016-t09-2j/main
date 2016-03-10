@@ -131,6 +131,9 @@ public class DateParser {
 			if (dayOfWeekValue < 0) {
 				dayOfWeekValue = indexOf(dayOfWeek, ParserConstants.DAYS_OF_WEEK_SHORT);
 			}
+			if (dayOfWeekValue < 0) {
+				dayOfWeekValue = indexOf(dayOfWeek, ParserConstants.DAYS_OF_WEEK_MEDIUM);
+			}
 			int daysToAdd = dayOfWeekValue - dayOfWeekNumToday;
 			if (daysToAdd <= 0) {
 				daysToAdd += 7;
@@ -141,7 +144,7 @@ public class DateParser {
 	}
 
 	public boolean isDayOfWeek(String expectedDayOfWeek) {
-		return isDayOfWeekLong(expectedDayOfWeek) || isDayOfWeekShort(expectedDayOfWeek);
+		return isDayOfWeekLong(expectedDayOfWeek) || isDayOfWeekShort(expectedDayOfWeek) || isDayOfWeekMedium(expectedDayOfWeek);
 	}
 
 	/**
@@ -154,6 +157,10 @@ public class DateParser {
 	 */
 	public boolean isDayOfWeekLong(String expectedDayOfWeek) {
 		return hasInDictionary(ParserConstants.DAYS_OF_WEEK_LONG, expectedDayOfWeek);
+	}
+	
+	public boolean isDayOfWeekMedium(String expectedDayOfWeek) {
+		return hasInDictionary(ParserConstants.DAYS_OF_WEEK_MEDIUM, expectedDayOfWeek);
 	}
 
 	/**

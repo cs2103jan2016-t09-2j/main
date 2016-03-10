@@ -73,13 +73,12 @@ public class DateParserTest {
 		String testString = "3-8-19 2016";
 		assertEquals(true, dateObj.isValidDate(testString, new ParsePosition(0)));
 	}
-	
-/*	@Test
-	public void testIsValidDate10() {
-		dateObj = new DateParser();
-		String testString = "3-8 2016";
-		assertEquals(true, dateObj.isValidDate(testString, new ParsePosition(0)));
-	}*/
+
+	/*
+	 * @Test public void testIsValidDate10() { dateObj = new DateParser();
+	 * String testString = "3-8 2016"; assertEquals(true,
+	 * dateObj.isValidDate(testString, new ParsePosition(0))); }
+	 */
 
 	@Test
 	public void testFinDates1() {
@@ -131,7 +130,24 @@ public class DateParserTest {
 		assertEquals(expected, output.trim());
 		assertEquals("Meet ABCD at 16:00 on and at the hotel", dateObj.getTaskDetails());
 	}
-	
+
+	@Test
+	public void testFinDates5() {
+		String output = "";
+		String testString = "Meet ABCD at 16:00   at the hotel ";
+		dateObj = new DateParser(testString);
+		dateObj.findDates();
+		ArrayList<LocalDate> outList = dateObj.getDateList();
+		if (outList != null) {
+			for (LocalDate s : outList) {
+				output = output + s.toString();
+			}
+		}
+		String expected = "";
+		assertEquals(expected, output.trim());
+		assertEquals("Meet ABCD at 16:00 at the hotel", dateObj.getTaskDetails());
+	}
+
 	@Test
 	public void testGetUpComingDayDate1() {
 		String output = "";
@@ -146,7 +162,7 @@ public class DateParserTest {
 		assertEquals(expected, output.trim());
 		assertEquals("Meet ABCD at the hotel", dateObj.getTaskDetails());
 	}
-	
+
 	@Test
 	public void testGetUpComingDayDate2() {
 		String output = "";
@@ -161,5 +177,20 @@ public class DateParserTest {
 		assertEquals(expected, output.trim());
 		assertEquals("Meet ABCD and at the hotel", dateObj.getTaskDetails());
 	}
-	
+
+	@Test
+	public void testGetDayOfWeekDate1() {
+		String output = "";
+		String testString = "Meet ABCD on wednesday at the hotel ";
+		dateObj = new DateParser(testString);
+		dateObj.findDates();
+		ArrayList<LocalDate> outList = dateObj.getDateList();
+		for (LocalDate s : outList) {
+			output = output + s.toString();
+		}
+		String expected = "2016-03-16";
+		assertEquals(expected, output.trim());
+		assertEquals("Meet ABCD on at the hotel", dateObj.getTaskDetails());
+	}
+
 }
