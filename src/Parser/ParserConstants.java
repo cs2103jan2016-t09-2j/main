@@ -1,5 +1,7 @@
 package Parser;
 
+import java.util.ArrayList;
+
 public class ParserConstants {
 
 	// Regular Expressions
@@ -20,6 +22,24 @@ public class ParserConstants {
 	static final int INDEX_DAY_OF_MONTH = 0;
 	static final int INDEX_MONTH = 1;
 	static final int INDEX_YEAR = 2;
+	// Acceptable date formats
+	static final String DATE_FORMAT_HASH_DAY_MONTH_NUM_YEAR_LONG = "d/M/uuuu";
+	static final String DATE_FORMAT_HASH_DAY_MONTH_NUM_YEAR_SHORT = "d/M/uu";
+	static final String DATE_FORMAT_HASH_DAY_MONTH_NUM = "d/M";
+	static final String DATE_FORMAT_HYPHEN_DAY_MONTH_NUM = "d-M";
+	static final String DATE_FORMAT_HYPHEN_DAY_MONTH_NUM_YEAR_LONG = "d-M-uuuu";
+	static final String DATE_FORMAT_HYPHEN_DAY_MONTH_NUM_YEAR_SHORT = "d-M-uu";
+	static final String DATE_FORMAT_DAY_MONTH_LONG_YEAR_LONG = "d MMMM uuuu";
+	static final String DATE_FORMAT_DAY_MONTH_LONG_YEAR_SHORT = "d MMMM uu";
+	static final String DATE_FORMAT_DAY_MONTH_SHORT_YEAR_LONG = "d MMM uuuu";
+	static final String DATE_FORMAT_DAY_MONTH_SHORT_YEAR_SHORT = "d MMM uu";
+	static final String DATE_FORMAT_DAY_MONTH_SHORT = "d MMM";
+	static final String DATE_FORMAT_DAY_MONTH_LONG = "d MMMM";
+	/*static final String DATE_FORMAT_DAY_MONTH_LONG_COMMA_YEAR_LONG = "d MMMM, uuuu";
+	static final String DATE_FORMAT_DAY_MONTH_LONG_COMMA_YEAR_SHORT = "d MMMM, uu";
+	static final String DATE_FORMAT_DAY_MONTH_SHORT_COMMA_YEAR_LONG = "d MMM, uuuu";
+	static final String DATE_FORMAT_DAY_MONTH_SHORT_COMMA_YEAR_SHORT = "d MMM, uu";*/
+	
 
 	// Time related constants
 	static final int MAX_MINUTES = 59;
