@@ -108,9 +108,13 @@ public class Storage {
 
 		writeToFile(toDoFloatingFile, floatingTasksToDo);
 		writeToFile(toDoScheduledFile, scheduledTasksToDo);
-		writeToFile(completeFloatingFile, floatingTasksComplete);
-		writeToFile(completeScheduledFile, scheduledTasksComplete);
+//		writeToFile(completeFloatingFile, floatingTasksComplete);
+//		writeToFile(completeScheduledFile, scheduledTasksComplete);
 		writeToFile(overdueScheduledFile, scheduledTasksOverDue);
+	
+		writeToArchiveFile(completeScheduledFile, completeFloatingFile,
+				floatingTasksComplete,scheduledTasksComplete);
+	
 	}
 	
 	public void loadToList() throws Exception{
@@ -137,6 +141,33 @@ public class Storage {
 		
 		
 	}
+	
+	public void writeToArchiveFile(String completeScheduled, String completeFloating,
+			ArrayList<Task> scheduledTasksComplete,ArrayList<Task> floatingTasksComplete) throws Exception {
+		File f1 = new File(completeScheduled);
+		File f2 = new File(completeFloating);
+		
+		BufferedWriter bw1 = new BufferedWriter(new FileWriter(f1));
+		BufferedWriter bw2 = new BufferedWriter(new FileWriter(f2));
+
+		for (Task newTask1 :  scheduledTasksComplete) {
+			String json1 = gson.toJson(newTask1);
+			bw1.write(json1);
+			bw1.newLine();
+		}
+		bw1.close();
+		for (Task newTask2 : floatingTasksComplete) {
+			String json2 = gson.toJson(newTask2);
+			bw2.write(json2);
+			bw2.newLine();
+		}
+
+		
+		bw2.close();
+	}
+	
+	
+	
 
 	public void writeToFile(String fileName, ArrayList<Task> taskList) throws Exception {
 		File f = new File(fileName);
