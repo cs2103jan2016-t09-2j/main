@@ -30,20 +30,10 @@ public class Storage {
 	private static final String archiveDirectory = "C:\\ScheduleHacksFile\\Archive\\";
 	private static final String currentDirectory = "C:\\ScheduleHacksFile\\Current\\";
 
-	// private static final String toDoScheduledFile = "toDoScheduled.json";
-	// private static final String toDoFloatingFile = "toDoFloating.json";
-	// private static final String overdueScheduledFile =
-	// "overdueScheduled.json";
-	// private static final String completeScheduledFile =
-	// "completeScheduled.json";
-	// private static final String completeFloatingFile =
-	// "completeFloating.json";
-
 	private static final String currentFile = "currentFile.json";
 	private static final String archiveFile = "archiveFile.json";
 
 	// create and store files in respective Directory
-
 	public void setDirectory() {
 
 		fileDirectory.createAllDirectories();
@@ -53,9 +43,10 @@ public class Storage {
 	public void storeDirectory() {
 
 	}
-
-	// Setter Methods
-	private void setScheduledTasksToDo(ArrayList<Task> currentTaskList) {
+	/*
+	 Setter Methods
+	*/
+	 private void setScheduledTasksToDo(ArrayList<Task> currentTaskList) {
 		scheduledTasksToDo.clear();
 		scheduledTasksToDo = currentTaskList;
 	}
@@ -80,7 +71,9 @@ public class Storage {
 		floatingTasksComplete = currentTaskList;
 	}
 
-	// Getter Methods
+	/*
+	/ Getter Methods
+	*/
 	public ArrayList<Task> getScheduledTasksToDo() {
 		return scheduledTasksToDo;
 	}
@@ -106,17 +99,12 @@ public class Storage {
 			ArrayList<Task> scheduledTasksToDo, ArrayList<Task> scheduledTasksComplete,
 			ArrayList<Task> scheduledTasksOverDue) throws Exception {
 
-		// writeToFile(toDoFloatingFile, floatingTasksToDo);
-		// writeToFile(toDoScheduledFile, scheduledTasksToDo);
-		// writeToFile(completeFloatingFile, floatingTasksComplete);
-		// writeToFile(completeScheduledFile, scheduledTasksComplete);
-		// writeToFile(overdueScheduledFile, scheduledTasksOverDue);
-
 		writeToArchiveFile(floatingTasksComplete, scheduledTasksComplete);
 		writeToCurrentFile(scheduledTasksToDo, floatingTasksToDo, scheduledTasksOverDue);
 
 	}
 
+	
 	public void loadToList() throws Exception {
 
 		setFloatingTasksComplete(new ArrayList<Task>());
@@ -125,16 +113,8 @@ public class Storage {
 		setScheduledTasksOverDue(new ArrayList<Task>());
 		setScheduledTasksToDo(new ArrayList<Task>());
 
-		// readFromFile(toDoFloatingFile, floatingTasksToDo);
-		// readFromFile(toDoScheduledFile, scheduledTasksToDo);
-		// readFromFile(completeFloatingFile, floatingTasksComplete);
-		// readFromFile(completeScheduledFile, scheduledTasksComplete);
-		// readFromFile(overdueScheduledFile, scheduledTasksOverDue);
-
 		readFromArchiveFile(floatingTasksComplete, scheduledTasksComplete);
 		readFromCurrentFile(scheduledTasksToDo, floatingTasksToDo, scheduledTasksOverDue);
-
-
 
 	}
 
@@ -142,10 +122,7 @@ public class Storage {
 			throws Exception {
 
 		File f1 = new File(archiveFile);
-	
-
 		BufferedWriter bw = new BufferedWriter(new FileWriter(f1));
-
 
 		for (Task newTask1 : scheduledTasksComplete) {
 			String json1 = gson.toJson(newTask1);
@@ -158,70 +135,35 @@ public class Storage {
 			bw.write(json1);
 			bw.newLine();
 		}
-
 		bw.close();
-
 	}
 
 	public void writeToCurrentFile(ArrayList<Task> toDoScheduledFile, ArrayList<Task> toDoFloatingFile,
 			ArrayList<Task> overdueScheduledFile) throws Exception {
 
 		File f = new File(currentFile);
-
 		BufferedWriter bw = new BufferedWriter(new FileWriter(f));
 
-
-		for (Task newTask1 : toDoScheduledFile) {
-			String json1 = gson.toJson(newTask1);
-			bw.write(json1);
+		for (Task newTask : toDoScheduledFile) {
+			String json = gson.toJson(newTask);
+			bw.write(json);
 			bw.newLine();
 		}
 
 		for (Task newTask : toDoFloatingFile) {
-			String json1 = gson.toJson(newTask);
-			bw.write(json1);
+			String json = gson.toJson(newTask);
+			bw.write(json);
 			bw.newLine();
 		}
 
 		for (Task newTask : overdueScheduledFile) {
-			String json1 = gson.toJson(newTask);
-			bw.write(json1);
+			String json = gson.toJson(newTask);
+			bw.write(json);
 			bw.newLine();
 		}
 
 		bw.close();
 
-	}
-
-	// public void writeToFile(String fileName, ArrayList<Task> taskList) throws
-	// Exception {
-	// File f = new File(fileName);
-	// BufferedWriter bw = new BufferedWriter(new FileWriter(f));
-	//
-	// for (Task newTask : taskList) {
-	// String json = gson.toJson(newTask);
-	// bw.write(json);
-	// bw.newLine();
-	// }
-	//
-	// bw.close();
-	// }
-
-	public void readFromFile(String fileName, ArrayList<Task> taskList) throws Exception {
-		try {
-			File file = new File(fileName);
-			if (file.exists()) {
-				String taskDetails = "";
-				BufferedReader br = new BufferedReader(new FileReader(file));
-				while ((taskDetails = br.readLine()) != null) {
-					Task task = gson.fromJson(taskDetails, Task.class);
-					taskList.add(task);
-				}
-				br.close();
-			}
-		} catch (FileNotFoundException f) {
-			System.out.println("File " + fileName + " cannot be found.");
-		}
 	}
 
 	public void readFromArchiveFile(ArrayList<Task> scheduledTasksComplete, ArrayList<Task> floatingTasksComplete)
@@ -240,13 +182,11 @@ public class Storage {
 						floatingTasksComplete.add(task);
 					} else {
 						scheduledTasksComplete.add(task);
-					}
-					scheduledTasksComplete.add(task);
+					}		
 				}
 				br.close();
 			}
 
-		
 		}
 
 		catch (FileNotFoundException f) {
@@ -284,7 +224,6 @@ public class Storage {
 		}
 
 		catch (FileNotFoundException f) {
-
 			System.out.println("File " + currentFile + " cannot be found.");
 		}
 
