@@ -14,10 +14,11 @@ public class fileDirectory {
 		
 		createMainDirectory();
 		createArchiveSubDirectory();
-		createOverduedSubDirectory();
-		createToDoSubDirectory();
+		createCurrentSubDirectory();
+		
 		
 	}
+	
 	public static void createMainDirectory(){
 		String pathName = "C:\\ScheduleHacksFiles";
 		
@@ -54,8 +55,8 @@ public class fileDirectory {
 		catch(Exception E){
 		}
 	}
-		public static void createToDoSubDirectory(){
-			String pathName = "C:\\ScheduleHacksFiles\\ToDo";
+		public static void createCurrentSubDirectory(){
+			String pathName = "C:\\ScheduleHacksFiles\\Current";
 			
 			File folder  = new File(pathName);
 			
@@ -71,10 +72,11 @@ public class fileDirectory {
 			catch(Exception E){
 			}
 		}
-			public static void createOverduedSubDirectory(){
-				String pathName = "C:\\ScheduleHacksFiles\\Overdued";
+		
+			public static void storeInDirectory(String fileName,String pathName){
+				String path = "C:\\ScheduleHacksFiles\\"+ "pathName";
 				
-				File folder  = new File(pathName);
+				File folder  = new File(path);
 				
 				try{
 				if(!folder.exists()){
