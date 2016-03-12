@@ -28,35 +28,51 @@ public class Storage {
 	private ArrayList<Task> scheduledTasksComplete = new ArrayList<Task>();
 	private ArrayList<Task> scheduledTasksOverDue = new ArrayList<Task>();
 
-	private static final String defaultPathName = "C:\\ScheduleHacks";
+	private static final String defaultPathName = setDirectory();
 
 	private static final String currentFile = "currentFile.json";
 	private static final String archiveFile = "archiveFile.json";
 
 	public Storage(){
-		
+	
 	}
 	
 	// create and store files in respective Directory
-	public void setDirectory() {
+	public static String setDirectory() {
+		
+		@SuppressWarnings("resource")
+		Scanner sc = new Scanner(System.in);
+		System.out.println("set directory: ");
+		String fileName = sc.nextLine();
+		
+		fileDirectory.createMainDirectory(fileName);
 		
 //		if(userDirectoryName!= null){
-//			fileDirectory.createMainDirectory(userDirectoryName);
-//		}
-//		else if(userDirectoryName == null){
-//			fileDirectory.createMainDirectory(defaultPathName);
-//		}
-//		else{
-//			fileDirectory.createMainDirectory(defaultPathName);
-//		}
-	    
-		fileDirectory.createMainDirectory(defaultPathName);
+//		fileDirectory.createMainDirectory(userDirectoryName);
+//	}
+//	else if(userDirectoryName == null){
+//		fileDirectory.createMainDirectory(defaultPathName);
+//	}
+//	else{
+//		fileDirectory.createMainDirectory(defaultPathName);
+//	}
+		return fileName;
+	}
+
+	public String changeDirectoryName(String currentName){
 		
+		
+		@SuppressWarnings("resource")
+		Scanner sc = new Scanner(System.in);
+		System.out.println("change directory: ");
+		String destDir = sc.nextLine();
+		
+		fileDirectory.changeDirectory(currentName,destDir);
+		return destDir;
 	}
-
-	public void storeDirectory() {
-
-	}
+	
+	
+	
 	
 	/*
 	 Setter Methods
@@ -114,7 +130,7 @@ public class Storage {
 			ArrayList<Task> scheduledTasksToDo, ArrayList<Task> scheduledTasksComplete,
 			ArrayList<Task> scheduledTasksOverDue) throws Exception {
 
-		setDirectory();
+
 		writeToArchiveFile(floatingTasksComplete, scheduledTasksComplete);
 		writeToCurrentFile(scheduledTasksToDo, floatingTasksToDo, scheduledTasksOverDue);
 
