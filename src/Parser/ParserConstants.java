@@ -35,6 +35,7 @@ public class ParserConstants {
 	static final int INDEX_DAY_OF_MONTH = 0;
 	static final int INDEX_MONTH = 1;
 	static final int INDEX_YEAR = 2;
+	static final int DAYS_IN_WEEK = 7;
 	// Acceptable date formats
 	static final String DATE_FORMAT_HASH_DAY_MONTH_NUM_YEAR_LONG = "d/M/uuuu";
 	static final String DATE_FORMAT_HASH_DAY_MONTH_NUM_YEAR_SHORT = "d/M/uu";

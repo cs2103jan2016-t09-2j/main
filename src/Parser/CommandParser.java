@@ -150,7 +150,11 @@ public class CommandParser {
 
 					taskStatement = taskStatement.replaceFirst(firstWord + " " + secondWord, " ");
 				} else if (secondWord.equalsIgnoreCase("week")) {
-					// incomplete
+					newTask.setStartDate(
+							currentDate.plusDays(indexOf(firstWord, ParserConstants.UPCOMING_PERIOD_KEYWORD)
+									* ParserConstants.DAYS_IN_WEEK));
+
+					newTask.setEndDate(newTask.getStartDate().plusDays(ParserConstants.DAYS_IN_WEEK));
 
 					taskStatement = taskStatement.replaceFirst(firstWord + " " + secondWord, " ");
 				} else if (secondWord.equalsIgnoreCase("year")) {
@@ -181,17 +185,19 @@ public class CommandParser {
 					.addToListIfValidDate(taskStatement)) { /* if date */
 				newTask.setEndDate(dateObj.getDateList().get(ParserConstants.FIRST_INDEX));
 				taskStatement = dateObj.getTaskDetails();
-			} else if (dateObj.isMonth(firstWord)) { /* if date */
-				//incomplete
+			} else if (dateObj.isMonth(firstWord)) { /* if month */
+				// incomplete
 				int monthNum = dateObj.getMonthNum(firstWord);
 				newTask.setStartDate(LocalDate.of(currentDate.getYear(), monthNum, 1));
 				newTask.setEndDate(LocalDate.of(currentDate.getYear(), monthNum, Month.of(monthNum).minLength()));
 				taskStatement = removeFirstWord(taskStatement);
-			} else {
-				taskStatement = cleanupExtraWhitespace(taskStatement);
-				newTask.setDescription(taskStatement);
 			}
 		}
+		taskStatement = cleanupExtraWhitespace(taskStatement);
+		if (!taskStatement.isEmpty() || taskStatement != null) {
+			newTask.setDescription(taskStatement);
+		}
+
 		return newTask;
 	}
 
@@ -381,7 +387,7 @@ public class CommandParser {
 	}
 
 	/**
-	 * This method removes the unneccesarry white spaces present in the string.
+	 * This method removes the unnecessary white spaces present in the string.
 	 * 
 	 * @param someText
 	 *            is any string with several white spaces.
