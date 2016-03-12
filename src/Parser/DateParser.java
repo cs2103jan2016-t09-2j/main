@@ -48,8 +48,9 @@ public class DateParser {
 	}
 
 	ArrayList<LocalDate> getDateList() {
-		if (dateList.isEmpty())
+		if (dateList.isEmpty()) {
 			return null;
+		}
 		return this.dateList;
 	}
 
@@ -144,7 +145,8 @@ public class DateParser {
 	}
 
 	public boolean isDayOfWeek(String expectedDayOfWeek) {
-		return isDayOfWeekLong(expectedDayOfWeek) || isDayOfWeekShort(expectedDayOfWeek) || isDayOfWeekMedium(expectedDayOfWeek);
+		return isDayOfWeekLong(expectedDayOfWeek) || isDayOfWeekShort(expectedDayOfWeek)
+				|| isDayOfWeekMedium(expectedDayOfWeek);
 	}
 
 	/**
@@ -158,7 +160,7 @@ public class DateParser {
 	public boolean isDayOfWeekLong(String expectedDayOfWeek) {
 		return hasInDictionary(ParserConstants.DAYS_OF_WEEK_LONG, expectedDayOfWeek);
 	}
-	
+
 	public boolean isDayOfWeekMedium(String expectedDayOfWeek) {
 		return hasInDictionary(ParserConstants.DAYS_OF_WEEK_MEDIUM, expectedDayOfWeek);
 	}

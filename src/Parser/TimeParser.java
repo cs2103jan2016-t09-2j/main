@@ -1,8 +1,14 @@
 package Parser;
 
 import java.util.ArrayList;
+import java.util.Locale;
+import java.text.ParsePosition;
+import java.time.DateTimeException;
+import java.time.LocalDate;
 import java.time.LocalTime;
-
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeFormatterBuilder;
+import java.time.format.DateTimeParseException;
 import java.util.regex.Pattern;
 import java.util.regex.Matcher;
 
@@ -21,16 +27,24 @@ public class TimeParser {
 
 	// Instance Variables
 	private String taskDetails;
+	private ArrayList<LocalTime> timeList;
+	private ArrayList<LocalDate> dateList;
 
 	/**************** CONSTRUCTORS *********************/
 	// Default Constructor
 	TimeParser() {
-		this(ParserConstants.STRING_EMPTY);
+		this(ParserConstants.STRING_EMPTY, new ArrayList<LocalTime>(), new ArrayList<LocalDate>());
 	}
 
 	// Parameterized Constructor
 	TimeParser(String newTaskDetails) {
+		this(newTaskDetails, new ArrayList<LocalTime>(), new ArrayList<LocalDate>());
+	}
+
+	TimeParser(String newTaskDetails, ArrayList<LocalTime> newTimeList, ArrayList<LocalDate> newDateList) {
 		setTaskDetails(newTaskDetails);
+		setTimeList(newTimeList);
+		setDateList(newDateList);
 	}
 
 	/****************** SETTER METHODS ***********************/
@@ -38,122 +52,113 @@ public class TimeParser {
 		this.taskDetails = newTaskDetails;
 	}
 
+	protected void setTimeList(ArrayList<LocalTime> timeList) {
+		this.timeList = timeList;
+	}
+
+	protected void setDateList(ArrayList<LocalDate> dateList) {
+		this.dateList = dateList;
+	}
+
 	/******************* GETTER METHODS ***********************/
 	public String getTaskDetails() {
 		return this.taskDetails;
 	}
 
-	/**************** OTHER METHODS ***********************/
-	protected ArrayList<LocalTime> getTimes() {
-		ArrayList<LocalTime> timeList;
-		ArrayList<String> stringTimeList = getTimeList(getTaskDetails());
-		if (hasTimeList(stringTimeList)) {
-			timeList = getLocalTimeList(stringTimeList);
-		} else {
-			timeList = null;
+	public ArrayList<LocalTime> getTimeList() {
+		if (timeList.isEmpty()) {
+			return null;
 		}
-		return timeList;
+		return this.timeList;
 	}
 
-	ArrayList<String> getTimeList(String taskDetails) {
-		ArrayList<String> timeList = new ArrayList<String>();
-		Pattern timePattern = Pattern.compile(ParserConstants.REGEX_TIME);
+	public ArrayList<LocalDate> getDateList() {
+		if (dateList.isEmpty()) {
+			return null;
+		}
+		return this.dateList;
+	}
+
+	/**************** OTHER METHODS ***********************/
+
+	/**
+	 * This method is used to extract all the times from taskDetails
+	 */
+	public void findTimes() {
+		String taskDetails = getTaskDetails();
+		Pattern timePattern = Pattern.compile(ParserConstants.REGEX_POSSIBLE_TIME);
 		Matcher timeMatcher = timePattern.matcher(taskDetails);
 		while (timeMatcher.find()) {
-			String newTime = timeMatcher.group();
-			if (isValidTime(newTime)) {
-				timeList.add(newTime.trim());
-			}
+			String tempString = CommandParser.cleanupExtraWhitespace(taskDetails.substring(timeMatcher.start()));
+			addToListIfValidTime(tempString);
 		}
-		removeFromTaskDetails(timeList);
-		return timeList;
-	}
-
-	public void removeFromTaskDetails(ArrayList<String> timeList) {
-		String taskDetails = getTaskDetails();
-		for (String time : timeList) {
-			taskDetails = taskDetails.replace(time, "");
-		}
-		setTaskDetails(CommandParser.cleanupExtraWhitespace(taskDetails));
-	}
-
-	private ArrayList<LocalTime> getLocalTimeList(ArrayList<String> stringTimeList) {
-		ArrayList<LocalTime> localTimeList = new ArrayList<LocalTime>();
-		for (String time : stringTimeList) {
-			localTimeList.add(getLocalTimeObject(time));
-		}
-		return localTimeList;
 	}
 
 	/**
-	 * This method converts String time to LocalTime object
-	 * 
-	 * @param time
-	 *            which is contained in the usercommand
-	 * @return LocalTime Object
+	 * This method checks if the immediate String contains a time. If it is a
+	 * Valid Time, it adds it to the timeList.
 	 */
-	protected LocalTime getLocalTimeObject(String time) {
-		int hour = 0, minute = 00;
-		time = time.trim();
-		minute = Integer.parseInt(time.substring(time.length() - 2));
-		time = time.substring(0, time.length() - 2);
-		for (int index = time.length() - 1; index >= ParserConstants.FIRST_INDEX; index--) {
-			if (Character.isDigit(time.charAt(index))) {
-				hour = Integer.parseInt(time.substring(ParserConstants.FIRST_INDEX, index + 1));
-				break;
+	public boolean addToListIfValidTime(String statement) {
+		for (DateTimeFormatter format : generateTimeFormatList()) {
+			DateTimeFormatter myFormatter = new DateTimeFormatterBuilder().parseCaseInsensitive().append(format)
+					.toFormatter(Locale.ENGLISH);
+			try {
+				ParsePosition index = new ParsePosition(ParserConstants.FIRST_INDEX);
+				LocalTime parsedTime = LocalTime.from(myFormatter.parse(statement.trim(), index));
+				addValidTimeToList(parsedTime);
+				removeTimeFromTaskDetails(statement, index);
+				return true;
+			} catch (IndexOutOfBoundsException e) {
+				// do nothing
+			} catch (DateTimeParseException e) {
+				// do nothing
+			} catch (DateTimeException e) {
+				// do nothing
 			}
-		}
-		return LocalTime.of(hour, minute);
-	}
-
-	/**
-	 * This method checks if the time input by the user is in acceptable format
-	 * and range or not
-	 * 
-	 * @param newTime
-	 *            is the time to check for validity
-	 * @return true if the time is valid, otherwise false
-	 */
-	public boolean isValidTime(String newTime) {
-		if (isValidMinutes(newTime.trim()) && (isValidHour(newTime.trim()))) {
-			return true;
 		}
 		return false;
 	}
 
-	public boolean isValidMinutes(String newTime) {
-		if (Integer.parseInt(newTime.substring(newTime.length() - 2, newTime.length())) > ParserConstants.MAX_MINUTES) {
-			return false;
-		}
-		return true;
+	public void removeTimeFromTaskDetails(String statement, ParsePosition parsePos) {
+		String validTime = statement.substring(ParserConstants.FIRST_INDEX, parsePos.getIndex());
+		taskDetails = CommandParser
+				.cleanupExtraWhitespace(taskDetails.replace(validTime, ParserConstants.STRING_WHITESPACE));
 	}
 
-	public boolean isValidHour(String newTime) {
-		int hour = ParserConstants.MAX_HOUR + 1;
-		int index;
-		for (index = ParserConstants.FIRST_INDEX; index < newTime.length() - 2; index++) {
-			if (!Character.isDigit(newTime.charAt(index))) {
-				break;
-			}
-		}
-		hour = Integer.parseInt(newTime.substring(ParserConstants.FIRST_INDEX, index));
-		if (hour > ParserConstants.MAX_HOUR) {
-			return false;
-		}
-		return true;
+	public void removeTimeFromTaskDetails(String textToRemove) {
+		taskDetails = CommandParser
+				.cleanupExtraWhitespace(taskDetails.replace(textToRemove, ParserConstants.STRING_WHITESPACE));
+	}
+
+	public void addValidTimeToList(LocalTime parsedTime) {
+		timeList.add(parsedTime);
 	}
 
 	/**
-	 * This method returns true if the input string has any times, otherwise
-	 * false. If no time and date means it is a floating task.
+	 * This method returns an array list of possible time formats
 	 * 
-	 * @param stringTimeList
-	 *            is the list of times contained in the user statement.
+	 * @return dateFormatList, contains all acceptable time formats in
+	 *         DateTimeFormatter type ArrayList
+	 * 
 	 */
-	private boolean hasTimeList(ArrayList<String> stringTimeList) {
-		if (stringTimeList.isEmpty()) {
-			return false;
-		}
-		return true;
+	public static ArrayList<DateTimeFormatter> generateTimeFormatList() {
+		ArrayList<DateTimeFormatter> dateFormatList = new ArrayList<DateTimeFormatter>();
+		dateFormatList.add(DateTimeFormatter.ofPattern(ParserConstants.TIME_FORMAT_12HOUR_MIN_AMPM_WITHOUT_SPACE));
+		dateFormatList.add(DateTimeFormatter.ofPattern(ParserConstants.TIME_FORMAT_12HOUR_MIN_AMPM_WITH_SPACE));
+		dateFormatList.add(
+				DateTimeFormatter.ofPattern(ParserConstants.TIME_FORMAT_12HOUR_MIN_AMPM_WITH_PERIOD_WITHOUT_SPACE));
+		dateFormatList
+				.add(DateTimeFormatter.ofPattern(ParserConstants.TIME_FORMAT_12HOUR_MIN_AMPM_WITH_PERIOD_WITH_SPACE));
+		dateFormatList
+				.add(DateTimeFormatter.ofPattern(ParserConstants.TIME_FORMAT_12HOUR_MIN_AMPM_WITH_COLOM_WITHOUT_SPACE));
+		dateFormatList
+				.add(DateTimeFormatter.ofPattern(ParserConstants.TIME_FORMAT_12HOUR_MIN_AMPM_WITH_COLON_WITH_SPACE));
+		dateFormatList.add(DateTimeFormatter.ofPattern(ParserConstants.TIME_FORMAT_12HOUR_AMPM_WITHOUT_SPACE));
+		dateFormatList.add(DateTimeFormatter.ofPattern(ParserConstants.TIME_FORMAT_12HOUR_AMPM_WITH_SPACE));
+
+		dateFormatList.add(DateTimeFormatter.ofPattern(ParserConstants.TIME_FORMAT_24HOUR));
+		dateFormatList.add(DateTimeFormatter.ofPattern(ParserConstants.TIME_FORMAT_24HOUR_COLON));
+		dateFormatList.add(DateTimeFormatter.ofPattern(ParserConstants.TIME_FORMAT_24HOUR_PERIOD));
+		return dateFormatList;
 	}
 }

@@ -4,128 +4,63 @@ import org.junit.Test;
 import static org.junit.Assert.assertEquals;
 
 import java.time.LocalTime;
-import java.util.ArrayList;
 
-public class TimeParserTest { 
-	
-	TimeParser obj = new TimeParser();
-	
+public class TimeParserTest {
+
+	TimeParser timeObj = new TimeParser();
+
 	@Test
-	public void testFindTime1(){
+	public void testAddToListIfValidTime1() {
+		String testString = "13.30 at Starbucks";
 		String output = "";
-		String testString = "Meet ABCD at 16:00 on 14/05/1234";
-		ArrayList<String> outList = obj.getTimeList(testString);
-		for(String s : outList ) {
-			output = output + s; 
+		timeObj = new TimeParser(testString);
+		timeObj.findTimes();
+		for (LocalTime time : timeObj.getTimeList()) {
+			output += time.toString();
 		}
-		String expected = "16:00";
-		assertEquals(expected, output.trim());
-	}
-	
-	@Test
-	public void testFindTime2(){
-		String output = "";
-		String testString = "Meet ABCD 16.00 ";
-		ArrayList<String> outList = obj.getTimeList(testString);
-		for(String s : outList ) {
-			output = output + s; 
-		}
-		String expected = "16.00";
-		assertEquals(expected, output.trim());
-	}
-	
-	@Test
-	public void testFindTime3(){
-		String output = "";
-		String testString = "Meet ABCD at 14:00 15.00 ";
-		obj = new TimeParser(testString);
-		ArrayList<String> outList = obj.getTimeList(testString);
-		for(String s : outList ) {
-			output = output + s; 
-		}
-		String expected = "14:0015.00";
-		assertEquals(expected, output.trim());
-		assertEquals("Meet ABCD at", obj.getTaskDetails());
-	}
-	
-	@Test
-	public void testFindTime4(){
-		String output = "";
-		String testString = "Meet ABCD 14/05/1234";
-		obj = new TimeParser(testString);
-		ArrayList<String> outList = obj.getTimeList(testString);
-		for(String s : outList ) {
-			output = output + s; 
-		}
-		String expected = "";
-		assertEquals(expected, output);
-		assertEquals("Meet ABCD 14/05/1234", obj.getTaskDetails());
-	}
-	
-	@Test
-	public void testFindTime5(){
-		String output = "";
-		String testString = "Meet ABCD 14/05/1234 23.59 24.55";
-		ArrayList<String> outList = obj.getTimeList(testString);
-		for(String s : outList ) {
-			output = output + s; 
-		}
-		String expected = "23.59";
+		String expected ="13:30";
 		assertEquals(expected, output);
 	}
 	
 	@Test
-	public void testFindTime6(){
+	public void testAddToListIfValidTime2() {
+		String testString = "Meet Jim at 230pm";
 		String output = "";
-		String testString = "Meet ABCD 14/05/1234 23.59 24.55";
-		obj = new TimeParser(testString);
-		ArrayList<String> outList = obj.getTimeList(testString);
-		for(String s : outList ) {
-			output = output + s; 
+		timeObj = new TimeParser(testString);
+		timeObj.findTimes();
+		for (LocalTime time : timeObj.getTimeList()) {
+			output += time.toString();
 		}
-		String expected = "23.59";
-		assertEquals(expected, output);
-		assertEquals("Meet ABCD 14/05/1234 24.55", obj.getTaskDetails());
+		String expectedTime ="14:30";
+		assertEquals(expectedTime, output);
+		assertEquals("Meet Jim at", timeObj.getTaskDetails());
 	}
 	
 	@Test
-	public void testGetLocalTimeObject1() {
-		String testString = "12.30";
-		LocalTime timeObj = obj.getLocalTimeObject(testString);
-		String output = timeObj.toString();
-		String expected = "12:30";
-		assertEquals(expected, output);
+	public void testAddToListIfValidTime3() {
+		String testString = "Meet Jim 230pm - 330am";
+		String output = "";
+		timeObj = new TimeParser(testString);
+		timeObj.findTimes();
+		for (LocalTime time : timeObj.getTimeList()) {
+			output += time.toString();
+		}
+		String expectedTime ="14:3003:30";
+		assertEquals(expectedTime, output);
+		assertEquals("Meet Jim -", timeObj.getTaskDetails());
 	}
 	
 	@Test
-	public void testGetLocalTimeObject2() {
-		String testString = "2.30";
-		LocalTime timeObj = obj.getLocalTimeObject(testString);
-		String output = timeObj.toString();
-		String expected = "02:30";
-		assertEquals(expected, output);
-	}
-	
-	@Test
-	public void testGetLocalTimeObject3() {
-		String testString = "1430";
-		LocalTime timeObj = obj.getLocalTimeObject(testString);
-		String output = timeObj.toString();
-		String expected = "14:30";
-		assertEquals(expected, output);
-	}
-	
-	@Test
-	public void testIsValidTime1() {
-		String testString = "1460";
-		TimeParser timeObj = new TimeParser();
-		assertEquals(false, timeObj.isValidTime(testString));
-	}
-	
-	@Test
-	public void testIsValidTime2() {
-		String testString = "2460";
-		TimeParser timeObj = new TimeParser();
-		assertEquals(false, timeObj.isValidTime(testString));
+	public void testAddToListIfValidTime4() {
+		String testString = "Go to CS2103 Tutorial 9 am";
+		String output = "";
+		timeObj = new TimeParser(testString);
+		timeObj.findTimes();
+		for (LocalTime time : timeObj.getTimeList()) {
+			output += time.toString();
+		}
+		String expectedTime ="09:00";
+		assertEquals(expectedTime, output);
+		assertEquals("Go to CS2103 Tutorial", timeObj.getTaskDetails());
 	}
 }

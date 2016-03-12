@@ -20,6 +20,7 @@ public class ParserConstants {
 	static final String REGEX_TIME = "(^|\\s|\\G)((\\d{1,2}(:|\\.)\\d{2})|(\\d{3,4}))(\\s|$)";
 	static final String REGEX_DATE = "(\\s|^|\\G)\\d{1,2}(-|/)\\d{1,2}(-|/)(\\d{4}|\\d{2})(\\s|$)";
 	static final String REGEX_POSSIBLE_DATE = "\\b\\w";
+	static final String REGEX_POSSIBLE_TIME = "\\b\\d";
 	static final String REGEX_DIGITS = "(\\s|^|,|-|\\G)\\d+(\\s|$|,|-)";
 	static final String REGEX_DIGITS_AT_START = "^\\d+\\s";
 
@@ -64,6 +65,18 @@ public class ParserConstants {
 	// Time related constants
 	static final int MAX_MINUTES = 59;
 	static final int MAX_HOUR = 23;
+	// Acceptable Time formats
+	static final String TIME_FORMAT_12HOUR_MIN_AMPM_WITHOUT_SPACE = "hmma";
+	static final String TIME_FORMAT_12HOUR_MIN_AMPM_WITH_SPACE = "hmm a";
+	static final String TIME_FORMAT_12HOUR_MIN_AMPM_WITH_PERIOD_WITHOUT_SPACE = "h.mma";
+	static final String TIME_FORMAT_12HOUR_MIN_AMPM_WITH_PERIOD_WITH_SPACE = "h.mm a";
+	static final String TIME_FORMAT_12HOUR_MIN_AMPM_WITH_COLOM_WITHOUT_SPACE = "h:mma";
+	static final String TIME_FORMAT_12HOUR_MIN_AMPM_WITH_COLON_WITH_SPACE = "h:mm a";
+	static final String TIME_FORMAT_12HOUR_AMPM_WITHOUT_SPACE = "ha";
+	static final String TIME_FORMAT_12HOUR_AMPM_WITH_SPACE = "h a";
+	static final String TIME_FORMAT_24HOUR = "Hmm";
+	static final String TIME_FORMAT_24HOUR_COLON = "H:mm";
+	static final String TIME_FORMAT_24HOUR_PERIOD = "H.mm";
 
 	static final char WHITE_SPACE = ' ';
 

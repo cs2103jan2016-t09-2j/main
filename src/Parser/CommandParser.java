@@ -72,7 +72,8 @@ public class CommandParser {
 		ArrayList<LocalDate> dateList = dateParser.getDateList();
 
 		TimeParser timeParser = new TimeParser(dateParser.getTaskDetails());
-		ArrayList<LocalTime> timeList = timeParser.getTimes();
+		timeParser.findTimes();
+		ArrayList<LocalTime> timeList = timeParser.getTimeList();
 
 		if (dateList == null && timeList == null) {
 			newTask = addFloatingTaskDetails(taskStatement);
@@ -90,7 +91,8 @@ public class CommandParser {
 		ArrayList<LocalDate> dateList = dateParser.getDateList();
 
 		TimeParser timeParser = new TimeParser(dateParser.getTaskDetails());
-		ArrayList<LocalTime> timeList = timeParser.getTimes();
+		timeParser.findTimes();
+		ArrayList<LocalTime> timeList = timeParser.getTimeList();
 		taskStatement = timeParser.getTaskDetails();
 
 		if (dateList != null && timeList != null) {
