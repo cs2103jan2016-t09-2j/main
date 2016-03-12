@@ -65,18 +65,15 @@ public class DateParser {
 		Matcher dateMatcher = datePattern.matcher(taskDetails);
 		while (dateMatcher.find()) {
 			String tempString = CommandParser.cleanupExtraWhitespace(taskDetails.substring(dateMatcher.start()));
-			ParsePosition parsePos = new ParsePosition(ParserConstants.FIRST_INDEX);
-			if (isValidDate(tempString, parsePos)) {
-				removeDateFromTaskDetails(tempString, parsePos);
-			} else {
-				String firstWord = CommandParser.cleanupExtraWhitespace(getFirstWord(tempString));
-				if (isDayOfWeek(firstWord)) {
-					dateList.add(getDayOfWeekDate(firstWord));
-					removeDateFromTaskDetails(firstWord);
-				} else if (isUpcomingDayWord(firstWord)) {
-					dateList.add(getUpcomingDayDate(firstWord));
-					removeDateFromTaskDetails(firstWord);
-				}
+			addToListIfValidDate(tempString);
+
+			String firstWord = CommandParser.cleanupExtraWhitespace(getFirstWord(tempString));
+			if (isDayOfWeek(firstWord)) {
+				dateList.add(getDayOfWeekDate(firstWord));
+				removeDateFromTaskDetails(firstWord);
+			} else if (isUpcomingDayWord(firstWord)) {
+				dateList.add(getUpcomingDayDate(firstWord));
+				removeDateFromTaskDetails(firstWord);
 			}
 		}
 	}
@@ -96,7 +93,7 @@ public class DateParser {
 	 * This method checks if the immediate String contains a date If it is a
 	 * Valid Date, it adds it to the List
 	 */
-	public boolean isValidDate(String statement, ParsePosition parsePos) {
+	public boolean addToListIfValidDate(String statement) {
 		statement = CommandParser.cleanupExtraWhitespace(statement);
 		for (DateTimeFormatter format : generateDateFormatList()) {
 			DateTimeFormatter myFormatter = new DateTimeFormatterBuilder().parseCaseInsensitive().append(format)
@@ -104,8 +101,8 @@ public class DateParser {
 			try {
 				ParsePosition index = new ParsePosition(ParserConstants.FIRST_INDEX);
 				LocalDate parsedDate = LocalDate.from(myFormatter.parse(statement.trim(), index));
-				parsePos.setIndex(index.getIndex());
 				addValidDateToList(parsedDate);
+				removeDateFromTaskDetails(statement, index);
 				return true;
 			} catch (IndexOutOfBoundsException e) {
 				// do nothing
@@ -118,10 +115,10 @@ public class DateParser {
 		return false;
 	}
 
-	public boolean isAcceptableDate(String statement, ParsePosition pos) {
+	/*public boolean isAcceptableDate(String statement, ParsePosition pos) {
 		String firstWord = CommandParser.cleanupExtraWhitespace(getFirstWord(statement));
 		return isValidDate(statement, pos) || isUpcomingDayWord(firstWord) || isDayOfWeek(firstWord);
-	}
+	}*/
 
 	public LocalDate getDayOfWeekDate(String dayOfWeek) {
 		LocalDate newDate = null;
@@ -202,6 +199,21 @@ public class DateParser {
 			return true;
 		}
 		return false;
+	}
+
+	public boolean isMonth(String firstWord) {
+		return hasInDictionary(ParserConstants.MONTHS_LONG, firstWord)
+				|| hasInDictionary(ParserConstants.MONTHS_SHORT, firstWord);
+	}
+	
+	public int getMonthNum(String month) {
+		if(hasInDictionary(ParserConstants.MONTHS_LONG, month)) {
+			return indexOf(month, ParserConstants.MONTHS_LONG);
+		} else if(hasInDictionary(ParserConstants.MONTHS_SHORT, month)) {
+			return indexOf(month, ParserConstants.MONTHS_LONG);
+		} else {
+			return -1;
+		}
 	}
 
 	public int indexOf(String word, String[] array) {

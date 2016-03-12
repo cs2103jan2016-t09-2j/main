@@ -57,6 +57,7 @@ public class ParserConstants {
 	 * "d MMM, uu";
 	 */
 	static final String[] UPCOMING_DAYS = { "today", "tomorrow", "overmorrow", "tmr", "tmw", "tmrw" };
+	static final String[] UPCOMING_PERIOD_KEYWORD = {"this", "next", /*"next to next"*/};
 	// Days of the week
 	static final String[] DAYS_OF_WEEK_SHORT = { "", "mon", "tue", "wed", "thu", "fri", "sat", "sun" };
 	static final String[] DAYS_OF_WEEK_MEDIUM = { "", "", "tues", "wednes", "thurs", "", "", "" };

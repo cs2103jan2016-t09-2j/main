@@ -1,8 +1,8 @@
 package Parser;
 
-import java.text.ParsePosition;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.Month;
 import java.util.ArrayList;
 
 import java.util.regex.Pattern;
@@ -54,9 +54,9 @@ public class CommandParser {
 				} else if (commandType.equals(COMMAND_TYPE.MODIFY_TASK)) {
 					newTask = CommandParser.editExistingTask(taskStatement);
 				} else if (commandType.equals(COMMAND_TYPE.SEARCH_TASK)) {
-					newTask = CommandParser.getSearchCriteria(taskStatement);
+					newTask = CommandParser.getCriteria(taskStatement);
 				} else if (commandType.equals(COMMAND_TYPE.VIEW_LIST)) {
-					newTask = CommandParser.getViewCriteria(taskStatement);
+					newTask = CommandParser.getCriteria(taskStatement);
 				}
 				return newTask;
 			}
@@ -112,13 +112,6 @@ public class CommandParser {
 
 	public static Task getSearchCriteria(String taskStatement) {
 		Task newTask = new Task();
-		/*
-		 * DateParser dateParser = new DateParser(taskStatement);
-		 * ArrayList<LocalDate> dateList = dateParser.getDates(); TimeParser
-		 * timeParser = new TimeParser(dateParser.getTaskDetails());
-		 * ArrayList<LocalTime> timeList = timeParser.getTimes(); taskStatement
-		 * = timeParser.getTaskDetails();
-		 */
 
 		DateParser dateObj = new DateParser(taskStatement);
 		dateObj.findDates();
@@ -133,47 +126,72 @@ public class CommandParser {
 		return newTask;
 	}
 
-	/**
-	 * This method helps in parsing view commands.
-	 * 
-	 * Acceptable formats are: view archive/complete/finish; view today; view
-	 * tomorrow/tmr/tmrw; view next week/month; view <date>
-	 * 
-	 * @param taskStatement
-	 * @return
-	 */
-	// incomplete
-	public static Task getViewCriteria(String taskStatement) throws Exception {
+	public static Task getCriteria(String taskStatement) throws Exception {
 		Task newTask = new Task();
 		DateParser dateObj = new DateParser();
+		LocalDate currentDate = getCurrentDate();
 
 		taskStatement = cleanupExtraWhitespace(taskStatement);
 		String firstWord = getFirstWord(taskStatement);
 
-		if (firstWord.equalsIgnoreCase("next")) {
-			String secondWord = removeFirstWord(taskStatement);
-			if (secondWord.equalsIgnoreCase("month")) {
-				// incomplete
-			} else if (secondWord.equalsIgnoreCase("week")) {
-				// incomplete
-			} else if (secondWord.equalsIgnoreCase("year")) {
-				// incomplete
+		if (hasInDictionary(ParserConstants.UPCOMING_PERIOD_KEYWORD, firstWord)) {
+			try {
+				String secondWord = getFirstWord(removeFirstWord(taskStatement));
+
+				if (secondWord.equalsIgnoreCase("month")) {
+
+					newTask.setStartDate(LocalDate.of(currentDate.getYear(),
+							currentDate.getMonthValue() + indexOf(firstWord, ParserConstants.UPCOMING_PERIOD_KEYWORD),
+							1));
+
+					newTask.setEndDate(LocalDate.of(currentDate.getYear(),
+							currentDate.getMonthValue() + indexOf(firstWord, ParserConstants.UPCOMING_PERIOD_KEYWORD),
+							currentDate.lengthOfMonth()));
+
+					taskStatement = taskStatement.replaceFirst(firstWord + " " + secondWord, " ");
+				} else if (secondWord.equalsIgnoreCase("week")) {
+					// incomplete
+
+					taskStatement = taskStatement.replaceFirst(firstWord + " " + secondWord, " ");
+				} else if (secondWord.equalsIgnoreCase("year")) {
+
+					newTask.setStartDate(LocalDate.of(
+							currentDate.getYear() + indexOf(firstWord, ParserConstants.UPCOMING_PERIOD_KEYWORD), 1, 1));
+
+					newTask.setEndDate(LocalDate.of(
+							currentDate.getYear() + indexOf(firstWord, ParserConstants.UPCOMING_PERIOD_KEYWORD), 12,
+							31));
+
+					taskStatement = taskStatement.replaceFirst(firstWord + " " + secondWord, " ");
+				}
+			} catch (Exception e) {
+				// do nothing
 			}
 		} else {
 			if (dateObj.isUpcomingDayWord(firstWord)) {
 				newTask.setEndDate(dateObj.getUpcomingDayDate(firstWord));
+				taskStatement = taskStatement.replace(firstWord, ParserConstants.STRING_WHITESPACE);
 			} else if (dateObj.isDayOfWeek(firstWord)) {
 				newTask.setEndDate(dateObj.getDayOfWeekDate(firstWord));
+				taskStatement = taskStatement.replace(firstWord, ParserConstants.STRING_WHITESPACE);
 			} else if (hasInDictionary(ParserConstants.COMMAND_COMPLETE, firstWord)) {
 				newTask.setAsComplete();
-				;
-			} else if (dateObj.isValidDate(taskStatement, new ParsePosition(0))) {
-				// if date
+				taskStatement = taskStatement.replace(firstWord, ParserConstants.STRING_WHITESPACE);
+			} else if (dateObj
+					.addToListIfValidDate(taskStatement)) { /* if date */
 				newTask.setEndDate(dateObj.getDateList().get(ParserConstants.FIRST_INDEX));
+				taskStatement = dateObj.getTaskDetails();
+			} else if (dateObj.isMonth(firstWord)) { /* if date */
+				//incomplete
+				int monthNum = dateObj.getMonthNum(firstWord);
+				newTask.setStartDate(LocalDate.of(currentDate.getYear(), monthNum, 1));
+				newTask.setEndDate(LocalDate.of(currentDate.getYear(), monthNum, Month.of(monthNum).minLength()));
+				taskStatement = removeFirstWord(taskStatement);
+			} else {
+				taskStatement = cleanupExtraWhitespace(taskStatement);
+				newTask.setDescription(taskStatement);
 			}
-			// if month
 		}
-
 		return newTask;
 	}
 
@@ -296,6 +314,13 @@ public class CommandParser {
 	}
 
 	/**
+	 * This method helps get today's date
+	 */
+	public static LocalDate getCurrentDate() {
+		return LocalDate.now();
+	}
+
+	/**
 	 * This method is used to retrieve the first word from the user's command,
 	 * which is the command action(Eg., add, delete).
 	 * 
@@ -332,6 +357,17 @@ public class CommandParser {
 		}
 
 		return null;
+	}
+
+	public static int indexOf(String word, String[] array) {
+		if (hasInDictionary(array, word)) {
+			for (int index = ParserConstants.FIRST_INDEX; index < array.length; index++) {
+				if (word.equalsIgnoreCase(array[index])) {
+					return index;
+				}
+			}
+		}
+		return -1; // if absent
 	}
 
 	private static boolean hasInDictionary(String[] dictionary, String wordToFind) {
