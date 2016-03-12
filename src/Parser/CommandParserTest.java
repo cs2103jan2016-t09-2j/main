@@ -102,7 +102,7 @@ public class CommandParserTest {
 	
 	@Test
 	public void checkGetParsedCommand5()throws Exception {
-		String testString = "modify  16  21/3/16";
+		String testString = "edit  16  21/3/16";
 		Command cmd = CommandParser.getParsedCommand(testString);
 		assertEquals(COMMAND_TYPE.MODIFY_TASK, cmd.getCommandType());
 		assertEquals(16, cmd.getIndexNumber());
@@ -117,7 +117,7 @@ public class CommandParserTest {
 	
 	@Test
 	public void checkGetParsedCommand6()throws Exception {
-		String testString = "modify  16  21/3/16 600";
+		String testString = "e  16  21/3/16 600";
 		Command cmd = CommandParser.getParsedCommand(testString);
 		assertEquals(COMMAND_TYPE.MODIFY_TASK, cmd.getCommandType());
 		assertEquals(16, cmd.getIndexNumber());
@@ -133,7 +133,7 @@ public class CommandParserTest {
 	
 	@Test
 	public void checkGetParsedCommand7()throws Exception {
-		String testString = "modify  16  600 1800";
+		String testString = "change  16  600 1800";
 		Command cmd = CommandParser.getParsedCommand(testString);
 		assertEquals(COMMAND_TYPE.MODIFY_TASK, cmd.getCommandType());
 		assertEquals(16, cmd.getIndexNumber());
@@ -149,7 +149,7 @@ public class CommandParserTest {
 	
 	@Test
 	public void checkGetParsedCommand8()throws Exception {
-		String testString = "modify  16  21/3/16 600 1800 submit work";
+		String testString = "edit  16  21/3/16 600 1800 submit work";
 		Command cmd = CommandParser.getParsedCommand(testString);
 		assertEquals(COMMAND_TYPE.MODIFY_TASK, cmd.getCommandType());
 		assertEquals(16, cmd.getIndexNumber());

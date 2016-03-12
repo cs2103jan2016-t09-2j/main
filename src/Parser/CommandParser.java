@@ -4,7 +4,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.Month;
 import java.util.ArrayList;
-
+import java.util.Arrays;
 import java.util.regex.Pattern;
 import java.util.regex.Matcher;
 
@@ -88,50 +88,27 @@ public class CommandParser {
 	public static Task editExistingTask(String taskStatement) {
 		Task newTask = new Task();
 
-		// incomplete
-		if (isScheduledToFloatingConversion(taskStatement)) {
-
-		}
-
-		DateParser dateParser = new DateParser(taskStatement);
-		dateParser.findDates();
-		ArrayList<LocalDate> dateList = dateParser.getDateList();
-
-		TimeParser timeParser = new TimeParser(dateParser.getTaskDetails());
-		timeParser.findTimes();
-		ArrayList<LocalTime> timeList = timeParser.getTimeList();
-		taskStatement = timeParser.getTaskDetails();
-
-		if (dateList != null && timeList != null) {
-			DateTimeParser objDateTime = new DateTimeParser(dateList, timeList);
-			objDateTime.arrangeDateTimeList();
-			dateList = objDateTime.getDateList();
-			timeList = objDateTime.getTimeList();
-		}
-		setDates(dateList, newTask);
-		setTimes(timeList, newTask);
-
-		if (!taskStatement.isEmpty() && taskStatement != null) {
-			newTask.setDescription(taskStatement);
+		if (requiresDeletingParameters(taskStatement)) {
+			taskStatement = removeFirstWord(taskStatement);
+			setDeleteParameters(newTask, getParameterList(taskStatement));
+		} else {
+			setEditParameters(taskStatement, newTask);
 		}
 		return newTask;
 	}
 
-	public static Task getSearchCriteria(String taskStatement) {
-		Task newTask = new Task();
-
-		DateParser dateObj = new DateParser(taskStatement);
-		dateObj.findDates();
-		if (dateObj.getDateList() != null) {
-			newTask.setEndDate(dateObj.getDateList().get(ParserConstants.FIRST_INDEX));
-			taskStatement = dateObj.getTaskDetails();
-		}
-
-		if (!taskStatement.isEmpty() && taskStatement != null) {
-			newTask.setDescription(taskStatement);
-		}
-		return newTask;
-	}
+	/*
+	 * public static Task getSearchCriteria(String taskStatement) { Task newTask
+	 * = new Task();
+	 * 
+	 * DateParser dateObj = new DateParser(taskStatement); dateObj.findDates();
+	 * if (dateObj.getDateList() != null) {
+	 * newTask.setEndDate(dateObj.getDateList().get(ParserConstants.FIRST_INDEX)
+	 * ); taskStatement = dateObj.getTaskDetails(); }
+	 * 
+	 * if (!taskStatement.isEmpty() && taskStatement != null) {
+	 * newTask.setDescription(taskStatement); } return newTask; }
+	 */
 
 	public static Task getCriteria(String taskStatement) throws Exception {
 		Task newTask = new Task();
@@ -208,6 +185,60 @@ public class CommandParser {
 		}
 
 		return newTask;
+	}
+
+	/**
+	 * This method sets all the elements of the task object matching the
+	 * parametersToDelete list as Empty.
+	 * 
+	 * @param taskStatement
+	 * @param newTask
+	 */
+	public static void setEditParameters(String taskStatement, Task newTask) {
+		DateParser dateParser = new DateParser(taskStatement);
+		dateParser.findDates();
+		ArrayList<LocalDate> dateList = dateParser.getDateList();
+
+		TimeParser timeParser = new TimeParser(dateParser.getTaskDetails());
+		timeParser.findTimes();
+		ArrayList<LocalTime> timeList = timeParser.getTimeList();
+		taskStatement = timeParser.getTaskDetails();
+
+		if (dateList != null && timeList != null) {
+			DateTimeParser objDateTime = new DateTimeParser(dateList, timeList);
+			objDateTime.arrangeDateTimeList();
+			dateList = objDateTime.getDateList();
+			timeList = objDateTime.getTimeList();
+		}
+		setDates(dateList, newTask);
+		setTimes(timeList, newTask);
+
+		if (!taskStatement.isEmpty() && taskStatement != null) {
+			newTask.setDescription(taskStatement);
+		}
+	}
+
+	/**
+	 * This method sets all the elements of the task object matching the
+	 * parametersToDelete list as Empty.
+	 * 
+	 * @param newTask
+	 * @param parametersToDelete
+	 */
+	public static void setDeleteParameters(Task newTask, ArrayList<String> parametersToDelete) {
+		for (String parameter : parametersToDelete) {
+			if (hasInDictionary(ParserConstants.PARAMETER_DATE, parameter)) {
+				newTask.setEndDate(LocalDate.MIN);
+				newTask.setStartDate(LocalDate.MIN);
+				newTask.setStartTime(LocalTime.MAX);
+				newTask.setEndTime(LocalTime.MAX);
+			} else if (hasInDictionary(ParserConstants.PARAMETER_TIME, parameter)) {
+				newTask.setStartTime(LocalTime.MAX);
+				newTask.setEndTime(LocalTime.MAX);
+			} else if (hasInDictionary(ParserConstants.PARAMETER_DESCRIPTION, parameter)) {
+				newTask.setDescription(ParserConstants.STRING_EMPTY);
+			}
+		}
 	}
 
 	/**
@@ -321,15 +352,13 @@ public class CommandParser {
 		return null;
 	}
 
-	// incomplete
-	private static boolean isScheduledToFloatingConversion(String taskStatement) {
+	public static boolean requiresDeletingParameters(String taskStatement) {
+		taskStatement = cleanupExtraWhitespace(taskStatement);
 		try {
 			String firstWord = getFirstWord(taskStatement);
 			if (hasInDictionary(ParserConstants.COMMAND_DELETE, firstWord)) {
-				String secondWord = getSecondWord(taskStatement);
-				if (secondWord.equalsIgnoreCase("date") || secondWord.equalsIgnoreCase("dates")) {
-					return true;
-				}
+				getSecondWord(taskStatement); /* Just to check if not null */
+				return true;
 			}
 		} catch (Exception e) {
 			// do nothing
@@ -337,6 +366,18 @@ public class CommandParser {
 			// thus return false
 		}
 		return false;
+	}
+
+	/**
+	 * This method splits up the words in taskStatement at the whitespace.
+	 * 
+	 * @param taskStatement
+	 * @return an arrayList of words contained in taskStatement
+	 */
+	public static ArrayList<String> getParameterList(String taskStatement) {
+		taskStatement = cleanupExtraWhitespace(taskStatement);
+		String[] parameters = taskStatement.split(ParserConstants.STRING_WHITESPACE);
+		return new ArrayList<String>(Arrays.asList(parameters));
 	}
 
 	public static void setDates(ArrayList<LocalDate> dateList, Task newTask) {
@@ -358,7 +399,9 @@ public class CommandParser {
 	}
 
 	/**
-	 * This method helps get today's date
+	 * This method gets today's date.
+	 * 
+	 * @return today's date as LocalDate object.
 	 */
 	public static LocalDate getCurrentDate() {
 		return LocalDate.now();
@@ -394,6 +437,7 @@ public class CommandParser {
 	 * @return taskStatement which is exclusive of the command type.
 	 */
 	static String removeFirstWord(String userCommand) {
+		userCommand = cleanupExtraWhitespace(userCommand);
 		int whiteSpacePosition = userCommand.indexOf(ParserConstants.WHITE_SPACE);
 
 		if (whiteSpacePosition != ParserConstants.NO_WHITE_SPACE) {
@@ -407,6 +451,13 @@ public class CommandParser {
 		return getFirstWord(removeFirstWord(statement));
 	}
 
+	/**
+	 * This method returns the index of word in array[].
+	 * 
+	 * @param word
+	 * @param array
+	 * @return index if word is present in array[], otherwise -1.
+	 */
 	public static int indexOf(String word, String[] array) {
 		if (hasInDictionary(array, word)) {
 			for (int index = ParserConstants.FIRST_INDEX; index < array.length; index++) {
@@ -418,6 +469,13 @@ public class CommandParser {
 		return -1; // if absent
 	}
 
+	/**
+	 * This method checks if wordToFind is present in dictionary[].
+	 * 
+	 * @param dictionary
+	 * @param wordToFind
+	 * @return true if present, else false.
+	 */
 	private static boolean hasInDictionary(String[] dictionary, String wordToFind) {
 		if (wordToFind != null && !wordToFind.isEmpty()) {
 			for (String dictionaryWords : dictionary) {

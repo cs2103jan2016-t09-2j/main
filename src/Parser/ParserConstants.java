@@ -5,7 +5,7 @@ public class ParserConstants {
 	// Command Class, primarily
 	static final String[] COMMAND_ADD = { "add", "create", "+", "a" };
 	static final String[] COMMAND_DELETE = { "delete", "d", "del", "-", "clear", "remove" };
-	static final String[] COMMAND_MODIFY = { "modify", "edit", "update", "change", "e" };
+	static final String[] COMMAND_MODIFY = { "edit", "update", "change", "e" };
 	static final String[] COMMAND_COMPLETE = { "complete", "done", "finish", "completed", "finished", "archive" };
 	static final String[] COMMAND_VIEW = { "view", "v", "show", "display" };
 	static final String[] COMMAND_SEARCH = { "search", "find" };
@@ -14,6 +14,11 @@ public class ParserConstants {
 	static final String[] COMMAND_REDO = { "redo" };
 	static final String COMMAND_INVALID = null;
 	static final String COMMAND_EMPTY = "";
+	
+	// Parameters of Task object
+	static final String[] PARAMETER_DESCRIPTION = {"description", "detail", "details", "desc"};
+	static final String[] PARAMETER_DATE = {"date", "dates"};
+	static final String[] PARAMETER_TIME = {"time", "times"};
 
 	// Regular Expressions
 	static final String REGEX_EXTRA_WHITESPACE = "\\s{2,}";
