@@ -3,7 +3,6 @@ package Parser;
 import org.junit.Test;
 import static org.junit.Assert.assertEquals;
 
-import java.text.ParsePosition;
 import java.time.LocalDate;
 import java.util.ArrayList;
 
@@ -15,69 +14,69 @@ public class DateParserTest {
 	public void testIsValidDate1() {
 		dateObj = new DateParser();
 		String testString = "3/6/2016";
-		assertEquals(true, dateObj.isValidDate(testString, new ParsePosition(0)));
+		assertEquals(true, dateObj.addToListIfValidDate(testString));
 	}
 
 	@Test
 	public void testIsValidDate2() {
 		dateObj = new DateParser();
 		String testString = "3 june 2016";
-		assertEquals(true, dateObj.isValidDate(testString, new ParsePosition(0)));
+		assertEquals(true, dateObj.addToListIfValidDate(testString));
 	}
 
 	@Test
 	public void testIsValidDate3() {
 		dateObj = new DateParser();
 		String testString = "3 June 26";
-		assertEquals(true, dateObj.isValidDate(testString, new ParsePosition(0)));
+		assertEquals(true, dateObj.addToListIfValidDate(testString));
 	}
 
 	@Test
 	public void testIsValidDate4() {
 		dateObj = new DateParser();
 		String testString = "28 jun 16";
-		assertEquals(true, dateObj.isValidDate(testString, new ParsePosition(0)));
+		assertEquals(true, dateObj.addToListIfValidDate(testString));
 	}
 
 	@Test
 	public void testIsValidDate5() {
 		dateObj = new DateParser();
 		String testString = "  3 june   2016";
-		assertEquals(true, dateObj.isValidDate(testString, new ParsePosition(0)));
+		assertEquals(true, dateObj.addToListIfValidDate(testString));
 	}
 
 	@Test
 	public void testIsValidDate6() {
 		dateObj = new DateParser();
 		String testString = "3-6-2016";
-		assertEquals(true, dateObj.isValidDate(testString, new ParsePosition(0)));
+		assertEquals(true, dateObj.addToListIfValidDate(testString));
 	}
 
 	@Test
 	public void testIsValidDate7() {
 		dateObj = new DateParser();
 		String testString = "3 janua 2016";
-		assertEquals(false, dateObj.isValidDate(testString, new ParsePosition(0)));
+		assertEquals(false, dateObj.addToListIfValidDate(testString));
 	}
 
 	@Test
 	public void testIsValidDate8() {
 		dateObj = new DateParser();
 		String testString = "   3 abc 2016";
-		assertEquals(false, dateObj.isValidDate(testString, new ParsePosition(0)));
+		assertEquals(false, dateObj.addToListIfValidDate(testString));
 	}
 
 	@Test
 	public void testIsValidDate9() {
 		dateObj = new DateParser();
 		String testString = "3-8-19 2016";
-		assertEquals(true, dateObj.isValidDate(testString, new ParsePosition(0)));
+		assertEquals(true, dateObj.addToListIfValidDate(testString));
 	}
 
 	/*
 	 * @Test public void testIsValidDate10() { dateObj = new DateParser();
 	 * String testString = "3-8 2016"; assertEquals(true,
-	 * dateObj.isValidDate(testString, new ParsePosition(0))); }
+	 * dateObj.isValidDate(testString )); }
 	 */
 
 	@Test
