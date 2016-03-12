@@ -29,8 +29,8 @@ public class Storage {
 	private ArrayList<Task> scheduledTasksOverDue = new ArrayList<Task>();
 
 	private static final String defaultPathName = "C:\\ScheduleHacks";
-	private static final String setPathName = setDirectory();
-	private static final String usedPathName = usedDirectoryName();
+	private static final String setPathName = setDirectoryName();
+	private static final String usedPathName = currentDirectoryName();
 	
 
 	private static final String currentFile = "currentFile.json";
@@ -41,14 +41,12 @@ public class Storage {
 	}
 	
 	// create and store files in respective Directory
-	public static String setDirectory() {
+	public static String setDirectoryName() {
 		
 		@SuppressWarnings("resource")
 		Scanner sc = new Scanner(System.in);
 		System.out.println("set directory: ");
 		String fileName = sc.nextLine();
-		
-		fileDirectory.createMainDirectory(fileName);
 
 		return fileName;
 	}
@@ -65,13 +63,16 @@ public class Storage {
 	}
 	
 	
-	public static String usedDirectoryName(){
+	public static String currentDirectoryName(){
 		
-		if(setPathName == null){
-			return defaultPathName;
+		if(setPathName != null && !setPathName.isEmpty()){		
+			fileDirectory.createMainDirectory(setPathName);
+			return setPathName;		
 		}
+		
 		else{
-			return setPathName;
+			fileDirectory.createMainDirectory(defaultPathName);
+			return defaultPathName;
 		}	
 	}
 	
