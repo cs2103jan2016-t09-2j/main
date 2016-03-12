@@ -28,7 +28,10 @@ public class Storage {
 	private ArrayList<Task> scheduledTasksComplete = new ArrayList<Task>();
 	private ArrayList<Task> scheduledTasksOverDue = new ArrayList<Task>();
 
-	private static final String defaultPathName = setDirectory();
+	private static final String defaultPathName = "C:\\ScheduleHacks";
+	private static final String setPathName = setDirectory();
+	private static final String usedPathName = usedDirectoryName();
+	
 
 	private static final String currentFile = "currentFile.json";
 	private static final String archiveFile = "archiveFile.json";
@@ -46,22 +49,12 @@ public class Storage {
 		String fileName = sc.nextLine();
 		
 		fileDirectory.createMainDirectory(fileName);
-		
-//		if(userDirectoryName!= null){
-//		fileDirectory.createMainDirectory(userDirectoryName);
-//	}
-//	else if(userDirectoryName == null){
-//		fileDirectory.createMainDirectory(defaultPathName);
-//	}
-//	else{
-//		fileDirectory.createMainDirectory(defaultPathName);
-//	}
+
 		return fileName;
 	}
+	
 
 	public String changeDirectoryName(String currentName){
-		
-		
 		@SuppressWarnings("resource")
 		Scanner sc = new Scanner(System.in);
 		System.out.println("change directory: ");
@@ -72,7 +65,15 @@ public class Storage {
 	}
 	
 	
-	
+	public static String usedDirectoryName(){
+		
+		if(setPathName == null){
+			return defaultPathName;
+		}
+		else{
+			return setPathName;
+		}	
+	}
 	
 	/*
 	 Setter Methods
@@ -130,13 +131,10 @@ public class Storage {
 			ArrayList<Task> scheduledTasksToDo, ArrayList<Task> scheduledTasksComplete,
 			ArrayList<Task> scheduledTasksOverDue) throws Exception {
 
-
 		writeToArchiveFile(floatingTasksComplete, scheduledTasksComplete);
 		writeToCurrentFile(scheduledTasksToDo, floatingTasksToDo, scheduledTasksOverDue);
-
 	}
 
-	
 	public void loadToList() throws Exception {
 
 		setFloatingTasksComplete(new ArrayList<Task>());
@@ -147,13 +145,12 @@ public class Storage {
 
 		readFromArchiveFile(floatingTasksComplete, scheduledTasksComplete);
 		readFromCurrentFile(scheduledTasksToDo, floatingTasksToDo, scheduledTasksOverDue);
-
 	}
 
 	public void writeToArchiveFile(ArrayList<Task> scheduledTasksComplete, ArrayList<Task> floatingTasksComplete)
 			throws Exception {
 
-		File f1 = new File(defaultPathName,archiveFile);
+		File f1 = new File(usedPathName,archiveFile);
 		
 		BufferedWriter bw = new BufferedWriter(new FileWriter(f1));
 
@@ -174,7 +171,7 @@ public class Storage {
 	public void writeToCurrentFile(ArrayList<Task> toDoScheduledFile, ArrayList<Task> toDoFloatingFile,
 			ArrayList<Task> overdueScheduledFile) throws Exception {
 
-		File f = new File(defaultPathName,currentFile);
+		File f = new File(usedPathName,currentFile);
 		BufferedWriter bw = new BufferedWriter(new FileWriter(f));
 
 		for (Task newTask : toDoScheduledFile) {
@@ -204,7 +201,7 @@ public class Storage {
 
 		try {
 
-			File file = new File(defaultPathName,archiveFile);
+			File file = new File(usedPathName,archiveFile);
 			
 			if (file.exists()) {
 				String taskDetails = "";
@@ -232,7 +229,7 @@ public class Storage {
 	public void readFromCurrentFile(ArrayList<Task> toDoScheduledFile, ArrayList<Task> toDoFloatingFile,
 			ArrayList<Task> overdueScheduledFile) throws Exception {
 		try {
-			File file = new File(defaultPathName,currentFile);
+			File file = new File(usedPathName,currentFile);
 
 			if (file.exists()) {
 				String taskDetails = "";
