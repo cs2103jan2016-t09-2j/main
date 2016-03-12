@@ -12,7 +12,9 @@ import Parser.Command.COMMAND_TYPE;
 import ScheduleHacks.Task;
 
 /*
- * Can Perform basic CRUD functionalities
+ * Can Perform basic CRUD functionalities.
+ * Can Perform search and view.
+ * 
  */
 
 public class CommandParser {
@@ -86,6 +88,11 @@ public class CommandParser {
 	public static Task editExistingTask(String taskStatement) {
 		Task newTask = new Task();
 
+		// incomplete
+		if (isScheduledToFloatingConversion(taskStatement)) {
+
+		}
+
 		DateParser dateParser = new DateParser(taskStatement);
 		dateParser.findDates();
 		ArrayList<LocalDate> dateList = dateParser.getDateList();
@@ -139,7 +146,6 @@ public class CommandParser {
 				String secondWord = getFirstWord(removeFirstWord(taskStatement));
 
 				if (secondWord.equalsIgnoreCase("month")) {
-
 					newTask.setStartDate(LocalDate.of(currentDate.getYear(),
 							currentDate.getMonthValue() + indexOf(firstWord, ParserConstants.UPCOMING_PERIOD_KEYWORD),
 							1));
@@ -173,19 +179,22 @@ public class CommandParser {
 			}
 		} else {
 			if (dateObj.isUpcomingDayWord(firstWord)) {
+				/* if today or tomorrow */
 				newTask.setEndDate(dateObj.getUpcomingDayDate(firstWord));
 				taskStatement = taskStatement.replace(firstWord, ParserConstants.STRING_WHITESPACE);
 			} else if (dateObj.isDayOfWeek(firstWord)) {
+				/* if any day of the week */
 				newTask.setEndDate(dateObj.getDayOfWeekDate(firstWord));
 				taskStatement = taskStatement.replace(firstWord, ParserConstants.STRING_WHITESPACE);
 			} else if (hasInDictionary(ParserConstants.COMMAND_COMPLETE, firstWord)) {
 				newTask.setAsComplete();
 				taskStatement = taskStatement.replace(firstWord, ParserConstants.STRING_WHITESPACE);
-			} else if (dateObj
-					.addToListIfValidDate(taskStatement)) { /* if date */
+			} else if (dateObj.addToListIfValidDate(taskStatement)) {
+				/* if date */
 				newTask.setEndDate(dateObj.getDateList().get(ParserConstants.FIRST_INDEX));
 				taskStatement = dateObj.getTaskDetails();
-			} else if (dateObj.isMonth(firstWord)) { /* if month */
+			} else if (dateObj.isMonth(firstWord)) {
+				/* if month */
 				// incomplete
 				int monthNum = dateObj.getMonthNum(firstWord);
 				newTask.setStartDate(LocalDate.of(currentDate.getYear(), monthNum, 1));
@@ -301,6 +310,35 @@ public class CommandParser {
 		return newTask;
 	}
 
+	/**
+	 * This method helps convert a scheduled/upcoming task to a floating task.
+	 * 
+	 * @param newTask
+	 * @return newTask with all adjusted Parameters
+	 */
+	public static Task convertScheduledToFloating(Task newTask) {
+
+		return null;
+	}
+
+	// incomplete
+	private static boolean isScheduledToFloatingConversion(String taskStatement) {
+		try {
+			String firstWord = getFirstWord(taskStatement);
+			if (hasInDictionary(ParserConstants.COMMAND_DELETE, firstWord)) {
+				String secondWord = getSecondWord(taskStatement);
+				if (secondWord.equalsIgnoreCase("date") || secondWord.equalsIgnoreCase("dates")) {
+					return true;
+				}
+			}
+		} catch (Exception e) {
+			// do nothing
+			// if exception, means no conversion
+			// thus return false
+		}
+		return false;
+	}
+
 	public static void setDates(ArrayList<LocalDate> dateList, Task newTask) {
 		if (dateList != null) {
 			newTask.setEndDate(dateList.get(dateList.size() - 1));
@@ -363,6 +401,10 @@ public class CommandParser {
 		}
 
 		return null;
+	}
+
+	public static String getSecondWord(String statement) throws Exception {
+		return getFirstWord(removeFirstWord(statement));
 	}
 
 	public static int indexOf(String word, String[] array) {
