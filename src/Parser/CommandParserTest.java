@@ -87,7 +87,11 @@ public class CommandParserTest {
 		String testString = "-  16";
 		Command cmd = CommandParser.getParsedCommand(testString);
 		assertEquals(COMMAND_TYPE.DELETE_TASK, cmd.getCommandType());
-		assertEquals(16, cmd.getIndexNumber());
+		String output ="";
+		for(int x: cmd.getIndexList()) {
+			output += x;
+		}
+		assertEquals("16", output);
 		assertEquals(null, cmd.getTaskDetails());
 	}
 	
@@ -96,7 +100,11 @@ public class CommandParserTest {
 		String testString = "done  16";
 		Command cmd = CommandParser.getParsedCommand(testString);
 		assertEquals(COMMAND_TYPE.COMPLETE_TASK, cmd.getCommandType());
-		assertEquals(16, cmd.getIndexNumber());
+		String output ="";
+		for(int x: cmd.getIndexList()) {
+			output += x;
+		}
+		assertEquals("16", output);
 		assertEquals(null, cmd.getTaskDetails());
 	}
 	
@@ -105,7 +113,11 @@ public class CommandParserTest {
 		String testString = "edit  16  21/3/16";
 		Command cmd = CommandParser.getParsedCommand(testString);
 		assertEquals(COMMAND_TYPE.MODIFY_TASK, cmd.getCommandType());
-		assertEquals(16, cmd.getIndexNumber());
+		String output ="";
+		for(int x: cmd.getIndexList()) {
+			output += x;
+		}
+		assertEquals("16", output);
 		Task newTask = cmd.getTaskDetails();
 		assertEquals(false, newTask.isFloatingTask());
 		assertEquals(false, newTask.isScheduledTask());
@@ -120,7 +132,11 @@ public class CommandParserTest {
 		String testString = "e  16  21/3/16 600";
 		Command cmd = CommandParser.getParsedCommand(testString);
 		assertEquals(COMMAND_TYPE.MODIFY_TASK, cmd.getCommandType());
-		assertEquals(16, cmd.getIndexNumber());
+		String output ="";
+		for(int x: cmd.getIndexList()) {
+			output += x;
+		}
+		assertEquals("16", output);
 		Task newTask = cmd.getTaskDetails();
 		assertEquals(false, newTask.isFloatingTask());
 		assertEquals(false, newTask.isScheduledTask());
@@ -136,7 +152,11 @@ public class CommandParserTest {
 		String testString = "change  16  600 1800";
 		Command cmd = CommandParser.getParsedCommand(testString);
 		assertEquals(COMMAND_TYPE.MODIFY_TASK, cmd.getCommandType());
-		assertEquals(16, cmd.getIndexNumber());
+		String output ="";
+		for(int x: cmd.getIndexList()) {
+			output += x;
+		}
+		assertEquals("16", output);
 		Task newTask = cmd.getTaskDetails();
 		assertEquals(false, newTask.isFloatingTask());
 		assertEquals(false, newTask.isScheduledTask());
@@ -152,7 +172,11 @@ public class CommandParserTest {
 		String testString = "edit  16  21/3/16 600 1800 submit work";
 		Command cmd = CommandParser.getParsedCommand(testString);
 		assertEquals(COMMAND_TYPE.MODIFY_TASK, cmd.getCommandType());
-		assertEquals(16, cmd.getIndexNumber());
+		String output ="";
+		for(int x: cmd.getIndexList()) {
+			output += x;
+		}
+		assertEquals("16", output);
 		Task newTask = cmd.getTaskDetails();
 		assertEquals(false, newTask.isFloatingTask());
 		assertEquals(false, newTask.isScheduledTask());
@@ -169,7 +193,11 @@ public class CommandParserTest {
 			String testString = "del 5";
 		Command cmd = CommandParser.getParsedCommand(testString);
 		assertEquals(COMMAND_TYPE.DELETE_TASK, cmd.getCommandType());
-		assertEquals(5, cmd.getIndexNumber());
+		String output ="";
+		for(int x: cmd.getIndexList()) {
+			output += x;
+		}
+		assertEquals("5", output);
 		assertEquals(null, cmd.getTaskDetails());
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
@@ -181,7 +209,7 @@ public class CommandParserTest {
 		String testString = "add hello 1030";
 		Command cmd = CommandParser.getParsedCommand(testString);
 		assertEquals(COMMAND_TYPE.ADD_TASK, cmd.getCommandType());
-		assertEquals(-1, cmd.getIndexNumber());
+		assertEquals(null, cmd.getIndexList());
 		Task newTask = cmd.getTaskDetails();
 		assertEquals("hello", newTask.getDescription()); 
 		assertEquals(null, newTask.getStartDate());
@@ -195,7 +223,11 @@ public class CommandParserTest {
 		String testString = "e 2 21/3/16 1700";
 		Command cmd = CommandParser.getParsedCommand(testString);
 		assertEquals(COMMAND_TYPE.MODIFY_TASK, cmd.getCommandType());
-		assertEquals(2, cmd.getIndexNumber());
+		String output ="";
+		for(int x: cmd.getIndexList()) {
+			output += x;
+		}
+		assertEquals("2", output);
 		Task newTask = cmd.getTaskDetails();
 		assertEquals(null, newTask.getDescription()); 
 		assertEquals(null, newTask.getStartDate());

@@ -1,5 +1,7 @@
 package Parser;
 
+import java.util.ArrayList;
+
 import ScheduleHacks.Task;
 
 public class Command {
@@ -13,34 +15,34 @@ public class Command {
 	/************** INSTANCE VARIABLES ********************/
 	private Task taskDescription;
 	private COMMAND_TYPE commandType;
-	private int indexNumber;
+	private ArrayList<Integer> indexList;
 
 	/****************** CONSTRUCTORS **********************/
 
 	public Command() {
 		this.commandType = null;
 		this.taskDescription = null;
-		this.indexNumber = ParserConstants.DEFAULT_INDEX_NUMBER;
+		this.indexList = null;
 	}
 
 	// Parameterized Constructor that accepts a command word and task details
 	public Command(String commandFirstWord, Task newTaskDetails) throws Exception {
 		setCommandType(commandFirstWord);
 		setTaskDetails(newTaskDetails);
-		setIndexNumber(ParserConstants.DEFAULT_INDEX_NUMBER);
+		setIndexList(new ArrayList<Integer>());
 	}
 
-	public Command(String commandFirstWord, Task newTaskDetails, int newTaskIndex) throws Exception {
+	public Command(String commandFirstWord, Task newTaskDetails, ArrayList<Integer> newIndexList) throws Exception {
 		setCommandType(commandFirstWord);
 		setTaskDetails(newTaskDetails);
-		setIndexNumber(newTaskIndex);
+		setIndexList(newIndexList);
 	}
 
 	// Parameterized Constructor that accepts another Command
 	public Command(Command newCommand) {
 		this.commandType = newCommand.commandType;
 		this.taskDescription = newCommand.taskDescription;
-		this.indexNumber = newCommand.indexNumber;
+		this.indexList = newCommand.indexList;
 	}
 
 	/****************** SETTER METHODS ***********************/
@@ -56,8 +58,8 @@ public class Command {
 		this.taskDescription = newTaskDetails;
 	}
 
-	public void setIndexNumber(int index) {
-		this.indexNumber = index;
+	public void setIndexList(ArrayList<Integer> newIndexList) {
+		this.indexList = newIndexList;
 	}
 
 	/****************** GETTER METHODS ***********************/
@@ -75,8 +77,8 @@ public class Command {
 		return this.taskDescription;
 	}
 
-	public int getIndexNumber() {
-		return this.indexNumber;
+	public ArrayList<Integer> getIndexList() {
+		return this.indexList;
 	}
 
 	/****************** OTHER METHODS ***********************/

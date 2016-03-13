@@ -1,5 +1,76 @@
 package Parser;
 
+import org.junit.Test;
+import static org.junit.Assert.assertEquals;
+
 public class IndexParserTest {
 
+	IndexParser indexObj;
+
+	@Test
+	public void testFindIndex1() throws Exception {
+		Command cmd = new Command("del", null);
+		String testString = "1, 3 , 5";
+		String output = "";
+		indexObj = new IndexParser(cmd, testString);
+		indexObj.findIndexList();
+		for (int x : indexObj.getIndexList()) {
+			output += x;
+		}
+		assertEquals("135", output);
+	}
+	
+	@Test
+	public void testFindIndex2() throws Exception {
+		Command cmd = new Command("d", null);
+		String testString = "1, 3 - 5";
+		String output = "";
+		indexObj = new IndexParser(cmd, testString);
+		indexObj.findIndexList();
+		for (int x : indexObj.getIndexList()) {
+			output += x;
+		}
+		assertEquals("1345", output);
+	}
+	
+	@Test
+	public void testFindIndex3() throws Exception {
+		Command cmd = new Command("complete", null);
+		String testString = "1, 3 , 5";
+		String output = "";
+		indexObj = new IndexParser(cmd, testString);
+		indexObj.findIndexList();
+		for (int x : indexObj.getIndexList()) {
+			output += x;
+		}
+		assertEquals("135", output);
+	}
+	
+	@Test
+	public void testFindIndex4() throws Exception {
+		Command cmd = new Command("del", null);
+		String testString = "1-3";
+		String output = "";
+		indexObj = new IndexParser(cmd, testString);
+		indexObj.findIndexList();
+		for (int x : indexObj.getIndexList()) {
+			output += x;
+		}
+		assertEquals("123", output);
+	}
+	
+	@Test
+	public void testFindIndex5() throws Exception {
+		Command cmd = new Command("e", null);
+		String testString = "60 23 sep 16";
+		String output = "";
+		indexObj = new IndexParser(cmd, testString);
+		indexObj.findIndexList();
+		for (int x : indexObj.getIndexList()) {
+			output += x;
+		}
+		assertEquals("60", output);
+		assertEquals("23 sep 16", indexObj.getTaskDetails());
+	}
+	
 }

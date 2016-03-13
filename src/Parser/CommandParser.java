@@ -19,6 +19,15 @@ import ScheduleHacks.Task;
 
 public class CommandParser {
 
+	/**
+	 * This method is used by the Logic to get the parsed components from the input user command.
+	 * 
+	 * @param newUserCommand
+	 * 			command input by the user
+	 * @return parsedCommand 
+	 * 			Command type object which contains the commandType, newTaskDetails, and an index number
+	 * @throws Exception
+	 */
 	public static Command getParsedCommand(String newUserCommand) throws Exception {
 		return parseCommand(cleanupExtraWhitespace(newUserCommand));
 	}
@@ -43,7 +52,8 @@ public class CommandParser {
 
 		if (CommandParser.hasIndexNumber(commandType)) {
 			IndexParser indexParser = new IndexParser(command, taskStatement);
-			command.setIndexNumber(indexParser.getIndex());
+			indexParser.findIndexList();
+			command.setIndexList(indexParser.getIndexList());
 			taskStatement = indexParser.getTaskDetails();
 		}
 		if (!CommandParser.hasTaskDetails(commandType)) {

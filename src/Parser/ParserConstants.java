@@ -14,11 +14,11 @@ public class ParserConstants {
 	static final String[] COMMAND_REDO = { "redo" };
 	static final String COMMAND_INVALID = null;
 	static final String COMMAND_EMPTY = "";
-	
+
 	// Parameters of Task object
-	static final String[] PARAMETER_DESCRIPTION = {"description", "detail", "details", "desc"};
-	static final String[] PARAMETER_DATE = {"date", "dates"};
-	static final String[] PARAMETER_TIME = {"time", "times"};
+	static final String[] PARAMETER_DESCRIPTION = { "description", "detail", "details", "desc" };
+	static final String[] PARAMETER_DATE = { "date", "dates" };
+	static final String[] PARAMETER_TIME = { "time", "times" };
 
 	// Regular Expressions
 	static final String REGEX_EXTRA_WHITESPACE = "\\s{2,}";
@@ -28,6 +28,8 @@ public class ParserConstants {
 	static final String REGEX_POSSIBLE_TIME = "\\b\\d";
 	static final String REGEX_DIGITS = "(\\s|^|,|-|\\G)\\d+(\\s|$|,|-)";
 	static final String REGEX_DIGITS_AT_START = "^\\d+\\s";
+	static final String REGEX_INDEX_DELIMITER = "(,|\\s)";
+	static final String REGEX_ONLY_DIGITS = "\\b\\d+\\b";
 
 	// Position/Index based integer constants
 	static final int NO_WHITE_SPACE = -1;
@@ -63,11 +65,12 @@ public class ParserConstants {
 	 * "d MMM, uu";
 	 */
 	static final String[] UPCOMING_DAYS = { "today", "tomorrow", "overmorrow", "tmr", "tmw", "tmrw" };
-	static final String[] UPCOMING_PERIOD_KEYWORD = {"this", "next", /*"next to next"*/};
+	static final String[] UPCOMING_PERIOD_KEYWORD = { "this", "next", /* "next to next" */ };
 	// Days of the week
 	static final String[] DAYS_OF_WEEK_SHORT = { "", "mon", "tue", "wed", "thu", "fri", "sat", "sun" };
 	static final String[] DAYS_OF_WEEK_MEDIUM = { "", "", "tues", "wednes", "thurs", "", "", "" };
-	static final String[] DAYS_OF_WEEK_LONG = { "", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday" };
+	static final String[] DAYS_OF_WEEK_LONG = { "", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday",
+			"sunday" };
 
 	// Time related constants
 	static final int MAX_MINUTES = 59;
@@ -89,6 +92,9 @@ public class ParserConstants {
 
 	static final String STRING_EMPTY = "";
 	static final String STRING_WHITESPACE = " ";
+	static final String STRING_COMMA = ",";
+	static final String STRING_HYPHEN = "-";
+	static final String STRING_TO = "to";
 
 	// Number in words
 	static final String[] NUM_TO_WORDS = { "", "one", "two", "three", "four", "five" };
