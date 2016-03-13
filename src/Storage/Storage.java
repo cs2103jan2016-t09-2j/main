@@ -51,7 +51,7 @@ public class Storage {
 		return fileName;
 	}
 	
-
+	
 	public String changeDirectoryName(String currentName){
 		@SuppressWarnings("resource")
 		Scanner sc = new Scanner(System.in);
@@ -62,7 +62,7 @@ public class Storage {
 		return destDir;
 	}
 	
-	
+	//decides current directory name
 	public static String currentDirectoryName(){
 		
 		if(setPathName != null && !setPathName.isEmpty()){		
