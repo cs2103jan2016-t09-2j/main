@@ -99,15 +99,24 @@ public class TimeParser {
 	 * Valid Time, it adds it to the timeList.
 	 */
 	public boolean addToListIfValidTime(String statement) {
+		String end = ParserConstants.STRING_EMPTY;
 		for (DateTimeFormatter format : generateTimeFormatList()) {
 			DateTimeFormatter myFormatter = new DateTimeFormatterBuilder().parseCaseInsensitive().append(format)
 					.toFormatter(Locale.ENGLISH);
 			try {
 				ParsePosition index = new ParsePosition(ParserConstants.FIRST_INDEX);
 				LocalTime parsedTime = LocalTime.from(myFormatter.parse(statement.trim(), index));
-				addValidTimeToList(parsedTime);
-				removeTimeFromTaskDetails(statement, index);
-				return true;
+
+				if (index.getIndex() < statement.length()) {
+					end = statement.substring(index.getIndex());
+				}
+				statement = statement.substring(ParserConstants.FIRST_INDEX, index.getIndex());
+
+				if (taskDetails.contains(statement) && isValidEnd(end)) {
+					addValidTimeToList(parsedTime);
+					removeTimeFromTaskDetails(statement);
+					return true;
+				}
 			} catch (IndexOutOfBoundsException e) {
 				// do nothing
 			} catch (DateTimeParseException e) {
@@ -119,19 +128,31 @@ public class TimeParser {
 		return false;
 	}
 
-	public void removeTimeFromTaskDetails(String statement, ParsePosition parsePos) {
-		String validTime = statement.substring(ParserConstants.FIRST_INDEX, parsePos.getIndex());
-		taskDetails = CommandParser
-				.cleanupExtraWhitespace(taskDetails.replace(validTime, ParserConstants.STRING_WHITESPACE));
-	}
-
 	public void removeTimeFromTaskDetails(String textToRemove) {
 		taskDetails = CommandParser
 				.cleanupExtraWhitespace(taskDetails.replace(textToRemove, ParserConstants.STRING_WHITESPACE));
 	}
 
+	private boolean isValidEnd(String endText) {
+		if (endText.isEmpty()) {
+			return true;
+		}
+		String firstCharacter = endText.charAt(ParserConstants.FIRST_INDEX) + ParserConstants.STRING_EMPTY;
+		return hasInDictionary(ParserConstants.VALID_END, firstCharacter);
+	}
+
 	public void addValidTimeToList(LocalTime parsedTime) {
 		timeList.add(parsedTime);
+	}
+
+	private boolean hasInDictionary(String[] dictionary, String wordToFind) {
+		if (wordToFind != null && !wordToFind.isEmpty()) {
+			for (String dictionaryWords : dictionary) {
+				if (dictionaryWords.equalsIgnoreCase(wordToFind))
+					return true;
+			}
+		}
+		return false;
 	}
 
 	/**

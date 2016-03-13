@@ -24,8 +24,8 @@ public class ParserConstants {
 	static final String REGEX_EXTRA_WHITESPACE = "\\s{2,}";
 	static final String REGEX_TIME = "(^|\\s|\\G)((\\d{1,2}(:|\\.)\\d{2})|(\\d{3,4}))(\\s|$)";
 	static final String REGEX_DATE = "(\\s|^|\\G)\\d{1,2}(-|/)\\d{1,2}(-|/)(\\d{4}|\\d{2})(\\s|$)";
-	static final String REGEX_POSSIBLE_DATE = "\\b\\w";
-	static final String REGEX_POSSIBLE_TIME = "\\b\\d";
+	static final String REGEX_POSSIBLE_DATE = "(^|\\s|\\G)\\w";
+	static final String REGEX_POSSIBLE_TIME = "(^|\\s|\\G)\\d";
 	static final String REGEX_DIGITS = "(\\s|^|,|-|\\G)\\d+(\\s|$|,|-)";
 	static final String REGEX_DIGITS_AT_START = "^\\d+\\s";
 	static final String REGEX_INDEX_DELIMITER = "(,|\\s)";
@@ -104,5 +104,7 @@ public class ParserConstants {
 			"nov", "dec" };
 	static final String[] MONTHS_LONG = { "", "january", "february", "march", "april", "may", "june", "july", "august",
 			"september", "october", "november", "december" };
+	
+	static final String[] VALID_END = {"," , " "};
 
 }
