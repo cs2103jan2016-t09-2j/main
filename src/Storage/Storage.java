@@ -16,6 +16,7 @@ import com.google.gson.Gson;
 import java.util.logging.Logger;
 import java.util.logging.Level;
 
+import ScheduleHacks.History;
 import ScheduleHacks.Task;
 
 public class Storage {
@@ -35,10 +36,21 @@ public class Storage {
 
 	private static final String currentFile = "currentFile.json";
 	private static final String archiveFile = "archiveFile.json";
-
+	
+	private static Storage object;
+	
 	public Storage(){
 	
 	}
+	
+	public static Storage getInstance() {
+		if(object == null) {
+			object = new Storage();
+		}
+		return object;
+	}
+
+	
 	
 	// create and store files in respective Directory
 	public static String setDirectoryName() {
