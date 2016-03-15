@@ -5,7 +5,7 @@ import java.util.ArrayList;
 public class OldCommand {
 	
 	public enum COMMAND_TYPE {
-		ADD_TASK, DELETE_TASK, MODIFY_TASK, COMPLETE_TASK, SEARCH_TASK, VIEW_LIST
+		ADD_TASK, DELETE_TASK, MODIFY_TASK, COMPLETE_TASK, SEARCH_TASK, VIEW_LIST, INCOMPLETE_TASK
 	};
 	
 	private ArrayList<Task> taskList;

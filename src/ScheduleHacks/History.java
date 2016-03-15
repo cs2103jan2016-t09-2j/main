@@ -2,17 +2,18 @@ package ScheduleHacks;
 
 import java.util.Stack;
 
+import ScheduleHacks.OldCommand.COMMAND_TYPE;
+
 public class History {
 	
 	private static History object = null;
 	
-	Stack<CommandState> undoStack;
-	Stack<CommandState> redoStack;
+	Stack<OldCommand> undoStack;
+	Stack<OldCommand> redoStack;
 	
 	private History() {
-		undoStack = new Stack<CommandState>();
-		redoStack = new Stack<CommandState>();
-
+		undoStack = new Stack<OldCommand>();
+		redoStack = new Stack<OldCommand>();
 	}
 	
 	public static History getInstance() {
@@ -22,18 +23,36 @@ public class History {
 		return object;
 	}
 
-	public void saveState() {
-		undoStack.push(copyListState());
-
+	public void addToUndoList(OldCommand cmd) {
+		undoStack.push(execute(cmd));
 	}
 
-	public void prevState() {
-
+	public OldCommand getFromUndoList() {
+		return undoStack.pop();
 	}
-
-	private CommandState copyListState() {
+	
+	private OldCommand execute(OldCommand executeCommand) {
 		
-		return null;
+		COMMAND_TYPE commandType = executeCommand.getCommandType();		
+		
+		switch (commandType) {
+		case ADD_TASK:
+			executeCommand.setCommandType(COMMAND_TYPE.DELETE_TASK);
+			break;
+		case DELETE_TASK:
+			executeCommand.setCommandType(COMMAND_TYPE.ADD_TASK);
+			break;
+		case MODIFY_TASK:
+			executeCommand.setCommandType(COMMAND_TYPE.MODIFY_TASK);
+			break;
+		case COMPLETE_TASK:
+			executeCommand.setCommandType(COMMAND_TYPE.INCOMPLETE_TASK);
+			break;
+		default:
+			break;
+		}
+		
+		return executeCommand;
 	}
 
 }
