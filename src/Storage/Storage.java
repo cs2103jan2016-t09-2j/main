@@ -12,6 +12,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
 
 import java.util.logging.Logger;
 import java.util.logging.Level;
@@ -32,29 +33,43 @@ public class Storage {
 	private static final String defaultPathName = "C:\\ScheduleHacks";
 	private static final String setPathName = setDirectoryName();
 	private static final String usedPathName = currentDirectoryName();
-	
+
+	private static Logger logger = Logger.getLogger("Storage");
 
 	private static final String currentFile = "currentFile.json";
 	private static final String archiveFile = "archiveFile.json";
-	
+
 	private static Storage object;
-	
-	public Storage(){
-	
+
+	// Logging messages
+	private static final String LOG_IO_EXCEPTION = "Encountered Input Output Exception";
+	private static final String LOG_ARCHIVE_FILE_NOT_FOUND = "Archive file not found";
+	private static final String LOG_CURRENT_FILE_NOT_FOUND = "Current file not found";
+	private static final String LOG_JSONSYNTAX_EXCEPTION = "Encountered JsonSyntax Exception";
+	private static final String LOG_WRITING_ARCHIVE_FILE = "Writing to archive file";
+	private static final String LOG_WRITING_CURRENT_FILE = "Writing to current file";
+	private static final String LOG_ERROR_WRITE_ARCHIVE_FILE = "Unable to write to archive file";
+	private static final String LOG_ERROR_WRITE_CURRENT_FILE = "Unable to write to archive file";
+	private static final String LOG_WROTE_ARCHIVE_FILE = "Write to archive file successful";
+	private static final String LOG_WROTE_CURRENT_FILE = "Write to current file successful";
+	private static final String LOG_READING_ARCHIVE_FILE = "Reading archive file";
+	private static final String LOG_READING_CURRENT_FILE = "Reading current file";
+
+	public Storage() {
+
 	}
-	
+
+	// apply singleton
 	public static Storage getInstance() {
-		if(object == null) {
+		if (object == null) {
 			object = new Storage();
 		}
 		return object;
 	}
 
-	
-	
 	// create and store files in respective Directory
 	public static String setDirectoryName() {
-		
+
 		@SuppressWarnings("resource")
 		Scanner sc = new Scanner(System.in);
 		System.out.println("set directory: ");
@@ -62,36 +77,35 @@ public class Storage {
 
 		return fileName;
 	}
-	
-	
-	public String changeDirectoryName(String currentName){
+
+	public String changeDirectoryName(String currentName) {
 		@SuppressWarnings("resource")
 		Scanner sc = new Scanner(System.in);
 		System.out.println("change directory: ");
 		String destDir = sc.nextLine();
-		
-		fileDirectory.changeDirectory(currentName,destDir);
+
+		fileDirectory.changeDirectory(currentName, destDir);
 		return destDir;
 	}
-	
-	//decides current directory name
-	public static String currentDirectoryName(){
-		
-		if(setPathName != null && !setPathName.isEmpty()){		
+
+	// decides current directory name
+	public static String currentDirectoryName() {
+
+		if (setPathName != null && !setPathName.isEmpty()) {
 			fileDirectory.createMainDirectory(setPathName);
-			return setPathName;		
+			return setPathName;
 		}
-		
-		else{
+
+		else {
 			fileDirectory.createMainDirectory(defaultPathName);
 			return defaultPathName;
-		}	
+		}
 	}
-	
+
 	/*
-	 Setter Methods
-	*/
-	 private void setScheduledTasksToDo(ArrayList<Task> currentTaskList) {
+	 * Setter Methods
+	 */
+	private void setScheduledTasksToDo(ArrayList<Task> currentTaskList) {
 		scheduledTasksToDo.clear();
 		scheduledTasksToDo = currentTaskList;
 	}
@@ -117,8 +131,8 @@ public class Storage {
 	}
 
 	/*
-	/ Getter Methods
-	*/
+	 * / Getter Methods
+	 */
 	public ArrayList<Task> getScheduledTasksToDo() {
 		return scheduledTasksToDo;
 	}
@@ -142,13 +156,25 @@ public class Storage {
 	// storage methods
 	public void storeToFiles(ArrayList<Task> floatingTasksToDo, ArrayList<Task> floatingTasksComplete,
 			ArrayList<Task> scheduledTasksToDo, ArrayList<Task> scheduledTasksComplete,
-			ArrayList<Task> scheduledTasksOverDue) throws Exception {
+			ArrayList<Task> scheduledTasksOverDue) {
 
-		writeToArchiveFile(floatingTasksComplete, scheduledTasksComplete);
-		writeToCurrentFile(scheduledTasksToDo, floatingTasksToDo, scheduledTasksOverDue);
+		try {
+			logger.log(Level.INFO, LOG_WRITING_ARCHIVE_FILE);
+			writeToArchiveFile(floatingTasksComplete, scheduledTasksComplete);
+		} catch (Exception e1) {
+			logger.log(Level.WARNING, LOG_ERROR_WRITE_ARCHIVE_FILE);
+			e1.printStackTrace();
+		}
+		try {
+			logger.log(Level.INFO, LOG_WRITING_CURRENT_FILE);
+			writeToCurrentFile(scheduledTasksToDo, floatingTasksToDo, scheduledTasksOverDue);
+		} catch (Exception e) {
+			logger.log(Level.WARNING, LOG_ERROR_WRITE_CURRENT_FILE);
+			e.printStackTrace();
+		}
 	}
 
-	public void loadToList() throws Exception {
+	public void loadToList() {
 
 		setFloatingTasksComplete(new ArrayList<Task>());
 		setFloatingTasksToDo(new ArrayList<Task>());
@@ -156,66 +182,86 @@ public class Storage {
 		setScheduledTasksOverDue(new ArrayList<Task>());
 		setScheduledTasksToDo(new ArrayList<Task>());
 
-		readFromArchiveFile(floatingTasksComplete, scheduledTasksComplete);
-		readFromCurrentFile(scheduledTasksToDo, floatingTasksToDo, scheduledTasksOverDue);
+		try {
+			logger.log(Level.INFO, LOG_READING_ARCHIVE_FILE);
+			readFromArchiveFile(floatingTasksComplete, scheduledTasksComplete);
+		} catch (Exception e) {
+			logger.log(Level.INFO, LOG_ARCHIVE_FILE_NOT_FOUND);
+			e.printStackTrace();
+		}
+		try {
+			logger.log(Level.INFO, LOG_READING_CURRENT_FILE);
+			readFromCurrentFile(scheduledTasksToDo, floatingTasksToDo, scheduledTasksOverDue);
+		} catch (Exception e) {
+			logger.log(Level.INFO, LOG_CURRENT_FILE_NOT_FOUND);
+			e.printStackTrace();
+		}
 	}
 
-	public void writeToArchiveFile(ArrayList<Task> scheduledTasksComplete, ArrayList<Task> floatingTasksComplete)
-			throws Exception {
+	public void writeToArchiveFile(ArrayList<Task> scheduledTasksComplete, ArrayList<Task> floatingTasksComplete) {
 
-		File f1 = new File(usedPathName,archiveFile);
-		
-		BufferedWriter bw = new BufferedWriter(new FileWriter(f1));
+		File f1 = new File(usedPathName, archiveFile);
+		try {
+			BufferedWriter bw = new BufferedWriter(new FileWriter(f1));
 
-		for (Task newTask1 : scheduledTasksComplete) {
-			String json1 = gson.toJson(newTask1);
-			bw.write(json1);
-			bw.newLine();
+			for (Task newTask1 : scheduledTasksComplete) {
+				String json1 = gson.toJson(newTask1);
+				bw.write(json1);
+				bw.newLine();
+			}
+
+			for (Task newTask2 : scheduledTasksComplete) {
+				String json1 = gson.toJson(newTask2);
+				bw.write(json1);
+				bw.newLine();
+			}
+			bw.close();
+			logger.log(Level.INFO, LOG_WROTE_ARCHIVE_FILE);
+		} catch (Exception e) {
+			logger.log(Level.WARNING, LOG_ERROR_WRITE_ARCHIVE_FILE);
 		}
 
-		for (Task newTask2 : scheduledTasksComplete) {
-			String json1 = gson.toJson(newTask2);
-			bw.write(json1);
-			bw.newLine();
-		}
-		bw.close();
 	}
 
 	public void writeToCurrentFile(ArrayList<Task> toDoScheduledFile, ArrayList<Task> toDoFloatingFile,
-			ArrayList<Task> overdueScheduledFile) throws Exception {
+			ArrayList<Task> overdueScheduledFile) {
 
-		File f = new File(usedPathName,currentFile);
-		BufferedWriter bw = new BufferedWriter(new FileWriter(f));
+		try {
+			File f = new File(usedPathName, currentFile);
+			BufferedWriter bw = new BufferedWriter(new FileWriter(f));
 
-		for (Task newTask : toDoScheduledFile) {
-			String json = gson.toJson(newTask);
-			bw.write(json);
-			bw.newLine();
+			for (Task newTask : toDoScheduledFile) {
+				String json = gson.toJson(newTask);
+				bw.write(json);
+				bw.newLine();
+			}
+
+			for (Task newTask : toDoFloatingFile) {
+				String json = gson.toJson(newTask);
+				bw.write(json);
+				bw.newLine();
+			}
+
+			for (Task newTask : overdueScheduledFile) {
+				String json = gson.toJson(newTask);
+				bw.write(json);
+				bw.newLine();
+			}
+
+			bw.close();
+			logger.log(Level.INFO, LOG_WROTE_CURRENT_FILE);
+		} catch (Exception e) {
+			logger.log(Level.WARNING, LOG_ERROR_WRITE_CURRENT_FILE);
+
 		}
-
-		for (Task newTask : toDoFloatingFile) {
-			String json = gson.toJson(newTask);
-			bw.write(json);
-			bw.newLine();
-		}
-
-		for (Task newTask : overdueScheduledFile) {
-			String json = gson.toJson(newTask);
-			bw.write(json);
-			bw.newLine();
-		}
-
-		bw.close();
-
 	}
 
-	public void readFromArchiveFile(ArrayList<Task> scheduledTasksComplete, ArrayList<Task> floatingTasksComplete)
-			throws Exception {
+	public void readFromArchiveFile(ArrayList<Task> scheduledTasksComplete, ArrayList<Task> floatingTasksComplete) {
 
 		try {
 
-			File file = new File(usedPathName,archiveFile);
-			
+			File file = new File(usedPathName, archiveFile);
+
 			if (file.exists()) {
 				String taskDetails = "";
 				BufferedReader br = new BufferedReader(new FileReader(file));
@@ -225,7 +271,7 @@ public class Storage {
 						floatingTasksComplete.add(task);
 					} else {
 						scheduledTasksComplete.add(task);
-					}		
+					}
 				}
 				br.close();
 			}
@@ -233,16 +279,21 @@ public class Storage {
 		}
 
 		catch (FileNotFoundException f) {
-
-			System.out.println("File " + archiveFile + " cannot be found.");
+			logger.log(Level.WARNING, LOG_ARCHIVE_FILE_NOT_FOUND);
+		} catch (JsonSyntaxException e) {
+			logger.log(Level.WARNING, LOG_JSONSYNTAX_EXCEPTION);
+			e.printStackTrace();
+		} catch (IOException e) {
+			logger.log(Level.WARNING, LOG_IO_EXCEPTION);
+			e.printStackTrace();
 		}
 
 	}
 
 	public void readFromCurrentFile(ArrayList<Task> toDoScheduledFile, ArrayList<Task> toDoFloatingFile,
-			ArrayList<Task> overdueScheduledFile) throws Exception {
+			ArrayList<Task> overdueScheduledFile) {
 		try {
-			File file = new File(usedPathName,currentFile);
+			File file = new File(usedPathName, currentFile);
 
 			if (file.exists()) {
 				String taskDetails = "";
@@ -267,9 +318,15 @@ public class Storage {
 		}
 
 		catch (FileNotFoundException f) {
-			System.out.println("File " + currentFile + " cannot be found.");
-		}
 
+			logger.log(Level.WARNING, LOG_CURRENT_FILE_NOT_FOUND);
+		} catch (JsonSyntaxException e) {
+			logger.log(Level.WARNING, LOG_JSONSYNTAX_EXCEPTION);
+			e.printStackTrace();
+		} catch (IOException e) {
+			logger.log(Level.WARNING, LOG_IO_EXCEPTION);
+			e.printStackTrace();
+		}
 	}
 
 }
