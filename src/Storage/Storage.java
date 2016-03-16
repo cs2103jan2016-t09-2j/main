@@ -55,6 +55,9 @@ public class Storage {
 	private static final String LOG_READING_ARCHIVE_FILE = "Reading archive file";
 	private static final String LOG_READING_CURRENT_FILE = "Reading current file";
 
+	//Assertion message
+	private static final String ASSERTION_NULL_PARAMETER = "Error. Null input passed.";
+	
 	public Storage() {
 
 	}
@@ -199,7 +202,10 @@ public class Storage {
 	}
 
 	public void writeToArchiveFile(ArrayList<Task> scheduledTasksComplete, ArrayList<Task> floatingTasksComplete) {
-
+		
+		assert scheduledTasksComplete != null : ASSERTION_NULL_PARAMETER;
+		assert floatingTasksComplete != null : ASSERTION_NULL_PARAMETER;
+		
 		File f1 = new File(usedPathName, archiveFile);
 		try {
 			BufferedWriter bw = new BufferedWriter(new FileWriter(f1));
@@ -225,7 +231,11 @@ public class Storage {
 
 	public void writeToCurrentFile(ArrayList<Task> toDoScheduledFile, ArrayList<Task> toDoFloatingFile,
 			ArrayList<Task> overdueScheduledFile) {
-
+		
+		assert toDoScheduledFile != null : ASSERTION_NULL_PARAMETER;
+		assert toDoFloatingFile!= null : ASSERTION_NULL_PARAMETER;
+		assert overdueScheduledFile != null : ASSERTION_NULL_PARAMETER;
+		
 		try {
 			File f = new File(usedPathName, currentFile);
 			BufferedWriter bw = new BufferedWriter(new FileWriter(f));
