@@ -58,8 +58,9 @@ public class Storage {
 	//Assertion message
 	private static final String ASSERTION_NULL_PARAMETER = "Error. Null input passed.";
 	
-	public Storage() {
+	private Storage() {
 
+		
 	}
 
 	// apply singleton

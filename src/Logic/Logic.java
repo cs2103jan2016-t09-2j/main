@@ -13,7 +13,7 @@ public class Logic {
 
 	private String feedBack;
 	
-	static Storage storage = new Storage();
+	static Storage storage = Storage.getInstance();
 
 	private ArrayList<Task> floatingTasksToDo = new ArrayList<Task>();
 	private ArrayList<Task> floatingTasksComplete = new ArrayList<Task>();
