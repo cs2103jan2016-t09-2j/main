@@ -3,6 +3,7 @@ package Parser;
 import org.junit.Test;
 import static org.junit.Assert.assertEquals;
 
+import java.time.LocalDate;
 import java.time.LocalTime;
 
 import Parser.Command.COMMAND_TYPE;
@@ -234,5 +235,127 @@ public class CommandParserTest {
 		assertEquals("2016-03-21", newTask.getEndDate().toString());
 		assertEquals(null, newTask.getStartTime());
 		assertEquals("17:00", newTask.getEndTime().toString());
+	}
+	
+	@Test
+	public void checkGetCriteria1() throws Exception{
+		DateParser dateObj = new DateParser();
+		
+		String testString = "this week";
+		Task newTask = CommandParser.getCriteria(testString);
+		assertEquals("", newTask.getDescription()); 
+		assertEquals("2016-03-20", newTask.getStartDate().toString());
+		assertEquals("2016-03-27", newTask.getEndDate().toString());
+		assertEquals(null, newTask.getStartTime());
+		assertEquals(null, newTask.getEndTime());
+		assertEquals(false, newTask.isComplete());
+	}
+	
+	@Test
+	public void checkGetCriteria2() throws Exception{
+		String testString = "next week";
+		Task newTask = CommandParser.getCriteria(testString);
+		assertEquals("", newTask.getDescription()); 
+		assertEquals("2016-03-27", newTask.getStartDate().toString());
+		assertEquals("2016-04-03", newTask.getEndDate().toString());
+		assertEquals(null, newTask.getStartTime());
+		assertEquals(null, newTask.getEndTime());
+		assertEquals(false, newTask.isComplete());
+	}
+	
+	@Test
+	public void checkGetCriteria3() throws Exception{
+		String testString = "this  month  ";
+		Task newTask = CommandParser.getCriteria(testString);
+		assertEquals("", newTask.getDescription()); 
+		assertEquals("2016-03-01", newTask.getStartDate().toString());
+		assertEquals("2016-03-31", newTask.getEndDate().toString());
+		assertEquals(null, newTask.getStartTime());
+		assertEquals(null, newTask.getEndTime());
+		assertEquals(false, newTask.isComplete());
+	}
+	
+	@Test
+	public void checkGetCriteria4() throws Exception{
+		String testString = "next month";
+		Task newTask = CommandParser.getCriteria(testString);
+		assertEquals("", newTask.getDescription()); 
+		assertEquals("2016-04-01", newTask.getStartDate().toString());
+		assertEquals("2016-04-30", newTask.getEndDate().toString());
+		assertEquals(null, newTask.getStartTime());
+		assertEquals(null, newTask.getEndTime());
+		assertEquals(false, newTask.isComplete());
+	}
+	
+	@Test
+	public void checkGetCriteria5() throws Exception{
+		String testString = "this  year  ";
+		Task newTask = CommandParser.getCriteria(testString);
+		assertEquals("", newTask.getDescription()); 
+		assertEquals("2016-01-01", newTask.getStartDate().toString());
+		assertEquals("2016-12-31", newTask.getEndDate().toString());
+		assertEquals(null, newTask.getStartTime());
+		assertEquals(null, newTask.getEndTime());
+		assertEquals(false, newTask.isComplete());
+	}
+	
+	@Test
+	public void checkGetCriteria6() throws Exception{
+		String testString = "next year";
+		Task newTask = CommandParser.getCriteria(testString);
+		assertEquals("", newTask.getDescription()); 
+		assertEquals("2017-01-01", newTask.getStartDate().toString());
+		assertEquals("2017-12-31", newTask.getEndDate().toString());
+		assertEquals(null, newTask.getStartTime());
+		assertEquals(null, newTask.getEndTime());
+		assertEquals(false, newTask.isComplete());
+	}
+	
+	@Test
+	public void checkGetCriteria7() throws Exception{
+		String testString = "today";
+		Task newTask = CommandParser.getCriteria(testString);
+		assertEquals("", newTask.getDescription()); 
+		assertEquals(null, newTask.getStartDate());
+		assertEquals(LocalDate.now(), newTask.getEndDate());
+		assertEquals(null, newTask.getStartTime());
+		assertEquals(null, newTask.getEndTime());
+		assertEquals(false, newTask.isComplete());
+	}
+	
+	@Test
+	public void checkGetCriteria8() throws Exception{
+		String testString = "tomorrow";
+		Task newTask = CommandParser.getCriteria(testString);
+		assertEquals("", newTask.getDescription()); 
+		assertEquals(null, newTask.getStartDate());
+		assertEquals(LocalDate.now().plusDays(1), newTask.getEndDate());
+		assertEquals(null, newTask.getStartTime());
+		assertEquals(null, newTask.getEndTime());
+		assertEquals(false, newTask.isComplete());
+	}
+	
+	@Test
+	public void checkGetCriteria9() throws Exception{
+		String testString = "complete";
+		Task newTask = CommandParser.getCriteria(testString);
+		assertEquals("", newTask.getDescription()); 
+		assertEquals(null, newTask.getStartDate());
+		assertEquals(null, newTask.getEndDate());
+		assertEquals(null, newTask.getStartTime());
+		assertEquals(null, newTask.getEndTime());
+		assertEquals(true, newTask.isComplete());
+	}
+	
+	@Test
+	public void checkGetCriteria10() throws Exception{
+		String testString = "tomorrow";
+		Task newTask = CommandParser.getCriteria(testString);
+		assertEquals("", newTask.getDescription()); 
+		assertEquals(null, newTask.getStartDate());
+		assertEquals(LocalDate.now().plusDays(1), newTask.getEndDate());
+		assertEquals(null, newTask.getStartTime());
+		assertEquals(null, newTask.getEndTime());
+		assertEquals(false, newTask.isComplete());
 	}
 }

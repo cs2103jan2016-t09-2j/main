@@ -39,6 +39,7 @@ public class ParserConstants {
 
 	// Date related constants
 	static final int CENTURY = 100;
+	static final int FIRST_DAY_OF_MONTH = 1;
 	static final int INDEX_DAY_OF_MONTH = 0;
 	static final int INDEX_MONTH = 1;
 	static final int INDEX_YEAR = 2;

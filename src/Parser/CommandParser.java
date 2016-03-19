@@ -2,7 +2,6 @@ package Parser;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.time.Month;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.regex.Pattern;
@@ -20,12 +19,13 @@ import ScheduleHacks.Task;
 public class CommandParser {
 
 	/**
-	 * This method is used by the Logic to get the parsed components from the input user command.
+	 * This method is used by the Logic to get the parsed components from the
+	 * input user command.
 	 * 
 	 * @param newUserCommand
-	 * 			command input by the user
-	 * @return parsedCommand 
-	 * 			Command type object which contains the commandType, newTaskDetails, and an index number
+	 *            command input by the user
+	 * @return parsedCommand Command type object which contains the commandType,
+	 *         newTaskDetails, and an index number
 	 * @throws Exception
 	 */
 	public static Command getParsedCommand(String newUserCommand) throws Exception {
@@ -133,19 +133,20 @@ public class CommandParser {
 				String secondWord = getFirstWord(removeFirstWord(taskStatement));
 
 				if (secondWord.equalsIgnoreCase("month")) {
-					newTask.setStartDate(LocalDate.of(currentDate.getYear(),
-							currentDate.getMonthValue() + indexOf(firstWord, ParserConstants.UPCOMING_PERIOD_KEYWORD),
-							1));
+					LocalDate newDate = currentDate
+							.plusMonths(indexOf(firstWord, ParserConstants.UPCOMING_PERIOD_KEYWORD));
 
-					newTask.setEndDate(LocalDate.of(currentDate.getYear(),
-							currentDate.getMonthValue() + indexOf(firstWord, ParserConstants.UPCOMING_PERIOD_KEYWORD),
-							currentDate.lengthOfMonth()));
+					newTask.setStartDate(
+							LocalDate.of(newDate.getYear(), newDate.getMonth(), ParserConstants.FIRST_DAY_OF_MONTH));
+
+					newTask.setEndDate(newTask.getStartDate().plusMonths(1).minusDays(1));
 
 					taskStatement = taskStatement.replaceFirst(firstWord + " " + secondWord, " ");
 				} else if (secondWord.equalsIgnoreCase("week")) {
-					newTask.setStartDate(
-							currentDate.plusDays(indexOf(firstWord, ParserConstants.UPCOMING_PERIOD_KEYWORD)
-									* ParserConstants.DAYS_IN_WEEK));
+					newTask.setStartDate(dateObj.getDayOfWeekDate("Sunday")
+							.minusDays(ParserConstants.DAYS_IN_WEEK
+									- indexOf(firstWord, ParserConstants.UPCOMING_PERIOD_KEYWORD)
+											* ParserConstants.DAYS_IN_WEEK));
 
 					newTask.setEndDate(newTask.getStartDate().plusDays(ParserConstants.DAYS_IN_WEEK));
 
@@ -182,10 +183,16 @@ public class CommandParser {
 				taskStatement = dateObj.getTaskDetails();
 			} else if (dateObj.isMonth(firstWord)) {
 				/* if month */
-				// incomplete
 				int monthNum = dateObj.getMonthNum(firstWord);
-				newTask.setStartDate(LocalDate.of(currentDate.getYear(), monthNum, 1));
-				newTask.setEndDate(LocalDate.of(currentDate.getYear(), monthNum, Month.of(monthNum).minLength()));
+				int currentMonthNum = currentDate.getMonthValue();
+				if (monthNum < currentMonthNum) {
+					newTask.setStartDate(
+							LocalDate.of(currentDate.getYear() + 1, monthNum, ParserConstants.FIRST_DAY_OF_MONTH));
+				} else {
+					newTask.setStartDate(
+							LocalDate.of(currentDate.getYear(), monthNum, ParserConstants.FIRST_DAY_OF_MONTH));
+				}
+				newTask.setEndDate(newTask.getStartDate().plusMonths(1).minusDays(1));
 				taskStatement = removeFirstWord(taskStatement);
 			}
 		}
