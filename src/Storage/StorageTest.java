@@ -17,7 +17,7 @@ public class StorageTest {
 	@Test
 	public void testWriteToFile() throws Exception {
 
-		Storage storageTest = new Storage();
+		Storage storageTest = Storage.getInstance();
 
 		Task test1 = new Task("attend soccer practice", null, null, null, null);
 		Task test2 = new Task("go to the gym", null, null, null, null);
