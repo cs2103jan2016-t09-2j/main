@@ -230,30 +230,30 @@ public class Storage {
 
 	}
 
-	public void writeToCurrentFile(ArrayList<Task> toDoScheduledFile, ArrayList<Task> toDoFloatingFile,
-			ArrayList<Task> overdueScheduledFile) {
+	public void writeToCurrentFile(ArrayList<Task> scheduledTasksToDo, ArrayList<Task> floatingTasksToDo,
+			ArrayList<Task> scheduledTasksOverDue) {
 		
-		assert toDoScheduledFile != null : ASSERTION_NULL_PARAMETER;
-		assert toDoFloatingFile!= null : ASSERTION_NULL_PARAMETER;
-		assert overdueScheduledFile != null : ASSERTION_NULL_PARAMETER;
+		assert scheduledTasksToDo != null : ASSERTION_NULL_PARAMETER;
+		assert floatingTasksToDo!= null : ASSERTION_NULL_PARAMETER;
+		assert scheduledTasksOverDue != null : ASSERTION_NULL_PARAMETER;
 		
 		try {
 			File f = new File(usedPathName, currentFile);
 			BufferedWriter bw = new BufferedWriter(new FileWriter(f));
 
-			for (Task newTask : toDoScheduledFile) {
+			for (Task newTask : scheduledTasksToDo) {
 				String json = gson.toJson(newTask);
 				bw.write(json);
 				bw.newLine();
 			}
 
-			for (Task newTask : toDoFloatingFile) {
+			for (Task newTask : floatingTasksToDo) {
 				String json = gson.toJson(newTask);
 				bw.write(json);
 				bw.newLine();
 			}
 
-			for (Task newTask : overdueScheduledFile) {
+			for (Task newTask : scheduledTasksOverDue) {
 				String json = gson.toJson(newTask);
 				bw.write(json);
 				bw.newLine();
@@ -301,8 +301,8 @@ public class Storage {
 
 	}
 
-	public void readFromCurrentFile(ArrayList<Task> toDoScheduledFile, ArrayList<Task> toDoFloatingFile,
-			ArrayList<Task> overdueScheduledFile) {
+	public void readFromCurrentFile(ArrayList<Task> scheduledTasksToDo, ArrayList<Task> floatingTasksToDo,
+			ArrayList<Task> scheduledTasksOverDue) {
 		try {
 			File file = new File(usedPathName, currentFile);
 
@@ -312,14 +312,14 @@ public class Storage {
 				while ((taskDetails = br.readLine()) != null) {
 					Task task = gson.fromJson(taskDetails, Task.class);
 					if (task.isFloatingTask()) {
-						toDoFloatingFile.add(task);
+						floatingTasksToDo.add(task);
 					} else {
 						LocalDateTime present = LocalDateTime.now();
 						LocalDateTime endDateTime = LocalDateTime.of(task.getEndDate(), task.getEndTime());
 						if (endDateTime.isBefore(present)) {
-							overdueScheduledFile.add(task);
+							scheduledTasksOverDue.add(task);
 						} else {
-							toDoScheduledFile.add(task);
+							scheduledTasksToDo.add(task);
 						}
 					}
 
