@@ -66,7 +66,7 @@ public class CommandParser {
 					newTask = CommandParser.addNewTask(taskStatement);
 					break;
 				case MODIFY_TASK:
-					newTask = CommandParser.editExistingTask(taskStatement);
+					newTask = CommandParser.sendEditTaskInfoToLogic(taskStatement);
 					break;
 				case SEARCH_TASK:
 					newTask = CommandParser.getCriteria(taskStatement);
@@ -103,15 +103,36 @@ public class CommandParser {
 		return newTask;
 	}
 
-	public static Task editExistingTask(String taskStatement) {
+	/**
+	 * This method is used to prepare an edit task to send to Logic
+	 * 
+	 * @param taskStatement
+	 * @return Task, with taskStatement as Description
+	 */
+	public static Task sendEditTaskInfoToLogic(String taskStatement) {
 		Task newTask = new Task();
+		newTask.setDescription(taskStatement);
+		return newTask;
+	}
 
-		if (requiresDeletingParameters(taskStatement)) {
-			taskStatement = removeFirstWord(taskStatement);
-			setDeleteParameters(newTask, getParameterList(taskStatement));
+	/**
+	 * This method is invoked by Logic, containing the old Task object that
+	 * needs to be edited and the edit details
+	 * 
+	 * @param oldTask
+	 * @param editStatement,
+	 *            contains edit parameters
+	 * @return
+	 */
+	public static Task editExistingTask(Task oldTask, String editStatement) {
+		Task newTask = new Task();
+		if (requiresDeletingParameters(editStatement)) {
+			editStatement = removeFirstWord(editStatement);
+			deleteParameters(oldTask, getParameterList(editStatement));
 		} else {
-			setEditParameters(taskStatement, newTask);
+			setEditParameters(editStatement, oldTask);
 		}
+		newTask = oldTask;
 		return newTask;
 	}
 
@@ -214,7 +235,7 @@ public class CommandParser {
 	 * @param taskStatement
 	 * @param newTask
 	 */
-	public static void setEditParameters(String taskStatement, Task newTask) {
+	public static void setEditParameters(String taskStatement, Task oldTask) {
 		DateParser dateParser = new DateParser(taskStatement);
 		dateParser.findDates();
 		ArrayList<LocalDate> dateList = dateParser.getDateList();
@@ -230,11 +251,11 @@ public class CommandParser {
 			dateList = objDateTime.getDateList();
 			timeList = objDateTime.getTimeList();
 		}
-		setDates(dateList, newTask);
-		setTimes(timeList, newTask);
+		setDates(dateList, oldTask);
+		setTimes(timeList, oldTask);
 
-		if (!taskStatement.isEmpty() && taskStatement != null) {
-			newTask.setDescription(taskStatement);
+		if (taskStatement != null && !taskStatement.isEmpty()) {
+			oldTask.setDescription(taskStatement);
 		}
 	}
 
@@ -242,21 +263,21 @@ public class CommandParser {
 	 * This method sets all the elements of the task object matching the
 	 * parametersToDelete list as Empty.
 	 * 
-	 * @param newTask
+	 * @param oldTask
 	 * @param parametersToDelete
 	 */
-	public static void setDeleteParameters(Task newTask, ArrayList<String> parametersToDelete) {
+	public static void deleteParameters(Task oldTask, ArrayList<String> parametersToDelete) {
 		for (String parameter : parametersToDelete) {
 			if (hasInDictionary(ParserConstants.PARAMETER_DATE, parameter)) {
-				newTask.setEndDate(LocalDate.MIN);
-				newTask.setStartDate(LocalDate.MIN);
-				newTask.setStartTime(LocalTime.MAX);
-				newTask.setEndTime(LocalTime.MAX);
+				oldTask.setEndDate(LocalDate.MIN);
+				oldTask.setStartDate(LocalDate.MIN);
+				oldTask.setStartTime(LocalTime.MAX);
+				oldTask.setEndTime(LocalTime.MAX);
 			} else if (hasInDictionary(ParserConstants.PARAMETER_TIME, parameter)) {
-				newTask.setStartTime(LocalTime.MAX);
-				newTask.setEndTime(LocalTime.MAX);
+				oldTask.setStartTime(LocalTime.MAX);
+				oldTask.setEndTime(LocalTime.MAX);
 			} else if (hasInDictionary(ParserConstants.PARAMETER_DESCRIPTION, parameter)) {
-				newTask.setDescription(ParserConstants.STRING_EMPTY);
+				oldTask.setDescription(ParserConstants.STRING_EMPTY);
 			}
 		}
 	}

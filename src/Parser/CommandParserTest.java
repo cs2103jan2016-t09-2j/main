@@ -347,11 +347,11 @@ public class CommandParserTest {
 	
 	@Test
 	public void checkGetCriteria10() throws Exception{
-		String testString = "tomorrow";
+		String testString = "21/12/12/12";
 		Task newTask = CommandParser.getCriteria(testString);
-		assertEquals(null, newTask.getDescription()); 
+		assertEquals("21/12/12/12", newTask.getDescription()); 
 		assertEquals(null, newTask.getStartDate());
-		assertEquals(LocalDate.now().plusDays(1), newTask.getEndDate());
+		assertEquals(null, newTask.getEndDate());
 		assertEquals(null, newTask.getStartTime());
 		assertEquals(null, newTask.getEndTime());
 		assertEquals(false, newTask.isComplete());
