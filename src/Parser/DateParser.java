@@ -110,7 +110,7 @@ public class DateParser {
 				statement = statement.substring(ParserConstants.FIRST_INDEX, index.getIndex());
 				
 				if (taskDetails.contains(statement) && isValidEnd(end)) {
-					addValidDateToList(parsedDate);
+					addDateToList(parsedDate);
 					removeDateFromTaskDetails(statement);
 					return true;
 				}
@@ -223,7 +223,7 @@ public class DateParser {
 		if (hasInDictionary(ParserConstants.MONTHS_LONG, month)) {
 			return indexOf(month, ParserConstants.MONTHS_LONG);
 		} else if (hasInDictionary(ParserConstants.MONTHS_SHORT, month)) {
-			return indexOf(month, ParserConstants.MONTHS_LONG);
+			return indexOf(month, ParserConstants.MONTHS_SHORT);
 		} else {
 			return -1;
 		}
@@ -248,7 +248,7 @@ public class DateParser {
 		return hasInDictionary(ParserConstants.VALID_END, firstCharacter);
 	}
 
-	public void addValidDateToList(LocalDate parsedDate) {
+	public void addDateToList(LocalDate parsedDate) {
 		dateList.add(parsedDate);
 	}
 

@@ -141,7 +141,7 @@ public class CommandParser {
 
 					newTask.setEndDate(newTask.getStartDate().plusMonths(1).minusDays(1));
 
-					taskStatement = taskStatement.replaceFirst(firstWord + " " + secondWord, " ");
+					taskStatement = taskStatement.replaceFirst(firstWord + " " + secondWord, ParserConstants.STRING_WHITESPACE);
 				} else if (secondWord.equalsIgnoreCase("week")) {
 					newTask.setStartDate(dateObj.getDayOfWeekDate("Sunday")
 							.minusDays(ParserConstants.DAYS_IN_WEEK
@@ -150,7 +150,7 @@ public class CommandParser {
 
 					newTask.setEndDate(newTask.getStartDate().plusDays(ParserConstants.DAYS_IN_WEEK));
 
-					taskStatement = taskStatement.replaceFirst(firstWord + " " + secondWord, " ");
+					taskStatement = taskStatement.replaceFirst(firstWord + " " + secondWord, ParserConstants.STRING_WHITESPACE);
 				} else if (secondWord.equalsIgnoreCase("year")) {
 
 					newTask.setStartDate(LocalDate.of(
@@ -160,7 +160,7 @@ public class CommandParser {
 							currentDate.getYear() + indexOf(firstWord, ParserConstants.UPCOMING_PERIOD_KEYWORD), 12,
 							31));
 
-					taskStatement = taskStatement.replaceFirst(firstWord + " " + secondWord, " ");
+					taskStatement = taskStatement.replaceFirst(firstWord + " " + secondWord, ParserConstants.STRING_WHITESPACE);
 				}
 			} catch (Exception e) {
 				// do nothing
@@ -193,12 +193,17 @@ public class CommandParser {
 							LocalDate.of(currentDate.getYear(), monthNum, ParserConstants.FIRST_DAY_OF_MONTH));
 				}
 				newTask.setEndDate(newTask.getStartDate().plusMonths(1).minusDays(1));
-				taskStatement = removeFirstWord(taskStatement);
+				taskStatement = taskStatement.replace(firstWord, ParserConstants.STRING_WHITESPACE);
 			}
 		}
-		taskStatement = cleanupExtraWhitespace(taskStatement);
-		if (!taskStatement.isEmpty() || taskStatement != null) {
-			newTask.setDescription(taskStatement);
+		try {
+			taskStatement = cleanupExtraWhitespace(taskStatement);
+			if (taskStatement != null && !taskStatement.isEmpty()) {
+				newTask.setDescription(taskStatement);
+			}
+		} catch (Exception e) {
+			// taskStatement is null
+			// do nothing
 		}
 
 		return newTask;

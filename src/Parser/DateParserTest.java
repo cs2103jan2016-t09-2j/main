@@ -85,6 +85,22 @@ public class DateParserTest {
 	 * String testString = "3-8 2016"; assertEquals(true,
 	 * dateObj.isValidDate(testString )); }
 	 */
+	
+	@Test
+	public void testIsValidDate10() {
+		
+		String testString = "3-8-19-13 2016";
+		dateObj = new DateParser(testString);
+		assertEquals(false, dateObj.addToListIfValidDate(testString));
+	}
+	
+	@Test
+	public void testIsValidDate11() {
+		
+		String testString = "3-8-1-2016";
+		dateObj = new DateParser(testString);
+		assertEquals(false, dateObj.addToListIfValidDate(testString));
+	}
 
 	@Test
 	public void testFinDates1() {
@@ -194,9 +210,53 @@ public class DateParserTest {
 		for (LocalDate s : outList) {
 			output = output + s.toString();
 		}
-		String expected = "2016-03-16";
+		String expected = "2016-03-23";
 		assertEquals(expected, output.trim());
 		assertEquals("Meet ABCD on at the hotel", dateObj.getTaskDetails());
 	}
+	
+	@Test
+	public void testIsDayOfWeek1() {
+		String testString = "wed";
+		dateObj = new DateParser(testString);
+		assertEquals(true, dateObj.isDayOfWeek(testString));
+	}
+	
+	@Test
+	public void testIsDayOfWeek2() {
+		String testString = "wednes";
+		dateObj = new DateParser(testString);
+		assertEquals(true, dateObj.isDayOfWeek(testString));
+	}
+	
+	@Test
+	public void testIsDayOfWeek3() {
+		String testString = "thuRs";
+		dateObj = new DateParser(testString);
+		assertEquals(true, dateObj.isDayOfWeek(testString));
+	}
+	
+	@Test
+	public void testIsDayOfWeek4() {
+		String testString = "th";
+		dateObj = new DateParser(testString);
+		assertEquals(false, dateObj.isDayOfWeek(testString));
+	}
+	
+	@Test
+	public void testIsDayOfWeek5() {
+		String testString = "tues";
+		dateObj = new DateParser(testString);
+		assertEquals(true, dateObj.isDayOfWeek(testString));
+	}
+	
+	@Test
+	public void testIsDayOfWeek6() {
+		String testString = "SUNDAY";
+		dateObj = new DateParser(testString);
+		assertEquals(true, dateObj.isDayOfWeek(testString));
+	}
+	
+	
 
 }
