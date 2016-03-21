@@ -61,14 +61,22 @@ public class CommandParser {
 		} else {
 			if (!taskStatement.isEmpty()) {
 				Task newTask = new Task();
-				if (commandType.equals(COMMAND_TYPE.ADD_TASK)) {
+				switch (commandType) {
+				case ADD_TASK:
 					newTask = CommandParser.addNewTask(taskStatement);
-				} else if (commandType.equals(COMMAND_TYPE.MODIFY_TASK)) {
+					break;
+				case MODIFY_TASK:
 					newTask = CommandParser.editExistingTask(taskStatement);
-				} else if (commandType.equals(COMMAND_TYPE.SEARCH_TASK)) {
+					break;
+				case SEARCH_TASK:
 					newTask = CommandParser.getCriteria(taskStatement);
-				} else if (commandType.equals(COMMAND_TYPE.VIEW_LIST)) {
+					break;
+				case VIEW_LIST:
 					newTask = CommandParser.getCriteria(taskStatement);
+					break;
+				default:
+					// do nothing
+					break;
 				}
 				return newTask;
 			}
@@ -107,19 +115,6 @@ public class CommandParser {
 		return newTask;
 	}
 
-	/*
-	 * public static Task getSearchCriteria(String taskStatement) { Task newTask
-	 * = new Task();
-	 * 
-	 * DateParser dateObj = new DateParser(taskStatement); dateObj.findDates();
-	 * if (dateObj.getDateList() != null) {
-	 * newTask.setEndDate(dateObj.getDateList().get(ParserConstants.FIRST_INDEX)
-	 * ); taskStatement = dateObj.getTaskDetails(); }
-	 * 
-	 * if (!taskStatement.isEmpty() && taskStatement != null) {
-	 * newTask.setDescription(taskStatement); } return newTask; }
-	 */
-
 	public static Task getCriteria(String taskStatement) throws Exception {
 		Task newTask = new Task();
 		DateParser dateObj = new DateParser();
@@ -141,7 +136,8 @@ public class CommandParser {
 
 					newTask.setEndDate(newTask.getStartDate().plusMonths(1).minusDays(1));
 
-					taskStatement = taskStatement.replaceFirst(firstWord + " " + secondWord, ParserConstants.STRING_WHITESPACE);
+					taskStatement = taskStatement.replaceFirst(firstWord + " " + secondWord,
+							ParserConstants.STRING_WHITESPACE);
 				} else if (secondWord.equalsIgnoreCase("week")) {
 					newTask.setStartDate(dateObj.getDayOfWeekDate("Sunday")
 							.minusDays(ParserConstants.DAYS_IN_WEEK
@@ -150,7 +146,8 @@ public class CommandParser {
 
 					newTask.setEndDate(newTask.getStartDate().plusDays(ParserConstants.DAYS_IN_WEEK));
 
-					taskStatement = taskStatement.replaceFirst(firstWord + " " + secondWord, ParserConstants.STRING_WHITESPACE);
+					taskStatement = taskStatement.replaceFirst(firstWord + " " + secondWord,
+							ParserConstants.STRING_WHITESPACE);
 				} else if (secondWord.equalsIgnoreCase("year")) {
 
 					newTask.setStartDate(LocalDate.of(
@@ -160,7 +157,8 @@ public class CommandParser {
 							currentDate.getYear() + indexOf(firstWord, ParserConstants.UPCOMING_PERIOD_KEYWORD), 12,
 							31));
 
-					taskStatement = taskStatement.replaceFirst(firstWord + " " + secondWord, ParserConstants.STRING_WHITESPACE);
+					taskStatement = taskStatement.replaceFirst(firstWord + " " + secondWord,
+							ParserConstants.STRING_WHITESPACE);
 				}
 			} catch (Exception e) {
 				// do nothing
