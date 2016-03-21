@@ -14,12 +14,11 @@ package GUI;
 import java.util.Scanner;
 import java.time.LocalTime;
 import java.util.ArrayList;
-import java.util.TimerTask;
 
 import ScheduleHacks.Task;
 import Logic.Logic;
 
-public class TempCLI extends TimerTask {
+public class TempCLI {
 
 	private static final Scanner scanner = new Scanner(System.in);
 
@@ -42,7 +41,6 @@ public class TempCLI extends TimerTask {
 			//printTaskLists(logicObj);
 			readInput();
 			executeInput(logicObj);
-			run ();
 		}
 	}
 	
@@ -63,11 +61,20 @@ public class TempCLI extends TimerTask {
 	public void executeInput(Logic logicObj) {
 		count = 1;
 		logicObj.startExecution(getUserCommand());
-		
-		printTaskLists(logicObj);
-		
+		logicObj.autoChangeTaskStatus();
+		if (getUserCommand().startsWith("search")) {
+			printSearchTaskLists(logicObj);
+		}
+		else {
+			printTaskLists(logicObj);
+		}
 		showToUser(logicObj.getFeedBack());
 		
+	}
+	
+	public void printSearchTaskLists(Logic logicObj) {
+		System.out.println("******** SEARCHED TASKS ********");
+		showTimedTaskListToUser(logicObj.getSearchedTasks());
 	}
 
 	public void printTaskLists(Logic logicObj) {
@@ -121,10 +128,5 @@ public class TempCLI extends TimerTask {
 	public static void showToUser(String someText) {
 		System.out.println(someText);
 	}
-
-	public void run() {
-		Logic periodicLogicObj = logicObj;
-		periodicLogicObj.autoChangeTaskStatus();
-		
-	}
 }
+
