@@ -42,6 +42,7 @@ public class Task {
 
 	public void setFloatingTask() {
 		isFloatingType = true;
+		isScheduledType = false;
 	}
 
 	public void setScheduledTask() {

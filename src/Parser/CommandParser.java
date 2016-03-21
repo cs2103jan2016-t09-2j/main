@@ -130,7 +130,7 @@ public class CommandParser {
 			editStatement = removeFirstWord(editStatement);
 			deleteParameters(oldTask, getParameterList(editStatement));
 		} else {
-			setEditParameters(editStatement, oldTask);
+			oldTask = setEditParameters(editStatement, oldTask);
 		}
 		newTask = oldTask;
 		return newTask;
@@ -235,7 +235,7 @@ public class CommandParser {
 	 * @param taskStatement
 	 * @param newTask
 	 */
-	public static void setEditParameters(String taskStatement, Task oldTask) {
+	public static Task setEditParameters(String taskStatement, Task oldTask) {
 		DateParser dateParser = new DateParser(taskStatement);
 		dateParser.findDates();
 		ArrayList<LocalDate> dateList = dateParser.getDateList();
@@ -244,10 +244,18 @@ public class CommandParser {
 		timeParser.findTimes();
 		ArrayList<LocalTime> timeList = timeParser.getTimeList();
 		taskStatement = timeParser.getTaskDetails();
-		
-		if (dateList != null || timeList != null) {
-			oldTask.setFloatingTask();
+
+		if (oldTask.isFloatingTask()) {
+			oldTask = editFloatingTask(taskStatement, oldTask, dateList, timeList);
+		} else if (oldTask.isScheduledTask()) {
+			oldTask = editScheduledTask(taskStatement, oldTask, dateList, timeList);
 		}
+		
+		return oldTask;
+	}
+
+	public static Task editScheduledTask(String taskStatement, Task oldTask, ArrayList<LocalDate> dateList,
+			ArrayList<LocalTime> timeList) {
 
 		if (dateList != null && timeList != null) {
 			DateTimeParser objDateTime = new DateTimeParser(dateList, timeList);
@@ -261,6 +269,27 @@ public class CommandParser {
 		if (taskStatement != null && !taskStatement.isEmpty()) {
 			oldTask.setDescription(taskStatement);
 		}
+		
+		return oldTask;
+	}
+
+	public static Task editFloatingTask(String taskStatement, Task oldTask, ArrayList<LocalDate> dateList,
+			ArrayList<LocalTime> timeList) {
+		if (dateList != null || timeList != null) {
+			if (taskStatement != null && !taskStatement.isEmpty()) {
+				oldTask = addScheduledTaskDetails(taskStatement, dateList, timeList);
+			} else {
+				oldTask = addScheduledTaskDetails(oldTask.getDescription(), dateList, timeList);
+			}
+		} else {
+			System.out.println("4");
+			if (taskStatement != null && !taskStatement.isEmpty()) {
+				System.out.println("5");
+				oldTask.setDescription(taskStatement);
+			}
+		}
+		
+		return oldTask;
 	}
 
 	/**
