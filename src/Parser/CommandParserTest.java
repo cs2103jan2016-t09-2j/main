@@ -122,9 +122,9 @@ public class CommandParserTest {
 		Task newTask = cmd.getTaskDetails();
 		assertEquals(false, newTask.isFloatingTask());
 		assertEquals(false, newTask.isScheduledTask());
-		assertEquals(null, newTask.getDescription());
+		assertEquals("21/3/16", newTask.getDescription());
 		assertEquals(null, newTask.getStartDate());
-		assertEquals("2016-03-21", newTask.getEndDate().toString());
+		assertEquals(null, newTask.getEndDate());
 
 	}
 
@@ -141,11 +141,11 @@ public class CommandParserTest {
 		Task newTask = cmd.getTaskDetails();
 		assertEquals(false, newTask.isFloatingTask());
 		assertEquals(false, newTask.isScheduledTask());
-		assertEquals(null, newTask.getDescription());
+		assertEquals("21/3/16 600", newTask.getDescription());
 		assertEquals(null, newTask.getStartDate());
-		assertEquals("2016-03-21", newTask.getEndDate().toString());
+		assertEquals(null, newTask.getEndDate());
 		assertEquals(null, newTask.getStartTime());
-		assertEquals("06:00", newTask.getEndTime().toString());
+		assertEquals(null, newTask.getEndTime());
 	}
 
 	@Test
@@ -161,11 +161,11 @@ public class CommandParserTest {
 		Task newTask = cmd.getTaskDetails();
 		assertEquals(false, newTask.isFloatingTask());
 		assertEquals(false, newTask.isScheduledTask());
-		assertEquals(null, newTask.getDescription());
+		assertEquals("600 1800", newTask.getDescription());
 		assertEquals(null, newTask.getStartDate());
 		assertEquals(null, newTask.getEndDate());
-		assertEquals("06:00", newTask.getStartTime().toString());
-		assertEquals("18:00", newTask.getEndTime().toString());
+		assertEquals(null, newTask.getStartTime());
+		assertEquals(null, newTask.getEndTime());
 	}
 
 	@Test
@@ -181,11 +181,11 @@ public class CommandParserTest {
 		Task newTask = cmd.getTaskDetails();
 		assertEquals(false, newTask.isFloatingTask());
 		assertEquals(false, newTask.isScheduledTask());
-		assertEquals("submit work", newTask.getDescription());
-		assertEquals("2016-03-21", newTask.getStartDate().toString());
-		assertEquals("2016-03-21", newTask.getEndDate().toString());
-		assertEquals("06:00", newTask.getStartTime().toString());
-		assertEquals("18:00", newTask.getEndTime().toString());
+		assertEquals("21/3/16 600 1800 submit work", newTask.getDescription());
+		assertEquals(null, newTask.getStartDate());
+		assertEquals(null, newTask.getEndDate());
+		assertEquals(null, newTask.getStartTime());
+		assertEquals(null, newTask.getEndTime());
 	}
 
 	@Test
@@ -230,11 +230,11 @@ public class CommandParserTest {
 		}
 		assertEquals("2", output);
 		Task newTask = cmd.getTaskDetails();
-		assertEquals(null, newTask.getDescription());
+		assertEquals("21/3/16 1700", newTask.getDescription());
 		assertEquals(null, newTask.getStartDate());
-		assertEquals("2016-03-21", newTask.getEndDate().toString());
+		assertEquals(null, newTask.getEndDate());
 		assertEquals(null, newTask.getStartTime());
-		assertEquals("17:00", newTask.getEndTime().toString());
+		assertEquals(null, newTask.getEndTime());
 	}
 
 	@Test

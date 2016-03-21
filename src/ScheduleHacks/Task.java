@@ -6,7 +6,7 @@ import java.time.LocalTime;
 public class Task {
 
 	private String description;
-	private boolean isFloatingType, isScheduledType, isComplete;
+	private boolean isFloatingType, isScheduledType, isComplete, isOverLap;
 	private LocalDate startDate, endDate;
 	private LocalTime startTime, endTime;
 
@@ -19,6 +19,7 @@ public class Task {
 		setEndDate(null);
 		setStartTime(null);
 		setEndTime(null);
+		setAsOverLapped(false);
 	}
 	
 	public Task(String desc, LocalDate startDate, LocalDate endDate, LocalTime startTime, LocalTime endTime) {
@@ -56,6 +57,14 @@ public class Task {
 
 	public void setAsIncomplete() {
 		isComplete = false;
+	}
+	
+	public void setAsOverLapped(boolean status) {
+		isOverLap = status;
+	}
+	
+	public boolean getOverLapped (){
+		return isOverLap;
 	}
 
 	public boolean isFloatingTask() {
