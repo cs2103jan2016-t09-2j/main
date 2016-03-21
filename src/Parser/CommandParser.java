@@ -244,6 +244,10 @@ public class CommandParser {
 		timeParser.findTimes();
 		ArrayList<LocalTime> timeList = timeParser.getTimeList();
 		taskStatement = timeParser.getTaskDetails();
+		
+		if (dateList != null || timeList != null) {
+			oldTask.setFloatingTask();
+		}
 
 		if (dateList != null && timeList != null) {
 			DateTimeParser objDateTime = new DateTimeParser(dateList, timeList);
@@ -269,12 +273,15 @@ public class CommandParser {
 	public static void deleteParameters(Task oldTask, ArrayList<String> parametersToDelete) {
 		for (String parameter : parametersToDelete) {
 			if (hasInDictionary(ParserConstants.PARAMETER_DATE, parameter)) {
-				oldTask.setEndDate(LocalDate.MIN);
-				oldTask.setStartDate(LocalDate.MIN);
-				oldTask.setStartTime(LocalTime.MAX);
-				oldTask.setEndTime(LocalTime.MAX);
+				oldTask.setEndDate(null);
+				oldTask.setStartDate(null);
+				oldTask.setStartTime(null);
+				oldTask.setEndTime(null);
+				oldTask.setFloatingTask();
 			} else if (hasInDictionary(ParserConstants.PARAMETER_TIME, parameter)) {
-				oldTask.setStartTime(LocalTime.MAX);
+				if (oldTask.getStartTime() != null) {
+					oldTask.setStartTime(LocalTime.MAX);
+				}
 				oldTask.setEndTime(LocalTime.MAX);
 			} else if (hasInDictionary(ParserConstants.PARAMETER_DESCRIPTION, parameter)) {
 				oldTask.setDescription(ParserConstants.STRING_EMPTY);

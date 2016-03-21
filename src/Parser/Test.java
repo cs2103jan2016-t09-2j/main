@@ -63,7 +63,7 @@ public class Test {
 			System.out.println(d.toString());
 		}
 	}
-
+/*
 	public Task findTaskDetails(Command command, String taskStatement) throws Exception {
 		COMMAND_TYPE commandType = command.getCommandType();
 
@@ -86,7 +86,7 @@ public class Test {
 			}
 		}
 		throw new Exception("Empty Task Description/Index Number");
-	}
+	}*/
 
 	void checkingcommandparser(String s) throws Exception {
 		Command cmd = CommandParser.getParsedCommand(s);
