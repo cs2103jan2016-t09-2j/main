@@ -31,8 +31,9 @@ public class Storage {
 	private ArrayList<Task> scheduledTasksOverDue = new ArrayList<Task>();
 
 	private static final String defaultPathName = "C:\\ScheduleHacks";
-	private static final String setPathName = setDirectoryName();
-	private static final String usedPathName = currentDirectoryName();
+	private static String setPathName = setDirectoryName();
+	//private static final String usedPathName = currentDirectoryName();
+	private static String currentPathName = setCurrentPathName();
 
 	private static Logger logger = Logger.getLogger("Storage");
 
@@ -59,9 +60,10 @@ public class Storage {
 	private static final String ASSERTION_NULL_PARAMETER = "Error. Null input passed.";
 	
 	private Storage() {
-
+		
 		
 	}
+
 
 	// apply singleton
 	public static Storage getInstance() {
@@ -93,10 +95,11 @@ public class Storage {
 	}
 
 	// decides current directory name
-	public static String currentDirectoryName() {
+	public static String setCurrentPathName() {
 
 		if (setPathName != null && !setPathName.isEmpty()) {
 			fileDirectory.createMainDirectory(setPathName);
+			fileDirectory.changeDirectory(defaultPathName, setPathName);
 			return setPathName;
 		}
 
@@ -163,14 +166,14 @@ public class Storage {
 			ArrayList<Task> scheduledTasksOverDue) {
 
 		try {
-			logger.log(Level.INFO, LOG_WRITING_ARCHIVE_FILE);
+		//	logger.log(Level.INFO, LOG_WRITING_ARCHIVE_FILE);
 			writeToArchiveFile(floatingTasksComplete, scheduledTasksComplete);
 		} catch (Exception e1) {
 			logger.log(Level.WARNING, LOG_ERROR_WRITE_ARCHIVE_FILE);
 			e1.printStackTrace();
 		}
 		try {
-			logger.log(Level.INFO, LOG_WRITING_CURRENT_FILE);
+		//	logger.log(Level.INFO, LOG_WRITING_CURRENT_FILE);
 			writeToCurrentFile(scheduledTasksToDo, floatingTasksToDo, scheduledTasksOverDue);
 		} catch (Exception e) {
 			logger.log(Level.WARNING, LOG_ERROR_WRITE_CURRENT_FILE);
@@ -187,14 +190,14 @@ public class Storage {
 		setScheduledTasksToDo(new ArrayList<Task>());
 
 		try {
-			logger.log(Level.INFO, LOG_READING_ARCHIVE_FILE);
+		//	logger.log(Level.INFO, LOG_READING_ARCHIVE_FILE);
 			readFromArchiveFile(floatingTasksComplete, scheduledTasksComplete);
 		} catch (Exception e) {
 			logger.log(Level.INFO, LOG_ARCHIVE_FILE_NOT_FOUND);
 			e.printStackTrace();
 		}
 		try {
-			logger.log(Level.INFO, LOG_READING_CURRENT_FILE);
+		//	logger.log(Level.INFO, LOG_READING_CURRENT_FILE);
 			readFromCurrentFile(scheduledTasksToDo, floatingTasksToDo, scheduledTasksOverDue);
 		} catch (Exception e) {
 			logger.log(Level.INFO, LOG_CURRENT_FILE_NOT_FOUND);
@@ -207,7 +210,7 @@ public class Storage {
 		assert scheduledTasksComplete != null : ASSERTION_NULL_PARAMETER;
 		assert floatingTasksComplete != null : ASSERTION_NULL_PARAMETER;
 		
-		File f1 = new File(usedPathName, archiveFile);
+		File f1 = new File(currentPathName, archiveFile);
 		try {
 			BufferedWriter bw = new BufferedWriter(new FileWriter(f1));
 
@@ -238,7 +241,7 @@ public class Storage {
 		assert scheduledTasksOverDue != null : ASSERTION_NULL_PARAMETER;
 		
 		try {
-			File f = new File(usedPathName, currentFile);
+			File f = new File(currentPathName, currentFile);
 			BufferedWriter bw = new BufferedWriter(new FileWriter(f));
 
 			for (Task newTask : scheduledTasksToDo) {
@@ -271,7 +274,7 @@ public class Storage {
 
 		try {
 
-			File file = new File(usedPathName, archiveFile);
+			File file = new File(currentPathName, archiveFile);
 
 			if (file.exists()) {
 				String taskDetails = "";
@@ -304,7 +307,7 @@ public class Storage {
 	public void readFromCurrentFile(ArrayList<Task> scheduledTasksToDo, ArrayList<Task> floatingTasksToDo,
 			ArrayList<Task> scheduledTasksOverDue) {
 		try {
-			File file = new File(usedPathName, currentFile);
+			File file = new File(currentPathName, currentFile);
 
 			if (file.exists()) {
 				String taskDetails = "";

@@ -10,38 +10,45 @@ import java.util.ArrayList;
 
 import ScheduleHacks.Task;
 
-
-
 public class StorageTest {
+
+	@Test
+	public void testStorageInit() {
+		// saveFile.delete();
+		// configFile.delete();
+		//
+		//
+		// Storage testStorage = Storage.getInstance();
+		//
+		// assertEquals(true, saveFile.exists());
+		// assertEquals(true, configFile.exists());
+		// assertEquals(true, userPrefFile.exists());
+	}
 
 	@Test
 	public void testWriteToFile() throws Exception {
 
 		Storage storageTest = Storage.getInstance();
 
-		Task test1 = new Task("attend soccer practice", null, null, null, null);
-	//	Task test2 = new Task("go to the gym", null, null, null, null);
-		
+		Task task1 = new Task("attend soccer practice", null, null, null, null);
+		task1.setFloatingTask();
+
 		ArrayList<Task> floatingTasksToDo = new ArrayList<Task>();
+		ArrayList<Task> floatingTasksComplete = new ArrayList<Task>();
 		ArrayList<Task> scheduledTasksToDo = new ArrayList<Task>();
+		ArrayList<Task> scheduledTasksComplete = new ArrayList<Task>();
 		ArrayList<Task> scheduledTasksOverDue = new ArrayList<Task>();
-		
-		floatingTasksToDo.add(test1);
-		
-		storageTest.writeToCurrentFile(scheduledTasksToDo,floatingTasksToDo,scheduledTasksOverDue);
-		storageTest.readFromCurrentFile(scheduledTasksToDo,floatingTasksToDo,scheduledTasksOverDue);
-		
-		ArrayList<String> testList1 = new ArrayList<String>();
-		
-		testList1.add("attend soccer practice");
-		
-	//	assertEquals(testList1,storageTest.readFromCurrentFile(scheduledTasksToDo,floatingTasksToDo,scheduledTasksOverDue));
-		
-		
+
+		floatingTasksToDo.add(task1);
+		storageTest.storeToFiles(floatingTasksToDo, floatingTasksComplete, scheduledTasksToDo, scheduledTasksComplete,
+				scheduledTasksOverDue);
+
+
+		//File file1 = new File("currentFile.json");
+
+		assertTrue(true,storageTest.storeToFiles(floatingTasksToDo, floatingTasksComplete, scheduledTasksToDo, scheduledTasksComplete,
+				scheduledTasksOverDue);
+
 	}
-
-
-
-
 
 }
