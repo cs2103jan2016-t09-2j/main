@@ -28,8 +28,19 @@ public class History {
 	}
 
 	public OldCommand getFromUndoList() {
+		redoStack.push(undoStack.pop());
 		return undoStack.pop();
 	}
+	
+//	public void addToRedoList(OldCommand cmd) {
+//		redoStack.push(undoStack.push(execute(cmd)));
+//	}
+	
+	public OldCommand getFromRedoList() {
+		undoStack.push(redoStack.pop());
+		return redoStack.pop();
+	}
+	
 	
 	private OldCommand execute(OldCommand executeCommand) {
 		
