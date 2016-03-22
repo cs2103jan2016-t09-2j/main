@@ -12,7 +12,9 @@ import Storage.Storage;
 public class Logic {
 
 	private String feedBack;
-	
+
+	private static Logic logicObject = null;
+
 	static Storage storage = Storage.getInstance();
 
 	private ArrayList<Task> floatingTasksToDo = new ArrayList<Task>();
@@ -37,6 +39,18 @@ public class Logic {
 	private static final String FEEDBACK_TASK_COMPLETED = "Task Completed Successfully";
 	private static final String FEEDBACK_START_DATE_LATER_THAN_DEADLINE = "Start Date of Task cannot be later than Due Date of Task!";
 	private static final String FEEDBACK_INSTANCE_START_DATE_EXCEEDS_DEADLINE = "Task starts and ends on same day. Start Time of Task cannot be later or equals to End Time of Task";
+
+	/****************** CONSTRUCTOR ***********************/
+	private Logic() {
+	}
+
+	// apply singleton
+	public static Logic getInstance() {
+		if (logicObject == null) {
+			logicObject = new Logic();
+		}
+		return logicObject;
+	}
 
 	/****************** SETTER METHODS ***********************/
 	private void setFeedBack(String feedBack) {
@@ -72,7 +86,7 @@ public class Logic {
 		recentAddedList = addedList;
 		recentAddedPosition = addedPosition;
 	}
-	
+
 	private void setSearchedTasks(ArrayList<Task> currentTaskList) {
 		searchedTasks.clear();
 		searchedTasks = currentTaskList;
@@ -110,7 +124,7 @@ public class Logic {
 	private int getRecentAddedPosition() {
 		return recentAddedPosition;
 	}
-	
+
 	public ArrayList<Task> getSearchedTasks() {
 		return searchedTasks;
 	}
@@ -345,7 +359,7 @@ public class Logic {
 				}
 			}
 		}
-		if ((result.size() == 1) && (result.get(0) == 1) && (tracker==2)) {
+		if ((result.size() == 1) && (result.get(0) == 1) && (tracker == 2)) {
 			scheduledTasksToDo.get(trackPosition.get(0)).setAsOverLapped(true);
 			taskToAdd.setAsOverLapped(true);
 			return true;
@@ -430,12 +444,12 @@ public class Logic {
 			listToDelete.remove(positionToDelete);
 			setFeedBack(FEEDBACK_TASK_DELETED);
 		} else {
-			for (int i = taskDigit.size() -1; i >= 0; i--) {
+			for (int i = taskDigit.size() - 1; i >= 0; i--) {
 				if (taskDigit.get(i) > 0) {
 					if (taskDigit.get(i) <= scheduledTasksOverDue.size()) {
-						scheduledTasksOverDue.remove(taskDigit.get(i)-1);
+						scheduledTasksOverDue.remove(taskDigit.get(i) - 1);
 						setFeedBack(FEEDBACK_TASK_DELETED);
-						 /*setScheduledTasksOverDue(scheduledTasksOverDue); */
+						/* setScheduledTasksOverDue(scheduledTasksOverDue); */
 					} else if (taskDigit.get(i) <= scheduledTasksOverDue.size() + scheduledTasksToDo.size()) {
 						if ((scheduledTasksToDo.get(taskDigit.get(i) - 1 - scheduledTasksOverDue.size())
 								.getOverLapped()) == true) {
@@ -462,8 +476,7 @@ public class Logic {
 								taskDigit.get(i) - 1 - scheduledTasksToDo.size() - scheduledTasksOverDue.size());
 						setFeedBack(FEEDBACK_TASK_DELETED);
 						/* setFloatingTasksToDo(floatingTasksToDo); */
-					} 
-					else { 
+					} else {
 						setFeedBack(FEEDBACK_NON_EXISTENT_TASK_NUM);
 					}
 				} else {
@@ -472,7 +485,7 @@ public class Logic {
 			}
 		}
 	}
-	
+
 	/*
 	 * modifies scheduledTasksToDo/floatingTasksToDo by looking at class number.
 	 * Edits corresponding task based on description, date or time
@@ -575,7 +588,7 @@ public class Logic {
 			}
 			setFeedBack(FEEDBACK_TASK_COMPLETED);
 		} else {
-			for (int i=taskIndex.size() - 1; i>=0; i--) {
+			for (int i = taskIndex.size() - 1; i >= 0; i--) {
 				int taskToComplete = taskIndex.get(i) - 1;
 				if (taskToComplete >= 0) {
 					if (taskToComplete < scheduledTasksOverDue.size()) {
@@ -640,7 +653,7 @@ public class Logic {
 	}
 
 	private void changeStatusToOverdue(int i) {
-		scheduledTasksOverDue.add(scheduledTasksOverDue.size(),scheduledTasksToDo.get(i));
+		scheduledTasksOverDue.add(scheduledTasksOverDue.size(), scheduledTasksToDo.get(i));
 		setFeedBack("Task " + scheduledTasksToDo.get(i).getDescription() + " has exceeded deadline");
 		scheduledTasksToDo.remove(i);
 		/*
@@ -658,20 +671,26 @@ public class Logic {
 	}
 
 	private void searchTask(Task taskToFind) {
-		getTasksToFind(scheduledTasksOverDue, taskToFind);
-		getTasksToFind(scheduledTasksToDo, taskToFind);
-		getTasksToFind(floatingTasksToDo, taskToFind);
-		getTasksToFind(scheduledTasksComplete, taskToFind);
-		getTasksToFind(floatingTasksComplete, taskToFind);
+		search_Snigdha obj = new search_Snigdha();
+
+		obj.searchTask(taskToFind);
+		/*
+		 * getTasksToFind(scheduledTasksOverDue, taskToFind);
+		 * getTasksToFind(scheduledTasksToDo, taskToFind);
+		 * getTasksToFind(floatingTasksToDo, taskToFind);
+		 * getTasksToFind(scheduledTasksComplete, taskToFind);
+		 * getTasksToFind(floatingTasksComplete, taskToFind);
+		 */
 	}
 
 	private void getTasksToFind(ArrayList<Task> searchTaskList, Task taskToFind) {
-		ArrayList<Task> searchedTasks = new ArrayList<Task> ();
+		ArrayList<Task> searchedTasks = new ArrayList<Task>();
 		ArrayList<Task> comparisonTaskList = searchTaskList;
-		
+
 		if (taskToFind.getDescription() != null) {
 			for (int i = 0; i < comparisonTaskList.size(); i++) {
-				if ((comparisonTaskList.get(i).getDescription().toLowerCase()).contains(taskToFind.getDescription().toLowerCase())) {
+				if ((comparisonTaskList.get(i).getDescription().toLowerCase())
+						.contains(taskToFind.getDescription().toLowerCase())) {
 					searchedTasks.add(searchTaskList.get(i));
 				}
 			}
@@ -679,7 +698,8 @@ public class Logic {
 			for (int i = 0; i < comparisonTaskList.size(); i++) {
 				if ((comparisonTaskList.get(i).getEndDate().toString()).contains(taskToFind.getEndDate().toString())) {
 					searchedTasks.add(searchTaskList.get(i));
-				} else if ((comparisonTaskList.get(i).getStartDate().toString()).contains(taskToFind.getEndDate().toString())) {
+				} else if ((comparisonTaskList.get(i).getStartDate().toString())
+						.contains(taskToFind.getEndDate().toString())) {
 					searchedTasks.add(searchTaskList.get(i));
 				}
 			}
@@ -687,7 +707,8 @@ public class Logic {
 			for (int i = 0; i < searchTaskList.size(); i++) {
 				if ((comparisonTaskList.get(i).getEndTime().toString()).contains(taskToFind.getEndTime().toString())) {
 					searchedTasks.add(searchTaskList.get(i));
-				} else if ((comparisonTaskList.get(i).getStartTime().toString()).contains(taskToFind.getEndTime().toString())) {
+				} else if ((comparisonTaskList.get(i).getStartTime().toString())
+						.contains(taskToFind.getEndTime().toString())) {
 					searchedTasks.add(searchTaskList.get(i));
 				}
 			}

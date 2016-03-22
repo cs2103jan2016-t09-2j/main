@@ -24,7 +24,7 @@ public class TempCLI {
 
 	private static final String MESSAGE_WELCOME = "Welcome to ScheduleHacks!";
 	private static final String MESSAGE_BYE = "Good Bye!";
-	private static Logic logicObj = new Logic ();
+	private static Logic logicObj = Logic.getInstance();
 
 	public static int count = 1;
 
