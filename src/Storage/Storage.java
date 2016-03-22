@@ -61,9 +61,7 @@ public class Storage {
 	
 	private Storage() {
 		
-		
 	}
-
 
 	// apply singleton
 	public static Storage getInstance() {
@@ -93,13 +91,45 @@ public class Storage {
 		fileDirectory.changeDirectory(currentName, destDir);
 		return destDir;
 	}
+	
+	public String changeDirectory(String currentPathName,String inputDirectory) {
+		
+		fileDirectory.changeDirectory(currentPathName,inputDirectory);
+		return inputDirectory;
+		
+	}
+	
+	
+	
 
 	// decides current directory name
 	public static String setCurrentPathName() {
-
+		
+//		latestDirectoryName = inputDirectory;
+		
+//		if(!latestDirectoryName){
+//			fileDirectory.createMainDirectory(defaultPathName);	
+//			return defaultPathName;
+//		}
+//		
+//		else if(latestDirectoryName != defaultPathName && !prevDirectoryName){
+//			oldDirectoryName = defaultPathName;
+//			currentPathName = latestDirectoryName;
+//			fileDirectory.changeDirectory(oldDirectoryName, latestDirectoryName);
+//			return latestDirectoryName;
+//		}
+//		else if(latestDirectoryName != prevDirectoryName){
+//			oldDirectoryName = prevDirectoryName;
+//			currentPathName = latestDirectoryName;
+//			fileDirectory.changeDirectory(oldDirectoryName, latestDirectoryName);
+//			return latestDirectoryName;
+//	}
+//			prevDirectoryName = currentPathName;
+		
 		if (setPathName != null && !setPathName.isEmpty()) {
 			fileDirectory.createMainDirectory(setPathName);
 			fileDirectory.changeDirectory(defaultPathName, setPathName);
+
 			return setPathName;
 		}
 
@@ -107,6 +137,7 @@ public class Storage {
 			fileDirectory.createMainDirectory(defaultPathName);
 			return defaultPathName;
 		}
+		
 	}
 
 	/*
@@ -209,6 +240,13 @@ public class Storage {
 		
 		assert scheduledTasksComplete != null : ASSERTION_NULL_PARAMETER;
 		assert floatingTasksComplete != null : ASSERTION_NULL_PARAMETER;
+		
+//		if(!latestDirectoryName){
+//			currentPathName = defaultPathName;
+//		}
+//		else{
+//			currentPathName = latestDirectoryName;
+//		}
 		
 		File f1 = new File(currentPathName, archiveFile);
 		try {

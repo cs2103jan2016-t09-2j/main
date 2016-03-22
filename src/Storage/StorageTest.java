@@ -46,8 +46,8 @@ public class StorageTest {
 
 		//File file1 = new File("currentFile.json");
 
-		assertTrue(true,storageTest.storeToFiles(floatingTasksToDo, floatingTasksComplete, scheduledTasksToDo, scheduledTasksComplete,
-				scheduledTasksOverDue);
+	//	assertTrue(true,storageTest.storeToFiles(floatingTasksToDo, floatingTasksComplete, scheduledTasksToDo, scheduledTasksComplete,
+			//	scheduledTasksOverDue);
 
 	}
 
