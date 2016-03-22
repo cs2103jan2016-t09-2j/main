@@ -226,7 +226,7 @@ public class Storage {
 				bw.newLine();
 			}
 			bw.close();
-			logger.log(Level.INFO, LOG_WROTE_ARCHIVE_FILE);
+			//logger.log(Level.INFO, LOG_WROTE_ARCHIVE_FILE);
 		} catch (Exception e) {
 			logger.log(Level.WARNING, LOG_ERROR_WRITE_ARCHIVE_FILE);
 		}
@@ -263,7 +263,7 @@ public class Storage {
 			}
 
 			bw.close();
-			logger.log(Level.INFO, LOG_WROTE_CURRENT_FILE);
+			//logger.log(Level.INFO, LOG_WROTE_CURRENT_FILE);
 		} catch (Exception e) {
 			logger.log(Level.WARNING, LOG_ERROR_WRITE_CURRENT_FILE);
 
