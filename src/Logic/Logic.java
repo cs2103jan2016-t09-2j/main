@@ -674,6 +674,7 @@ public class Logic {
 		search_Snigdha obj = new search_Snigdha();
 
 		obj.searchTask(taskToFind);
+		
 		/*
 		 * getTasksToFind(scheduledTasksOverDue, taskToFind);
 		 * getTasksToFind(scheduledTasksToDo, taskToFind);

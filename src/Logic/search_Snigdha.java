@@ -24,8 +24,12 @@ public class search_Snigdha {
 		findMatches(obj.getScheduledTasksComplete(), matchedTaskList, taskToFind);
 		findMatches(obj.getFloatingTasksComplete(), matchedTaskList, taskToFind);
 
+		System.out.println();
+		System.out.println("***********************************************************");
+		System.out.println("Search Query");
 		printList(matchedTaskList);
-
+		System.out.println("***********************************************************");
+		System.out.println();
 	}
 
 	public void findMatches(ArrayList<Task> sourceList, ArrayList<Task> destinationList, Task taskToFind) {

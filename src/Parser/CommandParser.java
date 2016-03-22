@@ -63,16 +63,19 @@ public class CommandParser {
 				Task newTask = new Task();
 				switch (commandType) {
 				case ADD_TASK:
-					newTask = CommandParser.addNewTask(taskStatement);
+					newTask = addNewTask(taskStatement);
 					break;
 				case MODIFY_TASK:
-					newTask = CommandParser.sendEditTaskInfoToLogic(taskStatement);
+					newTask = sendEditTaskInfoToLogic(taskStatement);
 					break;
 				case SEARCH_TASK:
-					newTask = CommandParser.getCriteria(taskStatement);
+					newTask = getCriteria(taskStatement);
 					break;
 				case VIEW_LIST:
-					newTask = CommandParser.getCriteria(taskStatement);
+					newTask = getCriteria(taskStatement);
+					break;
+				case SET_DIRECTORY:
+					newTask = setDirectory(taskStatement);
 					break;
 				default:
 					// do nothing
@@ -82,6 +85,18 @@ public class CommandParser {
 			}
 		}
 		throw new Exception("Empty Task Description/Index Number");
+	}
+
+	public static Task setDirectory(String taskStatement) {
+		Task newTask = new Task();
+
+		if (taskStatement.matches(ParserConstants.REGEX_POSSIBLE_DIRECTORY)) {
+			newTask.setDescription(taskStatement);
+		} else {
+			newTask = addNewTask("set " + taskStatement);
+		}
+
+		return newTask;
 	}
 
 	public static Task addNewTask(String taskStatement) {
@@ -250,7 +265,7 @@ public class CommandParser {
 		} else if (oldTask.isScheduledTask()) {
 			oldTask = editScheduledTask(taskStatement, oldTask, dateList, timeList);
 		}
-		
+
 		return oldTask;
 	}
 
@@ -269,7 +284,7 @@ public class CommandParser {
 		if (taskStatement != null && !taskStatement.isEmpty()) {
 			oldTask.setDescription(taskStatement);
 		}
-		
+
 		return oldTask;
 	}
 
@@ -288,7 +303,7 @@ public class CommandParser {
 				oldTask.setDescription(taskStatement);
 			}
 		}
-		
+
 		return oldTask;
 	}
 

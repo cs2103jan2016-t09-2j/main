@@ -117,6 +117,8 @@ public class Command {
 			return COMMAND_TYPE.UNDO_TASK;
 		} else if (hasInDictionary(ParserConstants.COMMAND_REDO, commandFirstWord)) {
 			return COMMAND_TYPE.REDO_TASK;
+		} else if (hasInDictionary(ParserConstants.COMMAND_SET_DIRECTORY, commandFirstWord)) {
+			return COMMAND_TYPE.SET_DIRECTORY;
 		} else if (hasInDictionary(ParserConstants.COMMAND_EXIT, commandFirstWord)) {
 			return COMMAND_TYPE.EXIT;
 		} else {

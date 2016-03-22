@@ -12,6 +12,7 @@ public class ParserConstants {
 	static final String[] COMMAND_EXIT = { "exit", "quit", "q" };
 	static final String[] COMMAND_UNDO = { "undo", "u", "z" };
 	static final String[] COMMAND_REDO = { "redo" };
+	static final String[] COMMAND_SET_DIRECTORY = { "set" };
 	static final String COMMAND_INVALID = null;
 	static final String COMMAND_EMPTY = "";
 
@@ -30,6 +31,7 @@ public class ParserConstants {
 	static final String REGEX_DIGITS_AT_START = "^\\d+\\s";
 	static final String REGEX_INDEX_DELIMITER = "(,|\\s)";
 	static final String REGEX_ONLY_DIGITS = "\\b\\d+\\b";
+	static final String REGEX_POSSIBLE_DIRECTORY = "[A-Z]:(\\)(\\)\\w";
 
 	// Position/Index based integer constants
 	static final int NO_WHITE_SPACE = -1;
