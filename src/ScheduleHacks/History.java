@@ -25,6 +25,7 @@ public class History {
 
 	public void addToUndoList(OldCommand cmd) {
 		undoStack.push(execute(cmd));
+		redoStack.clear();
 	}
 
 	public OldCommand getFromUndoList() {
