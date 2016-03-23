@@ -211,7 +211,7 @@ public class Logic {
 			historyObject.clearRedoStack();
 			break;
 		case MODIFY_TASK:
-			// modifyTask(executeTask, retrievedCommand);
+			editTask(retrievedCommand.getIndexList(), executeTask.getDescription(), false);
 			historyObject.clearRedoStack();
 			break;
 		case COMPLETE_TASK:
@@ -470,6 +470,8 @@ public class Logic {
 		// Creating undo parameter
 		ArrayList<Task> taskList = new ArrayList<Task>();
 
+		Task removedTask = null;
+
 		if (taskDigit.isEmpty()) {
 			ArrayList<Task> listToDelete = getRecentAddedList();
 			int positionToDelete = getRecentAddedPosition();
@@ -479,7 +481,7 @@ public class Logic {
 			for (int i = taskDigit.size() - 1; i >= 0; i--) {
 				if (taskDigit.get(i) > 0) {
 					if (taskDigit.get(i) <= scheduledTasksOverDue.size()) {
-						Task removedTask = scheduledTasksOverDue.remove(taskDigit.get(i) - 1);
+						removedTask = scheduledTasksOverDue.remove(taskDigit.get(i) - 1);
 						taskList.add(0, removedTask);
 						setFeedBack(FEEDBACK_TASK_DELETED);
 
@@ -501,14 +503,13 @@ public class Logic {
 										.setAsOverLapped(false);
 							}
 						}
-						Task removedTask = scheduledTasksToDo
-								.remove(taskDigit.get(i) - 1 - scheduledTasksOverDue.size());
+						removedTask = scheduledTasksToDo.remove(taskDigit.get(i) - 1 - scheduledTasksOverDue.size());
 						taskList.add(0, removedTask);
 						setFeedBack(FEEDBACK_TASK_DELETED);
 						/* setScheduledTasksToDo(scheduledTasksToDo); */
 					} else if (taskDigit.get(i) <= scheduledTasksToDo.size() + floatingTasksToDo.size()
 							+ scheduledTasksOverDue.size()) {
-						Task removedTask = floatingTasksToDo.remove(
+						removedTask = floatingTasksToDo.remove(
 								taskDigit.get(i) - 1 - scheduledTasksToDo.size() - scheduledTasksOverDue.size());
 						taskList.add(0, removedTask);
 						setFeedBack(FEEDBACK_TASK_DELETED);
@@ -527,6 +528,46 @@ public class Logic {
 				OldCommand recentCommand = new OldCommand(COMMAND_TYPE.DELETE_TASK, taskList, taskDigit);
 				historyObject.addToUndoList(recentCommand);
 			}
+		}
+	}
+
+	public void editTask(ArrayList<Integer> indexList, String editInfo, boolean isUndoOperation) {
+
+		//ArrayList<Task> taskList = new ArrayList<Task>();
+		Task taskToEdit = null;
+
+		/*
+		 * if (indexList == null ||indexList.isEmpty()) { ArrayList<Task>
+		 * listToDelete = getRecentAddedList(); int positionToDelete =
+		 * getRecentAddedPosition(); listToDelete.remove(positionToDelete);
+		 * setFeedBack(FEEDBACK_TASK_DELETED); return; }
+		 */
+		int indexToEdit = indexList.get(0);
+
+		if (indexToEdit > 0) {
+			if (indexToEdit <= scheduledTasksOverDue.size()) {
+				taskToEdit = scheduledTasksOverDue.remove(indexToEdit - 1);
+				// taskList.add(0, taskToEdit);
+			} else if (indexToEdit <= scheduledTasksOverDue.size() + scheduledTasksToDo.size()) {
+				taskToEdit = scheduledTasksToDo.remove(indexToEdit - 1 - scheduledTasksOverDue.size());
+				// taskList.add(0, taskToEdit);
+
+			} else if (indexToEdit <= scheduledTasksToDo.size() + floatingTasksToDo.size()
+					+ scheduledTasksOverDue.size()) {
+				taskToEdit = floatingTasksToDo
+						.remove(indexToEdit - 1 - scheduledTasksToDo.size() - scheduledTasksOverDue.size());
+				// taskList.add(0, taskToEdit);
+				/* setFloatingTasksToDo(floatingTasksToDo); */
+			} else {
+				setFeedBack(FEEDBACK_NON_EXISTENT_TASK_NUM);
+			}
+		} 
+
+		if (taskToEdit == null) {
+			setFeedBack(FEEDBACK_NON_EXISTENT_TASK_NUM);
+		} else {
+			Task editedTask = CommandParser.editExistingTask(taskToEdit, editInfo);
+			addTask(editedTask, true);
 		}
 	}
 
