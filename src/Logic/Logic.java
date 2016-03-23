@@ -24,7 +24,6 @@ public class Logic {
 	private ArrayList<Task> scheduledTasksToDo = new ArrayList<Task>();
 	private ArrayList<Task> scheduledTasksComplete = new ArrayList<Task>();
 	private ArrayList<Task> scheduledTasksOverDue = new ArrayList<Task>();
-	private ArrayList<Task> searchedTasks = new ArrayList<Task>();
 	private ArrayList<Task> recentAddedList = new ArrayList<Task>();
 	private int recentAddedPosition;
 
@@ -89,11 +88,6 @@ public class Logic {
 		recentAddedPosition = addedPosition;
 	}
 
-	private void setSearchedTasks(ArrayList<Task> currentTaskList) {
-		searchedTasks.clear();
-		searchedTasks = currentTaskList;
-	}
-
 	/****************** GETTER METHODS ***********************/
 	public String getFeedBack() {
 		return feedBack;
@@ -127,10 +121,6 @@ public class Logic {
 		return recentAddedPosition;
 	}
 
-	public ArrayList<Task> getSearchedTasks() {
-		return searchedTasks;
-	}
-
 	/****************** OTHER METHODS ***********************/
 	/*
 	 * this method is called in CLI by logic obj, hence transmitting string
@@ -140,7 +130,8 @@ public class Logic {
 	 * calls retrieveParsedCommand, from which private methods are called in
 	 * Logic class
 	 */
-	public void startExecution(String userInput) {
+	
+	public void startExecution() {
 		try {
 			storage.loadToList();
 			setFloatingTasksComplete(storage.getFloatingTasksComplete());
@@ -148,6 +139,13 @@ public class Logic {
 			setScheduledTasksComplete(storage.getScheduledTasksComplete());
 			setScheduledTasksToDo(storage.getScheduledTasksToDo());
 			setScheduledTasksOverDue(storage.getScheduledTasksOverDue());
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
+		}
+	}
+	
+	public void executeCommand(String userInput) {
+		try {
 			retrieveParsedCommand(userInput);
 		} catch (Exception e) {
 			System.out.println(e.getMessage());

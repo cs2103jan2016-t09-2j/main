@@ -37,6 +37,7 @@ public class TempCLI {
 	}
 
 	private void startScheduleHacks(Logic logicObj) {
+		logicObj.startExecution();
 		while (true) {
 			//printTaskLists(logicObj);
 			readInput();
@@ -60,10 +61,10 @@ public class TempCLI {
 	// what to do to print archive ?
 	public void executeInput(Logic logicObj) {
 		count = 1;
-		logicObj.startExecution(getUserCommand());
+		logicObj.executeCommand(getUserCommand());
 		logicObj.autoChangeTaskStatus();
 		if (getUserCommand().startsWith("search")) {
-			printSearchTaskLists(logicObj);
+			//printSearchTaskLists(logicObj);
 		}
 		else {
 			printTaskLists(logicObj);
@@ -72,11 +73,11 @@ public class TempCLI {
 		
 	}
 	
-	public void printSearchTaskLists(Logic logicObj) {
+	/*public void printSearchTaskLists(Logic logicObj) {
 		System.out.println("******** SEARCHED TASKS ********");
 		showTimedTaskListToUser(logicObj.getSearchedTasks());
 	}
-
+*/
 	public void printTaskLists(Logic logicObj) {
 		System.out.println("******** OVERDUE TASKS ********");
 		showTimedTaskListToUser(logicObj.getScheduledTasksOverDue());
