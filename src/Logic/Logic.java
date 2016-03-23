@@ -224,17 +224,23 @@ public class Logic {
 		case SEARCH_TASK:
 			searchTask(executeTask);
 			break;
+		case SET_DIRECTORY:
+			setNewDirectoryPath(executeTask);
+			break;
 		case EXIT:
 			exit();
 			break;
 		}
 	}
 
-	private void viewArchivedList(Task executeTask) {
-		// TODO Auto-generated method stub
-
+	public void setNewDirectoryPath(Task executeTask) {
+		try {
+		storage.setCurrentPathName(executeTask.getDescription());
+		} catch(Exception e) {
+			System.out.println("Invalid Directory Path!!");
+		}
 	}
-
+	
 	/*
 	 * adds task based on the startdate, enddate, starttime and endtime for
 	 * scheduled tasks into either scheduledtodo or scheduledoverdue arraylist
