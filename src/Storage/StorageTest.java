@@ -24,7 +24,6 @@ public class StorageTest {
 		// assertEquals(true, configFile.exists());
 		// assertEquals(true, userPrefFile.exists());
 	}
-
 	@Test
 	public void testWriteToFile() throws Exception {
 
@@ -43,12 +42,13 @@ public class StorageTest {
 		storageTest.storeToFiles(floatingTasksToDo, floatingTasksComplete, scheduledTasksToDo, scheduledTasksComplete,
 				scheduledTasksOverDue);
 
+		ArrayList<String> taskList = new ArrayList<String>();
+		taskList.add("attend soccer practice");
+		
+		File file1 = new File("currentFile.json");
 
-		//File file1 = new File("currentFile.json");
-
-	//	assertTrue(true,storageTest.storeToFiles(floatingTasksToDo, floatingTasksComplete, scheduledTasksToDo, scheduledTasksComplete,
-			//	scheduledTasksOverDue);
-
+	//	assertEquals(taskList,storageTest.storeToFiles(floatingTasksToDo, floatingTasksComplete, scheduledTasksToDo, scheduledTasksComplete,
+	//			scheduledTasksOverDue);
 	}
 
 }

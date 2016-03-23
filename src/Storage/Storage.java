@@ -66,7 +66,6 @@ public class Storage {
 			fileDirectory.createMainDirectory(defaultPathName);	
 		}
 		
-		
 	}
 
 	// apply singleton
