@@ -26,7 +26,6 @@ public class History {
 	public void addToUndoList(OldCommand cmd) {
 		OldCommand tempCmd = new OldCommand(cmd.getCommandType(), cmd.getTaskList(), cmd.getIndexList());
 		undoStack.push(execute(tempCmd));
-		redoStack.clear();
 	}
 	
 	public void addToRedoList(OldCommand cmd) {
@@ -40,16 +39,14 @@ public class History {
 		return getUndo;
 	}
 	
-//	public void addToRedoList(OldCommand cmd) {
-//		redoStack.push(undoStack.push(execute(cmd)));
-//	}
-	
 	public OldCommand getFromRedoList() {
 		OldCommand getRedo = redoStack.pop();
-		addToUndoList(getRedo);
 		return getRedo;
 	}
 	
+	public void clearRedoStack() {
+		redoStack.clear();
+	}
 	
 	private OldCommand execute(OldCommand executeCommand) {
 		

@@ -204,15 +204,19 @@ public class Logic {
 		switch (executeCommand) {
 		case ADD_TASK:
 			addTask(executeTask);
+			historyObject.clearRedoStack();
 			break;
 		case DELETE_TASK:
 			deleteTask(retrievedCommand.getIndexList());
+			historyObject.clearRedoStack();
 			break;
 		case MODIFY_TASK:
 			// modifyTask(executeTask, retrievedCommand);
+			historyObject.clearRedoStack();
 			break;
 		case COMPLETE_TASK:
-			completeTask(retrievedCommand);
+			completeTask(retrievedCommand.getIndexList());
+			historyObject.clearRedoStack();
 			break;
 		case UNDO_TASK:
 			undoTask();
@@ -222,15 +226,19 @@ public class Logic {
 			break;
 		case VIEW_LIST:
 			searchTask(executeTask);
+			historyObject.clearRedoStack();
 			break;
 		case SEARCH_TASK:
 			searchTask(executeTask);
+			historyObject.clearRedoStack();
 			break;
 		case SET_DIRECTORY:
 			setNewDirectoryPath(executeTask);
+			historyObject.clearRedoStack();
 			break;
 		case EXIT:
 			exit();
+			historyObject.clearRedoStack();
 			break;
 		}
 	}
@@ -606,11 +614,9 @@ public class Logic {
 	 * task from the ArrayList that it is currently residing in based on task
 	 * number entered by user
 	 */
-	private void completeTask(Command retrievedCommand) {
+	private void completeTask(ArrayList<Integer> taskIndex) {
 		// undo parameter
 		ArrayList<Task> taskList = new ArrayList<Task>();
-
-		ArrayList<Integer> taskIndex = retrievedCommand.getIndexList();
 
 		if (taskIndex.isEmpty()) {
 			ArrayList<Task> listToComplete = getRecentAddedList();
@@ -720,8 +726,10 @@ public class Logic {
 			deleteTask(toUndo.getIndexList());
 			break;
 		case COMPLETE_TASK:
+			completeTask(toUndo.getIndexList());
 			break;
 		case INCOMPLETE_TASK:
+			markAsIncompleteList(toUndo.getTaskList(), toUndo.getIndexList());
 			break;
 		case MODIFY_TASK:
 			break;
@@ -743,8 +751,10 @@ public class Logic {
 			deleteTask(toRedo.getIndexList());
 			break;
 		case COMPLETE_TASK:
+			//completeTask(toRedo.getIndexList());
 			break;
 		case INCOMPLETE_TASK:
+			markAsIncompleteList(toRedo.getTaskList(), toRedo.getIndexList());
 			break;
 		case MODIFY_TASK:
 			break;
@@ -757,6 +767,18 @@ public class Logic {
 	public void addTaskList(ArrayList<Task> taskList) {
 		for(Task newTask : taskList) {
 			addTask(newTask);
+		}
+	}
+	
+	public void markAsIncompleteList(ArrayList<Task> taskList, ArrayList<Integer> indexList) {
+		for(Task task: taskList) {
+			if(task.isFloatingTask()) {
+				floatingTasksComplete.remove(task);
+				addTask(task);
+			} else if(task.isScheduledTask()) {
+				scheduledTasksComplete.remove(task);
+				addTask(task);
+			}
 		}
 	}
 
