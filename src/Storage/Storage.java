@@ -100,7 +100,9 @@ public class Storage {
 	// decides current directory name
 	public void setCurrentPathName(String inputDirectory) {	
 		if(inputDirectory != null && !inputDirectory.isEmpty()){
-			
+			if(inputDirectory.equalsIgnoreCase("default")){
+				inputDirectory = defaultPathName;
+			}
 	
 			String oldDirectoryName = currentPathName;
 			currentPathName = inputDirectory;
@@ -113,7 +115,6 @@ public class Storage {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-	
 			fileDirectory.changeDirectory(oldDirectoryName, currentPathName);	
 		}
 	}
