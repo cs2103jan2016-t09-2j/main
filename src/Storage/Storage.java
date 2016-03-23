@@ -31,9 +31,9 @@ public class Storage {
 	private ArrayList<Task> scheduledTasksOverDue = new ArrayList<Task>();
 
 	private static final String defaultPathName = "C:\\ScheduleHacks";
-	private static String setPathName = setDirectoryName();
+//	private static String setPathName = setDirectoryName();
 	//private static final String usedPathName = currentDirectoryName();
-	private static String currentPathName = setCurrentPathName();
+	private static String currentPathName;
 
 	private static Logger logger = Logger.getLogger("Storage");
 
@@ -60,6 +60,10 @@ public class Storage {
 	private static final String ASSERTION_NULL_PARAMETER = "Error. Null input passed.";
 	
 	private Storage() {
+		if(currentPathName == null || currentPathName.isEmpty()){
+			currentPathName = defaultPathName;
+		}
+		
 		
 	}
 
@@ -72,73 +76,73 @@ public class Storage {
 	}
 
 	// create and store files in respective Directory
-	public static String setDirectoryName() {
-
-		@SuppressWarnings("resource")
-		Scanner sc = new Scanner(System.in);
-		System.out.println("set directory: ");
-		String fileName = sc.nextLine();
-
-		return fileName;
-	}
-
-	public String changeDirectoryName(String currentName) {
-		@SuppressWarnings("resource")
-		Scanner sc = new Scanner(System.in);
-		System.out.println("change directory: ");
-		String destDir = sc.nextLine();
-
-		fileDirectory.changeDirectory(currentName, destDir);
-		return destDir;
-	}
+//	public static String setDirectoryName() {
+//
+//		@SuppressWarnings("resource")
+//		Scanner sc = new Scanner(System.in);
+//		System.out.println("set directory: ");
+//		String fileName = sc.nextLine();
+//
+//		return fileName;
+//	}
+//
+//	public String changeDirectoryName(String currentName) {
+//		@SuppressWarnings("resource")
+//		Scanner sc = new Scanner(System.in);
+//		System.out.println("change directory: ");
+//		String destDir = sc.nextLine();
+//
+//		fileDirectory.changeDirectory(currentName, destDir);
+//		return destDir;
+//	}
+//	
+//	public String changeDirectory(String currentPathName,String inputDirectory) {
+//		
+//		fileDirectory.changeDirectory(currentPathName,inputDirectory);
+//		return inputDirectory;
+//		
+//	}
 	
-	public String changeDirectory(String currentPathName,String inputDirectory) {
-		
-		fileDirectory.changeDirectory(currentPathName,inputDirectory);
-		return inputDirectory;
-		
-	}
-	
-	
-	
+//	public static String getCurrentPathName() {
+//		
+//	}
+//	
 
 	// decides current directory name
-	public static String setCurrentPathName() {
+	public void setCurrentPathName(String inputDirectory) {
 		
-//		latestDirectoryName = inputDirectory;
+		//String latestDirectoryName = inputDirectory;
 		
-//		if(!latestDirectoryName){
-//			fileDirectory.createMainDirectory(defaultPathName);	
+		
+		
+		
+		if(inputDirectory==null || inputDirectory.isEmpty()){
+			fileDirectory.createMainDirectory(defaultPathName);	
+		
+		}
+		
+		else if(inputDirectory != null && !inputDirectory.isEmpty()){
+			
+			String oldDirectoryName = currentPathName;
+			currentPathName = inputDirectory;
+			fileDirectory.changeDirectory(oldDirectoryName, currentPathName);
+		
+		}
+	}
+		
+//		if (setPathName != null && !setPathName.isEmpty()) {
+//			fileDirectory.createMainDirectory(setPathName);
+//			fileDirectory.changeDirectory(defaultPathName, setPathName);
+//
+//			return setPathName;
+//		}
+//
+//		else {
+//			fileDirectory.createMainDirectory(defaultPathName);
 //			return defaultPathName;
 //		}
-//		
-//		else if(latestDirectoryName != defaultPathName && !prevDirectoryName){
-//			oldDirectoryName = defaultPathName;
-//			currentPathName = latestDirectoryName;
-//			fileDirectory.changeDirectory(oldDirectoryName, latestDirectoryName);
-//			return latestDirectoryName;
-//		}
-//		else if(latestDirectoryName != prevDirectoryName){
-//			oldDirectoryName = prevDirectoryName;
-//			currentPathName = latestDirectoryName;
-//			fileDirectory.changeDirectory(oldDirectoryName, latestDirectoryName);
-//			return latestDirectoryName;
-//	}
-//			prevDirectoryName = currentPathName;
 		
-		if (setPathName != null && !setPathName.isEmpty()) {
-			fileDirectory.createMainDirectory(setPathName);
-			fileDirectory.changeDirectory(defaultPathName, setPathName);
-
-			return setPathName;
-		}
-
-		else {
-			fileDirectory.createMainDirectory(defaultPathName);
-			return defaultPathName;
-		}
-		
-	}
+	
 
 	/*
 	 * Setter Methods
