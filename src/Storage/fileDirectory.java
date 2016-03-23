@@ -43,13 +43,12 @@ public class fileDirectory {
 			File oldFolder = new File(src);
 			File newFolder = new File(destDir);
 
-			System.out.println(1);
 			// System.out.println("Current Working Directory: " +
 			// oldFolder.getAbsolutePath());
 
 			// Files.move(oldFolder, newFolder, StandardCopyOption.ATOMIC_MOVE);
 			FileUtils.moveDirectory(oldFolder, newFolder);
-			System.out.println(2);
+	
 			// System.out.println("Current Working Directory: " +
 			// newFolder.getAbsolutePath());
 
