@@ -92,8 +92,10 @@ public class CommandParser {
 		taskStatement = cleanupExtraWhitespace(taskStatement);
 		
 		if (taskStatement.matches(ParserConstants.REGEX_POSSIBLE_DIRECTORY)) {
+			System.out.println("1");
 			newTask.setDescription(taskStatement);
 		} else {
+			System.out.println("2");
 			newTask = addNewTask("set " + taskStatement);
 		}
 

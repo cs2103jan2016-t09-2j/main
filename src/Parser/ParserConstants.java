@@ -31,7 +31,7 @@ public class ParserConstants {
 	static final String REGEX_DIGITS_AT_START = "^\\d+\\s";
 	static final String REGEX_INDEX_DELIMITER = "(,|\\s)";
 	static final String REGEX_ONLY_DIGITS = "\\b\\d+\\b";
-	static final String REGEX_POSSIBLE_DIRECTORY = "[A-Z]:\\{2}(\\w)";
+	static final String REGEX_POSSIBLE_DIRECTORY = "[A-Za-z]:\\\\\\w+";
 	//static final String REGEX_POSSIBLE_DIRECTORY = "[A-Z]:\\{2}(\\w)";
 
 	// Position/Index based integer constants
