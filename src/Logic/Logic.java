@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 
 import ScheduleHacks.Task;
 import ScheduleHacks.OldCommand;
+import ScheduleHacks.OldCommand.COMMAND_TYPE;
 import ScheduleHacks.History;
 import Parser.CommandParser;
 import Parser.Command;
@@ -17,7 +18,8 @@ public class Logic {
 
 	private static Logic logicObject = null;
 
-	static Storage storage = Storage.getInstance();
+	private Storage storage = Storage.getInstance();
+	private History historyObject = History.getInstance();
 
 	private ArrayList<Task> floatingTasksToDo = new ArrayList<Task>();
 	private ArrayList<Task> floatingTasksComplete = new ArrayList<Task>();
@@ -130,7 +132,7 @@ public class Logic {
 	 * calls retrieveParsedCommand, from which private methods are called in
 	 * Logic class
 	 */
-	
+
 	public void startExecution() {
 		try {
 			storage.loadToList();
@@ -143,7 +145,7 @@ public class Logic {
 			System.out.println(e.getMessage());
 		}
 	}
-	
+
 	public void executeCommand(String userInput) {
 		try {
 			retrieveParsedCommand(userInput);
@@ -213,10 +215,10 @@ public class Logic {
 			completeTask(retrievedCommand);
 			break;
 		case UNDO_TASK:
-			undoTask(executeTask);
+			undoTask();
 			break;
 		case REDO_TASK:
-			redoTask(executeTask);
+			redoTask();
 			break;
 		case VIEW_LIST:
 			searchTask(executeTask);
@@ -235,12 +237,12 @@ public class Logic {
 
 	public void setNewDirectoryPath(Task executeTask) {
 		try {
-		storage.setCurrentPathName(executeTask.getDescription());
-		} catch(Exception e) {
+			storage.setCurrentPathName(executeTask.getDescription());
+		} catch (Exception e) {
 			System.out.println("Invalid Directory Path!!");
 		}
 	}
-	
+
 	/*
 	 * adds task based on the startdate, enddate, starttime and endtime for
 	 * scheduled tasks into either scheduledtodo or scheduledoverdue arraylist
@@ -254,6 +256,11 @@ public class Logic {
 			setMostRecentTaskAdded(floatingTasksToDo, floatingTasksToDo.size() - 1);
 			setFeedBack(FEEDBACK_TASK_ADDED);
 		}
+
+		ArrayList<Task> taskList = new ArrayList<Task>();
+		taskList.add(executeTask);
+		OldCommand recentCommand = new OldCommand(COMMAND_TYPE.ADD_TASK, taskList);
+		historyObject.addToUndoList(recentCommand);
 	}
 
 	private void addTaskInOrder(Task executeTask) {
@@ -444,6 +451,9 @@ public class Logic {
 	private void deleteTask(Command retrievedCommand) {
 		ArrayList<Integer> taskDigit = retrievedCommand.getIndexList();
 
+		// Creating undo parameter
+		ArrayList<Task> taskList = new ArrayList<Task>();
+
 		if (taskDigit.isEmpty()) {
 			ArrayList<Task> listToDelete = getRecentAddedList();
 			int positionToDelete = getRecentAddedPosition();
@@ -453,8 +463,10 @@ public class Logic {
 			for (int i = taskDigit.size() - 1; i >= 0; i--) {
 				if (taskDigit.get(i) > 0) {
 					if (taskDigit.get(i) <= scheduledTasksOverDue.size()) {
-						scheduledTasksOverDue.remove(taskDigit.get(i) - 1);
+						Task removedTask = scheduledTasksOverDue.remove(taskDigit.get(i) - 1);
+						taskList.add(0, removedTask);
 						setFeedBack(FEEDBACK_TASK_DELETED);
+
 						/* setScheduledTasksOverDue(scheduledTasksOverDue); */
 					} else if (taskDigit.get(i) <= scheduledTasksOverDue.size() + scheduledTasksToDo.size()) {
 						if ((scheduledTasksToDo.get(taskDigit.get(i) - 1 - scheduledTasksOverDue.size())
@@ -473,13 +485,16 @@ public class Logic {
 										.setAsOverLapped(false);
 							}
 						}
-						scheduledTasksToDo.remove(taskDigit.get(i) - 1 - scheduledTasksOverDue.size());
+						Task removedTask = scheduledTasksToDo
+								.remove(taskDigit.get(i) - 1 - scheduledTasksOverDue.size());
+						taskList.add(0, removedTask);
 						setFeedBack(FEEDBACK_TASK_DELETED);
 						/* setScheduledTasksToDo(scheduledTasksToDo); */
 					} else if (taskDigit.get(i) <= scheduledTasksToDo.size() + floatingTasksToDo.size()
 							+ scheduledTasksOverDue.size()) {
-						floatingTasksToDo.remove(
+						Task removedTask = floatingTasksToDo.remove(
 								taskDigit.get(i) - 1 - scheduledTasksToDo.size() - scheduledTasksOverDue.size());
+						taskList.add(0, removedTask);
 						setFeedBack(FEEDBACK_TASK_DELETED);
 						/* setFloatingTasksToDo(floatingTasksToDo); */
 					} else {
@@ -489,6 +504,11 @@ public class Logic {
 					setFeedBack(FEEDBACK_NEGATIVE_TASK_NUM);
 				}
 			}
+
+			// for undo functionality
+			OldCommand recentCommand = new OldCommand(COMMAND_TYPE.DELETE_TASK, taskList, taskDigit);
+			historyObject.addToUndoList(recentCommand);
+
 		}
 	}
 
@@ -581,6 +601,9 @@ public class Logic {
 	 * number entered by user
 	 */
 	private void completeTask(Command retrievedCommand) {
+		// undo parameter
+		ArrayList<Task> taskList = new ArrayList<Task>();
+
 		ArrayList<Integer> taskIndex = retrievedCommand.getIndexList();
 
 		if (taskIndex.isEmpty()) {
@@ -588,9 +611,11 @@ public class Logic {
 			int positionToComplete = getRecentAddedPosition();
 
 			if (listToComplete.get(positionToComplete).isScheduledTask()) {
-				markAsComplete(listToComplete, scheduledTasksComplete, positionToComplete);
+				Task completedTask = markAsComplete(listToComplete, scheduledTasksComplete, positionToComplete);
+				taskList.add(0, completedTask);
 			} else if (listToComplete.get(positionToComplete).isFloatingTask()) {
-				markAsComplete(listToComplete, floatingTasksComplete, positionToComplete);
+				Task completedTask = markAsComplete(listToComplete, floatingTasksComplete, positionToComplete);
+				taskList.add(0, completedTask);
 			}
 			setFeedBack(FEEDBACK_TASK_COMPLETED);
 		} else {
@@ -598,7 +623,9 @@ public class Logic {
 				int taskToComplete = taskIndex.get(i) - 1;
 				if (taskToComplete >= 0) {
 					if (taskToComplete < scheduledTasksOverDue.size()) {
-						markAsComplete(scheduledTasksOverDue, scheduledTasksComplete, taskToComplete);
+						Task completedTask = markAsComplete(scheduledTasksOverDue, scheduledTasksComplete,
+								taskToComplete);
+						taskList.add(0, completedTask);
 					} else if (taskToComplete < scheduledTasksToDo.size() + scheduledTasksOverDue.size()) {
 						if ((scheduledTasksToDo.get(taskIndex.get(i) - 1 - scheduledTasksOverDue.size())
 								.getOverLapped()) == true) {
@@ -617,11 +644,13 @@ public class Logic {
 							}
 						}
 						taskToComplete -= (scheduledTasksOverDue.size());
-						markAsComplete(scheduledTasksToDo, scheduledTasksComplete, taskToComplete);
+						Task completedTask = markAsComplete(scheduledTasksToDo, scheduledTasksComplete, taskToComplete);
+						taskList.add(0, completedTask);
 					} else if (taskToComplete < scheduledTasksOverDue.size() + scheduledTasksToDo.size()
 							+ floatingTasksToDo.size()) {
 						taskToComplete -= (scheduledTasksToDo.size() + scheduledTasksOverDue.size());
-						markAsComplete(floatingTasksToDo, floatingTasksComplete, taskToComplete);
+						Task completedTask = markAsComplete(floatingTasksToDo, floatingTasksComplete, taskToComplete);
+						taskList.add(0, completedTask);
 					} else {
 						setFeedBack(FEEDBACK_NON_EXISTENT_TASK_NUM);
 					}
@@ -629,14 +658,19 @@ public class Logic {
 					setFeedBack(FEEDBACK_NEGATIVE_TASK_NUM);
 				}
 			}
+
+			// for undo functionality
+			OldCommand recentCommand = new OldCommand(COMMAND_TYPE.COMPLETE_TASK, taskList, taskIndex);
+			historyObject.addToUndoList(recentCommand);
 		}
 	}
 
-	public void markAsComplete(ArrayList<Task> incompleteList, ArrayList<Task> completeList, int taskNum) {
+	public Task markAsComplete(ArrayList<Task> incompleteList, ArrayList<Task> completeList, int taskNum) {
 		Task completeTask = incompleteList.remove(taskNum);
 		completeTask.setAsComplete();
 		completeList.add(completeTask);
 		setFeedBack(FEEDBACK_TASK_COMPLETED);
+		return completeTask;
 	}
 
 	/*
@@ -668,19 +702,53 @@ public class Logic {
 		 */
 	}
 
-	private void undoTask(Task executeTask) {
-
+	public void undoTask() {
+		OldCommand toUndo = historyObject.getFromUndoList();
+		OldCommand.COMMAND_TYPE cmdType = toUndo.getCommandType();
+		
+		switch(cmdType) {
+		case ADD_TASK:
+			break;
+		case DELETE_TASK:
+			break;
+		case COMPLETE_TASK:
+			break;
+		case INCOMPLETE_TASK:
+			break;
+		case MODIFY_TASK:
+			break;
+		default:
+			//go back to original home screen
+			//incomplete
+		}
 	}
 
-	private void redoTask(Task executeTask) {
-
+	public void redoTask() {
+		OldCommand toRedo = historyObject.getFromRedoList();
+		OldCommand.COMMAND_TYPE cmdType = toRedo.getCommandType();
+		
+		switch(cmdType) {
+		case ADD_TASK:
+			break;
+		case DELETE_TASK:
+			break;
+		case COMPLETE_TASK:
+			break;
+		case INCOMPLETE_TASK:
+			break;
+		case MODIFY_TASK:
+			break;
+		default:
+			//go back to original home screen
+			//incomplete
+		}
 	}
 
 	private void searchTask(Task taskToFind) {
 		search_Snigdha obj = new search_Snigdha();
 
 		obj.searchTask(taskToFind);
-		
+
 		/*
 		 * getTasksToFind(scheduledTasksOverDue, taskToFind);
 		 * getTasksToFind(scheduledTasksToDo, taskToFind);
