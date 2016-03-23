@@ -68,12 +68,13 @@ public class TempCLI {
 		if (!logicObj.hasSearchList()) {
 			printTaskLists(logicObj);
 		}
+		if(!logicObj.getFeedBack().isEmpty())
 		showToUser(logicObj.getFeedBack());
 		
 	}
 	
 	public void printSearchTaskLists(ArrayList<Task> listToPrint) {
-		System.out.println("******** SEARCHED TASKS ********");
+		System.out.println("******** SEARCH QUERY ********");
 		
 		//showTimedTaskListToUser(logicObj.getSearchedTasks());
 		

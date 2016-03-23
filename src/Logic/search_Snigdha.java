@@ -6,7 +6,6 @@ import ScheduleHacks.Task;
 import GUI.TempCLI;
 
 import java.time.LocalDate;
-import java.time.LocalTime;
 
 public class search_Snigdha {
 
@@ -27,7 +26,6 @@ public class search_Snigdha {
 
 		System.out.println();
 		System.out.println("***********************************************************");
-		System.out.println("Search Query");
 		printList(matchedTaskList);
 		System.out.println("***********************************************************");
 		System.out.println();

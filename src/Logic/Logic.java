@@ -37,7 +37,6 @@ public class Logic {
 	private static final String FEEDBACK_TASK_DELETED = "Task Deleted Successfully";
 	private static final String FEEDBACK_NON_EXISTENT_TASK_NUM = "Task number entered was not found!";
 	private static final String FEEDBACK_NEGATIVE_TASK_NUM = "Task number entered cannot be 0 or negative!";
-	private static final String FEEDBACK_TASK_NUM_NOT_FOUND = "Task number is not present! Task not found!";
 	private static final String FEEDBACK_TASK_MODIFIED = "Task Edited Successfully";
 	private static final String FEEDBACK_TASK_NOT_MODIFIED = "Task was not modified";
 	private static final String FEEDBACK_TASK_COMPLETED = "Task Completed Successfully";
@@ -45,6 +44,7 @@ public class Logic {
 	private static final String FEEDBACK_UNDO_VALID = "Last Action Un-Done!";
 	private static final String FEEDBACK_REDO_VALID = "Last Action Re-Done!";
 	private static final String FEEDBACK_REDO_INVALID = "Invalid Redo!";
+	private static final String FEEDBACK_EMPTY_STRING = "";
 	private static final String FEEDBACK_START_DATE_LATER_THAN_DEADLINE = "Start Date of Task cannot be later than Due Date of Task!";
 	private static final String FEEDBACK_INSTANCE_START_DATE_EXCEEDS_DEADLINE = "Task starts and ends on same day. Start Time of Task cannot be later or equals to End Time of Task";
 
@@ -564,12 +564,12 @@ public class Logic {
 				taskToEdit = floatingTasksToDo
 						.remove(indexToEdit - 1 - scheduledTasksToDo.size() - scheduledTasksOverDue.size());
 			} else {
-				setFeedBack(FEEDBACK_NON_EXISTENT_TASK_NUM);
+				setFeedBack(FEEDBACK_NON_EXISTENT_TASK_NUM + "\n");
 			}
 		}
 
 		if (taskToEdit == null) {
-			setFeedBack(FEEDBACK_NON_EXISTENT_TASK_NUM);
+			setFeedBack(FEEDBACK_NON_EXISTENT_TASK_NUM + "\n" + FEEDBACK_TASK_NOT_MODIFIED);
 		} else {
 			Task editedTask = CommandParser.editExistingTask(taskToEdit, editInfo);
 			int newIndex = addTask(editedTask, true);
@@ -582,8 +582,8 @@ public class Logic {
 				OldCommand recentCommand = new OldCommand(COMMAND_TYPE.MODIFY_TASK, taskList, indexList);
 				historyObject.addToUndoList(recentCommand);
 
-				System.out.println(indexList.toString());
 			}
+			setFeedBack(FEEDBACK_TASK_MODIFIED);
 		}
 	}
 
@@ -805,6 +805,8 @@ public class Logic {
 		
 		search_Snigdha obj = new search_Snigdha();
 		obj.searchTask(taskToFind);
+		
+		setFeedBack(FEEDBACK_EMPTY_STRING);
 	}
 	
 	public boolean hasSearchList() {
