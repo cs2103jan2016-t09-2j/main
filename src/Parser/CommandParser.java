@@ -91,7 +91,7 @@ public class CommandParser {
 		Task newTask = new Task();
 		taskStatement = cleanupExtraWhitespace(taskStatement);
 		
-		if (taskStatement.matches(ParserConstants.REGEX_POSSIBLE_DIRECTORY)) {
+		if (taskStatement.matches(ParserConstants.REGEX_POSSIBLE_DIRECTORY) || taskStatement.equalsIgnoreCase("default")) {
 			newTask.setDescription(taskStatement);
 		} else {
 			newTask = addNewTask("set " + taskStatement);
