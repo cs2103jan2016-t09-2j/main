@@ -74,8 +74,10 @@ public class TempCLI {
 	}
 	
 	public void printSearchTaskLists(ArrayList<Task> listToPrint) {
-		System.out.println("******** SEARCH QUERY ********");
-		
+		System.out.println();
+		System.out.println("***********************************************************");
+		System.out.println("                          SEARCH QUERY ");
+		System.out.println("***********************************************************");
 		//showTimedTaskListToUser(logicObj.getSearchedTasks());
 		
 		for (Task task : listToPrint) {
@@ -84,15 +86,20 @@ public class TempCLI {
 			else
 				printTimedTask(task);
 		}
+		
+		System.out.println("***********************************************************");
+		System.out.println();
 	}
 	
 	public void printTaskLists(Logic logicObj) {
+		System.out.println();
 		System.out.println("******** OVERDUE TASKS ********");
 		showTimedTaskListToUser(logicObj.getScheduledTasksOverDue());
 		System.out.println("******** UPCOMING TASKS ********");
 		showTimedTaskListToUser(logicObj.getScheduledTasksToDo());
 		System.out.println("******** FLOATING TASKS ********");
 		showUntimedTaskListToUser(logicObj.getFloatingTasksToDo());
+		System.out.println();
 	}
 
 	public void showTimedTaskListToUser(ArrayList<Task> taskList) {
