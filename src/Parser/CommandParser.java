@@ -89,7 +89,8 @@ public class CommandParser {
 
 	public static Task setDirectory(String taskStatement) {
 		Task newTask = new Task();
-
+		taskStatement = cleanupExtraWhitespace(taskStatement);
+		
 		if (taskStatement.matches(ParserConstants.REGEX_POSSIBLE_DIRECTORY)) {
 			newTask.setDescription(taskStatement);
 		} else {
