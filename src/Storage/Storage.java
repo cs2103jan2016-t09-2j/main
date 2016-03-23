@@ -60,10 +60,11 @@ public class Storage {
 	private static final String ASSERTION_NULL_PARAMETER = "Error. Null input passed.";
 	
 	private Storage() {
+		
 		if(currentPathName == null || currentPathName.isEmpty()){
 			currentPathName = defaultPathName;
+			fileDirectory.createMainDirectory(defaultPathName);	
 		}
-		
 		
 	}
 
@@ -112,9 +113,6 @@ public class Storage {
 	public void setCurrentPathName(String inputDirectory) {
 		
 		//String latestDirectoryName = inputDirectory;
-		
-		
-		
 		
 		if(inputDirectory==null || inputDirectory.isEmpty()){
 			fileDirectory.createMainDirectory(defaultPathName);	
@@ -228,7 +226,7 @@ public class Storage {
 		//	logger.log(Level.INFO, LOG_READING_ARCHIVE_FILE);
 			readFromArchiveFile(floatingTasksComplete, scheduledTasksComplete);
 		} catch (Exception e) {
-			logger.log(Level.INFO, LOG_ARCHIVE_FILE_NOT_FOUND);
+	//		logger.log(Level.INFO, LOG_ARCHIVE_FILE_NOT_FOUND);
 			e.printStackTrace();
 		}
 		try {
@@ -270,7 +268,7 @@ public class Storage {
 			bw.close();
 			//logger.log(Level.INFO, LOG_WROTE_ARCHIVE_FILE);
 		} catch (Exception e) {
-			logger.log(Level.WARNING, LOG_ERROR_WRITE_ARCHIVE_FILE);
+	//		logger.log(Level.WARNING, LOG_ERROR_WRITE_ARCHIVE_FILE);
 		}
 
 	}
