@@ -256,7 +256,7 @@ public class Logic {
 	 * scheduled tasks into either scheduledtodo or scheduledoverdue arraylist
 	 * while floating tasks are auto added into floatingtodo arraylist
 	 */
-	private void addTask(Task executeTask, boolean isUndoOperation) {
+	private int addTask(Task executeTask, boolean isUndoOperation) {
 
 		int indexOfTask = -1;
 
@@ -277,6 +277,7 @@ public class Logic {
 			OldCommand recentCommand = new OldCommand(COMMAND_TYPE.ADD_TASK, taskList, indexList);
 			historyObject.addToUndoList(recentCommand);
 		}
+		return indexOfTask;
 	}
 
 	private int addTaskInOrder(Task executeTask) {
@@ -295,6 +296,7 @@ public class Logic {
 				scheduledTasksToDo.add(position, executeTask);
 				setMostRecentTaskAdded(scheduledTasksToDo, position);
 				setFeedBack(FEEDBACK_TASK_ADDED);
+				position = position + scheduledTasksOverDue.size();
 			} else {
 				setFeedBack(FEEDBACK_TASK_NOT_ADDED);
 			}
@@ -560,14 +562,17 @@ public class Logic {
 			setFeedBack(FEEDBACK_NON_EXISTENT_TASK_NUM);
 		} else {
 			Task editedTask = CommandParser.editExistingTask(taskToEdit, editInfo);
-			addTask(editedTask, true);
+			int newIndex = addTask(editedTask, true);
 
 			if (!isUndoOperation) {
 				ArrayList<Task> taskList = new ArrayList<Task>();
 				taskList.add(taskToEdit);
 				taskList.add(editedTask);
+				indexList.add(newIndex);
 				OldCommand recentCommand = new OldCommand(COMMAND_TYPE.MODIFY_TASK, taskList, indexList);
 				historyObject.addToUndoList(recentCommand);
+				
+				System.out.println(indexList.toString());
 			}
 		}
 	}
@@ -698,11 +703,11 @@ public class Logic {
 			break;
 		case MODIFY_TASK:
 			/*
-			 * For modify the Task list contains two tasks.
-			 * The first one is the oldTask and the second one is the newTask.
-			 * Delete new, add old. 
+			 * For modify the Task list contains two tasks. The first one is the
+			 * oldTask and the second one is the newTask. Delete new, add old.
 			 */
-			addTask(executeTask, isUndoOperation);
+			deleteSingleTask(toUndo.getIndexList().get(1), true);
+			addTask(toUndo.getTaskList().get(0), true);
 			break;
 		default:
 			// go back to original home screen
@@ -728,7 +733,12 @@ public class Logic {
 			markAsIncompleteList(toRedo.getTaskList(), toRedo.getIndexList());
 			break;
 		case MODIFY_TASK:
-			//addTask(executeTask, isUndoOperation);
+			/*
+			 * For modify the Task list contains two tasks. The first one is the
+			 * oldTask and the second one is the newTask. Delete old, add new.
+			 */
+			deleteSingleTask(toRedo.getIndexList().get(0), true);
+			addTask(toRedo.getTaskList().get(1), true);
 			break;
 		default:
 			// go back to original home screen
@@ -750,6 +760,20 @@ public class Logic {
 			} else if (task.isScheduledTask()) {
 				scheduledTasksComplete.remove(task);
 				addTask(task, true);
+			}
+		}
+	}
+
+	public void deleteSingleTask(int index, boolean isUndoOperation) {
+		if (index > 0) {
+			if (index <= scheduledTasksOverDue.size()) {
+				scheduledTasksOverDue.remove(index - 1);
+			} else if (index <= scheduledTasksOverDue.size() + scheduledTasksToDo.size()) {
+				scheduledTasksToDo.remove(index - 1 - scheduledTasksOverDue.size());
+			} else if (index <= scheduledTasksToDo.size() + floatingTasksToDo.size() + scheduledTasksOverDue.size()) {
+				floatingTasksToDo.remove(index - 1 - scheduledTasksToDo.size() - scheduledTasksOverDue.size());
+			} else {
+				setFeedBack(FEEDBACK_NON_EXISTENT_TASK_NUM);
 			}
 		}
 	}
