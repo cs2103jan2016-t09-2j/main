@@ -90,8 +90,9 @@ public class CommandParser {
 	public static Task setDirectory(String taskStatement) {
 		Task newTask = new Task();
 		taskStatement = cleanupExtraWhitespace(taskStatement);
-		
-		if (taskStatement.matches(ParserConstants.REGEX_POSSIBLE_DIRECTORY) || taskStatement.equalsIgnoreCase("default")) {
+
+		if (taskStatement.matches(ParserConstants.REGEX_POSSIBLE_DIRECTORY)
+				|| taskStatement.equalsIgnoreCase("default")) {
 			newTask.setDescription(taskStatement);
 		} else {
 			newTask = addNewTask("set " + taskStatement);
@@ -353,6 +354,8 @@ public class CommandParser {
 		} else if (commandType.equals(COMMAND_TYPE.UNDO_TASK)) {
 			return false;
 		} else if (commandType.equals(COMMAND_TYPE.REDO_TASK)) {
+			return false;
+		} else if (commandType.equals(COMMAND_TYPE.HOME)) {
 			return false;
 		}
 		return true;

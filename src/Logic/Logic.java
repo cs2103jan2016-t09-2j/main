@@ -236,6 +236,8 @@ public class Logic {
 			setNewDirectoryPath(executeTask);
 			historyObject.clearRedoStack();
 			break;
+		case HOME:
+			break;
 		case EXIT:
 			exit();
 			historyObject.clearRedoStack();

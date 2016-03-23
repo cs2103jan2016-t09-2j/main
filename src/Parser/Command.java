@@ -7,7 +7,7 @@ import ScheduleHacks.Task;
 public class Command {
 
 	public enum COMMAND_TYPE {
-		ADD_TASK, DELETE_TASK, MODIFY_TASK, COMPLETE_TASK, SEARCH_TASK, VIEW_LIST, UNDO_TASK, REDO_TASK, SET_DIRECTORY, EXIT
+		ADD_TASK, DELETE_TASK, MODIFY_TASK, COMPLETE_TASK, SEARCH_TASK, VIEW_LIST, UNDO_TASK, REDO_TASK, SET_DIRECTORY, HOME, EXIT
 	};
 
 	public boolean isFirstWordCommand;
@@ -119,6 +119,8 @@ public class Command {
 			return COMMAND_TYPE.REDO_TASK;
 		} else if (hasInDictionary(ParserConstants.COMMAND_SET_DIRECTORY, commandFirstWord)) {
 			return COMMAND_TYPE.SET_DIRECTORY;
+		}else if (hasInDictionary(ParserConstants.COMMAND_HOME, commandFirstWord)) {
+			return COMMAND_TYPE.HOME;
 		} else if (hasInDictionary(ParserConstants.COMMAND_EXIT, commandFirstWord)) {
 			return COMMAND_TYPE.EXIT;
 		} else {
