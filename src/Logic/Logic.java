@@ -203,11 +203,11 @@ public class Logic {
 	private void execute(Command.COMMAND_TYPE executeCommand, Command retrievedCommand, Task executeTask) {
 		switch (executeCommand) {
 		case ADD_TASK:
-			addTask(executeTask);
+			addTask(executeTask, false);
 			historyObject.clearRedoStack();
 			break;
 		case DELETE_TASK:
-			deleteTask(retrievedCommand.getIndexList());
+			deleteTask(retrievedCommand.getIndexList(), false);
 			historyObject.clearRedoStack();
 			break;
 		case MODIFY_TASK:
@@ -215,7 +215,7 @@ public class Logic {
 			historyObject.clearRedoStack();
 			break;
 		case COMPLETE_TASK:
-			completeTask(retrievedCommand.getIndexList());
+			completeTask(retrievedCommand.getIndexList(), false);
 			historyObject.clearRedoStack();
 			break;
 		case UNDO_TASK:
@@ -256,10 +256,10 @@ public class Logic {
 	 * scheduled tasks into either scheduledtodo or scheduledoverdue arraylist
 	 * while floating tasks are auto added into floatingtodo arraylist
 	 */
-	private void addTask(Task executeTask) {
-		
+	private void addTask(Task executeTask, boolean isUndoOperation) {
+
 		int indexOfTask = -1;
-		
+
 		if (executeTask.isScheduledTask()) {
 			indexOfTask = addTaskInOrder(executeTask);
 		} else if (executeTask.isFloatingTask()) {
@@ -269,12 +269,14 @@ public class Logic {
 			setFeedBack(FEEDBACK_TASK_ADDED);
 		}
 
-		ArrayList<Task> taskList = new ArrayList<Task>();
-		ArrayList<Integer> indexList = new ArrayList<Integer>();
-		taskList.add(executeTask);
-		indexList.add(indexOfTask);
-		OldCommand recentCommand = new OldCommand(COMMAND_TYPE.ADD_TASK, taskList, indexList);
-		historyObject.addToUndoList(recentCommand);
+		if (!isUndoOperation) {
+			ArrayList<Task> taskList = new ArrayList<Task>();
+			ArrayList<Integer> indexList = new ArrayList<Integer>();
+			taskList.add(executeTask);
+			indexList.add(indexOfTask);
+			OldCommand recentCommand = new OldCommand(COMMAND_TYPE.ADD_TASK, taskList, indexList);
+			historyObject.addToUndoList(recentCommand);
+		}
 	}
 
 	private int addTaskInOrder(Task executeTask) {
@@ -297,7 +299,7 @@ public class Logic {
 				setFeedBack(FEEDBACK_TASK_NOT_ADDED);
 			}
 		}
-		
+
 		return position + 1;
 	}
 
@@ -464,7 +466,7 @@ public class Logic {
 	 * deleteTask from scheduledTasksToDo or floatingTasksToDo based on task
 	 * number
 	 */
-	private void deleteTask(ArrayList<Integer> taskDigit) {
+	private void deleteTask(ArrayList<Integer> taskDigit, boolean isUndoOperation) {
 		// Creating undo parameter
 		ArrayList<Task> taskList = new ArrayList<Task>();
 
@@ -520,9 +522,11 @@ public class Logic {
 			}
 
 			// for undo functionality
-			OldCommand recentCommand = new OldCommand(COMMAND_TYPE.DELETE_TASK, taskList, taskDigit);
-			historyObject.addToUndoList(recentCommand);
 
+			if (!isUndoOperation) {
+				OldCommand recentCommand = new OldCommand(COMMAND_TYPE.DELETE_TASK, taskList, taskDigit);
+				historyObject.addToUndoList(recentCommand);
+			}
 		}
 	}
 
@@ -614,7 +618,7 @@ public class Logic {
 	 * task from the ArrayList that it is currently residing in based on task
 	 * number entered by user
 	 */
-	private void completeTask(ArrayList<Integer> taskIndex) {
+	private void completeTask(ArrayList<Integer> taskIndex, boolean isUndoOperation) {
 		// undo parameter
 		ArrayList<Task> taskList = new ArrayList<Task>();
 
@@ -671,9 +675,11 @@ public class Logic {
 				}
 			}
 
-			// for undo functionality
-			OldCommand recentCommand = new OldCommand(COMMAND_TYPE.COMPLETE_TASK, taskList, taskIndex);
-			historyObject.addToUndoList(recentCommand);
+			if (!isUndoOperation) {
+				// for undo functionality
+				OldCommand recentCommand = new OldCommand(COMMAND_TYPE.COMPLETE_TASK, taskList, taskIndex);
+				historyObject.addToUndoList(recentCommand);
+			}
 		}
 	}
 
@@ -717,16 +723,16 @@ public class Logic {
 	public void undoTask() {
 		OldCommand toUndo = historyObject.getFromUndoList();
 		OldCommand.COMMAND_TYPE cmdType = toUndo.getCommandType();
-		
-		switch(cmdType) {
+
+		switch (cmdType) {
 		case ADD_TASK:
 			addTaskList(toUndo.getTaskList());
 			break;
 		case DELETE_TASK:
-			deleteTask(toUndo.getIndexList());
+			deleteTask(toUndo.getIndexList(), true);
 			break;
 		case COMPLETE_TASK:
-			completeTask(toUndo.getIndexList());
+			completeTask(toUndo.getIndexList(), true);
 			break;
 		case INCOMPLETE_TASK:
 			markAsIncompleteList(toUndo.getTaskList(), toUndo.getIndexList());
@@ -734,24 +740,24 @@ public class Logic {
 		case MODIFY_TASK:
 			break;
 		default:
-			//go back to original home screen
-			//incomplete
+			// go back to original home screen
+			// incomplete
 		}
 	}
 
 	public void redoTask() {
 		OldCommand toRedo = historyObject.getFromRedoList();
 		OldCommand.COMMAND_TYPE cmdType = toRedo.getCommandType();
-		
-		switch(cmdType) {
+
+		switch (cmdType) {
 		case ADD_TASK:
 			addTaskList(toRedo.getTaskList());
 			break;
 		case DELETE_TASK:
-			deleteTask(toRedo.getIndexList());
+			deleteTask(toRedo.getIndexList(), true);
 			break;
 		case COMPLETE_TASK:
-			//completeTask(toRedo.getIndexList());
+			completeTask(toRedo.getIndexList(), true);
 			break;
 		case INCOMPLETE_TASK:
 			markAsIncompleteList(toRedo.getTaskList(), toRedo.getIndexList());
@@ -759,25 +765,25 @@ public class Logic {
 		case MODIFY_TASK:
 			break;
 		default:
-			//go back to original home screen
-			//incomplete
+			// go back to original home screen
+			// incomplete
 		}
 	}
-	
+
 	public void addTaskList(ArrayList<Task> taskList) {
-		for(Task newTask : taskList) {
-			addTask(newTask);
+		for (Task newTask : taskList) {
+			addTask(newTask, true);
 		}
 	}
-	
+
 	public void markAsIncompleteList(ArrayList<Task> taskList, ArrayList<Integer> indexList) {
-		for(Task task: taskList) {
-			if(task.isFloatingTask()) {
+		for (Task task : taskList) {
+			if (task.isFloatingTask()) {
 				floatingTasksComplete.remove(task);
-				addTask(task);
-			} else if(task.isScheduledTask()) {
+				addTask(task, true);
+			} else if (task.isScheduledTask()) {
 				scheduledTasksComplete.remove(task);
-				addTask(task);
+				addTask(task, true);
 			}
 		}
 	}
