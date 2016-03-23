@@ -486,8 +486,8 @@ public class CommandParserTest {
 	@Test
 	public void checkSetDir() {
 		Task task = new Task();
-		String testString = "C:\\SH";
+		String testString = "C:\\\\SH";
 		task = CommandParser.setDirectory(testString);
-		assertEquals("C:\\SH", task.getDescription());
+		assertEquals("C:\\\\SH", task.getDescription());
 	}
 }

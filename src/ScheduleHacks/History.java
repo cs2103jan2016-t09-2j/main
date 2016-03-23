@@ -60,6 +60,11 @@ public class History {
 			executeCommand.setCommandType(COMMAND_TYPE.ADD_TASK);
 			break;
 		case MODIFY_TASK:
+			/*
+			 * For modify the Task list contains two tasks
+			 * The first one is the oldTask
+			 * The second one is the newTask
+			 */
 			executeCommand.setCommandType(COMMAND_TYPE.MODIFY_TASK);
 			break;
 		case COMPLETE_TASK:
