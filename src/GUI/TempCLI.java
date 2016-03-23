@@ -13,6 +13,7 @@ package GUI;
 
 import java.util.Scanner;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
 import ScheduleHacks.Task;
@@ -26,8 +27,11 @@ public class TempCLI {
 	private static final String MESSAGE_BYE = "Good Bye!";
 	private static Logic logicObj = Logic.getInstance();
 
+	private DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("dd-MM-uuuu");
+	
 	public static int count = 1;
-
+	
+	
 	private String userCommand;
 
 	public static void main(String[] args) {
@@ -95,7 +99,7 @@ public class TempCLI {
 				if (!task.getStartTime().equals(LocalTime.MAX)) {
 					System.out.print(task.getStartTime().toString() + ", ");
 				}
-				System.out.println(task.getStartDate());
+				System.out.println(task.getStartDate().format(dateFormat));
 				System.out.print("\t To ");
 			} else {
 				System.out.print("\t At ");
@@ -103,7 +107,7 @@ public class TempCLI {
 			if (!task.getEndTime().equals(LocalTime.MAX)) {
 				System.out.print(task.getEndTime().toString() + ", ");
 			}
-			System.out.println(task.getEndDate());
+			System.out.println(task.getEndDate().format(dateFormat));
 		}
 	}
 

@@ -24,13 +24,19 @@ public class History {
 	}
 
 	public void addToUndoList(OldCommand cmd) {
-		undoStack.push(execute(cmd));
+		OldCommand tempCmd = new OldCommand(cmd.getCommandType(), cmd.getTaskList(), cmd.getIndexList());
+		undoStack.push(execute(tempCmd));
 		redoStack.clear();
+	}
+	
+	public void addToRedoList(OldCommand cmd) {
+		OldCommand tempCmd = new OldCommand(cmd.getCommandType(), cmd.getTaskList(), cmd.getIndexList());
+		redoStack.push(execute(tempCmd));
 	}
 
 	public OldCommand getFromUndoList() {
 		OldCommand getUndo = undoStack.pop();
-		redoStack.push(execute(getUndo));
+		addToRedoList(getUndo);
 		return getUndo;
 	}
 	
@@ -40,7 +46,7 @@ public class History {
 	
 	public OldCommand getFromRedoList() {
 		OldCommand getRedo = redoStack.pop();
-		undoStack.push(execute(getRedo));
+		addToUndoList(getRedo);
 		return getRedo;
 	}
 	
