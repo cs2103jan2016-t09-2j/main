@@ -29,8 +29,9 @@ public class History {
 	}
 
 	public OldCommand getFromUndoList() {
-		redoStack.push(undoStack.pop());
-		return undoStack.pop();
+		OldCommand getUndo = undoStack.pop();
+		redoStack.push(getUndo);
+		return getUndo;
 	}
 	
 //	public void addToRedoList(OldCommand cmd) {
@@ -38,8 +39,9 @@ public class History {
 //	}
 	
 	public OldCommand getFromRedoList() {
-		undoStack.push(redoStack.pop());
-		return redoStack.pop();
+		OldCommand getRedo = redoStack.pop();
+		undoStack.push(getRedo);
+		return getRedo;
 	}
 	
 	
