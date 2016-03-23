@@ -50,7 +50,7 @@ public class Storage {
 	private static final String LOG_WRITING_ARCHIVE_FILE = "Writing to archive file";
 	private static final String LOG_WRITING_CURRENT_FILE = "Writing to current file";
 	private static final String LOG_ERROR_WRITE_ARCHIVE_FILE = "Unable to write to archive file";
-	private static final String LOG_ERROR_WRITE_CURRENT_FILE = "Unable to write to archive file";
+	private static final String LOG_ERROR_WRITE_CURRENT_FILE = "Unable to write to current file";
 	private static final String LOG_WROTE_ARCHIVE_FILE = "Write to archive file successful";
 	private static final String LOG_WROTE_CURRENT_FILE = "Write to current file successful";
 	private static final String LOG_READING_ARCHIVE_FILE = "Reading archive file";
@@ -66,6 +66,7 @@ public class Storage {
 			fileDirectory.createMainDirectory(defaultPathName);	
 		}
 		
+		
 	}
 
 	// apply singleton
@@ -76,71 +77,17 @@ public class Storage {
 		return object;
 	}
 
-	// create and store files in respective Directory
-//	public static String setDirectoryName() {
-//
-//		@SuppressWarnings("resource")
-//		Scanner sc = new Scanner(System.in);
-//		System.out.println("set directory: ");
-//		String fileName = sc.nextLine();
-//
-//		return fileName;
-//	}
-//
-//	public String changeDirectoryName(String currentName) {
-//		@SuppressWarnings("resource")
-//		Scanner sc = new Scanner(System.in);
-//		System.out.println("change directory: ");
-//		String destDir = sc.nextLine();
-//
-//		fileDirectory.changeDirectory(currentName, destDir);
-//		return destDir;
-//	}
-//	
-//	public String changeDirectory(String currentPathName,String inputDirectory) {
-//		
-//		fileDirectory.changeDirectory(currentPathName,inputDirectory);
-//		return inputDirectory;
-//		
-//	}
-	
-//	public static String getCurrentPathName() {
-//		
-//	}
-//	
-
 	// decides current directory name
-	public void setCurrentPathName(String inputDirectory) {
-		
-		//String latestDirectoryName = inputDirectory;
-		
-		if(inputDirectory==null || inputDirectory.isEmpty()){
-			fileDirectory.createMainDirectory(defaultPathName);	
-		
-		}
-		
-		else if(inputDirectory != null && !inputDirectory.isEmpty()){
+	public void setCurrentPathName(String inputDirectory) {	
+		if(inputDirectory != null && !inputDirectory.isEmpty()){
 			
+	
 			String oldDirectoryName = currentPathName;
 			currentPathName = inputDirectory;
-			fileDirectory.changeDirectory(oldDirectoryName, currentPathName);
-		
+	
+			fileDirectory.changeDirectory(oldDirectoryName, currentPathName);	
 		}
 	}
-		
-//		if (setPathName != null && !setPathName.isEmpty()) {
-//			fileDirectory.createMainDirectory(setPathName);
-//			fileDirectory.changeDirectory(defaultPathName, setPathName);
-//
-//			return setPathName;
-//		}
-//
-//		else {
-//			fileDirectory.createMainDirectory(defaultPathName);
-//			return defaultPathName;
-//		}
-		
-	
 
 	/*
 	 * Setter Methods
@@ -202,7 +149,7 @@ public class Storage {
 		//	logger.log(Level.INFO, LOG_WRITING_ARCHIVE_FILE);
 			writeToArchiveFile(floatingTasksComplete, scheduledTasksComplete);
 		} catch (Exception e1) {
-			logger.log(Level.WARNING, LOG_ERROR_WRITE_ARCHIVE_FILE);
+			//logger.log(Level.WARNING, LOG_ERROR_WRITE_ARCHIVE_FILE);
 			e1.printStackTrace();
 		}
 		try {
@@ -243,13 +190,6 @@ public class Storage {
 		assert scheduledTasksComplete != null : ASSERTION_NULL_PARAMETER;
 		assert floatingTasksComplete != null : ASSERTION_NULL_PARAMETER;
 		
-//		if(!latestDirectoryName){
-//			currentPathName = defaultPathName;
-//		}
-//		else{
-//			currentPathName = latestDirectoryName;
-//		}
-		
 		File f1 = new File(currentPathName, archiveFile);
 		try {
 			BufferedWriter bw = new BufferedWriter(new FileWriter(f1));
@@ -270,7 +210,6 @@ public class Storage {
 		} catch (Exception e) {
 	//		logger.log(Level.WARNING, LOG_ERROR_WRITE_ARCHIVE_FILE);
 		}
-
 	}
 
 	public void writeToCurrentFile(ArrayList<Task> scheduledTasksToDo, ArrayList<Task> floatingTasksToDo,
@@ -280,8 +219,9 @@ public class Storage {
 		assert floatingTasksToDo!= null : ASSERTION_NULL_PARAMETER;
 		assert scheduledTasksOverDue != null : ASSERTION_NULL_PARAMETER;
 		
+		File f = new File(currentPathName, currentFile);
 		try {
-			File f = new File(currentPathName, currentFile);
+			//File f = new File(currentPathName, currentFile);
 			BufferedWriter bw = new BufferedWriter(new FileWriter(f));
 
 			for (Task newTask : scheduledTasksToDo) {
