@@ -61,8 +61,6 @@ public class TempCLI {
 		System.out.println();
 	}
 
-	// incomplete
-	// what to do to print archive ?
 	public void executeInput(Logic logicObj) {
 		count = 1;
 		logicObj.executeCommand(getUserCommand());
