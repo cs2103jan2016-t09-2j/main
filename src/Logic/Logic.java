@@ -15,6 +15,7 @@ import Storage.Storage;
 public class Logic {
 
 	private String feedBack;
+	private boolean isSearchCommand;
 
 	private static Logic logicObject = null;
 
@@ -40,6 +41,10 @@ public class Logic {
 	private static final String FEEDBACK_TASK_MODIFIED = "Task Edited Successfully";
 	private static final String FEEDBACK_TASK_NOT_MODIFIED = "Task was not modified";
 	private static final String FEEDBACK_TASK_COMPLETED = "Task Completed Successfully";
+	private static final String FEEDBACK_UNDO_INVALID = "Invalid Undo!";
+	private static final String FEEDBACK_UNDO_VALID = "Last Action Un-Done!";
+	private static final String FEEDBACK_REDO_VALID = "Last Action Re-Done!";
+	private static final String FEEDBACK_REDO_INVALID = "Invalid Redo!";
 	private static final String FEEDBACK_START_DATE_LATER_THAN_DEADLINE = "Start Date of Task cannot be later than Due Date of Task!";
 	private static final String FEEDBACK_INSTANCE_START_DATE_EXCEEDS_DEADLINE = "Task starts and ends on same day. Start Time of Task cannot be later or equals to End Time of Task";
 
@@ -158,7 +163,7 @@ public class Logic {
 	 * this method gets back the parsed Command class from parser. Proceeds to
 	 * execute function aft obtaining COMMAND_TYPE and Task classes
 	 */
-	private void retrieveParsedCommand(String originalDescription) {
+	public void retrieveParsedCommand(String originalDescription) {
 		try {
 			Command.COMMAND_TYPE typeCommand = null;
 
@@ -201,6 +206,9 @@ public class Logic {
 	 */
 
 	private void execute(Command.COMMAND_TYPE executeCommand, Command retrievedCommand, Task executeTask) {
+		
+		isSearchCommand = false;
+		
 		switch (executeCommand) {
 		case ADD_TASK:
 			addTask(executeTask, false);
@@ -573,7 +581,7 @@ public class Logic {
 				indexList.add(newIndex);
 				OldCommand recentCommand = new OldCommand(COMMAND_TYPE.MODIFY_TASK, taskList, indexList);
 				historyObject.addToUndoList(recentCommand);
-				
+
 				System.out.println(indexList.toString());
 			}
 		}
@@ -687,64 +695,76 @@ public class Logic {
 	}
 
 	public void undoTask() {
-		OldCommand toUndo = historyObject.getFromUndoList();
-		OldCommand.COMMAND_TYPE cmdType = toUndo.getCommandType();
+		try {
+			OldCommand toUndo = historyObject.getFromUndoList();
+			OldCommand.COMMAND_TYPE cmdType = toUndo.getCommandType();
 
-		switch (cmdType) {
-		case ADD_TASK:
-			addTaskList(toUndo.getTaskList());
-			break;
-		case DELETE_TASK:
-			deleteTask(toUndo.getIndexList(), true);
-			break;
-		case COMPLETE_TASK:
-			completeTask(toUndo.getIndexList(), true);
-			break;
-		case INCOMPLETE_TASK:
-			markAsIncompleteList(toUndo.getTaskList(), toUndo.getIndexList());
-			break;
-		case MODIFY_TASK:
-			/*
-			 * For modify the Task list contains two tasks. The first one is the
-			 * oldTask and the second one is the newTask. Delete new, add old.
-			 */
-			deleteSingleTask(toUndo.getIndexList().get(1), true);
-			addTask(toUndo.getTaskList().get(0), true);
-			break;
-		default:
-			// go back to original home screen
-			// incomplete
+			switch (cmdType) {
+			case ADD_TASK:
+				addTaskList(toUndo.getTaskList());
+				break;
+			case DELETE_TASK:
+				deleteTask(toUndo.getIndexList(), true);
+				break;
+			case COMPLETE_TASK:
+				completeTask(toUndo.getIndexList(), true);
+				break;
+			case INCOMPLETE_TASK:
+				markAsIncompleteList(toUndo.getTaskList(), toUndo.getIndexList());
+				break;
+			case MODIFY_TASK:
+				/*
+				 * For modify the Task list contains two tasks. The first one is
+				 * the oldTask and the second one is the newTask. Delete new,
+				 * add old.
+				 */
+				deleteSingleTask(toUndo.getIndexList().get(1), true);
+				addTask(toUndo.getTaskList().get(0), true);
+				break;
+			default:
+				// go back to original home screen
+				// incomplete
+			}
+			setFeedBack(FEEDBACK_UNDO_VALID);
+		} catch (Exception e) {
+			setFeedBack(FEEDBACK_UNDO_INVALID);
 		}
 	}
 
 	public void redoTask() {
-		OldCommand toRedo = historyObject.getFromRedoList();
-		OldCommand.COMMAND_TYPE cmdType = toRedo.getCommandType();
+		try {
+			OldCommand toRedo = historyObject.getFromRedoList();
+			OldCommand.COMMAND_TYPE cmdType = toRedo.getCommandType();
 
-		switch (cmdType) {
-		case ADD_TASK:
-			addTaskList(toRedo.getTaskList());
-			break;
-		case DELETE_TASK:
-			deleteTask(toRedo.getIndexList(), true);
-			break;
-		case COMPLETE_TASK:
-			completeTask(toRedo.getIndexList(), true);
-			break;
-		case INCOMPLETE_TASK:
-			markAsIncompleteList(toRedo.getTaskList(), toRedo.getIndexList());
-			break;
-		case MODIFY_TASK:
-			/*
-			 * For modify the Task list contains two tasks. The first one is the
-			 * oldTask and the second one is the newTask. Delete old, add new.
-			 */
-			deleteSingleTask(toRedo.getIndexList().get(0), true);
-			addTask(toRedo.getTaskList().get(1), true);
-			break;
-		default:
-			// go back to original home screen
-			// incomplete
+			switch (cmdType) {
+			case ADD_TASK:
+				addTaskList(toRedo.getTaskList());
+				break;
+			case DELETE_TASK:
+				deleteTask(toRedo.getIndexList(), true);
+				break;
+			case COMPLETE_TASK:
+				completeTask(toRedo.getIndexList(), true);
+				break;
+			case INCOMPLETE_TASK:
+				markAsIncompleteList(toRedo.getTaskList(), toRedo.getIndexList());
+				break;
+			case MODIFY_TASK:
+				/*
+				 * For modify the Task list contains two tasks. The first one is
+				 * the oldTask and the second one is the newTask. Delete old,
+				 * add new.
+				 */
+				deleteSingleTask(toRedo.getIndexList().get(0), true);
+				addTask(toRedo.getTaskList().get(1), true);
+				break;
+			default:
+				// go back to original home screen
+				// incomplete
+			}
+			setFeedBack(FEEDBACK_REDO_VALID);
+		} catch (Exception e) {
+			setFeedBack(FEEDBACK_REDO_INVALID);
 		}
 	}
 
@@ -781,9 +801,14 @@ public class Logic {
 	}
 
 	private void searchTask(Task taskToFind) {
+		isSearchCommand = true;
+		
 		search_Snigdha obj = new search_Snigdha();
-
 		obj.searchTask(taskToFind);
+	}
+	
+	public boolean hasSearchList() {
+		return isSearchCommand;
 	}
 
 	/*

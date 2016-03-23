@@ -65,21 +65,26 @@ public class TempCLI {
 		count = 1;
 		logicObj.executeCommand(getUserCommand());
 		logicObj.autoChangeTaskStatus();
-		if (getUserCommand().startsWith("search")) {
-			//printSearchTaskLists(logicObj);
-		}
-		else {
+		if (!logicObj.hasSearchList()) {
 			printTaskLists(logicObj);
 		}
 		showToUser(logicObj.getFeedBack());
 		
 	}
 	
-	/*public void printSearchTaskLists(Logic logicObj) {
+	public void printSearchTaskLists(ArrayList<Task> listToPrint) {
 		System.out.println("******** SEARCHED TASKS ********");
-		showTimedTaskListToUser(logicObj.getSearchedTasks());
+		
+		//showTimedTaskListToUser(logicObj.getSearchedTasks());
+		
+		for (Task task : listToPrint) {
+			if (task.isFloatingTask())
+				printUntimedTask(task);
+			else
+				printTimedTask(task);
+		}
 	}
-*/
+	
 	public void printTaskLists(Logic logicObj) {
 		System.out.println("******** OVERDUE TASKS ********");
 		showTimedTaskListToUser(logicObj.getScheduledTasksOverDue());
@@ -91,28 +96,36 @@ public class TempCLI {
 
 	public void showTimedTaskListToUser(ArrayList<Task> taskList) {
 		for (Task task : taskList) {
-			System.out.println((count++) + ". " + task.getDescription());
-			if (task.getStartDate() != null && task.getStartTime() != null) {
-				System.out.print("\t From ");
-				if (!task.getStartTime().equals(LocalTime.MAX)) {
-					System.out.print(task.getStartTime().toString() + ", ");
-				}
-				System.out.println(task.getStartDate().format(dateFormat));
-				System.out.print("\t To ");
-			} else {
-				System.out.print("\t At ");
-			}
-			if (!task.getEndTime().equals(LocalTime.MAX)) {
-				System.out.print(task.getEndTime().toString() + ", ");
-			}
-			System.out.println(task.getEndDate().format(dateFormat));
+			printTimedTask(task);
 		}
 	}
 
 	public void showUntimedTaskListToUser(ArrayList<Task> taskList) {
 		for (Task task : taskList) {
-			System.out.println((count++) + ". " + task.getDescription());
+			printUntimedTask(task);
 		}
+	}
+	
+	private void printUntimedTask(Task task) {
+		System.out.println((count++) + ". " + task.getDescription());
+	}
+
+	private void printTimedTask(Task task) {
+		System.out.println((count++) + ". " + task.getDescription());
+		if (task.getStartDate() != null && task.getStartTime() != null) {
+			System.out.print("\t From ");
+			if (!task.getStartTime().equals(LocalTime.MAX)) {
+				System.out.print(task.getStartTime().toString() + ", ");
+			}
+			System.out.println(task.getStartDate().format(dateFormat));
+			System.out.print("\t To ");
+		} else {
+			System.out.print("\t At ");
+		}
+		if (!task.getEndTime().equals(LocalTime.MAX)) {
+			System.out.print(task.getEndTime().toString() + ", ");
+		}
+		System.out.println(task.getEndDate().format(dateFormat));
 	}
 	
 	public Logic getLogicObj (Logic logicObj) {

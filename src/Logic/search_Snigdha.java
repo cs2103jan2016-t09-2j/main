@@ -3,6 +3,7 @@ package Logic;
 import java.util.ArrayList;
 
 import ScheduleHacks.Task;
+import GUI.TempCLI;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -34,9 +35,10 @@ public class search_Snigdha {
 
 	public void findMatches(ArrayList<Task> sourceList, ArrayList<Task> destinationList, Task taskToFind) {
 
-		/*if (taskToFind.isComplete()) {
-			matchComplete(sourceList, destinationList);
-		}*/
+		/*
+		 * if (taskToFind.isComplete()) { matchComplete(sourceList,
+		 * destinationList); }
+		 */
 
 		for (Task task : sourceList) {
 			// matching description
@@ -59,11 +61,6 @@ public class search_Snigdha {
 				matchDateRange(destinationList, taskToFind, task);
 			}
 		}
-	}
-
-	private void matchComplete(ArrayList<Task> sourceList, ArrayList<Task> destinationList) {
-		// TODO Auto-generated method stub
-		
 	}
 
 	public void matchSingleDate(ArrayList<Task> destinationList, Task taskToFind, Task taskToCheck) {
@@ -108,35 +105,8 @@ public class search_Snigdha {
 	}
 
 	public void printList(ArrayList<Task> listToPrint) {
-		count = 1;
-		for (Task task : listToPrint) {
-			if (task.isFloatingTask())
-				printUntimedTask(task);
-			else
-				printTimedTask(task);
-		}
-	}
-
-	private void printUntimedTask(Task task) {
-		System.out.println((count++) + ". " + task.getDescription());
-	}
-
-	private void printTimedTask(Task task) {
-		System.out.println((count++) + ". " + task.getDescription());
-		if (task.getStartDate() != null && task.getStartTime() != null) {
-			System.out.print("\t From ");
-			if (!task.getStartTime().equals(LocalTime.MAX)) {
-				System.out.print(task.getStartTime().toString() + ", ");
-			}
-			System.out.println(task.getStartDate());
-			System.out.print("\t To ");
-		} else {
-			System.out.print("\t At ");
-		}
-		if (!task.getEndTime().equals(LocalTime.MAX)) {
-			System.out.print(task.getEndTime().toString() + ", ");
-		}
-		System.out.println(task.getEndDate());
+		TempCLI printManager = new TempCLI();
+		printManager.printSearchTaskLists(listToPrint);
 	}
 
 	public boolean dateLiesInRange(LocalDate dateToCheck, LocalDate startDate, LocalDate endDate) {
