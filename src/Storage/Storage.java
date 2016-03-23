@@ -37,6 +37,7 @@ public class Storage {
 
 	private static Logger logger = Logger.getLogger("Storage");
 
+	private static final String storageLocFile = "DataLocation.txt";
 	private static final String currentFile = "currentFile.json";
 	private static final String archiveFile = "archiveFile.json";
 
@@ -62,10 +63,29 @@ public class Storage {
 	private Storage() {
 		
 		if(currentPathName == null || currentPathName.isEmpty()){
-			currentPathName = defaultPathName;
-			fileDirectory.createMainDirectory(defaultPathName);	
+			try {
+				File file = new File(storageLocFile);
+				
+				if(!file.exists()||file.length()==0){
+					currentPathName = defaultPathName;
+				
+				}
+				else{
+					BufferedReader br = new BufferedReader(new FileReader(file));
+					currentPathName =br.readLine();
+					br.close();
+				}
+			
+				
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+			fileDirectory.createMainDirectory(currentPathName);
+			
+			
 		}
-		
 		
 	}
 
@@ -84,6 +104,15 @@ public class Storage {
 	
 			String oldDirectoryName = currentPathName;
 			currentPathName = inputDirectory;
+			
+			try {
+				BufferedWriter bw = new BufferedWriter(new FileWriter(new File(storageLocFile )));
+				bw.write(currentPathName);
+				bw.close();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 	
 			fileDirectory.changeDirectory(oldDirectoryName, currentPathName);	
 		}
