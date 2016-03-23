@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.time.LocalDateTime;
 
 import ScheduleHacks.Task;
+import ScheduleHacks.OldCommand;
+import ScheduleHacks.History;
 import Parser.CommandParser;
 import Parser.Command;
 import GUI.TempCLI;
