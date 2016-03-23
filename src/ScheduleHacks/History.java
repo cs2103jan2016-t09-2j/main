@@ -30,7 +30,7 @@ public class History {
 
 	public OldCommand getFromUndoList() {
 		OldCommand getUndo = undoStack.pop();
-		redoStack.push(getUndo);
+		redoStack.push(execute(getUndo));
 		return getUndo;
 	}
 	
@@ -40,7 +40,7 @@ public class History {
 	
 	public OldCommand getFromRedoList() {
 		OldCommand getRedo = redoStack.pop();
-		undoStack.push(getRedo);
+		undoStack.push(execute(getRedo));
 		return getRedo;
 	}
 	
