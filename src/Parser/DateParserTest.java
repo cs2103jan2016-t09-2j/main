@@ -35,7 +35,7 @@ public class DateParserTest {
 	@Test
 	public void testIsValidDate4() {
 		
-		String testString = "28 jun 16";
+		String testString = "28jun16";
 		dateObj = new DateParser(testString);
 		assertEquals(true, dateObj.addToListIfValidDate(testString));
 	}
@@ -169,6 +169,18 @@ public class DateParserTest {
 		assertEquals(expected, output.trim());
 		assertEquals("Meet ABCD at 16:00 at the hotel", dateObj.getTaskDetails());
 	}
+	
+	@Test
+	public void testFinDates6() {
+		dateObj = new DateParser("She is getting married day after  tmr   ");
+		dateObj.findDates();
+		String output = "";
+		for (LocalDate date : dateObj.getDateList()) {
+			output = output + date.toString();
+		}
+		assertEquals("She is getting married", dateObj.getTaskDetails());
+		assertEquals(LocalDate.now().plusDays(2).toString(), output);
+	}
 
 	@Test
 	public void testGetUpComingDayDate1() {
@@ -210,7 +222,7 @@ public class DateParserTest {
 		for (LocalDate s : outList) {
 			output = output + s.toString();
 		}
-		String expected = "2016-03-23";
+		String expected = "2016-03-30";
 		assertEquals(expected, output.trim());
 		assertEquals("Meet ABCD on at the hotel", dateObj.getTaskDetails());
 	}
@@ -255,6 +267,16 @@ public class DateParserTest {
 		String testString = "SUNDAY";
 		dateObj = new DateParser(testString);
 		assertEquals(true, dateObj.isDayOfWeek(testString));
+	}
+	
+	@Test
+	public void checkGetUpComingDate() {
+		String text = "day after tmw it is";
+		dateObj = new DateParser(text);
+		String word = dateObj.getUpComingDayWord(text);
+		
+		LocalDate date = dateObj.getUpcomingDayDate(word);
+		assertEquals(LocalDate.now().plusDays(2), date);
 	}
 	
 	

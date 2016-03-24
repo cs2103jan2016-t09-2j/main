@@ -55,6 +55,10 @@ public class ParserConstants {
 	static final String DATE_FORMAT_HYPHEN_DAY_MONTH_NUM = "d-M";
 	static final String DATE_FORMAT_HYPHEN_DAY_MONTH_NUM_YEAR_LONG = "d-M-uuuu";
 	static final String DATE_FORMAT_HYPHEN_DAY_MONTH_NUM_YEAR_SHORT = "d-M-uu";
+	static final String DATE_FORMAT_DAY_MONTH_LONG_YEAR_LONG_NOSPACE = "dMMMMuuuu";
+	static final String DATE_FORMAT_DAY_MONTH_LONG_YEAR_SHORT_NOSPACE = "dMMMMuu";
+	static final String DATE_FORMAT_DAY_MONTH_SHORT_YEAR_LONG_NOSPACE = "dMMMuuuu";
+	static final String DATE_FORMAT_DAY_MONTH_SHORT_YEAR_SHORT_NOSPACE = "dMMMuu";
 	static final String DATE_FORMAT_DAY_MONTH_LONG_YEAR_LONG = "d MMMM uuuu";
 	static final String DATE_FORMAT_DAY_MONTH_LONG_YEAR_SHORT = "d MMMM uu";
 	static final String DATE_FORMAT_DAY_MONTH_SHORT_YEAR_LONG = "d MMM uuuu";
@@ -69,7 +73,7 @@ public class ParserConstants {
 	 * static final String DATE_FORMAT_DAY_MONTH_SHORT_COMMA_YEAR_SHORT =
 	 * "d MMM, uu";
 	 */
-	static final String[] UPCOMING_DAYS = { "today", "tomorrow", "overmorrow", "tmr", "tmw", "tmrw" };
+	static final String[] UPCOMING_DAYS = { "today", "tdy", "tomorrow", "tmr", "tmw", "tmrw", "overmorrow", "day after tomorrow", "day after tmr", "day after tmw", "day after tmrw" };
 	static final String[] UPCOMING_PERIOD_KEYWORD = { "this", "next", /* "next to next" */ };
 	// Days of the week
 	static final String[] DAYS_OF_WEEK_SHORT = { "", "mon", "tue", "wed", "thu", "fri", "sat", "sun" };

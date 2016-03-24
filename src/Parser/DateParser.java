@@ -64,30 +64,32 @@ public class DateParser {
 		Pattern datePattern = Pattern.compile(ParserConstants.REGEX_POSSIBLE_DATE);
 		Matcher dateMatcher = datePattern.matcher(taskDetails);
 		while (dateMatcher.find()) {
-			String tempString = CommandParser.cleanupExtraWhitespace(taskDetails.substring(dateMatcher.start()));
-			
+			String tempString = cleanupExtraWhitespace(taskDetails.substring(dateMatcher.start()));
+
 			addToListIfValidDate(tempString);
 
-			String firstWord = CommandParser.cleanupExtraWhitespace(getFirstWord(tempString));
+			String firstWord = cleanupExtraWhitespace(getFirstWord(tempString));
+
 			if (isDayOfWeek(firstWord)) {
 				dateList.add(getDayOfWeekDate(firstWord));
 				removeDateFromTaskDetails(firstWord);
-			} else if (isUpcomingDayWord(firstWord)) {
-				dateList.add(getUpcomingDayDate(firstWord));
-				removeDateFromTaskDetails(firstWord);
+			} else if (isUpcomingDayString(tempString)) {
+				String upcomingDay = getUpComingDayWord(tempString);
+				if (this.taskDetails.contains(upcomingDay)) {
+					dateList.add(getUpcomingDayDate(upcomingDay));
+					removeDateFromTaskDetails(upcomingDay);
+				}
 			}
 		}
 	}
 
 	public void removeDateFromTaskDetails(String statement, ParsePosition parsePos) {
 		String validDate = statement.substring(ParserConstants.FIRST_INDEX, parsePos.getIndex());
-		taskDetails = CommandParser
-				.cleanupExtraWhitespace(taskDetails.replace(validDate, ParserConstants.STRING_WHITESPACE));
+		taskDetails = cleanupExtraWhitespace(taskDetails.replace(validDate, ParserConstants.STRING_WHITESPACE));
 	}
 
 	public void removeDateFromTaskDetails(String textToRemove) {
-		taskDetails = CommandParser
-				.cleanupExtraWhitespace(taskDetails.replace(textToRemove, ParserConstants.STRING_WHITESPACE));
+		this.taskDetails = cleanupExtraWhitespace(taskDetails.replace(textToRemove, ParserConstants.STRING_WHITESPACE));
 	}
 
 	/**
@@ -106,9 +108,9 @@ public class DateParser {
 				if (index.getIndex() < statement.length()) {
 					end = statement.substring(index.getIndex());
 				}
-				
+
 				statement = statement.substring(ParserConstants.FIRST_INDEX, index.getIndex());
-				
+
 				if (taskDetails.contains(statement) && isValidEnd(end)) {
 					addDateToList(parsedDate);
 					removeDateFromTaskDetails(statement);
@@ -198,20 +200,40 @@ public class DateParser {
 		LocalDate todayDate = LocalDate.now();
 		int index = indexOf(upcomingDay, ParserConstants.UPCOMING_DAYS);
 		if (index >= 0) { /* If upcomingDay is a valid entry */
-			if (index < 3) {
-				return todayDate.plusDays(index);
-			} else {
+			index /= 2;
+			if (index < 1) {
+				return todayDate;
+			} else if (index < 3) {
 				return todayDate.plusDays(1);
+			} else {
+				return todayDate.plusDays(2);
 			}
 		}
 		return null;
 	}
 
-	public boolean isUpcomingDayWord(String firstWord) {
-		if (hasInDictionary(ParserConstants.UPCOMING_DAYS, firstWord)) {
-			return true;
+	public boolean isUpcomingDayString(String textToFind) {
+
+		if (textToFind != null && !textToFind.isEmpty()) {
+			String firstWord = getFirstWord(textToFind);
+			String firstThreeWords = getFirstThreeWords(textToFind);
+			return hasInDictionary(ParserConstants.UPCOMING_DAYS, firstWord)
+					|| hasInDictionary(ParserConstants.UPCOMING_DAYS, firstThreeWords);
 		}
 		return false;
+	}
+
+	public String getUpComingDayWord(String textToFind) {
+		String firstWord = getFirstWord(textToFind);
+		String firstThreeWords = getFirstThreeWords(textToFind);
+
+		if (hasInDictionary(ParserConstants.UPCOMING_DAYS, firstWord)) {
+			return firstWord;
+		} else if (hasInDictionary(ParserConstants.UPCOMING_DAYS, firstThreeWords)) {
+			return firstThreeWords;
+		}
+
+		return null;
 	}
 
 	public boolean isMonth(String firstWord) {
@@ -257,14 +279,40 @@ public class DateParser {
 		return dates;
 	}
 
-	private boolean hasInDictionary(String[] dictionary, String wordToFind) {
-		if (wordToFind != null && !wordToFind.isEmpty()) {
+	private boolean hasInDictionary(String[] dictionary, String wordsToFind) {
+		if (wordsToFind != null && !wordsToFind.isEmpty()) {
 			for (String dictionaryWords : dictionary) {
-				if (dictionaryWords.equalsIgnoreCase(wordToFind))
+				if (dictionaryWords.equalsIgnoreCase(wordsToFind))
 					return true;
 			}
 		}
 		return false;
+	}
+
+	String getFirstThreeWords(String inputString) {
+		inputString = cleanupExtraWhitespace(inputString) + ParserConstants.STRING_WHITESPACE;
+
+		int splitPosition = getThirdWhiteSpacePos(inputString);
+
+		if (splitPosition == ParserConstants.NO_WHITE_SPACE) {
+			return ParserConstants.STRING_EMPTY;
+		}
+		return inputString.substring(ParserConstants.FIRST_INDEX, splitPosition);
+	}
+
+	public int getThirdWhiteSpacePos(String inputString) {
+		int numberOfWhiteSpaces = ParserConstants.FIRST_INDEX;
+
+		for (int index = ParserConstants.FIRST_INDEX; index < inputString.length(); index++) {
+			if (inputString.charAt(index) == ParserConstants.WHITE_SPACE) {
+				numberOfWhiteSpaces++;
+			}
+			if (numberOfWhiteSpaces == 3) {
+				return index;
+			}
+		}
+
+		return ParserConstants.NO_WHITE_SPACE;
 	}
 
 	String getFirstWord(String inputString) {
@@ -282,6 +330,20 @@ public class DateParser {
 	}
 
 	/**
+	 * This method removes the unnecessary white spaces present in the string.
+	 * 
+	 * @param someText
+	 *            is any string with several white spaces.
+	 * @return someText excluding the extra unnecessary white spaces.
+	 */
+	public String cleanupExtraWhitespace(String someText) {
+		Pattern extraSpace = Pattern.compile(ParserConstants.REGEX_EXTRA_WHITESPACE);
+		Matcher regexMatcher = extraSpace.matcher(someText.trim());
+		String cleanText = regexMatcher.replaceAll(ParserConstants.STRING_WHITESPACE);
+		return cleanText;
+	}
+
+	/**
 	 * This method returns an array list of possible date formats
 	 * 
 	 * @return dateFormatList, contains all acceptable date formats in
@@ -296,6 +358,10 @@ public class DateParser {
 		dateFormatList.add(DateTimeFormatter.ofPattern(ParserConstants.DATE_FORMAT_HYPHEN_DAY_MONTH_NUM_YEAR_LONG));
 		dateFormatList.add(DateTimeFormatter.ofPattern(ParserConstants.DATE_FORMAT_HYPHEN_DAY_MONTH_NUM_YEAR_SHORT));
 		dateFormatList.add(DateTimeFormatter.ofPattern(ParserConstants.DATE_FORMAT_HYPHEN_DAY_MONTH_NUM));
+		dateFormatList.add(DateTimeFormatter.ofPattern(ParserConstants.DATE_FORMAT_DAY_MONTH_LONG_YEAR_LONG_NOSPACE));
+		dateFormatList.add(DateTimeFormatter.ofPattern(ParserConstants.DATE_FORMAT_DAY_MONTH_LONG_YEAR_SHORT_NOSPACE));
+		dateFormatList.add(DateTimeFormatter.ofPattern(ParserConstants.DATE_FORMAT_DAY_MONTH_SHORT_YEAR_LONG_NOSPACE));
+		dateFormatList.add(DateTimeFormatter.ofPattern(ParserConstants.DATE_FORMAT_DAY_MONTH_SHORT_YEAR_SHORT_NOSPACE));
 		dateFormatList.add(DateTimeFormatter.ofPattern(ParserConstants.DATE_FORMAT_DAY_MONTH_LONG_YEAR_LONG));
 		dateFormatList.add(DateTimeFormatter.ofPattern(ParserConstants.DATE_FORMAT_DAY_MONTH_LONG_YEAR_SHORT));
 		dateFormatList.add(DateTimeFormatter.ofPattern(ParserConstants.DATE_FORMAT_DAY_MONTH_SHORT_YEAR_LONG));

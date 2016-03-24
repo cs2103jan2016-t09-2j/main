@@ -204,10 +204,11 @@ public class CommandParser {
 				// do nothing
 			}
 		} else {
-			if (dateObj.isUpcomingDayWord(firstWord)) {
+			if (dateObj.isUpcomingDayString(taskStatement)) {
 				/* if today or tomorrow */
-				newTask.setEndDate(dateObj.getUpcomingDayDate(firstWord));
-				taskStatement = taskStatement.replace(firstWord, ParserConstants.STRING_WHITESPACE);
+				String upcomingDay = dateObj.getUpComingDayWord(taskStatement);
+				newTask.setEndDate(dateObj.getUpcomingDayDate(upcomingDay));
+				taskStatement = taskStatement.replace(upcomingDay, ParserConstants.STRING_WHITESPACE);
 			} else if (dateObj.isDayOfWeek(firstWord)) {
 				/* if any day of the week */
 				newTask.setEndDate(dateObj.getDayOfWeekDate(firstWord));
