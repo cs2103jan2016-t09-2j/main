@@ -155,7 +155,7 @@ public class CommandParser {
 
 	public static Task getCriteria(String taskStatement) throws Exception {
 		Task newTask = new Task();
-		DateParser dateObj = new DateParser();
+		DateParser dateObj = new DateParser(taskStatement);
 		LocalDate currentDate = getCurrentDate();
 
 		taskStatement = cleanupExtraWhitespace(taskStatement);
