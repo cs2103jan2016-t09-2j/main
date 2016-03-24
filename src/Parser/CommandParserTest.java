@@ -49,6 +49,9 @@ public class CommandParserTest {
 		assertEquals(expected, output);
 	}
 
+	/*
+	 * Boundary case. Empty String.
+	 */
 	@Test
 	public void testCleanupExtraWhitespace3() {
 		String testString = "           ";

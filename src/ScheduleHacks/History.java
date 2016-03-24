@@ -76,6 +76,9 @@ public class History {
 		case COMPLETE_TASK:
 			executeCommand.setCommandType(COMMAND_TYPE.INCOMPLETE_TASK);
 			break;
+		case INCOMPLETE_TASK:
+			executeCommand.setCommandType(COMMAND_TYPE.COMPLETE_TASK);
+			break;
 		default:
 			break;
 		}
