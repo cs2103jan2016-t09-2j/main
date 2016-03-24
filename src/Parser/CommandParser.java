@@ -77,6 +77,9 @@ public class CommandParser {
 				case SET_DIRECTORY:
 					newTask = setDirectory(taskStatement);
 					break;
+				case BLOCK_SLOT:
+					newTask = blockSlot(taskStatement);
+					break;
 				default:
 					// do nothing
 					break;
@@ -345,20 +348,22 @@ public class CommandParser {
 	 *         details.
 	 */
 	public static boolean hasTaskDetails(COMMAND_TYPE commandType) {
-		if (commandType.equals(COMMAND_TYPE.COMPLETE_TASK)) {
+		switch (commandType) {
+		case COMPLETE_TASK:
 			return false;
-		} else if (commandType.equals(COMMAND_TYPE.DELETE_TASK)) {
+		case DELETE_TASK:
 			return false;
-		} else if (commandType.equals(COMMAND_TYPE.EXIT)) {
+		case UNDO_TASK:
 			return false;
-		} else if (commandType.equals(COMMAND_TYPE.UNDO_TASK)) {
+		case REDO_TASK:
 			return false;
-		} else if (commandType.equals(COMMAND_TYPE.REDO_TASK)) {
+		case HOME:
 			return false;
-		} else if (commandType.equals(COMMAND_TYPE.HOME)) {
+		case EXIT:
 			return false;
+		default:
+			return true;
 		}
-		return true;
 	}
 
 	/**
@@ -399,6 +404,27 @@ public class CommandParser {
 		setDates(objDateTime.getDateList(), newTask);
 		setTimes(objDateTime.getTimeList(), newTask);
 
+		return newTask;
+	}
+	
+	private static Task blockSlot(String taskStatement) {
+		Task newTask = new Task();
+		
+		DateParser dateParser = new DateParser(taskStatement);
+		dateParser.findDates();
+		ArrayList<LocalDate> dateList = dateParser.getDateList();
+
+		TimeParser timeParser = new TimeParser(dateParser.getTaskDetails());
+		timeParser.findTimes();
+		ArrayList<LocalTime> timeList = timeParser.getTimeList();
+		
+		DateTimeParser objDateTime = new DateTimeParser(dateList, timeList);
+		objDateTime.arrangeDateTimeList();
+		
+		newTask.setDescription(ParserConstants.STRING_EMPTY);
+		setDates(objDateTime.getDateList(), newTask);
+		setTimes(objDateTime.getTimeList(), newTask);
+		
 		return newTask;
 	}
 

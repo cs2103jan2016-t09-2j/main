@@ -14,6 +14,7 @@ public class ParserConstants {
 	static final String[] COMMAND_REDO = { "redo" };
 	static final String[] COMMAND_SET_DIRECTORY = { "set" };
 	static final String[] COMMAND_HOME = { "home", "back" };
+	static final String[] COMMAND_BLOCK_SLOT = { "block" };
 	static final String COMMAND_INVALID = null;
 	static final String COMMAND_EMPTY = "";
 
@@ -108,7 +109,7 @@ public class ParserConstants {
 			"nov", "dec" };
 	static final String[] MONTHS_LONG = { "", "january", "february", "march", "april", "may", "june", "july", "august",
 			"september", "october", "november", "december" };
-	
-	static final String[] VALID_END = {"," , " "};
+
+	static final String[] VALID_END = { ",", " " };
 
 }
