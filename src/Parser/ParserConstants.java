@@ -3,10 +3,10 @@ package Parser;
 public class ParserConstants {
 
 	// Command Class, primarily
-	static final String[] COMMAND_ADD = { "add", "create", "+", "a" };
-	static final String[] COMMAND_DELETE = { "delete", "d", "del", "-", "clear", "remove" };
+	static final String[] COMMAND_ADD = { "add", "+", "a" };
+	static final String[] COMMAND_DELETE = { "delete", "d", "del", "-", "clear", "remove", "rm" };
 	static final String[] COMMAND_MODIFY = { "edit", "update", "change", "e" };
-	static final String[] COMMAND_COMPLETE = { "complete", "done", "finish", "completed", "finished", "archive" };
+	static final String[] COMMAND_COMPLETE = { "complete", "done", "completed", "finished", "archive" };
 	static final String[] COMMAND_VIEW = { "view", "v", "show", "display" };
 	static final String[] COMMAND_SEARCH = { "search", "find" };
 	static final String[] COMMAND_EXIT = { "exit", "quit", "q" };
@@ -15,6 +15,7 @@ public class ParserConstants {
 	static final String[] COMMAND_SET_DIRECTORY = { "set" };
 	static final String[] COMMAND_HOME = { "home", "back" };
 	static final String[] COMMAND_BLOCK_SLOT = { "block" };
+	static final String[] COMMAND_HELP = { "help" };
 	static final String COMMAND_INVALID = null;
 	static final String COMMAND_EMPTY = "";
 

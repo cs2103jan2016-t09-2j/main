@@ -369,6 +369,8 @@ public class CommandParser {
 			return false;
 		case HOME:
 			return false;
+		case HELP:
+			return false;
 		case EXIT:
 			return false;
 		default:
@@ -386,14 +388,16 @@ public class CommandParser {
 	 *         numbers.
 	 */
 	public static boolean hasIndexNumber(COMMAND_TYPE commandType) {
-		if (commandType.equals(COMMAND_TYPE.COMPLETE_TASK)) {
+		switch (commandType) {
+		case COMPLETE_TASK:
 			return true;
-		} else if (commandType.equals(COMMAND_TYPE.DELETE_TASK)) {
+		case DELETE_TASK:
 			return true;
-		} else if (commandType.equals(COMMAND_TYPE.MODIFY_TASK)) {
+		case MODIFY_TASK:
 			return true;
+		default:
+			return false;
 		}
-		return false;
 	}
 
 	protected static Task addFloatingTaskDetails(String taskStatement) {
