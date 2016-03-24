@@ -103,6 +103,14 @@ public class DateParserTest {
 	}
 
 	@Test
+	public void testIsValidDate12() {
+		
+		String testString = "3mar4apr";
+		dateObj = new DateParser(testString);
+		assertEquals(false, dateObj.addToListIfValidDateWithoutYear(testString));
+	}
+	
+	@Test
 	public void testFinDates1() {
 		dateObj = new DateParser("She is getting married on 3 jun 2016   ");
 		dateObj.findDates();
@@ -128,14 +136,14 @@ public class DateParserTest {
 
 	@Test
 	public void testFinDates3() {
-		dateObj = new DateParser("3 AUG 16   ");
+		dateObj = new DateParser("3 AUG 8mar2016  ");
 		dateObj.findDates();
 		String output = "";
 		for (LocalDate date : dateObj.getDateList()) {
 			output = output + date.toString();
 		}
 		assertEquals("", dateObj.getTaskDetails());
-		assertEquals("2016-08-03", output);
+		assertEquals("2016-08-032016-03-08", output);
 	}
 
 	@Test
@@ -180,6 +188,44 @@ public class DateParserTest {
 		}
 		assertEquals("She is getting married", dateObj.getTaskDetails());
 		assertEquals(LocalDate.now().plusDays(2).toString(), output);
+	}
+	
+	@Test
+	public void testFinDates7() {
+		dateObj = new DateParser("She is getting married 7mar8mar ");
+		dateObj.findDates();
+		String output = "";
+		if(dateObj.getDateList() != null) {
+		for (LocalDate date : dateObj.getDateList()) {
+			output = output + date.toString();
+		}
+		}
+		//assertEquals("She is getting married 7mar8mar", dateObj.getTaskDetails());
+		assertEquals("", output);
+	}
+
+	@Test
+	public void testFinDates8() {
+		dateObj = new DateParser("She is getting married 29   feb  ");
+		dateObj.findDates();
+		String output = "";
+		for (LocalDate date : dateObj.getDateList()) {
+			output = output + date.toString();
+		}
+		assertEquals("She is getting married", dateObj.getTaskDetails());
+		assertEquals("2017-02-28", output);
+	}
+	
+	@Test
+	public void testFinDates9() {
+		dateObj = new DateParser("She is getting married 13apr  ");
+		dateObj.findDates();
+		String output = "";
+		for (LocalDate date : dateObj.getDateList()) {
+			output = output + date.toString();
+		}
+		assertEquals("She is getting married", dateObj.getTaskDetails());
+		assertEquals("2016-04-13", output);
 	}
 
 	@Test

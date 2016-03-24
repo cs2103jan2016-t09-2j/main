@@ -395,6 +395,18 @@ public class CommandParserTest {
 		assertEquals(null, newTask.getEndTime());
 		assertEquals(false, newTask.isComplete());
 	}
+	
+	@Test
+	public void checkGetCriteria14() throws Exception {
+		String testString = "21aug";
+		Task newTask = CommandParser.getCriteria(testString);
+		assertEquals(null, newTask.getDescription());
+		assertEquals(null, newTask.getStartDate());
+		assertEquals("2016-08-21", newTask.getEndDate().toString());
+		assertEquals(null, newTask.getStartTime());
+		assertEquals(null, newTask.getEndTime());
+		assertEquals(false, newTask.isComplete());
+	}
 
 	// Convert Scheduled to Floating
 	@Test

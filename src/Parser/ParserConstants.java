@@ -27,8 +27,9 @@ public class ParserConstants {
 	static final String REGEX_EXTRA_WHITESPACE = "\\s{2,}";
 	static final String REGEX_TIME = "(^|\\s|\\G)((\\d{1,2}(:|\\.)\\d{2})|(\\d{3,4}))(\\s|$)";
 	static final String REGEX_DATE = "(\\s|^|\\G)\\d{1,2}(-|/)\\d{1,2}(-|/)(\\d{4}|\\d{2})(\\s|$)";
-	static final String REGEX_POSSIBLE_DATE = "(^|\\s|\\G)\\w";
-	static final String REGEX_POSSIBLE_TIME = "(^|\\s|\\G)\\d";
+	static final String REGEX_POSSIBLE_DATE = "(^|\\s)\\w";
+	static final String REGEX_POSSIBLE_TIME = "(^|\\s)\\d";
+	// static final String REGEX_POSSIBLE_TIME = "(^|\\s|\\G)\\d";
 	static final String REGEX_DIGITS = "(\\s|^|,|-|\\G)\\d+(\\s|$|,|-)";
 	static final String REGEX_DIGITS_AT_START = "^\\d+\\s";
 	static final String REGEX_INDEX_DELIMITER = "(,|\\s)";
@@ -43,6 +44,7 @@ public class ParserConstants {
 
 	// Date related constants
 	static final int CENTURY = 100;
+	static final int ONE_YEAR = 1;
 	static final int FIRST_DAY_OF_MONTH = 1;
 	static final int INDEX_DAY_OF_MONTH = 0;
 	static final int INDEX_MONTH = 1;
@@ -63,6 +65,8 @@ public class ParserConstants {
 	static final String DATE_FORMAT_DAY_MONTH_LONG_YEAR_SHORT = "d MMMM uu";
 	static final String DATE_FORMAT_DAY_MONTH_SHORT_YEAR_LONG = "d MMM uuuu";
 	static final String DATE_FORMAT_DAY_MONTH_SHORT_YEAR_SHORT = "d MMM uu";
+	static final String DATE_FORMAT_DAY_MONTH_LONG_NOSPACE = "dMMMM";
+	static final String DATE_FORMAT_DAY_MONTH_SHORT_NOSPACE = "dMMM";
 	static final String DATE_FORMAT_DAY_MONTH_SHORT = "d MMM";
 	static final String DATE_FORMAT_DAY_MONTH_LONG = "d MMMM";
 	/*
@@ -114,6 +118,6 @@ public class ParserConstants {
 	static final String[] MONTHS_LONG = { "", "january", "february", "march", "april", "may", "june", "july", "august",
 			"september", "october", "november", "december" };
 
-	static final String[] VALID_END = { ",", " " };
+	static final String[] VALID_END = { ",", " ", "" };
 
 }

@@ -9,6 +9,7 @@ import java.util.regex.Pattern;
 import java.text.ParsePosition;
 import java.time.DateTimeException;
 import java.time.LocalDate;
+import java.time.MonthDay;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
 import java.time.format.DateTimeParseException;
@@ -67,6 +68,7 @@ public class DateParser {
 			String tempString = cleanupExtraWhitespace(taskDetails.substring(dateMatcher.start()));
 
 			addToListIfValidDate(tempString);
+			// addToListIfValidDateWithoutYear(tempString);
 
 			String firstWord = cleanupExtraWhitespace(getFirstWord(tempString));
 
@@ -97,14 +99,53 @@ public class DateParser {
 	 * Valid Date, it adds it to the List
 	 */
 	public boolean addToListIfValidDate(String statement) {
+		String tempStatement = statement;
 		String end = ParserConstants.STRING_EMPTY;
-		statement = CommandParser.cleanupExtraWhitespace(statement);
+		statement = cleanupExtraWhitespace(statement);
 		for (DateTimeFormatter format : generateDateFormatList()) {
 			DateTimeFormatter myFormatter = new DateTimeFormatterBuilder().parseCaseInsensitive().append(format)
 					.toFormatter(Locale.ENGLISH);
 			try {
 				ParsePosition index = new ParsePosition(ParserConstants.FIRST_INDEX);
 				LocalDate parsedDate = LocalDate.from(myFormatter.parse(statement.trim(), index));
+				if (index.getIndex() < statement.length()) {
+					end = statement.substring(index.getIndex());
+				}
+
+				statement = statement.substring(ParserConstants.FIRST_INDEX, index.getIndex());
+
+				if (taskDetails.contains(statement) && isValidEnd(end)) {
+					addDateToList(parsedDate);
+					removeDateFromTaskDetails(statement);
+					return true;
+				}
+			} catch (IndexOutOfBoundsException e) {
+				// do nothing
+			} catch (DateTimeParseException e) {
+				// do nothing
+			} catch (DateTimeException e) {
+				// do nothing
+			}
+		}
+		if (addToListIfValidDateWithoutYear(tempStatement)) {
+			return true;
+		}
+		return false;
+	}
+
+	public boolean addToListIfValidDateWithoutYear(String statement) {
+		String end = ParserConstants.STRING_EMPTY;
+		statement = cleanupExtraWhitespace(statement);
+		for (DateTimeFormatter format : generateDateFormatListWithoutYear()) {
+			DateTimeFormatter myFormatter = new DateTimeFormatterBuilder().parseCaseInsensitive().append(format)
+					.toFormatter(Locale.ENGLISH);
+			try {
+				ParsePosition index = new ParsePosition(ParserConstants.FIRST_INDEX);
+				MonthDay monthDay = MonthDay.from(myFormatter.parse(statement.trim(), index));
+				LocalDate parsedDate = monthDay.atYear(getCurrentYear());
+				if (parsedDate.isBefore(getTodayDate())) {
+					parsedDate = parsedDate.plusYears(ParserConstants.ONE_YEAR);
+				}
 				if (index.getIndex() < statement.length()) {
 					end = statement.substring(index.getIndex());
 				}
@@ -251,6 +292,15 @@ public class DateParser {
 		}
 	}
 
+	public int getCurrentYear() {
+		LocalDate today = LocalDate.now();
+		return today.getYear();
+	}
+
+	public LocalDate getTodayDate() {
+		return LocalDate.now();
+	}
+
 	public int indexOf(String word, String[] array) {
 		if (hasInDictionary(array, word)) {
 			for (int index = ParserConstants.FIRST_INDEX; index < array.length; index++) {
@@ -262,14 +312,6 @@ public class DateParser {
 		return -1; // if absent
 	}
 
-	private boolean isValidEnd(String endText) {
-		if (endText.isEmpty()) {
-			return true;
-		}
-		String firstCharacter = endText.charAt(ParserConstants.FIRST_INDEX) + ParserConstants.STRING_EMPTY;
-		return hasInDictionary(ParserConstants.VALID_END, firstCharacter);
-	}
-
 	public void addDateToList(LocalDate parsedDate) {
 		dateList.add(parsedDate);
 	}
@@ -277,6 +319,14 @@ public class DateParser {
 	public ArrayList<LocalDate> sortDateList(ArrayList<LocalDate> dates) {
 		Collections.sort(dates);
 		return dates;
+	}
+
+	private boolean isValidEnd(String endText) {
+		if (endText.isEmpty()) {
+			return true;
+		}
+		String firstCharacter = endText.charAt(ParserConstants.FIRST_INDEX) + ParserConstants.STRING_EMPTY;
+		return hasInDictionary(ParserConstants.VALID_END, firstCharacter);
 	}
 
 	private boolean hasInDictionary(String[] dictionary, String wordsToFind) {
@@ -366,6 +416,14 @@ public class DateParser {
 		dateFormatList.add(DateTimeFormatter.ofPattern(ParserConstants.DATE_FORMAT_DAY_MONTH_LONG_YEAR_SHORT));
 		dateFormatList.add(DateTimeFormatter.ofPattern(ParserConstants.DATE_FORMAT_DAY_MONTH_SHORT_YEAR_LONG));
 		dateFormatList.add(DateTimeFormatter.ofPattern(ParserConstants.DATE_FORMAT_DAY_MONTH_SHORT_YEAR_SHORT));
+
+		return dateFormatList;
+	}
+
+	ArrayList<DateTimeFormatter> generateDateFormatListWithoutYear() {
+		ArrayList<DateTimeFormatter> dateFormatList = new ArrayList<DateTimeFormatter>();
+		dateFormatList.add(DateTimeFormatter.ofPattern(ParserConstants.DATE_FORMAT_DAY_MONTH_LONG_NOSPACE));
+		dateFormatList.add(DateTimeFormatter.ofPattern(ParserConstants.DATE_FORMAT_DAY_MONTH_SHORT_NOSPACE));
 		dateFormatList.add(DateTimeFormatter.ofPattern(ParserConstants.DATE_FORMAT_DAY_MONTH_LONG));
 		dateFormatList.add(DateTimeFormatter.ofPattern(ParserConstants.DATE_FORMAT_DAY_MONTH_SHORT));
 		return dateFormatList;
