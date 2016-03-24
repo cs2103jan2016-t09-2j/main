@@ -62,6 +62,13 @@ public class Storage {
 	
 	private Storage() {
 		
+		directoryInit();
+		
+	}
+
+
+
+	private void directoryInit() {
 		if(currentPathName == null || currentPathName.isEmpty()){
 			try {
 				File file = new File(storageLocFile);
@@ -76,18 +83,15 @@ public class Storage {
 					br.close();
 				}
 			
-				
 			} catch (Exception e) {
-				// TODO Auto-generated catch block
+			
 				e.printStackTrace();
-			}
-			
-			fileDirectory.createMainDirectory(currentPathName);
-			
-			
+			}		
+			fileDirectory.createMainDirectory(currentPathName);					
 		}
-		
 	}
+
+
 
 	// apply singleton
 	public static Storage getInstance() {
