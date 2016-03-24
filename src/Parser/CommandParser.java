@@ -145,14 +145,13 @@ public class CommandParser {
 	 * @return
 	 */
 	public static Task editExistingTask(Task oldTask, String editStatement) {
-		Task newTask = new Task();
+		Task newTask = new Task(oldTask);
 		if (requiresDeletingParameters(editStatement)) {
 			editStatement = removeFirstWord(editStatement);
-			deleteParameters(oldTask, getParameterList(editStatement));
+			deleteParameters(newTask, getParameterList(editStatement));
 		} else {
-			oldTask = setEditParameters(editStatement, oldTask);
+			newTask = setEditParameters(editStatement, newTask);
 		}
-		newTask = oldTask;
 		return newTask;
 	}
 
@@ -406,10 +405,10 @@ public class CommandParser {
 
 		return newTask;
 	}
-	
+
 	private static Task blockSlot(String taskStatement) {
 		Task newTask = new Task();
-		
+
 		DateParser dateParser = new DateParser(taskStatement);
 		dateParser.findDates();
 		ArrayList<LocalDate> dateList = dateParser.getDateList();
@@ -417,14 +416,14 @@ public class CommandParser {
 		TimeParser timeParser = new TimeParser(dateParser.getTaskDetails());
 		timeParser.findTimes();
 		ArrayList<LocalTime> timeList = timeParser.getTimeList();
-		
+
 		DateTimeParser objDateTime = new DateTimeParser(dateList, timeList);
 		objDateTime.arrangeDateTimeList();
-		
+
 		newTask.setDescription(ParserConstants.STRING_EMPTY);
 		setDates(objDateTime.getDateList(), newTask);
 		setTimes(objDateTime.getTimeList(), newTask);
-		
+
 		return newTask;
 	}
 

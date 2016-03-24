@@ -32,6 +32,21 @@ public class Task {
 		setStartTime(startTime);
 		setEndTime(endTime);
 	}
+	
+	public Task(Task oldTask) {
+		setDescription(oldTask.getDescription());
+		if(oldTask.isFloatingTask()) {
+			setFloatingTask();
+		} 
+		if(oldTask.isScheduledTask()) {
+			setScheduledTask();
+		}
+		isComplete = oldTask.isComplete();
+		setStartDate(oldTask.getStartDate());
+		setEndDate(oldTask.getEndDate());
+		setStartTime(oldTask.getStartTime());
+		setEndTime(oldTask.getEndTime());
+	}
 
 	public void setDescription(String description) {
 		this.description = description;
