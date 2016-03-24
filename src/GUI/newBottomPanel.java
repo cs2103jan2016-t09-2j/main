@@ -41,7 +41,6 @@ public class newBottomPanel extends JPanel{
 				logicObj.executeCommand(text);
 				System.out.println(text);
 				bottomTop.setText(logicObj.getFeedBack());
-				//newTopPanel.setText("Hello");
 				
 				ArrayList<Task> OList = new ArrayList<Task>();
 				ArrayList<Task> SList = new ArrayList<Task>();
@@ -49,7 +48,10 @@ public class newBottomPanel extends JPanel{
 				OList = logicObj.getScheduledTasksOverDue();
 				SList = logicObj.getScheduledTasksToDo();
 				FList = logicObj.getFloatingTasksToDo();
-				newTopPanel.setText(OList,SList,FList);
+				newTopLeftPanel.clearText();
+				newTopLeftPanel.setText(OList, SList);
+				newTopRightPanel.clearText();
+				newTopRightPanel.setText(FList);
 
 			}
 		});
