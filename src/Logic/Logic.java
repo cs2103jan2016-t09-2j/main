@@ -245,6 +245,7 @@ public class Logic {
 			historyObject.clearRedoStack();
 			break;
 		case HOME:
+			setFeedBack(FEEDBACK_EMPTY_STRING);
 			break;
 		case EXIT:
 			exit();

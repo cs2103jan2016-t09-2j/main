@@ -47,6 +47,7 @@ public class History {
 			throw new Exception ("Empty Redo Stack");
 		}
 		OldCommand getRedo = redoStack.pop();
+		addToUndoList(getRedo);
 		return getRedo;
 	}
 
