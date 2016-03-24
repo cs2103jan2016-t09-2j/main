@@ -64,7 +64,7 @@ public class TempCLI {
 	public void executeInput(Logic logicObj) {
 		count = 1;
 		logicObj.executeCommand(getUserCommand());
-		logicObj.autoChangeTaskStatus();
+		//logicObj.autoChangeTaskStatus();
 		if (!logicObj.hasSearchList()) {
 			printTaskLists(logicObj);
 		}

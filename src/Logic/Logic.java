@@ -247,6 +247,9 @@ public class Logic {
 		case HOME:
 			setFeedBack(FEEDBACK_EMPTY_STRING);
 			break;
+		case BLOCK_SLOT:
+			//do the needful
+			break;
 		case EXIT:
 			exit();
 			historyObject.clearRedoStack();
