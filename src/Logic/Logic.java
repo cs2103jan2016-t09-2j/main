@@ -249,7 +249,11 @@ public class Logic {
 			break;
 		case BLOCK_SLOT:
 			//do the needful
+			// incomplete
 			break;
+		case HELP:
+			// do the needful
+			// incomplete
 		case EXIT:
 			exit();
 			historyObject.clearRedoStack();
