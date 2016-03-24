@@ -87,7 +87,7 @@ public class CommandParser {
 				return newTask;
 			}
 		}
-		throw new Exception("Empty Task Description/Index Number");
+		throw new Exception("Empty Task Description");
 	}
 
 	public static Task setDirectory(String taskStatement) {
@@ -157,84 +157,15 @@ public class CommandParser {
 
 	public static Task getCriteria(String taskStatement) throws Exception {
 		Task newTask = new Task();
-		DateParser dateObj = new DateParser(taskStatement);
-		LocalDate currentDate = getCurrentDate();
-
 		taskStatement = cleanupExtraWhitespace(taskStatement);
 		String firstWord = getFirstWord(taskStatement);
 
 		if (hasInDictionary(ParserConstants.UPCOMING_PERIOD_KEYWORD, firstWord)) {
-			try {
-				String secondWord = getFirstWord(removeFirstWord(taskStatement));
-
-				if (secondWord.equalsIgnoreCase("month")) {
-					LocalDate newDate = currentDate
-							.plusMonths(indexOf(firstWord, ParserConstants.UPCOMING_PERIOD_KEYWORD));
-
-					newTask.setStartDate(
-							LocalDate.of(newDate.getYear(), newDate.getMonth(), ParserConstants.FIRST_DAY_OF_MONTH));
-
-					newTask.setEndDate(newTask.getStartDate().plusMonths(1).minusDays(1));
-
-					taskStatement = taskStatement.replaceFirst(firstWord + " " + secondWord,
-							ParserConstants.STRING_WHITESPACE);
-				} else if (secondWord.equalsIgnoreCase("week")) {
-					newTask.setStartDate(dateObj.getDayOfWeekDate("Sunday")
-							.minusDays(ParserConstants.DAYS_IN_WEEK
-									- indexOf(firstWord, ParserConstants.UPCOMING_PERIOD_KEYWORD)
-											* ParserConstants.DAYS_IN_WEEK));
-
-					newTask.setEndDate(newTask.getStartDate().plusDays(ParserConstants.DAYS_IN_WEEK));
-
-					taskStatement = taskStatement.replaceFirst(firstWord + " " + secondWord,
-							ParserConstants.STRING_WHITESPACE);
-				} else if (secondWord.equalsIgnoreCase("year")) {
-
-					newTask.setStartDate(LocalDate.of(
-							currentDate.getYear() + indexOf(firstWord, ParserConstants.UPCOMING_PERIOD_KEYWORD), 1, 1));
-
-					newTask.setEndDate(LocalDate.of(
-							currentDate.getYear() + indexOf(firstWord, ParserConstants.UPCOMING_PERIOD_KEYWORD), 12,
-							31));
-
-					taskStatement = taskStatement.replaceFirst(firstWord + " " + secondWord,
-							ParserConstants.STRING_WHITESPACE);
-				}
-			} catch (Exception e) {
-				// do nothing
-			}
+			taskStatement = setUpcomingDateRange(taskStatement, newTask, firstWord);
 		} else {
-			if (dateObj.isUpcomingDayString(taskStatement)) {
-				/* if today or tomorrow */
-				String upcomingDay = dateObj.getUpComingDayWord(taskStatement);
-				newTask.setEndDate(dateObj.getUpcomingDayDate(upcomingDay));
-				taskStatement = taskStatement.replace(upcomingDay, ParserConstants.STRING_WHITESPACE);
-			} else if (dateObj.isDayOfWeek(firstWord)) {
-				/* if any day of the week */
-				newTask.setEndDate(dateObj.getDayOfWeekDate(firstWord));
-				taskStatement = taskStatement.replace(firstWord, ParserConstants.STRING_WHITESPACE);
-			} else if (hasInDictionary(ParserConstants.COMMAND_COMPLETE, firstWord)) {
-				newTask.setAsComplete();
-				taskStatement = taskStatement.replace(firstWord, ParserConstants.STRING_WHITESPACE);
-			} else if (dateObj.addToListIfValidDate(taskStatement)) {
-				/* if date */
-				newTask.setEndDate(dateObj.getDateList().get(ParserConstants.FIRST_INDEX));
-				taskStatement = dateObj.getTaskDetails();
-			} else if (dateObj.isMonth(firstWord)) {
-				/* if month */
-				int monthNum = dateObj.getMonthNum(firstWord);
-				int currentMonthNum = currentDate.getMonthValue();
-				if (monthNum < currentMonthNum) {
-					newTask.setStartDate(
-							LocalDate.of(currentDate.getYear() + 1, monthNum, ParserConstants.FIRST_DAY_OF_MONTH));
-				} else {
-					newTask.setStartDate(
-							LocalDate.of(currentDate.getYear(), monthNum, ParserConstants.FIRST_DAY_OF_MONTH));
-				}
-				newTask.setEndDate(newTask.getStartDate().plusMonths(1).minusDays(1));
-				taskStatement = taskStatement.replace(firstWord, ParserConstants.STRING_WHITESPACE);
-			}
+			taskStatement = getSearchCriteria(taskStatement, newTask);
 		}
+
 		try {
 			taskStatement = cleanupExtraWhitespace(taskStatement);
 			if (taskStatement != null && !taskStatement.isEmpty()) {
@@ -246,6 +177,85 @@ public class CommandParser {
 		}
 
 		return newTask;
+	}
+
+	public static String getSearchCriteria(String taskStatement, Task newTask) throws Exception {
+		DateParser dateObj = new DateParser(taskStatement);
+		String firstWord = getFirstWord(taskStatement);
+		LocalDate currentDate = getCurrentDate();
+
+		if (dateObj.isUpcomingDayString(taskStatement)) {
+			// if today or tomorrow
+			String upcomingDay = dateObj.getUpComingDayWord(taskStatement);
+			newTask.setEndDate(dateObj.getUpcomingDayDate(upcomingDay));
+			taskStatement = taskStatement.replace(upcomingDay, ParserConstants.STRING_WHITESPACE);
+		} else if (dateObj.isDayOfWeek(firstWord)) {
+			// if any day of the week
+			newTask.setEndDate(dateObj.getDayOfWeekDate(firstWord));
+			taskStatement = taskStatement.replace(firstWord, ParserConstants.STRING_WHITESPACE);
+		} else if (hasInDictionary(ParserConstants.COMMAND_COMPLETE, firstWord)) {
+			newTask.setAsComplete();
+			taskStatement = taskStatement.replace(firstWord, ParserConstants.STRING_WHITESPACE);
+		} else if (dateObj.addToListIfValidDate(taskStatement)) {
+			// if date
+			newTask.setEndDate(dateObj.getDateList().get(ParserConstants.FIRST_INDEX));
+			taskStatement = dateObj.getTaskDetails();
+		} else if (dateObj.isMonth(firstWord)) {
+			// if month
+			int monthNum = dateObj.getMonthNum(firstWord);
+			int currentMonthNum = currentDate.getMonthValue();
+			if (monthNum < currentMonthNum) {
+				newTask.setStartDate(
+						LocalDate.of(currentDate.getYear() + 1, monthNum, ParserConstants.FIRST_DAY_OF_MONTH));
+			} else {
+				newTask.setStartDate(LocalDate.of(currentDate.getYear(), monthNum, ParserConstants.FIRST_DAY_OF_MONTH));
+			}
+			newTask.setEndDate(newTask.getStartDate().plusMonths(1).minusDays(1));
+			taskStatement = taskStatement.replace(firstWord, ParserConstants.STRING_WHITESPACE);
+		}
+		return taskStatement;
+	}
+
+	public static String setUpcomingDateRange(String taskStatement, Task newTask, String firstWord) {
+		try {
+
+			DateParser dateObj = new DateParser(taskStatement);
+			LocalDate currentDate = getCurrentDate();
+			String secondWord = getFirstWord(removeFirstWord(taskStatement));
+
+			if (secondWord.equalsIgnoreCase("month")) {
+				LocalDate newDate = currentDate.plusMonths(indexOf(firstWord, ParserConstants.UPCOMING_PERIOD_KEYWORD));
+
+				newTask.setStartDate(
+						LocalDate.of(newDate.getYear(), newDate.getMonth(), ParserConstants.FIRST_DAY_OF_MONTH));
+
+				newTask.setEndDate(newTask.getStartDate().plusMonths(1).minusDays(1));
+
+				taskStatement = taskStatement.replaceFirst(firstWord + " " + secondWord,
+						ParserConstants.STRING_WHITESPACE);
+			} else if (secondWord.equalsIgnoreCase("week")) {
+				newTask.setStartDate(dateObj.getDayOfWeekDate("Sunday").minusDays(ParserConstants.DAYS_IN_WEEK
+						- indexOf(firstWord, ParserConstants.UPCOMING_PERIOD_KEYWORD) * ParserConstants.DAYS_IN_WEEK));
+
+				newTask.setEndDate(newTask.getStartDate().plusDays(ParserConstants.DAYS_IN_WEEK));
+
+				taskStatement = taskStatement.replaceFirst(firstWord + " " + secondWord,
+						ParserConstants.STRING_WHITESPACE);
+			} else if (secondWord.equalsIgnoreCase("year")) {
+
+				newTask.setStartDate(LocalDate
+						.of(currentDate.getYear() + indexOf(firstWord, ParserConstants.UPCOMING_PERIOD_KEYWORD), 1, 1));
+
+				newTask.setEndDate(LocalDate.of(
+						currentDate.getYear() + indexOf(firstWord, ParserConstants.UPCOMING_PERIOD_KEYWORD), 12, 31));
+
+				taskStatement = taskStatement.replaceFirst(firstWord + " " + secondWord,
+						ParserConstants.STRING_WHITESPACE);
+			}
+		} catch (Exception e) {
+			// do nothing
+		}
+		return taskStatement;
 	}
 
 	/**
