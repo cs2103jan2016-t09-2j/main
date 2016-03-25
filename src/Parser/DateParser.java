@@ -69,20 +69,21 @@ public class DateParser {
 		while (dateMatcher.find()) {
 			String tempString = cleanupExtraWhitespace(taskDetails.substring(dateMatcher.start()));
 
-			addToListIfValidDate(tempString);
+			if (!addToListIfValidDate(tempString)) {
 
-			String firstWord = cleanupExtraWhitespace(getFirstXWords(tempString, 1));
-			if (isDayOfWeek(firstWord)) {
-				dateList.add(getDayOfWeekDate(firstWord));
-				removeDateFromTaskDetails(firstWord);
-			} else if (isUpcomingDayString(tempString)) {
-				String upcomingDay = getUpComingDayWord(tempString);
-				if (this.taskDetails.contains(upcomingDay)) {
-					dateList.add(getUpcomingDayDate(upcomingDay));
-					removeDateFromTaskDetails(upcomingDay);
+				String firstWord = cleanupExtraWhitespace(getFirstXWords(tempString, 1));
+				if (isDayOfWeek(firstWord)) {
+					dateList.add(getDayOfWeekDate(firstWord));
+					removeDateFromTaskDetails(firstWord);
+				} else if (isUpcomingDayString(tempString)) {
+					String upcomingDay = getUpComingDayWord(tempString);
+					if (this.taskDetails.contains(upcomingDay)) {
+						dateList.add(getUpcomingDayDate(upcomingDay));
+						removeDateFromTaskDetails(upcomingDay);
+					}
+				} else if (hasDayDuration(tempString)) {
+					dateList.add(getParsedDayDurationDate(tempString));
 				}
-			} else if (hasDayDuration(tempString)) {
-				dateList.add(getParsedDayDurationDate(tempString));
 			}
 		}
 	}
@@ -283,7 +284,7 @@ public class DateParser {
 		try {
 			String firstWord = getFirstXWords(inputString, ParserConstants.ONE_WORD);
 			String secondWord = "";
-			if(isFirstWordDayDuration(inputString)) {
+			if (isFirstWordDayDuration(inputString)) {
 				int splitPos = -1;
 				for (int index = ParserConstants.FIRST_INDEX; index < firstWord.length(); index++) {
 					if (!Character.isDigit(firstWord.charAt(index))) {
@@ -293,7 +294,7 @@ public class DateParser {
 				}
 				removeDateFromTaskDetails(firstWord);
 				secondWord = firstWord.substring(splitPos);
-				firstWord = firstWord.substring(ParserConstants.FIRST_INDEX, splitPos);	
+				firstWord = firstWord.substring(ParserConstants.FIRST_INDEX, splitPos);
 			} else {
 				String first2Words = getFirstXWords(inputString, ParserConstants.TWO_WORDS);
 				secondWord = first2Words.replace(firstWord, ParserConstants.STRING_WHITESPACE).trim();

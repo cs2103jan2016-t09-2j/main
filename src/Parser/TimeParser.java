@@ -91,10 +91,12 @@ public class TimeParser {
 		Matcher timeMatcher = timePattern.matcher(taskDetails);
 		while (timeMatcher.find()) {
 			String tempString = cleanupExtraWhitespace(taskDetails.substring(timeMatcher.start()));
-			addToListIfValidTime(tempString);
-			
-			if(hasTimeDuration(tempString)) {
-				addValidTimeToList(getParsedTimeDuration(tempString));
+
+			if (!addToListIfValidTime(tempString)) {
+
+				if (hasTimeDuration(tempString)) {
+					addValidTimeToList(getParsedTimeDuration(tempString));
+				}
 			}
 		}
 	}
@@ -145,12 +147,12 @@ public class TimeParser {
 		String firstCharacter = endText.charAt(ParserConstants.FIRST_INDEX) + ParserConstants.STRING_EMPTY;
 		return hasInDictionary(ParserConstants.VALID_END, firstCharacter);
 	}
-	
+
 	public LocalTime getParsedTimeDuration(String inputString) {
 		try {
 			String firstWord = getFirstXWords(inputString, ParserConstants.ONE_WORD);
 			String secondWord = "";
-			if(isFirstWordTimeDuration(inputString)) {
+			if (isFirstWordTimeDuration(inputString)) {
 				int splitPos = -1;
 				for (int index = ParserConstants.FIRST_INDEX; index < firstWord.length(); index++) {
 					if (!Character.isDigit(firstWord.charAt(index))) {
@@ -160,7 +162,7 @@ public class TimeParser {
 				}
 				removeTimeFromTaskDetails(firstWord);
 				secondWord = firstWord.substring(splitPos);
-				firstWord = firstWord.substring(ParserConstants.FIRST_INDEX, splitPos);	
+				firstWord = firstWord.substring(ParserConstants.FIRST_INDEX, splitPos);
 			} else {
 				String first2Words = getFirstXWords(inputString, ParserConstants.TWO_WORDS);
 				secondWord = first2Words.replace(firstWord, ParserConstants.STRING_WHITESPACE).trim();
@@ -180,12 +182,12 @@ public class TimeParser {
 		int indexOfKeyword = indexOf(secondWord, ParserConstants.TIME_DURATION);
 		if (indexOfKeyword <= ParserConstants.LAST_INDEX_OF_MIN) {
 			parsedTime = parsedTime.plusMinutes(unitsToAdd);
-		} else  {
+		} else {
 			parsedTime = parsedTime.plusHours(unitsToAdd);
-		} 
+		}
 		return parsedTime;
 	}
-	
+
 	public boolean hasTimeDuration(String tempString) {
 		try {
 			return isFirstWordTimeDuration(tempString) || isFirstTwoWordsTimeDuration(tempString);
@@ -235,8 +237,8 @@ public class TimeParser {
 	public void addValidTimeToList(LocalTime parsedTime) {
 		timeList.add(parsedTime);
 	}
-	
-	public LocalTime getTimeNow(){
+
+	public LocalTime getTimeNow() {
 		return LocalTime.now().truncatedTo(ChronoUnit.MINUTES);
 	}
 
@@ -256,7 +258,7 @@ public class TimeParser {
 
 		return null;
 	}
-	
+
 	public int indexOf(String word, String[] array) {
 		if (hasInDictionary(array, word)) {
 			for (int index = ParserConstants.FIRST_INDEX; index < array.length; index++) {
