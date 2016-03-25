@@ -20,6 +20,8 @@ public class DateParser {
 	private String taskDetails;
 	private ArrayList<LocalDate> dateList = new ArrayList<LocalDate>();
 
+	// private String tempProspectiveDate = ParserConstants.STRING_EMPTY;
+
 	/****************** CONSTRUCTORS **********************/
 	DateParser() {
 		this(ParserConstants.STRING_EMPTY, new ArrayList<LocalDate>());
@@ -68,10 +70,8 @@ public class DateParser {
 			String tempString = cleanupExtraWhitespace(taskDetails.substring(dateMatcher.start()));
 
 			addToListIfValidDate(tempString);
-			// addToListIfValidDateWithoutYear(tempString);
 
-			String firstWord = cleanupExtraWhitespace(getFirstWord(tempString));
-
+			String firstWord = cleanupExtraWhitespace(getFirstXWords(tempString, 1));
 			if (isDayOfWeek(firstWord)) {
 				dateList.add(getDayOfWeekDate(firstWord));
 				removeDateFromTaskDetails(firstWord);
@@ -81,6 +81,8 @@ public class DateParser {
 					dateList.add(getUpcomingDayDate(upcomingDay));
 					removeDateFromTaskDetails(upcomingDay);
 				}
+			} else if (hasDayDuration(tempString)) {
+				dateList.add(getParsedDayDurationDate(tempString));
 			}
 		}
 	}
@@ -256,8 +258,8 @@ public class DateParser {
 	public boolean isUpcomingDayString(String textToFind) {
 
 		if (textToFind != null && !textToFind.isEmpty()) {
-			String firstWord = getFirstWord(textToFind);
-			String firstThreeWords = getFirstThreeWords(textToFind);
+			String firstWord = getFirstXWords(textToFind, ParserConstants.ONE_WORD);
+			String firstThreeWords = getFirstXWords(textToFind, ParserConstants.THREE_WORDS);
 			return hasInDictionary(ParserConstants.UPCOMING_DAYS, firstWord)
 					|| hasInDictionary(ParserConstants.UPCOMING_DAYS, firstThreeWords);
 		}
@@ -265,8 +267,8 @@ public class DateParser {
 	}
 
 	public String getUpComingDayWord(String textToFind) {
-		String firstWord = getFirstWord(textToFind);
-		String firstThreeWords = getFirstThreeWords(textToFind);
+		String firstWord = getFirstXWords(textToFind, ParserConstants.ONE_WORD);
+		String firstThreeWords = getFirstXWords(textToFind, ParserConstants.THREE_WORDS);
 
 		if (hasInDictionary(ParserConstants.UPCOMING_DAYS, firstWord)) {
 			return firstWord;
@@ -275,6 +277,97 @@ public class DateParser {
 		}
 
 		return null;
+	}
+
+	public LocalDate getParsedDayDurationDate(String inputString) {
+		try {
+			String firstWord = getFirstXWords(inputString, ParserConstants.ONE_WORD);
+			String secondWord = "";
+			if(isFirstWordDayDuration(inputString)) {
+				int splitPos = -1;
+				for (int index = ParserConstants.FIRST_INDEX; index < firstWord.length(); index++) {
+					if (!Character.isDigit(firstWord.charAt(index))) {
+						splitPos = index;
+						break;
+					}
+				}
+				removeDateFromTaskDetails(firstWord);
+				secondWord = firstWord.substring(splitPos);
+				firstWord = firstWord.substring(ParserConstants.FIRST_INDEX, splitPos);	
+			} else {
+				String first2Words = getFirstXWords(inputString, ParserConstants.TWO_WORDS);
+				secondWord = first2Words.replace(firstWord, ParserConstants.STRING_WHITESPACE).trim();
+				removeDateFromTaskDetails(first2Words);
+			}
+			LocalDate parsedDate = getDayDurationDate(firstWord, secondWord);
+			return parsedDate;
+		} catch (Exception e) {
+			// no exception encountered, just a precaution
+		}
+		return null;
+	}
+
+	public LocalDate getDayDurationDate(String firstWord, String secondWord) {
+		LocalDate parsedDate = getTodayDate();
+		int unitsToAdd = Integer.parseInt(firstWord);
+		int indexOfKeyword = indexOf(secondWord, ParserConstants.DAY_DURATION);
+
+		if (indexOfKeyword <= ParserConstants.LAST_INDEX_OF_DAY) {
+			parsedDate = parsedDate.plusDays(unitsToAdd);
+		} else if (indexOfKeyword <= ParserConstants.LAST_INDEX_OF_WEEK) {
+			parsedDate = parsedDate.plusWeeks(unitsToAdd);
+		} else if (indexOfKeyword <= ParserConstants.LAST_INDEX_OF_MONTH) {
+			parsedDate = parsedDate.plusMonths(unitsToAdd);
+		} else {
+			parsedDate = parsedDate.plusYears(unitsToAdd);
+		}
+		return parsedDate;
+	}
+
+	public boolean hasDayDuration(String tempString) {
+		try {
+			return isFirstWordDayDuration(tempString) || isFirstTwoWordsDayDuration(tempString);
+		} catch (NullPointerException e) {
+			// do nothing
+		} catch (NumberFormatException e) {
+			// do nothing
+		} catch (IndexOutOfBoundsException e) {
+			// do nothing
+		}
+		return false;
+	}
+
+	public boolean isFirstWordDayDuration(String inputString)
+			throws NullPointerException, NumberFormatException, IndexOutOfBoundsException {
+		String firstWord = getFirstXWords(inputString, ParserConstants.ONE_WORD);
+		if (firstWord.matches(ParserConstants.REGEX_POSSIBLE_DAY_DURATION)) {
+			int splitPos = -1;
+			for (int index = ParserConstants.FIRST_INDEX; index < firstWord.length(); index++) {
+				if (!Character.isDigit(firstWord.charAt(index))) {
+					splitPos = index;
+					break;
+				}
+			}
+			String secondWord = firstWord.substring(splitPos);
+			firstWord = firstWord.substring(ParserConstants.FIRST_INDEX, splitPos);
+			if (hasInDictionary(ParserConstants.DAY_DURATION, secondWord)) {
+				Integer.parseInt(firstWord);
+				return true;
+			}
+		}
+		return false;
+	}
+
+	public boolean isFirstTwoWordsDayDuration(String inputString) throws NullPointerException, NumberFormatException {
+		String firstWord = getFirstXWords(inputString, ParserConstants.ONE_WORD);
+		String first2Words = getFirstXWords(inputString, ParserConstants.TWO_WORDS);
+		String secondWord = first2Words.replace(firstWord, ParserConstants.STRING_WHITESPACE).trim();
+
+		if (hasInDictionary(ParserConstants.DAY_DURATION, secondWord)) {
+			Integer.parseInt(firstWord);
+			return true;
+		}
+		return false;
 	}
 
 	public boolean isMonth(String firstWord) {
@@ -288,7 +381,7 @@ public class DateParser {
 		} else if (hasInDictionary(ParserConstants.MONTHS_SHORT, month)) {
 			return indexOf(month, ParserConstants.MONTHS_SHORT);
 		} else {
-			return -1;
+			return ParserConstants.DEFAULT_INDEX_NUMBER;
 		}
 	}
 
@@ -339,44 +432,21 @@ public class DateParser {
 		return false;
 	}
 
-	String getFirstThreeWords(String inputString) {
-		inputString = cleanupExtraWhitespace(inputString) + ParserConstants.STRING_WHITESPACE;
+	public String getFirstXWords(String wordToSplit, int x) {
 
-		int splitPosition = getThirdWhiteSpacePos(inputString);
+		if (wordToSplit != null && !wordToSplit.isEmpty() && x > 0) {
+			String[] words = wordToSplit.split(ParserConstants.STRING_WHITESPACE);
 
-		if (splitPosition == ParserConstants.NO_WHITE_SPACE) {
-			return ParserConstants.STRING_EMPTY;
-		}
-		return inputString.substring(ParserConstants.FIRST_INDEX, splitPosition);
-	}
-
-	public int getThirdWhiteSpacePos(String inputString) {
-		int numberOfWhiteSpaces = ParserConstants.FIRST_INDEX;
-
-		for (int index = ParserConstants.FIRST_INDEX; index < inputString.length(); index++) {
-			if (inputString.charAt(index) == ParserConstants.WHITE_SPACE) {
-				numberOfWhiteSpaces++;
-			}
-			if (numberOfWhiteSpaces == 3) {
-				return index;
+			if (words.length >= x) {
+				String firstXWords = ParserConstants.STRING_EMPTY;
+				for (int index = ParserConstants.FIRST_INDEX; index < x; index++) {
+					firstXWords += ParserConstants.STRING_WHITESPACE + words[index];
+				}
+				return cleanupExtraWhitespace(firstXWords);
 			}
 		}
 
-		return ParserConstants.NO_WHITE_SPACE;
-	}
-
-	String getFirstWord(String inputString) {
-		inputString = inputString.trim();
-
-		int splitPosition = inputString.indexOf(ParserConstants.WHITE_SPACE);
-		if (splitPosition == ParserConstants.NO_WHITE_SPACE) {
-			if (inputString.length() > 0) {
-				splitPosition = inputString.length();
-			} else {
-				return ParserConstants.STRING_EMPTY;
-			}
-		}
-		return inputString.substring(ParserConstants.FIRST_INDEX, splitPosition);
+		return null;
 	}
 
 	/**
@@ -412,10 +482,22 @@ public class DateParser {
 		dateFormatList.add(DateTimeFormatter.ofPattern(ParserConstants.DATE_FORMAT_DAY_MONTH_LONG_YEAR_SHORT_NOSPACE));
 		dateFormatList.add(DateTimeFormatter.ofPattern(ParserConstants.DATE_FORMAT_DAY_MONTH_SHORT_YEAR_LONG_NOSPACE));
 		dateFormatList.add(DateTimeFormatter.ofPattern(ParserConstants.DATE_FORMAT_DAY_MONTH_SHORT_YEAR_SHORT_NOSPACE));
-		dateFormatList.add(DateTimeFormatter.ofPattern(ParserConstants.DATE_FORMAT_DAY_MONTH_LONG_YEAR_LONG));
-		dateFormatList.add(DateTimeFormatter.ofPattern(ParserConstants.DATE_FORMAT_DAY_MONTH_LONG_YEAR_SHORT));
-		dateFormatList.add(DateTimeFormatter.ofPattern(ParserConstants.DATE_FORMAT_DAY_MONTH_SHORT_YEAR_LONG));
-		dateFormatList.add(DateTimeFormatter.ofPattern(ParserConstants.DATE_FORMAT_DAY_MONTH_SHORT_YEAR_SHORT));
+		dateFormatList.add(DateTimeFormatter.ofPattern(ParserConstants.DATE_FORMAT_DAY_MONTH_LONG_SPACE_YEAR_LONG));
+		dateFormatList.add(DateTimeFormatter.ofPattern(ParserConstants.DATE_FORMAT_DAY_MONTH_LONG_SPACE_YEAR_SHORT));
+		dateFormatList.add(DateTimeFormatter.ofPattern(ParserConstants.DATE_FORMAT_DAY_MONTH_SHORT_SPACE_YEAR_LONG));
+		dateFormatList.add(DateTimeFormatter.ofPattern(ParserConstants.DATE_FORMAT_DAY_MONTH_SHORT_SPACE_YEAR_SHORT));
+		dateFormatList.add(DateTimeFormatter.ofPattern(ParserConstants.DATE_FORMAT_DAY_SPACE_MONTH_LONG_YEAR_LONG));
+		dateFormatList.add(DateTimeFormatter.ofPattern(ParserConstants.DATE_FORMAT_DAY_SPACE_MONTH_LONG_YEAR_SHORT));
+		dateFormatList.add(DateTimeFormatter.ofPattern(ParserConstants.DATE_FORMAT_DAY_SPACE_MONTH_SHORT_YEAR_LONG));
+		dateFormatList.add(DateTimeFormatter.ofPattern(ParserConstants.DATE_FORMAT_DAY_SPACE_MONTH_SHORT_YEAR_SHORT));
+		dateFormatList
+				.add(DateTimeFormatter.ofPattern(ParserConstants.DATE_FORMAT_DAY_SPACE_MONTH_LONG_SPACE_YEAR_LONG));
+		dateFormatList
+				.add(DateTimeFormatter.ofPattern(ParserConstants.DATE_FORMAT_DAY_SPACE_MONTH_LONG_SPACE_YEAR_SHORT));
+		dateFormatList
+				.add(DateTimeFormatter.ofPattern(ParserConstants.DATE_FORMAT_DAY_SPACE_MONTH_SHORT_SPACE_YEAR_LONG));
+		dateFormatList
+				.add(DateTimeFormatter.ofPattern(ParserConstants.DATE_FORMAT_DAY_SPACE_MONTH_SHORT_SPACE_YEAR_SHORT));
 
 		return dateFormatList;
 	}

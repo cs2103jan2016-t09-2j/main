@@ -254,6 +254,7 @@ public class Logic {
 		case HELP:
 			// do the needful
 			// incomplete
+			setFeedBack(FEEDBACK_EMPTY_STRING);
 		case EXIT:
 			exit();
 			historyObject.clearRedoStack();

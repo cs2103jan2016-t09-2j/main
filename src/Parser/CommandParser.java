@@ -212,13 +212,14 @@ public class CommandParser {
 			}
 			newTask.setEndDate(newTask.getStartDate().plusMonths(1).minusDays(1));
 			taskStatement = taskStatement.replace(firstWord, ParserConstants.STRING_WHITESPACE);
+		} else if(dateObj.hasDayDuration(taskStatement)) {
+			taskStatement = addCriteriaDateDuration(newTask, taskStatement);
 		}
 		return taskStatement;
 	}
 
 	public static String setUpcomingDateRange(String taskStatement, Task newTask, String firstWord) {
 		try {
-
 			DateParser dateObj = new DateParser(taskStatement);
 			LocalDate currentDate = getCurrentDate();
 			String secondWord = getFirstWord(removeFirstWord(taskStatement));
@@ -251,11 +252,21 @@ public class CommandParser {
 
 				taskStatement = taskStatement.replaceFirst(firstWord + " " + secondWord,
 						ParserConstants.STRING_WHITESPACE);
+			} else if ((new DateParser()).hasDayDuration(removeFirstWord(taskStatement))) {
+				taskStatement = removeFirstWord(taskStatement);
+				taskStatement = addCriteriaDateDuration(newTask, taskStatement);
 			}
 		} catch (Exception e) {
 			// do nothing
 		}
 		return taskStatement;
+	}
+	
+	public static String addCriteriaDateDuration(Task newTask, String taskStatement) {
+		DateParser dateObj = new DateParser(taskStatement);
+		newTask.setStartDate(getCurrentDate());
+		newTask.setEndDate(dateObj.getParsedDayDurationDate(taskStatement));
+		return dateObj.getTaskDetails();
 	}
 
 	/**

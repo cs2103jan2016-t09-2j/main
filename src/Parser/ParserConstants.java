@@ -29,9 +29,10 @@ public class ParserConstants {
 	static final String REGEX_TIME = "(^|\\s|\\G)((\\d{1,2}(:|\\.)\\d{2})|(\\d{3,4}))(\\s|$)";
 	static final String REGEX_DATE = "(\\s|^|\\G)\\d{1,2}(-|/)\\d{1,2}(-|/)(\\d{4}|\\d{2})(\\s|$)";
 	static final String REGEX_POSSIBLE_DATE = "(^|\\s)\\w";
+	static final String REGEX_POSSIBLE_DAY_DURATION = "^\\d+[A-Za-z]{2,}";
 	static final String REGEX_POSSIBLE_TIME = "(^|\\s)\\d";
 	// static final String REGEX_POSSIBLE_TIME = "(^|\\s|\\G)\\d";
-	static final String REGEX_DIGITS = "(\\s|^|,|-|\\G)\\d+(\\s|$|,|-)";
+	static final String REGEX_DIGITS_VALID_END = "(\\s|^|,|-|\\G)\\d+(\\s|$|,|-)";
 	static final String REGEX_DIGITS_AT_START = "^\\d+\\s";
 	static final String REGEX_INDEX_DELIMITER = "(,|\\s)";
 	static final String REGEX_ONLY_DIGITS = "\\b\\d+\\b";
@@ -42,6 +43,9 @@ public class ParserConstants {
 	static final int DEFAULT_INDEX_NUMBER = -1;
 	static final int FIRST_INDEX = 0;
 	static final int INVALID_SIZE = -1;
+	static final int ONE_WORD = 1;
+	static final int TWO_WORDS = 2;
+	static final int THREE_WORDS = 3;
 
 	// Date related constants
 	static final int CENTURY = 100;
@@ -62,22 +66,29 @@ public class ParserConstants {
 	static final String DATE_FORMAT_DAY_MONTH_LONG_YEAR_SHORT_NOSPACE = "dMMMMuu";
 	static final String DATE_FORMAT_DAY_MONTH_SHORT_YEAR_LONG_NOSPACE = "dMMMuuuu";
 	static final String DATE_FORMAT_DAY_MONTH_SHORT_YEAR_SHORT_NOSPACE = "dMMMuu";
-	static final String DATE_FORMAT_DAY_MONTH_LONG_YEAR_LONG = "d MMMM uuuu";
-	static final String DATE_FORMAT_DAY_MONTH_LONG_YEAR_SHORT = "d MMMM uu";
-	static final String DATE_FORMAT_DAY_MONTH_SHORT_YEAR_LONG = "d MMM uuuu";
-	static final String DATE_FORMAT_DAY_MONTH_SHORT_YEAR_SHORT = "d MMM uu";
+	static final String DATE_FORMAT_DAY_MONTH_LONG_SPACE_YEAR_LONG = "dMMMM uuuu";
+	static final String DATE_FORMAT_DAY_MONTH_LONG_SPACE_YEAR_SHORT = "dMMMM uu";
+	static final String DATE_FORMAT_DAY_MONTH_SHORT_SPACE_YEAR_LONG = "dMMM uuuu";
+	static final String DATE_FORMAT_DAY_MONTH_SHORT_SPACE_YEAR_SHORT = "dMMM uu";
+	static final String DATE_FORMAT_DAY_SPACE_MONTH_LONG_YEAR_LONG = "d MMMMuuuu";
+	static final String DATE_FORMAT_DAY_SPACE_MONTH_LONG_YEAR_SHORT = "d MMMMuu";
+	static final String DATE_FORMAT_DAY_SPACE_MONTH_SHORT_YEAR_LONG = "d MMMuuuu";
+	static final String DATE_FORMAT_DAY_SPACE_MONTH_SHORT_YEAR_SHORT = "d MMMuu";
+	static final String DATE_FORMAT_DAY_SPACE_MONTH_LONG_SPACE_YEAR_LONG = "d MMMM uuuu";
+	static final String DATE_FORMAT_DAY_SPACE_MONTH_LONG_SPACE_YEAR_SHORT = "d MMMM uu";
+	static final String DATE_FORMAT_DAY_SPACE_MONTH_SHORT_SPACE_YEAR_LONG = "d MMM uuuu";
+	static final String DATE_FORMAT_DAY_SPACE_MONTH_SHORT_SPACE_YEAR_SHORT = "d MMM uu";
 	static final String DATE_FORMAT_DAY_MONTH_LONG_NOSPACE = "dMMMM";
 	static final String DATE_FORMAT_DAY_MONTH_SHORT_NOSPACE = "dMMM";
 	static final String DATE_FORMAT_DAY_MONTH_SHORT = "d MMM";
 	static final String DATE_FORMAT_DAY_MONTH_LONG = "d MMMM";
-	/*
-	 * static final String DATE_FORMAT_DAY_MONTH_LONG_COMMA_YEAR_LONG =
-	 * "d MMMM, uuuu"; static final String
-	 * DATE_FORMAT_DAY_MONTH_LONG_COMMA_YEAR_SHORT = "d MMMM, uu"; static final
-	 * String DATE_FORMAT_DAY_MONTH_SHORT_COMMA_YEAR_LONG = "d MMM, uuuu";
-	 * static final String DATE_FORMAT_DAY_MONTH_SHORT_COMMA_YEAR_SHORT =
-	 * "d MMM, uu";
-	 */
+
+	static final String[] DAY_DURATION = {"day", "days", "week", "weeks", "month", "months", "year", "years", "yr", "yrs"};
+	static final int LAST_INDEX_OF_DAY = 1;
+	static final int LAST_INDEX_OF_WEEK = 3;
+	static final int LAST_INDEX_OF_MONTH = 5;
+	static final int LAST_INDEX_OF_YEAR = 9;
+	
 	static final String[] UPCOMING_DAYS = { "today", "tdy", "tomorrow", "tmr", "tmw", "tmrw", "overmorrow", "day after tomorrow", "day after tmr", "day after tmw", "day after tmrw" };
 	static final String[] UPCOMING_PERIOD_KEYWORD = { "this", "next", /* "next to next" */ };
 	// Days of the week

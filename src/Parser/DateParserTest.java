@@ -227,6 +227,18 @@ public class DateParserTest {
 		assertEquals("She is getting married", dateObj.getTaskDetails());
 		assertEquals("2016-04-13", output);
 	}
+	
+	@Test
+	public void testFinDates10() {
+		dateObj = new DateParser("She is getting married after 3 days  ");
+		dateObj.findDates();
+		String output = "";
+		for (LocalDate date : dateObj.getDateList()) {
+			output = output + date.toString();
+		}
+		assertEquals("She is getting married after", dateObj.getTaskDetails());
+		assertEquals(LocalDate.now().plusDays(3).toString(), output);
+	}
 
 	@Test
 	public void testGetUpComingDayDate1() {
@@ -323,6 +335,24 @@ public class DateParserTest {
 		
 		LocalDate date = dateObj.getUpcomingDayDate(word);
 		assertEquals(LocalDate.now().plusDays(2), date);
+	}
+	
+	@Test
+	public void checkHasDayDuration() {
+		dateObj = new DateParser();
+		String text = "3days";
+		assertEquals(true, dateObj.hasDayDuration(text));
+	}
+	
+	@Test
+	public void checkGetFirstXWords() {
+		String text = "Hello it's me. I was wondering if after all these years";
+		
+		dateObj = new DateParser();
+		assertEquals(null, dateObj.getFirstXWords(text, 0));
+		assertEquals("Hello", dateObj.getFirstXWords(text, 1));
+		assertEquals("Hello it's me.", dateObj.getFirstXWords(text, 3));
+		assertEquals(null, dateObj.getFirstXWords(text, 18));
 	}
 	
 	
