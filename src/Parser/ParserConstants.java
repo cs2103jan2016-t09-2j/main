@@ -29,7 +29,7 @@ public class ParserConstants {
 	static final String REGEX_TIME = "(^|\\s|\\G)((\\d{1,2}(:|\\.)\\d{2})|(\\d{3,4}))(\\s|$)";
 	static final String REGEX_DATE = "(\\s|^|\\G)\\d{1,2}(-|/)\\d{1,2}(-|/)(\\d{4}|\\d{2})(\\s|$)";
 	static final String REGEX_POSSIBLE_DATE = "(^|\\s)\\w";
-	static final String REGEX_POSSIBLE_DAY_DURATION = "^\\d+[A-Za-z]{2,}";
+	static final String REGEX_POSSIBLE_DURATION = "^\\d+[A-Za-z]{2,}";
 	static final String REGEX_POSSIBLE_TIME = "(^|\\s)\\d";
 	// static final String REGEX_POSSIBLE_TIME = "(^|\\s|\\G)\\d";
 	static final String REGEX_DIGITS_VALID_END = "(\\s|^|,|-|\\G)\\d+(\\s|$|,|-)";
@@ -83,13 +83,15 @@ public class ParserConstants {
 	static final String DATE_FORMAT_DAY_MONTH_SHORT = "d MMM";
 	static final String DATE_FORMAT_DAY_MONTH_LONG = "d MMMM";
 
-	static final String[] DAY_DURATION = {"day", "days", "week", "weeks", "month", "months", "year", "years", "yr", "yrs"};
+	static final String[] DAY_DURATION = { "day", "days", "week", "weeks", "month", "months", "year", "years", "yr",
+			"yrs" };
 	static final int LAST_INDEX_OF_DAY = 1;
 	static final int LAST_INDEX_OF_WEEK = 3;
 	static final int LAST_INDEX_OF_MONTH = 5;
 	static final int LAST_INDEX_OF_YEAR = 9;
-	
-	static final String[] UPCOMING_DAYS = { "today", "tdy", "tomorrow", "tmr", "tmw", "tmrw", "overmorrow", "day after tomorrow", "day after tmr", "day after tmw", "day after tmrw" };
+
+	static final String[] UPCOMING_DAYS = { "today", "tdy", "tomorrow", "tmr", "tmw", "tmrw", "overmorrow",
+			"day after tomorrow", "day after tmr", "day after tmw", "day after tmrw" };
 	static final String[] UPCOMING_PERIOD_KEYWORD = { "this", "next", /* "next to next" */ };
 	// Days of the week
 	static final String[] DAYS_OF_WEEK_SHORT = { "", "mon", "tue", "wed", "thu", "fri", "sat", "sun" };
@@ -112,6 +114,10 @@ public class ParserConstants {
 	static final String TIME_FORMAT_24HOUR = "Hmm";
 	static final String TIME_FORMAT_24HOUR_COLON = "H:mm";
 	static final String TIME_FORMAT_24HOUR_PERIOD = "H.mm";
+
+	static final String[] TIME_DURATION = { "mins", "min", "minutes", "minute", "hr", "hrs", "hours", "hour" };
+	static final int LAST_INDEX_OF_MIN = 3;
+	static final int LAST_INDEX_OF_HOUR = 7;
 
 	static final char WHITE_SPACE = ' ';
 

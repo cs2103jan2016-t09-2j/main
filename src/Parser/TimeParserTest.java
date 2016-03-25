@@ -4,6 +4,7 @@ import org.junit.Test;
 import static org.junit.Assert.assertEquals;
 
 import java.time.LocalTime;
+import java.time.temporal.ChronoUnit;
 
 public class TimeParserTest {
 
@@ -62,5 +63,21 @@ public class TimeParserTest {
 		String expectedTime ="09:00";
 		assertEquals(expectedTime, output);
 		assertEquals("Go to CS2103 Tutorial", timeObj.getTaskDetails());
+	}
+	
+	@Test
+	public void testFindTime1(){
+		String testString = "Meet Darwin 3 hrs";
+		String output = "";
+		timeObj = new TimeParser(testString);
+		timeObj.findTimes();
+		
+		if(timeObj.getTimeList() != null) {
+			for (LocalTime time : timeObj.getTimeList()) {
+				output += time.toString();
+			}
+		}
+		assertEquals(LocalTime.now().plusHours(3).truncatedTo(ChronoUnit.MINUTES).toString(), output);
+		assertEquals("Meet Darwin", timeObj.getTaskDetails());
 	}
 }

@@ -47,7 +47,7 @@ public class DateParser {
 
 	/****************** GETTER METHODS ***********************/
 	public String getTaskDetails() {
-		return this.taskDetails;
+		return cleanupExtraWhitespace(this.taskDetails);
 	}
 
 	ArrayList<LocalDate> getDateList() {
@@ -340,7 +340,7 @@ public class DateParser {
 	public boolean isFirstWordDayDuration(String inputString)
 			throws NullPointerException, NumberFormatException, IndexOutOfBoundsException {
 		String firstWord = getFirstXWords(inputString, ParserConstants.ONE_WORD);
-		if (firstWord.matches(ParserConstants.REGEX_POSSIBLE_DAY_DURATION)) {
+		if (firstWord.matches(ParserConstants.REGEX_POSSIBLE_DURATION)) {
 			int splitPos = -1;
 			for (int index = ParserConstants.FIRST_INDEX; index < firstWord.length(); index++) {
 				if (!Character.isDigit(firstWord.charAt(index))) {
@@ -402,7 +402,7 @@ public class DateParser {
 				}
 			}
 		}
-		return -1; // if absent
+		return ParserConstants.DEFAULT_INDEX_NUMBER; // if absent
 	}
 
 	public void addDateToList(LocalDate parsedDate) {

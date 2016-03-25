@@ -9,6 +9,7 @@ import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
 import java.time.format.DateTimeParseException;
+import java.time.temporal.ChronoUnit;
 import java.util.regex.Pattern;
 import java.util.regex.Matcher;
 
@@ -62,7 +63,7 @@ public class TimeParser {
 
 	/******************* GETTER METHODS ***********************/
 	public String getTaskDetails() {
-		return this.taskDetails;
+		return cleanupExtraWhitespace(this.taskDetails);
 	}
 
 	public ArrayList<LocalTime> getTimeList() {
@@ -89,8 +90,12 @@ public class TimeParser {
 		Pattern timePattern = Pattern.compile(ParserConstants.REGEX_POSSIBLE_TIME);
 		Matcher timeMatcher = timePattern.matcher(taskDetails);
 		while (timeMatcher.find()) {
-			String tempString = CommandParser.cleanupExtraWhitespace(taskDetails.substring(timeMatcher.start()));
+			String tempString = cleanupExtraWhitespace(taskDetails.substring(timeMatcher.start()));
 			addToListIfValidTime(tempString);
+			
+			if(hasTimeDuration(tempString)) {
+				addValidTimeToList(getParsedTimeDuration(tempString));
+			}
 		}
 	}
 
@@ -140,9 +145,127 @@ public class TimeParser {
 		String firstCharacter = endText.charAt(ParserConstants.FIRST_INDEX) + ParserConstants.STRING_EMPTY;
 		return hasInDictionary(ParserConstants.VALID_END, firstCharacter);
 	}
+	
+	public LocalTime getParsedTimeDuration(String inputString) {
+		try {
+			String firstWord = getFirstXWords(inputString, ParserConstants.ONE_WORD);
+			String secondWord = "";
+			if(isFirstWordTimeDuration(inputString)) {
+				int splitPos = -1;
+				for (int index = ParserConstants.FIRST_INDEX; index < firstWord.length(); index++) {
+					if (!Character.isDigit(firstWord.charAt(index))) {
+						splitPos = index;
+						break;
+					}
+				}
+				removeTimeFromTaskDetails(firstWord);
+				secondWord = firstWord.substring(splitPos);
+				firstWord = firstWord.substring(ParserConstants.FIRST_INDEX, splitPos);	
+			} else {
+				String first2Words = getFirstXWords(inputString, ParserConstants.TWO_WORDS);
+				secondWord = first2Words.replace(firstWord, ParserConstants.STRING_WHITESPACE).trim();
+				removeTimeFromTaskDetails(first2Words);
+			}
+			LocalTime parsedTime = getTimeDuration(firstWord, secondWord);
+			return parsedTime;
+		} catch (Exception e) {
+			// no exception encountered, just a precaution
+		}
+		return null;
+	}
+
+	public LocalTime getTimeDuration(String firstWord, String secondWord) {
+		LocalTime parsedTime = getTimeNow();
+		int unitsToAdd = Integer.parseInt(firstWord);
+		int indexOfKeyword = indexOf(secondWord, ParserConstants.TIME_DURATION);
+		if (indexOfKeyword <= ParserConstants.LAST_INDEX_OF_MIN) {
+			parsedTime = parsedTime.plusMinutes(unitsToAdd);
+		} else  {
+			parsedTime = parsedTime.plusHours(unitsToAdd);
+		} 
+		return parsedTime;
+	}
+	
+	public boolean hasTimeDuration(String tempString) {
+		try {
+			return isFirstWordTimeDuration(tempString) || isFirstTwoWordsTimeDuration(tempString);
+		} catch (NullPointerException e) {
+			// do nothing
+		} catch (NumberFormatException e) {
+			// do nothing
+		} catch (IndexOutOfBoundsException e) {
+			// do nothing
+		}
+		return false;
+	}
+
+	public boolean isFirstWordTimeDuration(String inputString)
+			throws NullPointerException, NumberFormatException, IndexOutOfBoundsException {
+		String firstWord = getFirstXWords(inputString, ParserConstants.ONE_WORD);
+		if (firstWord.matches(ParserConstants.REGEX_POSSIBLE_DURATION)) {
+			int splitPos = -1;
+			for (int index = ParserConstants.FIRST_INDEX; index < firstWord.length(); index++) {
+				if (!Character.isDigit(firstWord.charAt(index))) {
+					splitPos = index;
+					break;
+				}
+			}
+			String secondWord = firstWord.substring(splitPos);
+			firstWord = firstWord.substring(ParserConstants.FIRST_INDEX, splitPos);
+			if (hasInDictionary(ParserConstants.TIME_DURATION, secondWord)) {
+				Integer.parseInt(firstWord);
+				return true;
+			}
+		}
+		return false;
+	}
+
+	public boolean isFirstTwoWordsTimeDuration(String inputString) throws NullPointerException, NumberFormatException {
+		String firstWord = getFirstXWords(inputString, ParserConstants.ONE_WORD);
+		String first2Words = getFirstXWords(inputString, ParserConstants.TWO_WORDS);
+		String secondWord = first2Words.replace(firstWord, ParserConstants.STRING_WHITESPACE).trim();
+
+		if (hasInDictionary(ParserConstants.TIME_DURATION, secondWord)) {
+			Integer.parseInt(firstWord);
+			return true;
+		}
+		return false;
+	}
 
 	public void addValidTimeToList(LocalTime parsedTime) {
 		timeList.add(parsedTime);
+	}
+	
+	public LocalTime getTimeNow(){
+		return LocalTime.now().truncatedTo(ChronoUnit.MINUTES);
+	}
+
+	public String getFirstXWords(String wordToSplit, int x) {
+
+		if (wordToSplit != null && !wordToSplit.isEmpty() && x > 0) {
+			String[] words = wordToSplit.split(ParserConstants.STRING_WHITESPACE);
+
+			if (words.length >= x) {
+				String firstXWords = ParserConstants.STRING_EMPTY;
+				for (int index = ParserConstants.FIRST_INDEX; index < x; index++) {
+					firstXWords += ParserConstants.STRING_WHITESPACE + words[index];
+				}
+				return cleanupExtraWhitespace(firstXWords);
+			}
+		}
+
+		return null;
+	}
+	
+	public int indexOf(String word, String[] array) {
+		if (hasInDictionary(array, word)) {
+			for (int index = ParserConstants.FIRST_INDEX; index < array.length; index++) {
+				if (word.equalsIgnoreCase(array[index])) {
+					return index;
+				}
+			}
+		}
+		return ParserConstants.DEFAULT_INDEX_NUMBER; // if absent
 	}
 
 	private boolean hasInDictionary(String[] dictionary, String wordToFind) {
@@ -153,6 +276,20 @@ public class TimeParser {
 			}
 		}
 		return false;
+	}
+
+	/**
+	 * This method removes the unnecessary white spaces present in the string.
+	 * 
+	 * @param someText
+	 *            is any string with several white spaces.
+	 * @return someText excluding the extra unnecessary white spaces.
+	 */
+	public String cleanupExtraWhitespace(String someText) {
+		Pattern extraSpace = Pattern.compile(ParserConstants.REGEX_EXTRA_WHITESPACE);
+		Matcher regexMatcher = extraSpace.matcher(someText.trim());
+		String cleanText = regexMatcher.replaceAll(ParserConstants.STRING_WHITESPACE);
+		return cleanText;
 	}
 
 	/**
