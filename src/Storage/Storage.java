@@ -31,8 +31,6 @@ public class Storage {
 	private ArrayList<Task> scheduledTasksOverDue = new ArrayList<Task>();
 
 	private static final String defaultPathName = "C:\\ScheduleHacks";
-//	private static String setPathName = setDirectoryName();
-	//private static final String usedPathName = currentDirectoryName();
 	private static String currentPathName;
 
 	private static Logger logger = Logger.getLogger("Storage");
@@ -120,9 +118,16 @@ public class Storage {
 				e.printStackTrace();
 			}
 			fileDirectory.changeDirectory(oldDirectoryName, currentPathName);	
+				
 		}
+		
 	}
-
+	
+	public String getCurrentPathName(){
+		return currentPathName;
+	}
+	
+	
 	/*
 	 * Setter Methods
 	 */
