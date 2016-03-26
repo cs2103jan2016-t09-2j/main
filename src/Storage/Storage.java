@@ -17,8 +17,8 @@ import com.google.gson.JsonSyntaxException;
 import java.util.logging.Logger;
 import java.util.logging.Level;
 
-import ScheduleHacks.History;
 import ScheduleHacks.Task;
+import ScheduleHacks.LogFile;
 
 public class Storage {
 
@@ -33,7 +33,7 @@ public class Storage {
 	private static final String defaultPathName = "C:\\ScheduleHacks";
 	private static String currentPathName;
 
-	private static Logger logger = Logger.getLogger("Storage");
+	LogFile myLogger = new LogFile();
 
 	private static final String storageLocFile = "DataLocation.txt";
 	private static final String currentFile = "currentFile.json";
@@ -60,13 +60,6 @@ public class Storage {
 	
 	private Storage() {
 		
-		directoryInit();
-		
-	}
-
-
-
-	private void directoryInit() {
 		if(currentPathName == null || currentPathName.isEmpty()){
 			try {
 				File file = new File(storageLocFile);
@@ -87,8 +80,8 @@ public class Storage {
 			}		
 			fileDirectory.createMainDirectory(currentPathName);					
 		}
+		
 	}
-
 
 
 	// apply singleton
@@ -123,7 +116,7 @@ public class Storage {
 		
 	}
 	
-	public String getCurrentPathName(){
+	public static String getCurrentPathName(){
 		return currentPathName;
 	}
 	
@@ -185,17 +178,17 @@ public class Storage {
 			ArrayList<Task> scheduledTasksOverDue) {
 
 		try {
-		//	logger.log(Level.INFO, LOG_WRITING_ARCHIVE_FILE);
+			myLogger.log(Level.INFO, LOG_WRITING_ARCHIVE_FILE);
 			writeToArchiveFile(floatingTasksComplete, scheduledTasksComplete);
 		} catch (Exception e1) {
-			//logger.log(Level.WARNING, LOG_ERROR_WRITE_ARCHIVE_FILE);
+			myLogger.log(Level.WARNING, LOG_ERROR_WRITE_ARCHIVE_FILE);
 			e1.printStackTrace();
 		}
 		try {
-		//	logger.log(Level.INFO, LOG_WRITING_CURRENT_FILE);
+			myLogger.log(Level.INFO, LOG_WRITING_CURRENT_FILE);
 			writeToCurrentFile(scheduledTasksToDo, floatingTasksToDo, scheduledTasksOverDue);
 		} catch (Exception e) {
-			logger.log(Level.WARNING, LOG_ERROR_WRITE_CURRENT_FILE);
+			myLogger.log(Level.WARNING, LOG_ERROR_WRITE_CURRENT_FILE);
 			e.printStackTrace();
 		}
 	}
@@ -209,17 +202,17 @@ public class Storage {
 		setScheduledTasksToDo(new ArrayList<Task>());
 
 		try {
-		//	logger.log(Level.INFO, LOG_READING_ARCHIVE_FILE);
+			myLogger.log(Level.INFO, LOG_READING_ARCHIVE_FILE);
 			readFromArchiveFile(floatingTasksComplete, scheduledTasksComplete);
 		} catch (Exception e) {
-	//		logger.log(Level.INFO, LOG_ARCHIVE_FILE_NOT_FOUND);
+			myLogger.log(Level.INFO, LOG_ARCHIVE_FILE_NOT_FOUND);
 			e.printStackTrace();
 		}
 		try {
-		//	logger.log(Level.INFO, LOG_READING_CURRENT_FILE);
+			myLogger.log(Level.INFO, LOG_READING_CURRENT_FILE);
 			readFromCurrentFile(scheduledTasksToDo, floatingTasksToDo, scheduledTasksOverDue);
 		} catch (Exception e) {
-			logger.log(Level.INFO, LOG_CURRENT_FILE_NOT_FOUND);
+			myLogger.log(Level.INFO, LOG_CURRENT_FILE_NOT_FOUND);
 			e.printStackTrace();
 		}
 	}
@@ -245,9 +238,10 @@ public class Storage {
 				bw.newLine();
 			}
 			bw.close();
-			//logger.log(Level.INFO, LOG_WROTE_ARCHIVE_FILE);
+			myLogger.log(Level.INFO, LOG_WROTE_ARCHIVE_FILE);
+			
 		} catch (Exception e) {
-	//		logger.log(Level.WARNING, LOG_ERROR_WRITE_ARCHIVE_FILE);
+			myLogger.log(Level.WARNING, LOG_ERROR_WRITE_ARCHIVE_FILE);
 		}
 	}
 
@@ -282,9 +276,9 @@ public class Storage {
 			}
 
 			bw.close();
-			//logger.log(Level.INFO, LOG_WROTE_CURRENT_FILE);
+			myLogger.log(Level.INFO, LOG_WROTE_CURRENT_FILE);
 		} catch (Exception e) {
-			logger.log(Level.WARNING, LOG_ERROR_WRITE_CURRENT_FILE);
+			myLogger.log(Level.WARNING, LOG_ERROR_WRITE_CURRENT_FILE);
 
 		}
 	}
@@ -312,12 +306,12 @@ public class Storage {
 		}
 
 		catch (FileNotFoundException f) {
-			logger.log(Level.WARNING, LOG_ARCHIVE_FILE_NOT_FOUND);
+			myLogger.log(Level.WARNING, LOG_ARCHIVE_FILE_NOT_FOUND);
 		} catch (JsonSyntaxException e) {
-			logger.log(Level.WARNING, LOG_JSONSYNTAX_EXCEPTION);
+			myLogger.log(Level.WARNING, LOG_JSONSYNTAX_EXCEPTION);
 			e.printStackTrace();
 		} catch (IOException e) {
-			logger.log(Level.WARNING, LOG_IO_EXCEPTION);
+			myLogger.log(Level.WARNING, LOG_IO_EXCEPTION);
 			e.printStackTrace();
 		}
 
@@ -352,12 +346,12 @@ public class Storage {
 
 		catch (FileNotFoundException f) {
 
-			logger.log(Level.WARNING, LOG_CURRENT_FILE_NOT_FOUND);
+			myLogger.log(Level.WARNING, LOG_CURRENT_FILE_NOT_FOUND);
 		} catch (JsonSyntaxException e) {
-			logger.log(Level.WARNING, LOG_JSONSYNTAX_EXCEPTION);
+			myLogger.log(Level.WARNING, LOG_JSONSYNTAX_EXCEPTION);
 			e.printStackTrace();
 		} catch (IOException e) {
-			logger.log(Level.WARNING, LOG_IO_EXCEPTION);
+			myLogger.log(Level.WARNING, LOG_IO_EXCEPTION);
 			e.printStackTrace();
 		}
 	}

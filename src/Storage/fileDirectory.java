@@ -9,9 +9,11 @@ import java.util.logging.Logger;
 import java.util.logging.Level;
 import org.apache.commons.io.FileUtils;
 
+import ScheduleHacks.LogFile;
+
 public class fileDirectory {
 
-	private static Logger logger = Logger.getLogger("Storage");
+	static LogFile myLogger = new LogFile();
 
 	private static final String LOG_SET_FILE_DIRECTORY = "File directory created";
 	private static final String LOG_DIRECTORY_EXISTS = "File directory already exists";
@@ -24,9 +26,9 @@ public class fileDirectory {
 		try {
 			if (!folder.exists()) {
 				folder.mkdir();
-				logger.log(Level.INFO, LOG_SET_FILE_DIRECTORY);
+				myLogger.log(Level.INFO, LOG_SET_FILE_DIRECTORY);
 			} else {
-				logger.log(Level.INFO, LOG_DIRECTORY_EXISTS);
+				myLogger.log(Level.INFO, LOG_DIRECTORY_EXISTS);
 			}
 		} catch (Exception E) {
 		}
@@ -50,7 +52,7 @@ public class fileDirectory {
 		}
 
 		catch (Exception e) {
-			 logger.log(Level.INFO,LOG_DIRECTORY_ERROR);
+			 myLogger.log(Level.INFO,LOG_DIRECTORY_ERROR);
 			//System.out.println(e.getMessage());
 		}
 	}
