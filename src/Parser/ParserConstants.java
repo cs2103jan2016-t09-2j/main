@@ -136,6 +136,6 @@ public class ParserConstants {
 	static final String[] MONTHS_LONG = { "", "january", "february", "march", "april", "may", "june", "july", "august",
 			"september", "october", "november", "december" };
 
-	static final String[] VALID_END = { ",", " ", "" };
+	static final String[] VALID_END = { ",", " ", ".", "" };
 
 }

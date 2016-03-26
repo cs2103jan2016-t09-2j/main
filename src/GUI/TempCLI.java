@@ -28,10 +28,9 @@ public class TempCLI {
 	private static Logic logicObj = Logic.getInstance();
 
 	private DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("dd-MM-uuuu");
-	
+
 	public static int count = 1;
-	
-	
+
 	private String userCommand;
 
 	public static void main(String[] args) {
@@ -43,12 +42,12 @@ public class TempCLI {
 	private void startScheduleHacks(Logic logicObj) {
 		logicObj.startExecution();
 		while (true) {
-			//printTaskLists(logicObj);
+			// printTaskLists(logicObj);
 			readInput();
 			executeInput(logicObj);
 		}
 	}
-	
+
 	public void setUserCommand(String newCommand) {
 		this.userCommand = newCommand;
 	}
@@ -64,33 +63,33 @@ public class TempCLI {
 	public void executeInput(Logic logicObj) {
 		count = 1;
 		logicObj.executeCommand(getUserCommand());
-		//logicObj.autoChangeTaskStatus();
+		// logicObj.autoChangeTaskStatus();
 		if (!logicObj.hasSearchList()) {
 			printTaskLists(logicObj);
 		}
-		if(!logicObj.getFeedBack().isEmpty())
-		showToUser(logicObj.getFeedBack());
-		
+		if (logicObj.getFeedBack() != null && !logicObj.getFeedBack().isEmpty())
+			showToUser(logicObj.getFeedBack());
+
 	}
-	
+
 	public void printSearchTaskLists(ArrayList<Task> listToPrint) {
 		System.out.println();
 		System.out.println("***********************************************************");
 		System.out.println("                          SEARCH QUERY ");
 		System.out.println("***********************************************************");
-		//showTimedTaskListToUser(logicObj.getSearchedTasks());
-		
+		// showTimedTaskListToUser(logicObj.getSearchedTasks());
+
 		for (Task task : listToPrint) {
 			if (task.isFloatingTask())
 				printUntimedTask(task);
 			else
 				printTimedTask(task);
 		}
-		
+
 		System.out.println("***********************************************************");
 		System.out.println();
 	}
-	
+
 	public void printTaskLists(Logic logicObj) {
 		System.out.println();
 		System.out.println("******** OVERDUE TASKS ********");
@@ -113,7 +112,7 @@ public class TempCLI {
 			printUntimedTask(task);
 		}
 	}
-	
+
 	private void printUntimedTask(Task task) {
 		System.out.println((count++) + ". " + task.getDescription());
 	}
@@ -135,10 +134,11 @@ public class TempCLI {
 		}
 		System.out.println(task.getEndDate().format(dateFormat));
 	}
-	
-	public Logic getLogicObj (Logic logicObj) {
+
+	public Logic getLogicObj(Logic logicObj) {
 		return logicObj;
 	}
+
 	public static void exitScheduleHacks() {
 		showToUser(MESSAGE_BYE);
 		System.exit(0);
@@ -152,8 +152,5 @@ public class TempCLI {
 	public static void showToUser(String someText) {
 		System.out.println(someText);
 	}
-	
-	
-	
-}
 
+}

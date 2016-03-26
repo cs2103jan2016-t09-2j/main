@@ -265,8 +265,9 @@ public class Logic {
 	public void setNewDirectoryPath(Task executeTask) {
 		try {
 			storage.setCurrentPathName(executeTask.getDescription());
+			setFeedBack("Directory Path Sucessfully Changed!");
 		} catch (Exception e) {
-			System.out.println("Invalid Directory Path!!");
+			setFeedBack("Invalid Directory Path!!");
 		}
 	}
 
