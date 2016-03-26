@@ -1,6 +1,7 @@
 package ScheduleHacks;
 
-import java.util.Stack;
+import java.util.ArrayDeque;
+import java.util.Deque;
 
 import ScheduleHacks.OldCommand.COMMAND_TYPE;
 
@@ -8,12 +9,12 @@ public class History {
 
 	private static History object = null;
 
-	Stack<OldCommand> undoStack;
-	Stack<OldCommand> redoStack;
+	Deque<OldCommand> undoDeque;
+	Deque<OldCommand> redoDeque;
 
 	private History() {
-		undoStack = new Stack<OldCommand>();
-		redoStack = new Stack<OldCommand>();
+		undoDeque = new ArrayDeque<OldCommand>();
+		redoDeque = new ArrayDeque<OldCommand>();
 	}
 
 	public static History getInstance() {
@@ -25,34 +26,34 @@ public class History {
 
 	public void addToUndoList(OldCommand cmd) {
 		OldCommand tempCmd = new OldCommand(cmd.getCommandType(), cmd.getTaskList(), cmd.getIndexList());
-		undoStack.push(execute(tempCmd));
+		undoDeque.addFirst(execute(tempCmd));
 	}
 
 	public void addToRedoList(OldCommand cmd) {
 		OldCommand tempCmd = new OldCommand(cmd.getCommandType(), cmd.getTaskList(), cmd.getIndexList());
-		redoStack.push(execute(tempCmd));
+		redoDeque.addFirst(execute(tempCmd));
 	}
 
 	public OldCommand getFromUndoList() throws Exception {
-		if(undoStack.isEmpty()) {
+		if(undoDeque.isEmpty()) {
 			throw new Exception ("Empty Undo Stack");
 		}
-		OldCommand getUndo = undoStack.pop();
+		OldCommand getUndo = undoDeque.removeFirst();
 		addToRedoList(getUndo);
 		return getUndo;
 	}
 
 	public OldCommand getFromRedoList()throws Exception {
-		if(redoStack.isEmpty()) {
+		if(redoDeque.isEmpty()) {
 			throw new Exception ("Empty Redo Stack");
 		}
-		OldCommand getRedo = redoStack.pop();
+		OldCommand getRedo = redoDeque.removeFirst();
 		addToUndoList(getRedo);
 		return getRedo;
 	}
 
 	public void clearRedoStack() {
-		redoStack.clear();
+		redoDeque.clear();
 	}
 
 	private OldCommand execute(OldCommand executeCommand) {
