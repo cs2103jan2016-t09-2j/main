@@ -1,6 +1,9 @@
 package ScheduleHacks;
 
+import java.awt.event.KeyEvent;
+
 import java.util.ArrayDeque;
+import java.util.ArrayList;
 import java.util.Deque;
 
 import ScheduleHacks.OldCommand.COMMAND_TYPE;
@@ -11,6 +14,8 @@ public class History {
 
 	Deque<OldCommand> undoDeque;
 	Deque<OldCommand> redoDeque;
+	
+	ArrayList<String> stringHistory = new ArrayList<String>();
 
 	private History() {
 		undoDeque = new ArrayDeque<OldCommand>();
@@ -35,17 +40,17 @@ public class History {
 	}
 
 	public OldCommand getFromUndoList() throws Exception {
-		if(undoDeque.isEmpty()) {
-			throw new Exception ("Empty Undo Stack");
+		if (undoDeque.isEmpty()) {
+			throw new Exception("Empty Undo Stack");
 		}
 		OldCommand getUndo = undoDeque.removeFirst();
 		addToRedoList(getUndo);
 		return getUndo;
 	}
 
-	public OldCommand getFromRedoList()throws Exception {
-		if(redoDeque.isEmpty()) {
-			throw new Exception ("Empty Redo Stack");
+	public OldCommand getFromRedoList() throws Exception {
+		if (redoDeque.isEmpty()) {
+			throw new Exception("Empty Redo Stack");
 		}
 		OldCommand getRedo = redoDeque.removeFirst();
 		addToUndoList(getRedo);
@@ -85,6 +90,24 @@ public class History {
 		}
 
 		return executeCommand;
+	}
+	
+	public void commandHistory(String command){
+	
+		stringHistory.add("");
+		String display = command;
+		
+	}
+	
+
+	public void keyPressed(KeyEvent e) {
+
+		int key = e.getKeyCode();
+
+		if (key == KeyEvent.VK_UP) {
+			
+		}
+
 	}
 
 }

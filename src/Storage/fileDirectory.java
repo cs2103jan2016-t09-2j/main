@@ -13,14 +13,9 @@ public class fileDirectory {
 
 	private static Logger logger = Logger.getLogger("Storage");
 
-	private static final String LOG_SETTING_FILE_DIRECTORY = "Setting file directory...";
 	private static final String LOG_SET_FILE_DIRECTORY = "File directory created";
 	private static final String LOG_DIRECTORY_EXISTS = "File directory already exists";
 	private static final String LOG_DIRECTORY_ERROR = "File directory can't be created";
-
-	public static void main(String args[]) {
-
-	}
 
 	public static void createMainDirectory(String PathName) {
 
@@ -55,8 +50,8 @@ public class fileDirectory {
 		}
 
 		catch (Exception e) {
-			// logger.log(Level.INFO,LOG_DIRECTORY_ERROR);
-			System.out.println(e.getMessage());
+			 logger.log(Level.INFO,LOG_DIRECTORY_ERROR);
+			//System.out.println(e.getMessage());
 		}
 	}
 }
