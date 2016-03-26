@@ -105,7 +105,7 @@ public class History {
 		int key = e.getKeyCode();
 
 		if (key == KeyEvent.VK_UP) {
-			
+			System.out.println("helooooooooo");
 		}
 
 	}
