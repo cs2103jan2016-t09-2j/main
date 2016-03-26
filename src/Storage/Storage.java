@@ -60,6 +60,12 @@ public class Storage {
 	
 	private Storage() {
 		
+		initStorage();
+		
+	}
+
+
+	private void initStorage() {
 		if(currentPathName == null || currentPathName.isEmpty()){
 			try {
 				File file = new File(storageLocFile);
@@ -80,7 +86,6 @@ public class Storage {
 			}		
 			fileDirectory.createMainDirectory(currentPathName);					
 		}
-		
 	}
 
 

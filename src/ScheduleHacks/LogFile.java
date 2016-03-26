@@ -42,18 +42,7 @@ public class LogFile {
 		logger.log(level,msg);
 		
 	}
-	
-	public static void logp(Level level, String sourceClass, String sourceMethod, String msg){
-		logger.logp(level, sourceClass, sourceMethod, msg);
-	}
-	
-	public void entering(String sourceClass, String sourceMethod){
-		logger.entering(sourceClass, sourceMethod);
-	}
-	
-	public void exiting(String sourceClass, String sourceMethod){
-		logger.exiting(sourceClass, sourceMethod);
-	}
+
 	
 	
 }
