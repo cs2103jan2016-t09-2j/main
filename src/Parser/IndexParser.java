@@ -78,8 +78,8 @@ public class IndexParser {
 	 * 
 	 */
 	public void detectMultipleIndexes() throws Exception {
-		String taskStatement = getTaskDetails();
-		String[] tempIndexArray = taskStatement.split(ParserConstants.STRING_COMMA);
+		String taskStatement = formatDelimiters(getTaskDetails());
+		String[] tempIndexArray = taskStatement.split(ParserConstants.REGEX_INDEX_DELIMITER);
 		// ArrayList<String> tempIndexList = convertArrayToList(tempIndexArray);
 		generateIndexList(tempIndexArray);
 		sortIndexList();
@@ -117,15 +117,7 @@ public class IndexParser {
 		Collections.sort(indexList);
 	}
 
-	public void addRangeToIndexList(String item) throws Exception {
-		ArrayList<Integer> indexRange = getRange(item);
-		for (int index : indexRange) {
-			indexList.add(index);
-		}
-	}
-
-	private ArrayList<Integer> getRange(String item) throws Exception {
-		ArrayList<Integer> indexRange = new ArrayList<Integer>();
+	private void addRangeToIndexList(String item) throws Exception {
 		String[] range = new String[2];
 		if (item.contains(ParserConstants.STRING_HYPHEN)) {
 			range = item.split(ParserConstants.STRING_HYPHEN);
@@ -140,13 +132,11 @@ public class IndexParser {
 		for (int index = ParserConstants.FIRST_INDEX; index < range.length; index++) {
 			range[index] = cleanupExtraWhitespace(range[index]);
 		}
-		
+
 		for (int index = Integer.parseInt(range[ParserConstants.FIRST_INDEX]); index <= Integer
 				.parseInt(range[range.length - 1]); index++) {
-			indexRange.add(index);
+			indexList.add(index);
 		}
-
-		return indexRange;
 	}
 
 	private boolean isOnlyDigits(String item) {
@@ -168,6 +158,12 @@ public class IndexParser {
 
 	public boolean containsIndexRange(String item) {
 		return item.contains(ParserConstants.STRING_HYPHEN) || item.contains(ParserConstants.STRING_TO);
+	}
+
+	public String formatDelimiters(String textToFormat) {
+		textToFormat = textToFormat.replaceAll(ParserConstants.REGEX_COMMA_WITH_SPACES, ParserConstants.STRING_COMMA)
+				.replaceAll(ParserConstants.REGEX_RANGE_DELIMITER, ParserConstants.STRING_HYPHEN);
+		return textToFormat;
 	}
 
 	/**

@@ -26,8 +26,6 @@ public class ParserConstants {
 
 	// Regular Expressions
 	static final String REGEX_EXTRA_WHITESPACE = "\\s{2,}";
-	static final String REGEX_TIME = "(^|\\s|\\G)((\\d{1,2}(:|\\.)\\d{2})|(\\d{3,4}))(\\s|$)";
-	static final String REGEX_DATE = "(\\s|^|\\G)\\d{1,2}(-|/)\\d{1,2}(-|/)(\\d{4}|\\d{2})(\\s|$)";
 	static final String REGEX_POSSIBLE_DATE = "(^|\\s)\\w";
 	static final String REGEX_POSSIBLE_DURATION = "^\\d+[A-Za-z]{2,}";
 	static final String REGEX_POSSIBLE_TIME = "(^|\\s)\\d";
@@ -35,8 +33,10 @@ public class ParserConstants {
 	static final String REGEX_DIGITS_VALID_END = "(\\s|^|,|-|\\G)\\d+(\\s|$|,|-)";
 	static final String REGEX_DIGITS_AT_START = "^\\d+\\s";
 	static final String REGEX_INDEX_DELIMITER = "(,|\\s)";
+	static final String REGEX_RANGE_DELIMITER = "\\s*((to)|-)\\s*";
 	static final String REGEX_ONLY_DIGITS = "\\b\\d+\\b";
 	static final String REGEX_ONLY_WORDS = "\\b\\w+\\b";
+	static final String REGEX_COMMA_WITH_SPACES = "\\s*,\\s*";
 	static final String REGEX_POSSIBLE_DIRECTORY = "([A-Za-z]:\\\\\\\\\\w+)";
 
 	// Position/Index based integer constants
