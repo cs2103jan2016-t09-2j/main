@@ -11,7 +11,7 @@ public class search_Snigdha {
 
 	static int count = 1;
 
-	public void searchTask(Task taskToFind) {
+	public ArrayList<Task> searchTask(Task taskToFind) {
 
 		Logic obj = Logic.getInstance();
 
@@ -25,6 +25,8 @@ public class search_Snigdha {
 		findMatches(obj.getFloatingTasksComplete(), matchedTaskList, taskToFind);
 
 		printList(matchedTaskList);
+		
+		return matchedTaskList;
 		
 	}
 
