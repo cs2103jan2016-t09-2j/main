@@ -87,29 +87,29 @@ public class TimeParser {
 	 */
 	public void findTimes() {
 		String taskDetails = getTaskDetails();
-		String previousWord = ParserConstants.STRING_EMPTY;
-		int startPrevWord = ParserConstants.FIRST_INDEX;
-		boolean isValidTimeFormat;
 
 		Pattern timePattern = Pattern.compile(ParserConstants.REGEX_POSSIBLE_TIME);
 		Matcher timeMatcher = timePattern.matcher(taskDetails);
 		while (timeMatcher.find()) {
-			isValidTimeFormat = false;
-			previousWord = taskDetails.substring(startPrevWord, timeMatcher.start());
-			String tempString = cleanupExtraWhitespace(taskDetails.substring(timeMatcher.start()));
+			try {
+				String previousWord = getLastWordInRange(taskDetails, timeMatcher.start());
+				String tempString = cleanupExtraWhitespace(taskDetails.substring(timeMatcher.start()));
 
-			if (addToListIfValidTime(tempString)) {
-				isValidTimeFormat = true;
-			} else {
-				if (hasTimeDuration(tempString)) {
-					isValidTimeFormat = true;
-					addValidTimeToList(getParsedTimeDuration(tempString));
+				if (addToListIfValidTime(tempString, previousWord)) {
+				} else {
+					if (hasTimeDuration(tempString)) {
+						String timeDuration = getTimeDurationWord(tempString);
+						addValidTimeToList(getParsedTimeDuration(timeDuration));
+						if (isValidKeyWord(previousWord) || isValidRangeKeyWord(previousWord)) {
+							removeTimeFromTaskDetails(previousWord + ParserConstants.STRING_WHITESPACE + timeDuration);
+						} else {
+							removeTimeFromTaskDetails(timeDuration);
+						}
+					}
 				}
+			} catch (Exception e) {
+				// do nothing
 			}
-			if(isValidTimeFormat && isValidKeyWord(previousWord)) {
-				removeFromTaskDetails(startPrevWord, timeMatcher.start());
-			}
-			startPrevWord = timeMatcher.start();
 		}
 	}
 
@@ -117,7 +117,7 @@ public class TimeParser {
 	 * This method checks if the immediate String contains a time. If it is a
 	 * Valid Time, it adds it to the timeList.
 	 */
-	public boolean addToListIfValidTime(String statement) {
+	public boolean addToListIfValidTime(String statement, String keyword) {
 		String end = ParserConstants.STRING_EMPTY;
 		for (DateTimeFormatter format : generateTimeFormatList()) {
 			DateTimeFormatter myFormatter = new DateTimeFormatterBuilder().parseCaseInsensitive().append(format)
@@ -148,34 +148,33 @@ public class TimeParser {
 	}
 
 	public void removeTimeFromTaskDetails(String textToRemove) {
-		taskDetails = CommandParser
-				.cleanupExtraWhitespace(taskDetails.replace(textToRemove, ParserConstants.STRING_WHITESPACE));
-	}
-	
-	public void removeFromTaskDetails(int startIndex, int endIndex) {
-		taskDetails = taskDetails.substring(ParserConstants.FIRST_INDEX, startIndex) + ParserConstants.STRING_WHITESPACE
-				+ taskDetails.substring(endIndex);
+
+		if (taskDetails.startsWith(textToRemove)) {
+			taskDetails = CommandParser
+					.cleanupExtraWhitespace(taskDetails.replaceFirst(textToRemove, ParserConstants.STRING_WHITESPACE));
+		} else {
+			taskDetails = CommandParser
+					.cleanupExtraWhitespace(taskDetails.replace(textToRemove, ParserConstants.STRING_WHITESPACE));
+		}
 	}
 
-	public LocalTime getParsedTimeDuration(String inputString) {
+	public LocalTime getParsedTimeDuration(String text) {
 		try {
-			String firstWord = getStartString(getFirstXWords(inputString, ParserConstants.ONE_WORD));
-			String secondWord = "";
-			if (isFirstWordTimeDuration(inputString)) {
+			String firstWord = ParserConstants.STRING_EMPTY;
+			String secondWord = ParserConstants.STRING_EMPTY;
+			if (isFirstWordTimeDuration(text)) {
 				int splitPos = -1;
-				for (int index = ParserConstants.FIRST_INDEX; index < firstWord.length(); index++) {
-					if (!Character.isDigit(firstWord.charAt(index))) {
+				for (int index = ParserConstants.FIRST_INDEX; index < text.length(); index++) {
+					if (!Character.isDigit(text.charAt(index))) {
 						splitPos = index;
 						break;
 					}
 				}
-				removeTimeFromTaskDetails(firstWord);
-				secondWord = firstWord.substring(splitPos);
-				firstWord = firstWord.substring(ParserConstants.FIRST_INDEX, splitPos);
+				secondWord = text.substring(splitPos);
+				firstWord = text.substring(ParserConstants.FIRST_INDEX, splitPos);
 			} else {
-				String first2Words = getStartString(getFirstXWords(inputString, ParserConstants.TWO_WORDS));
-				secondWord = first2Words.replace(firstWord, ParserConstants.STRING_WHITESPACE).trim();
-				removeTimeFromTaskDetails(first2Words);
+				firstWord = getFirstXWords(text, ParserConstants.ONE_WORD);
+				secondWord = text.replace(firstWord, ParserConstants.STRING_WHITESPACE).trim();
 			}
 			LocalTime parsedTime = getTimeDuration(firstWord, secondWord);
 			return parsedTime;
@@ -183,6 +182,16 @@ public class TimeParser {
 			// no exception encountered, just a precaution
 		}
 		return null;
+	}
+
+	public String getTimeDurationWord(String textToSearch) {
+		String firstWord = getStartString(getFirstXWords(textToSearch, ParserConstants.ONE_WORD));
+
+		if (isFirstWordTimeDuration(textToSearch)) {
+			return firstWord;
+		} else {
+			return getStartString(getFirstXWords(textToSearch, ParserConstants.TWO_WORDS));
+		}
 	}
 
 	public LocalTime getTimeDuration(String firstWord, String secondWord) {
@@ -259,6 +268,12 @@ public class TimeParser {
 		return hasInDictionary(ParserConstants.TIME_KEYWORD, keyword.trim());
 	}
 
+	public boolean isValidRangeKeyWord(String keyword) {
+		keyword = keyword.trim();
+		return (keyword.equalsIgnoreCase(ParserConstants.STRING_HYPHEN)
+				|| keyword.equalsIgnoreCase(ParserConstants.STRING_TO)) && (timeList.size() > ParserConstants.MIN_SIZE);
+	}
+
 	private boolean isValidEnd(String endText) {
 		if (endText.isEmpty()) {
 			return true;
@@ -298,6 +313,15 @@ public class TimeParser {
 		}
 
 		return null;
+	}
+
+	public String getLastWordInRange(String text, int startIndex) {
+
+		if (text != null && !text.isEmpty() && startIndex > 0) {
+			String[] words = text.split(ParserConstants.STRING_WHITESPACE);
+			return words[words.length - 1];
+		}
+		return ParserConstants.STRING_EMPTY;
 	}
 
 	public int indexOf(String word, String[] array) {

@@ -101,6 +101,8 @@ public class ParserConstants {
 	static final String[] DAYS_OF_WEEK_LONG = { "", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday",
 			"sunday" };
 
+	static final int MIN_SIZE = 1;
+	
 	// Time related constants
 	static final int MAX_MINUTES = 59;
 	static final int MAX_HOUR = 23;

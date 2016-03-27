@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.Collections;
 //import java.util.Collections;
 
 public class DateTimeParser {
@@ -60,6 +61,7 @@ public class DateTimeParser {
 		//System.out.println(aListSize);
 		if (aListSize > INVALID_SIZE) {
 			alist = createDateTimeList(aListSize);
+			Collections.sort(alist);
 			separateDateAndTime(alist);
 		}
 	}

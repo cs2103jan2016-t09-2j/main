@@ -196,7 +196,7 @@ public class CommandParser {
 		} else if (hasInDictionary(ParserConstants.COMMAND_COMPLETE, firstWord)) {
 			newTask.setAsComplete();
 			taskStatement = taskStatement.replace(firstWord, ParserConstants.STRING_WHITESPACE);
-		} else if (dateObj.addToListIfValidDate(taskStatement)) {
+		} else if (dateObj.addToListIfValidDate(taskStatement, ParserConstants.STRING_EMPTY)) {
 			// if date
 			newTask.setEndDate(dateObj.getDateList().get(ParserConstants.FIRST_INDEX));
 			taskStatement = dateObj.getTaskDetails();
