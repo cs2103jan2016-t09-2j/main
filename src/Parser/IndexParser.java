@@ -78,6 +78,9 @@ public class IndexParser {
 	 * 
 	 */
 	public void detectMultipleIndexes() throws Exception {
+		if (taskDetails == null || taskDetails.isEmpty()) {
+			return;
+		}
 		String taskStatement = formatDelimiters(getTaskDetails());
 		String[] tempIndexArray = taskStatement.split(ParserConstants.REGEX_INDEX_DELIMITER);
 		// ArrayList<String> tempIndexList = convertArrayToList(tempIndexArray);
