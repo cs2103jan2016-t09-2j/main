@@ -87,17 +87,29 @@ public class TimeParser {
 	 */
 	public void findTimes() {
 		String taskDetails = getTaskDetails();
+		String previousWord = ParserConstants.STRING_EMPTY;
+		int startPrevWord = ParserConstants.FIRST_INDEX;
+		boolean isValidTimeFormat;
+
 		Pattern timePattern = Pattern.compile(ParserConstants.REGEX_POSSIBLE_TIME);
 		Matcher timeMatcher = timePattern.matcher(taskDetails);
 		while (timeMatcher.find()) {
+			isValidTimeFormat = false;
+			previousWord = taskDetails.substring(startPrevWord, timeMatcher.start());
 			String tempString = cleanupExtraWhitespace(taskDetails.substring(timeMatcher.start()));
 
-			if (!addToListIfValidTime(tempString)) {
-
+			if (addToListIfValidTime(tempString)) {
+				isValidTimeFormat = true;
+			} else {
 				if (hasTimeDuration(tempString)) {
+					isValidTimeFormat = true;
 					addValidTimeToList(getParsedTimeDuration(tempString));
 				}
 			}
+			if(isValidTimeFormat && isValidKeyWord(previousWord)) {
+				removeFromTaskDetails(startPrevWord, timeMatcher.start());
+			}
+			startPrevWord = timeMatcher.start();
 		}
 	}
 
@@ -138,6 +150,11 @@ public class TimeParser {
 	public void removeTimeFromTaskDetails(String textToRemove) {
 		taskDetails = CommandParser
 				.cleanupExtraWhitespace(taskDetails.replace(textToRemove, ParserConstants.STRING_WHITESPACE));
+	}
+	
+	public void removeFromTaskDetails(int startIndex, int endIndex) {
+		taskDetails = taskDetails.substring(ParserConstants.FIRST_INDEX, startIndex) + ParserConstants.STRING_WHITESPACE
+				+ taskDetails.substring(endIndex);
 	}
 
 	public LocalTime getParsedTimeDuration(String inputString) {
@@ -198,7 +215,7 @@ public class TimeParser {
 		String firstWord = getFirstXWords(inputString, ParserConstants.ONE_WORD);
 		String endString = getEnd(firstWord);
 		firstWord = getStartString(firstWord);
-		
+
 		if (firstWord.matches(ParserConstants.REGEX_POSSIBLE_DURATION)) {
 			int splitPos = -1;
 			for (int index = ParserConstants.FIRST_INDEX; index < firstWord.length(); index++) {
@@ -238,6 +255,10 @@ public class TimeParser {
 		return LocalTime.now().truncatedTo(ChronoUnit.MINUTES);
 	}
 
+	public boolean isValidKeyWord(String keyword) {
+		return hasInDictionary(ParserConstants.TIME_KEYWORD, keyword.trim());
+	}
+
 	private boolean isValidEnd(String endText) {
 		if (endText.isEmpty()) {
 			return true;
@@ -261,7 +282,7 @@ public class TimeParser {
 		}
 		return text;
 	}
-	
+
 	public String getFirstXWords(String wordToSplit, int x) {
 
 		if (wordToSplit != null && !wordToSplit.isEmpty() && x > 0) {
@@ -289,7 +310,7 @@ public class TimeParser {
 		}
 		return ParserConstants.DEFAULT_INDEX_NUMBER; // if absent
 	}
-	
+
 	public int getIndexOfNonWordChar(String word) {
 		int index = ParserConstants.DEFAULT_INDEX_NUMBER;
 

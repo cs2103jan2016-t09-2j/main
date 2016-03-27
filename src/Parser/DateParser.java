@@ -64,27 +64,52 @@ public class DateParser {
 	 */
 	public void findDates() {
 		String taskDetails = getTaskDetails();
+		String previousWord = ParserConstants.STRING_EMPTY;
+		int startPrevWord = ParserConstants.FIRST_INDEX;
+		boolean isValidDateFormat;
+
 		Pattern datePattern = Pattern.compile(ParserConstants.REGEX_POSSIBLE_DATE);
 		Matcher dateMatcher = datePattern.matcher(taskDetails);
+
 		while (dateMatcher.find()) {
-			String tempString = cleanupExtraWhitespace(taskDetails.substring(dateMatcher.start()));
 
-			if (!addToListIfValidDate(tempString)) {
-
-				String firstWord = cleanupExtraWhitespace(getFirstXWords(tempString, 1));
-				if (isDayOfWeek(firstWord)) {
-					dateList.add(getDayOfWeekDate(firstWord));
-				} else if (isUpcomingDayString(tempString)) {
-					String upcomingDay = getUpComingDayWord(tempString);
-					if (this.taskDetails.contains(upcomingDay)) {
-						dateList.add(getUpcomingDayDate(upcomingDay));
-						removeDateFromTaskDetails(upcomingDay);
+			try {
+				isValidDateFormat = false;
+				previousWord = taskDetails.substring(startPrevWord, dateMatcher.start());
+				String tempString = cleanupExtraWhitespace(taskDetails.substring(dateMatcher.start()));
+				
+				if (addToListIfValidDate(tempString)) {
+					isValidDateFormat = true;
+				} else {
+					String firstWord = cleanupExtraWhitespace(getFirstXWords(tempString, 1));
+					if (isDayOfWeek(firstWord)) {
+						isValidDateFormat = true;
+						dateList.add(getDayOfWeekDate(firstWord));
+					} else if (isUpcomingDayString(tempString)) {
+						String upcomingDay = getUpComingDayWord(tempString);
+						if (this.taskDetails.contains(upcomingDay)) {
+							dateList.add(getUpcomingDayDate(upcomingDay));
+							removeDateFromTaskDetails(upcomingDay);
+							isValidDateFormat = true;
+						}
+					} else if (hasDayDuration(tempString)) {
+						dateList.add(getParsedDayDurationDate(tempString));
+						isValidDateFormat = true;
 					}
-				} else if (hasDayDuration(tempString)) {
-					dateList.add(getParsedDayDurationDate(tempString));
 				}
+				if (isValidDateFormat && isValidKeyWord(previousWord)) {
+					removeFromTaskDetails(startPrevWord, dateMatcher.start());
+				}
+				startPrevWord = dateMatcher.start();
+			} catch (Exception e) {
+				// do nothing
 			}
 		}
+	}
+
+	public void removeFromTaskDetails(int startIndex, int endIndex) {
+		taskDetails = taskDetails.substring(ParserConstants.FIRST_INDEX, startIndex) + ParserConstants.STRING_WHITESPACE
+				+ taskDetails.substring(endIndex);
 	}
 
 	public void removeDateFromTaskDetails(String statement, ParsePosition parsePos) {
@@ -375,7 +400,7 @@ public class DateParser {
 		String first2Words = getFirstXWords(inputString, ParserConstants.TWO_WORDS);
 		String secondWord = first2Words.replace(firstWord, ParserConstants.STRING_WHITESPACE).trim();
 		String endString = getEnd(secondWord);
-		
+
 		if (hasInDictionary(ParserConstants.DAY_DURATION, getStartString(secondWord)) && isValidEnd(endString)) {
 			Integer.parseInt(firstWord);
 			return true;
@@ -425,6 +450,10 @@ public class DateParser {
 	public ArrayList<LocalDate> sortDateList(ArrayList<LocalDate> dates) {
 		Collections.sort(dates);
 		return dates;
+	}
+
+	public boolean isValidKeyWord(String keyword) {
+		return hasInDictionary(ParserConstants.DATE_KEYWORD, keyword.trim());
 	}
 
 	private boolean isValidEnd(String endText) {

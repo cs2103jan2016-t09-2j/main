@@ -90,6 +90,7 @@ public class ParserConstants {
 	static final int LAST_INDEX_OF_WEEK = 3;
 	static final int LAST_INDEX_OF_MONTH = 5;
 	static final int LAST_INDEX_OF_YEAR = 9;
+	static final String[] DATE_KEYWORD = {"by", "on", "in", "before", "from", "frm"};
 
 	static final String[] UPCOMING_DAYS = { "today", "tdy", "tomorrow", "tmr", "tmw", "tmrw", "overmorrow",
 			"day after tomorrow", "day after tmr", "day after tmw", "day after tmrw" };
@@ -119,6 +120,7 @@ public class ParserConstants {
 	static final String[] TIME_DURATION = { "mins", "min", "minutes", "minute", "hr", "hrs", "hours", "hour" };
 	static final int LAST_INDEX_OF_MIN = 3;
 	static final int LAST_INDEX_OF_HOUR = 7;
+	static final String[] TIME_KEYWORD = {"by", "at", "in", "before", "from", "frm"};
 
 	static final char WHITE_SPACE = ' ';
 
