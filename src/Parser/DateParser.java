@@ -74,7 +74,6 @@ public class DateParser {
 				String firstWord = cleanupExtraWhitespace(getFirstXWords(tempString, 1));
 				if (isDayOfWeek(firstWord)) {
 					dateList.add(getDayOfWeekDate(firstWord));
-					removeDateFromTaskDetails(firstWord);
 				} else if (isUpcomingDayString(tempString)) {
 					String upcomingDay = getUpComingDayWord(tempString);
 					if (this.taskDetails.contains(upcomingDay)) {
@@ -180,29 +179,36 @@ public class DateParser {
 	 */
 
 	public LocalDate getDayOfWeekDate(String dayOfWeek) {
-		LocalDate newDate = null;
-		if (isDayOfWeek(dayOfWeek)) {
-			newDate = LocalDate.now();
-			int dayOfWeekNumToday = newDate.getDayOfWeek().getValue();
-			int dayOfWeekValue = indexOf(dayOfWeek, ParserConstants.DAYS_OF_WEEK_LONG);
-			if (dayOfWeekValue < 0) {
-				dayOfWeekValue = indexOf(dayOfWeek, ParserConstants.DAYS_OF_WEEK_SHORT);
-			}
-			if (dayOfWeekValue < 0) {
-				dayOfWeekValue = indexOf(dayOfWeek, ParserConstants.DAYS_OF_WEEK_MEDIUM);
-			}
-			int daysToAdd = dayOfWeekValue - dayOfWeekNumToday;
-			if (daysToAdd <= 0) {
-				daysToAdd += 7;
-			}
-			newDate = newDate.plusDays(daysToAdd);
+
+		assert isDayOfWeek(dayOfWeek);
+
+		LocalDate newDate = getTodayDate();
+		dayOfWeek = getStartString(dayOfWeek);
+
+		int dayOfWeekNumToday = newDate.getDayOfWeek().getValue();
+		int dayOfWeekValue = indexOf(dayOfWeek, ParserConstants.DAYS_OF_WEEK_LONG);
+		if (dayOfWeekValue < 0) {
+			dayOfWeekValue = indexOf(dayOfWeek, ParserConstants.DAYS_OF_WEEK_SHORT);
 		}
+		if (dayOfWeekValue < 0) {
+			dayOfWeekValue = indexOf(dayOfWeek, ParserConstants.DAYS_OF_WEEK_MEDIUM);
+		}
+		int daysToAdd = dayOfWeekValue - dayOfWeekNumToday;
+		if (daysToAdd <= 0) {
+			daysToAdd += ParserConstants.DAYS_IN_WEEK;
+		}
+		newDate = newDate.plusDays(daysToAdd);
+
+		removeDateFromTaskDetails(dayOfWeek);
+
 		return newDate;
 	}
 
 	public boolean isDayOfWeek(String expectedDayOfWeek) {
-		return isDayOfWeekLong(expectedDayOfWeek) || isDayOfWeekShort(expectedDayOfWeek)
-				|| isDayOfWeekMedium(expectedDayOfWeek);
+		expectedDayOfWeek = getStartString(expectedDayOfWeek);
+
+		return (isDayOfWeekLong(expectedDayOfWeek) || isDayOfWeekShort(expectedDayOfWeek)
+				|| isDayOfWeekMedium(expectedDayOfWeek)) && isValidEnd(getEnd(expectedDayOfWeek));
 	}
 
 	/**
@@ -241,7 +247,7 @@ public class DateParser {
 	 * @return LocalDate of the upcomingDay relative to today's date
 	 */
 	public LocalDate getUpcomingDayDate(String upcomingDay) {
-		LocalDate todayDate = LocalDate.now();
+		LocalDate todayDate = getTodayDate();
 		int index = indexOf(upcomingDay, ParserConstants.UPCOMING_DAYS);
 		if (index >= 0) { /* If upcomingDay is a valid entry */
 			index /= 2;
@@ -257,19 +263,21 @@ public class DateParser {
 	}
 
 	public boolean isUpcomingDayString(String textToFind) {
-
 		if (textToFind != null && !textToFind.isEmpty()) {
 			String firstWord = getFirstXWords(textToFind, ParserConstants.ONE_WORD);
 			String firstThreeWords = getFirstXWords(textToFind, ParserConstants.THREE_WORDS);
-			return hasInDictionary(ParserConstants.UPCOMING_DAYS, firstWord)
-					|| hasInDictionary(ParserConstants.UPCOMING_DAYS, firstThreeWords);
+
+			return (hasInDictionary(ParserConstants.UPCOMING_DAYS, getStartString(firstWord))
+					&& isValidEnd(getEnd(firstWord)))
+					|| (hasInDictionary(ParserConstants.UPCOMING_DAYS, getStartString(firstThreeWords))
+							&& isValidEnd(getEnd(firstThreeWords)));
 		}
 		return false;
 	}
 
 	public String getUpComingDayWord(String textToFind) {
-		String firstWord = getFirstXWords(textToFind, ParserConstants.ONE_WORD);
-		String firstThreeWords = getFirstXWords(textToFind, ParserConstants.THREE_WORDS);
+		String firstWord = getStartString(getFirstXWords(textToFind, ParserConstants.ONE_WORD));
+		String firstThreeWords = getStartString(getFirstXWords(textToFind, ParserConstants.THREE_WORDS));
 
 		if (hasInDictionary(ParserConstants.UPCOMING_DAYS, firstWord)) {
 			return firstWord;
@@ -341,6 +349,9 @@ public class DateParser {
 	public boolean isFirstWordDayDuration(String inputString)
 			throws NullPointerException, NumberFormatException, IndexOutOfBoundsException {
 		String firstWord = getFirstXWords(inputString, ParserConstants.ONE_WORD);
+		String endString = getEnd(firstWord);
+		firstWord = getStartString(firstWord);
+
 		if (firstWord.matches(ParserConstants.REGEX_POSSIBLE_DURATION)) {
 			int splitPos = -1;
 			for (int index = ParserConstants.FIRST_INDEX; index < firstWord.length(); index++) {
@@ -351,7 +362,7 @@ public class DateParser {
 			}
 			String secondWord = firstWord.substring(splitPos);
 			firstWord = firstWord.substring(ParserConstants.FIRST_INDEX, splitPos);
-			if (hasInDictionary(ParserConstants.DAY_DURATION, secondWord)) {
+			if (hasInDictionary(ParserConstants.DAY_DURATION, secondWord) && isValidEnd(endString)) {
 				Integer.parseInt(firstWord);
 				return true;
 			}
@@ -363,8 +374,9 @@ public class DateParser {
 		String firstWord = getFirstXWords(inputString, ParserConstants.ONE_WORD);
 		String first2Words = getFirstXWords(inputString, ParserConstants.TWO_WORDS);
 		String secondWord = first2Words.replace(firstWord, ParserConstants.STRING_WHITESPACE).trim();
-
-		if (hasInDictionary(ParserConstants.DAY_DURATION, secondWord)) {
+		String endString = getEnd(secondWord);
+		
+		if (hasInDictionary(ParserConstants.DAY_DURATION, getStartString(secondWord)) && isValidEnd(endString)) {
 			Integer.parseInt(firstWord);
 			return true;
 		}
@@ -423,6 +435,22 @@ public class DateParser {
 		return hasInDictionary(ParserConstants.VALID_END, firstCharacter);
 	}
 
+	private String getEnd(String text) {
+		int indexOfNonWord = getIndexOfNonWordChar(text);
+		if (indexOfNonWord > ParserConstants.DEFAULT_INDEX_NUMBER) {
+			return text.substring(indexOfNonWord);
+		}
+		return ParserConstants.STRING_EMPTY;
+	}
+
+	private String getStartString(String text) {
+		int indexOfNonWord = getIndexOfNonWordChar(text);
+		if (indexOfNonWord > ParserConstants.DEFAULT_INDEX_NUMBER) {
+			return text.substring(ParserConstants.FIRST_INDEX, indexOfNonWord);
+		}
+		return text;
+	}
+
 	private boolean hasInDictionary(String[] dictionary, String wordsToFind) {
 		if (wordsToFind != null && !wordsToFind.isEmpty()) {
 			for (String dictionaryWords : dictionary) {
@@ -448,6 +476,24 @@ public class DateParser {
 		}
 
 		return null;
+	}
+
+	public int getIndexOfNonWordChar(String word) {
+		int index = ParserConstants.DEFAULT_INDEX_NUMBER;
+
+		if (word != null) {
+
+			for (index = ParserConstants.FIRST_INDEX; index < word.length(); index++) {
+				if (!Character.isLetterOrDigit(word.charAt(index)) && !Character.isWhitespace(word.charAt(index))) {
+					break;
+				}
+			}
+
+			if (index == word.length()) {
+				return ParserConstants.DEFAULT_INDEX_NUMBER;
+			}
+		}
+		return index;
 	}
 
 	/**
