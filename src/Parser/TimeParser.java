@@ -133,7 +133,11 @@ public class TimeParser {
 
 				if (taskDetails.contains(statement) && isValidEnd(end)) {
 					addValidTimeToList(parsedTime);
-					removeTimeFromTaskDetails(statement);
+					if (isValidKeyWord(keyword) || isValidRangeKeyWord(keyword)) {
+						removeTimeFromTaskDetails(keyword + ParserConstants.STRING_WHITESPACE + statement);
+					} else {
+						removeTimeFromTaskDetails(statement);
+					}
 					return true;
 				}
 			} catch (IndexOutOfBoundsException e) {
