@@ -20,6 +20,8 @@ public class newTopRightPanel extends JPanel{
 	private static JTextArea textArea;
 	private JScrollPane scrollPane;
 	private static int count;
+	private static String FLOATING_HEADER = "FLOATING TASKS";
+	private static String CENTER_FORMAT = "         ";
 
 	public newTopRightPanel(){
 		Dimension size = getPreferredSize();
@@ -41,17 +43,23 @@ public class newTopRightPanel extends JPanel{
 
 	public static void printOut(ArrayList<Task> List){
 
+		textArea.append(CENTER_FORMAT + FLOATING_HEADER + "\n");
 		for (Task task : List) {
 			String string = task.getDescription();
-			textArea.append(count + ". " + string + "\n");
-			count++;
+			if(string.length() < 17){
+				textArea.append(count + ". " + string + "\n");
+				count++;
+			}
+			else{
+				String[] string_split = string.split(" ");
+			}
 		}
 	}
-	
+
 	public static void clearText() {
 		textArea.setText(null);
 	}
-	
+
 	public static void setCount(int noOfTask){
 		count = noOfTask;
 	}
