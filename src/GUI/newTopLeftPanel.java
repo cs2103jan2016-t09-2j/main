@@ -21,6 +21,9 @@ public class newTopLeftPanel extends JPanel{
 	private static DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("dd-MM-uuuu");
 	private static JTextArea textArea;
 	private JScrollPane scrollPane;
+	private static String SCHEDULE_HEADER = "SCHEDULED TASKS";
+	private static String OVERDUE_HEADER = "OVERDUE TASKS";
+	private static String CENTER_FORMAT = "\t" + "                       ";
 	
 	public newTopLeftPanel(){
 		Dimension size = getPreferredSize();
@@ -48,10 +51,10 @@ public class newTopLeftPanel extends JPanel{
 	
 	public static void printOutSO(ArrayList<Task> List, String type){
 		if(type.equalsIgnoreCase("schedule")){
-			textArea.append("SCHEDULE" + "\n");
+			textArea.append(CENTER_FORMAT + SCHEDULE_HEADER + "\n");
 		}
 		else{
-			textArea.append("OVERDUE" + "\n");
+			textArea.append(CENTER_FORMAT + OVERDUE_HEADER + "\n");
 		}
 		
 		for (Task task : List) {

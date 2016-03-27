@@ -40,18 +40,44 @@ public class newBottomPanel extends JPanel{
 
 				logicObj.executeCommand(text);
 				System.out.println(text);
+				System.out.println(text.length());
 				bottomTop.setText(logicObj.getFeedBack());
-				
+
 				ArrayList<Task> OList = new ArrayList<Task>();
 				ArrayList<Task> SList = new ArrayList<Task>();
 				ArrayList<Task> FList = new ArrayList<Task>();
-				OList = logicObj.getScheduledTasksOverDue();
-				SList = logicObj.getScheduledTasksToDo();
-				FList = logicObj.getFloatingTasksToDo();
-				newTopLeftPanel.clearText();
-				newTopLeftPanel.setText(OList, SList);
-				newTopRightPanel.clearText();
-				newTopRightPanel.setText(FList);
+
+				if (!logicObj.hasSearchList()) { //print the normal display
+					OList = logicObj.getScheduledTasksOverDue();
+					SList = logicObj.getScheduledTasksToDo();
+					FList = logicObj.getFloatingTasksToDo();
+					
+					newTopLeftPanel.clearText();
+					newTopLeftPanel.setText(OList, SList);
+					newTopRightPanel.clearText();
+					newTopRightPanel.setText(FList);
+				}
+				else{ //search display
+					ArrayList<Task> searchList = new ArrayList<Task>();
+					searchList = logicObj.getSearchTasksList();
+					
+					for(Task task : searchList){
+						if(task.isFloatingTask()){
+							FList.add(task);
+						}
+						else if(task.isScheduledTask()){
+							SList.add(task);
+						}
+						else{
+							OList.add(task);
+						}
+					}
+					
+					newTopLeftPanel.clearText();
+					newTopLeftPanel.setText(OList, SList);
+					newTopRightPanel.clearText();
+					newTopRightPanel.setText(FList);
+				}
 
 			}
 		});

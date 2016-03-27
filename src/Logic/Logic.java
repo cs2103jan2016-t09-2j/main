@@ -28,6 +28,7 @@ public class Logic {
 	private ArrayList<Task> scheduledTasksComplete = new ArrayList<Task>();
 	private ArrayList<Task> scheduledTasksOverDue = new ArrayList<Task>();
 	private ArrayList<Task> recentAddedList = new ArrayList<Task>();
+	private ArrayList<Task> searchTasks = new ArrayList<Task>();
 	private int recentAddedPosition;
 	private LocalDateTime blockedStartDateTime = LocalDateTime.of(2099, 12, 31, 23, 59);
 	private LocalDateTime blockedEndDateTime = LocalDateTime.of(2199, 12, 31, 23, 59);
@@ -46,6 +47,8 @@ public class Logic {
 	private static final String FEEDBACK_REDO_VALID = "Last Action Re-Done!";
 	private static final String FEEDBACK_REDO_INVALID = "Invalid Redo!";
 	private static final String FEEDBACK_EMPTY_STRING = "";
+	private static final String FEEDBACK_SEARCH_VALID = "Search Found";
+	private static final String FEEDBACK_SEARCH_INVALID = "Search Not Found";
 	private static final String FEEDBACK_START_DATE_LATER_THAN_DEADLINE = "Start Date of Task cannot be later than Due Date of Task!";
 	private static final String FEEDBACK_INSTANCE_START_DATE_EXCEEDS_DEADLINE = "Task starts and ends on same day. Start Time of Task cannot be later or equals to End Time of Task";
 
@@ -123,6 +126,10 @@ public class Logic {
 
 	private ArrayList<Task> getRecentAddedList() {
 		return recentAddedList;
+	}
+	
+	public ArrayList<Task> getSearchTasksList() {
+		return searchTasks;
 	}
 
 	private int getRecentAddedPosition() {
@@ -207,9 +214,9 @@ public class Logic {
 	 */
 
 	private void execute(Command.COMMAND_TYPE executeCommand, Command retrievedCommand, Task executeTask) {
-		
+
 		isSearchCommand = false;
-		
+
 		switch (executeCommand) {
 		case ADD_TASK:
 			addTask(executeTask, false);
@@ -299,7 +306,7 @@ public class Logic {
 		}
 		return indexOfTask;
 	}
-	
+
 	private int addTaskInOrder(Task executeTask) {
 		int position = -1;
 		boolean overLapWithBlock = true;
@@ -324,11 +331,11 @@ public class Logic {
 
 		return position + 1;
 	}
-	
+
 	private void blockTask(Command retrievedCommand) {
 		Task slotToBlock = retrievedCommand.getTaskDetails();
 		blockedEndDateTime = LocalDateTime.of(slotToBlock.getEndDate(), slotToBlock.getEndTime());
-		
+
 		if (slotToBlock.getStartDate() != null) {
 			blockedStartDateTime = LocalDateTime.of(slotToBlock.getStartDate(), slotToBlock.getStartTime());
 		} else {
@@ -336,11 +343,11 @@ public class Logic {
 		}
 		setFeedBack("Slot blocked from " + blockedStartDateTime + "to " + blockedEndDateTime);
 	}
-	
+
 	private boolean compareWithBlockedRange(Task executeTask) {
 		LocalDateTime taskEndDateTime = LocalDateTime.of(executeTask.getEndDate(), executeTask.getEndTime());
 		LocalDateTime taskStartDateTime = null;
-		
+
 		if (executeTask.getStartDate() != null) {
 			taskStartDateTime = LocalDateTime.of(executeTask.getStartDate(), executeTask.getStartTime());
 		}
@@ -413,7 +420,7 @@ public class Logic {
 						setFeedBack(FEEDBACK_TASK_DELETED);
 						/* setScheduledTasksToDo(scheduledTasksToDo); */
 					} else if (taskDigit.get(i) <= scheduledTasksToDo.size() + floatingTasksToDo.size()
-							+ scheduledTasksOverDue.size()) {
+					+ scheduledTasksOverDue.size()) {
 						removedTask = floatingTasksToDo.remove(
 								taskDigit.get(i) - 1 - scheduledTasksToDo.size() - scheduledTasksOverDue.size());
 						taskList.add(0, removedTask);
@@ -453,7 +460,7 @@ public class Logic {
 			} else if (indexToEdit <= scheduledTasksOverDue.size() + scheduledTasksToDo.size()) {
 				taskToEdit = scheduledTasksToDo.remove(indexToEdit - 1 - scheduledTasksOverDue.size());
 			} else if (indexToEdit <= scheduledTasksToDo.size() + floatingTasksToDo.size()
-					+ scheduledTasksOverDue.size()) {
+			+ scheduledTasksOverDue.size()) {
 				taskToEdit = floatingTasksToDo
 						.remove(indexToEdit - 1 - scheduledTasksToDo.size() - scheduledTasksOverDue.size());
 			} else {
@@ -514,7 +521,7 @@ public class Logic {
 						Task completedTask = markAsComplete(scheduledTasksToDo, scheduledTasksComplete, taskToComplete);
 						taskList.add(0, completedTask);
 					} else if (taskToComplete < scheduledTasksOverDue.size() + scheduledTasksToDo.size()
-							+ floatingTasksToDo.size()) {
+					+ floatingTasksToDo.size()) {
 						taskToComplete -= (scheduledTasksToDo.size() + scheduledTasksOverDue.size());
 						Task completedTask = markAsComplete(floatingTasksToDo, floatingTasksComplete, taskToComplete);
 						taskList.add(0, completedTask);
@@ -678,20 +685,27 @@ public class Logic {
 	}
 
 	private void searchTask(Task taskToFind) {
-		
+
 		if(taskToFind.getDescription().equalsIgnoreCase("all")) {
 			execute(Command.COMMAND_TYPE.HOME, null, null);
 			return;
 		}
-		
+
 		isSearchCommand = true;
-		
+
 		search_Snigdha obj = new search_Snigdha();
-		obj.searchTask(taskToFind);
-		
+		searchTasks = obj.searchTask(taskToFind);
+
+		if(searchTasks.size() > 0){
+			setFeedBack(FEEDBACK_SEARCH_VALID);
+		}
+		else{
+			setFeedBack(FEEDBACK_SEARCH_INVALID);
+		}
+
 		setFeedBack(FEEDBACK_EMPTY_STRING);
 	}
-	
+
 	public boolean hasSearchList() {
 		return isSearchCommand;
 	}
