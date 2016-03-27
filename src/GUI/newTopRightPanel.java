@@ -42,17 +42,35 @@ public class newTopRightPanel extends JPanel{
 	}
 
 	public static void printOut(ArrayList<Task> List){
-
+		String combinedString = "";
+		int total_length;
 		textArea.append(CENTER_FORMAT + FLOATING_HEADER + "\n");
 		for (Task task : List) {
 			String string = task.getDescription();
+			textArea.append(count + ".");
 			if(string.length() < 17){
-				textArea.append(count + ". " + string + "\n");
-				count++;
+				textArea.append(" " + string + "\n");
 			}
 			else{
-				String[] string_split = string.split(" ");
+				String[] arr = string.split(" ");
+				for(int i = 0; i < arr.length; i++){
+					total_length = combinedString.length() + arr[i].length();
+					if(total_length < 17){
+						combinedString += " ";
+						combinedString += arr[i];
+					}
+					else{
+						textArea.append(combinedString + "\n");
+						combinedString = "    ";
+						combinedString += arr[i];
+					}
+					if(i == arr.length - 1){
+						textArea.append(combinedString + "\n");
+						combinedString = "";
+					}
+				}
 			}
+			count++;
 		}
 	}
 

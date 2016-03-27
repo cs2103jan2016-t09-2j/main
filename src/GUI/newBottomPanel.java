@@ -40,7 +40,6 @@ public class newBottomPanel extends JPanel{
 
 				logicObj.executeCommand(text);
 				System.out.println(text);
-				System.out.println(text.length());
 				bottomTop.setText(logicObj.getFeedBack());
 
 				ArrayList<Task> OList = new ArrayList<Task>();
@@ -51,16 +50,11 @@ public class newBottomPanel extends JPanel{
 					OList = logicObj.getScheduledTasksOverDue();
 					SList = logicObj.getScheduledTasksToDo();
 					FList = logicObj.getFloatingTasksToDo();
-					
-					newTopLeftPanel.clearText();
-					newTopLeftPanel.setText(OList, SList);
-					newTopRightPanel.clearText();
-					newTopRightPanel.setText(FList);
 				}
 				else{ //search display
 					ArrayList<Task> searchList = new ArrayList<Task>();
 					searchList = logicObj.getSearchTasksList();
-					
+
 					for(Task task : searchList){
 						if(task.isFloatingTask()){
 							FList.add(task);
@@ -70,14 +64,16 @@ public class newBottomPanel extends JPanel{
 						}
 						else{
 							OList.add(task);
+							System.out.println("Enter this magic circle");
 						}
 					}
-					
-					newTopLeftPanel.clearText();
-					newTopLeftPanel.setText(OList, SList);
-					newTopRightPanel.clearText();
-					newTopRightPanel.setText(FList);
 				}
+
+				newTopLeftPanel.clearText();
+				newTopLeftPanel.setText(OList, SList);
+				newTopRightPanel.clearText();
+				newTopRightPanel.setText(FList);
+
 
 			}
 		});

@@ -706,8 +706,6 @@ public class Logic {
 		else{
 			setFeedBack(FEEDBACK_SEARCH_INVALID);
 		}
-
-		setFeedBack(FEEDBACK_EMPTY_STRING);
 	}
 
 	public boolean hasSearchList() {
