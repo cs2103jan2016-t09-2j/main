@@ -29,11 +29,12 @@ public class Logic {
 	private ArrayList<Task> scheduledTasksOverDue = new ArrayList<Task>();
 	private ArrayList<Task> recentAddedList = new ArrayList<Task>();
 	private int recentAddedPosition;
+	private LocalDateTime blockedStartDateTime = LocalDateTime.of(2099, 12, 31, 23, 59);
+	private LocalDateTime blockedEndDateTime = LocalDateTime.of(2199, 12, 31, 23, 59);
 
 	private static final String FEEDBACK_INVALID_COMMAND = "Invalid Command!";
 	private static final String FEEDBACK_INVALID_COMMAND_TYPE = "Invalid command type entered!";
 	private static final String FEEDBACK_TASK_ADDED = "Task Added Successfully";
-	private static final String FEEDBACK_TASK_NOT_ADDED = "New task being added is overlapping with existing task's timeline to a severe extent! Task not added!";
 	private static final String FEEDBACK_TASK_DELETED = "Task Deleted Successfully";
 	private static final String FEEDBACK_NON_EXISTENT_TASK_NUM = "Task number entered was not found!";
 	private static final String FEEDBACK_NEGATIVE_TASK_NUM = "Task number entered cannot be 0 or negative!";
@@ -248,8 +249,7 @@ public class Logic {
 			setFeedBack(FEEDBACK_EMPTY_STRING);
 			break;
 		case BLOCK_SLOT:
-			//do the needful
-			// incomplete
+			blockTask(retrievedCommand);
 			break;
 		case HELP:
 			// do the needful
@@ -299,10 +299,10 @@ public class Logic {
 		}
 		return indexOfTask;
 	}
-
+	
 	private int addTaskInOrder(Task executeTask) {
 		int position = -1;
-		boolean outcome = false;
+		boolean overLapWithBlock = true;
 
 		if (LocalDateTime.of(executeTask.getEndDate(), executeTask.getEndTime()).isBefore(LocalDateTime.now())) {
 			position = sortTaskList(scheduledTasksOverDue, executeTask);
@@ -310,147 +310,46 @@ public class Logic {
 			setMostRecentTaskAdded(scheduledTasksOverDue, position);
 			setFeedBack(FEEDBACK_TASK_ADDED);
 		} else {
-			outcome = addTaskConsideration(scheduledTasksToDo, executeTask);
-			if (outcome == true) {
+			overLapWithBlock = compareWithBlockedRange(executeTask);
+			if (overLapWithBlock == false) {
 				position = sortTaskList(scheduledTasksToDo, executeTask);
 				scheduledTasksToDo.add(position, executeTask);
 				setMostRecentTaskAdded(scheduledTasksToDo, position);
 				setFeedBack(FEEDBACK_TASK_ADDED);
 				position = position + scheduledTasksOverDue.size();
 			} else {
-				setFeedBack(FEEDBACK_TASK_NOT_ADDED);
+				setFeedBack("Task not added as it inteferes with blocked slot of "+blockedStartDateTime+"to "+blockedEndDateTime);
 			}
 		}
 
 		return position + 1;
 	}
-
-	private boolean addTaskConsideration(ArrayList<Task> listOfTasks, Task taskToAdd) {
-		Long timeClashInMins = 0L;
-		int tracker = 0;
-		ArrayList<Integer> result = new ArrayList<Integer>();
-		ArrayList<Integer> trackPosition = new ArrayList<Integer>();
-		ArrayList<Integer> trackClashedTimings = new ArrayList<Integer>();
-
-		for (int i = 0; i < listOfTasks.size(); i++) {
-			LocalDateTime taskDueDateTime = LocalDateTime.of(listOfTasks.get(i).getEndDate(),
-					listOfTasks.get(i).getEndTime());
-
-			if (listOfTasks.get(i).getStartDate() != null) {
-				LocalDateTime taskCommencingDateTime = LocalDateTime.of(listOfTasks.get(i).getStartDate(),
-						listOfTasks.get(i).getStartTime());
-				Long periodInMins = java.time.Duration.between(taskCommencingDateTime, taskDueDateTime).toMinutes();
-
-				if (taskToAdd.getStartDate() != null) {
-					LocalDateTime addingTaskStartDateTime = LocalDateTime.of(taskToAdd.getStartDate(),
-							taskToAdd.getStartTime());
-					LocalDateTime addingTaskDueDateTime = LocalDateTime.of(taskToAdd.getEndDate(),
-							taskToAdd.getEndTime());
-					Long newTaskPeriodInMins = java.time.Duration
-							.between(addingTaskStartDateTime, addingTaskDueDateTime).toMinutes();
-
-					if (((addingTaskDueDateTime.compareTo(taskCommencingDateTime)) > 0)
-							&& ((addingTaskDueDateTime.compareTo(taskDueDateTime)) <= 0)) {
-						if (addingTaskStartDateTime.compareTo(taskCommencingDateTime) <= 0) {
-							tracker++;
-							if ((listOfTasks.get(i).getOverLapped()) == false) {
-								timeClashInMins = java.time.Duration
-										.between(taskCommencingDateTime, addingTaskDueDateTime).toMinutes();
-								result.add(compareClashInTasks(periodInMins.intValue(), newTaskPeriodInMins.intValue(),
-										timeClashInMins.intValue()));
-								if (result.get(result.size() - 1) == 1) {
-									trackPosition.add(i);
-									trackClashedTimings.add(timeClashInMins.intValue());
-									tracker++;
-								}
-							}
-						} else if (addingTaskStartDateTime.compareTo(taskCommencingDateTime) > 0) {
-							tracker++;
-							if ((listOfTasks.get(i).getOverLapped()) == false) {
-								timeClashInMins = java.time.Duration
-										.between(addingTaskStartDateTime, addingTaskDueDateTime).toMinutes();
-								result.add(compareClashInTasks(periodInMins.intValue(), newTaskPeriodInMins.intValue(),
-										timeClashInMins.intValue()));
-								if (result.get(result.size() - 1) == 1) {
-									trackPosition.add(i);
-									trackClashedTimings.add(timeClashInMins.intValue());
-									tracker++;
-								}
-							}
-						}
-					} else if (((addingTaskDueDateTime.compareTo(taskCommencingDateTime)) > 0)
-							&& ((addingTaskDueDateTime.compareTo(taskDueDateTime)) > 0)) {
-						if (addingTaskStartDateTime.compareTo(taskCommencingDateTime) <= 0) {
-							tracker++;
-							if ((listOfTasks.get(i).getOverLapped()) == false) {
-								timeClashInMins = java.time.Duration.between(taskCommencingDateTime, taskDueDateTime)
-										.toMinutes();
-								result.add(compareClashInTasks(periodInMins.intValue(), newTaskPeriodInMins.intValue(),
-										timeClashInMins.intValue()));
-								if (result.get(result.size() - 1) == 1) {
-									trackPosition.add(i);
-									trackClashedTimings.add(timeClashInMins.intValue());
-									tracker++;
-								}
-							}
-						} else if (((addingTaskStartDateTime.compareTo(taskCommencingDateTime)) > 0)
-								&& ((addingTaskStartDateTime.compareTo(taskDueDateTime)) < 0)) {
-							tracker++;
-							if ((listOfTasks.get(i).getOverLapped()) == false) {
-								timeClashInMins = java.time.Duration.between(addingTaskStartDateTime, taskDueDateTime)
-										.toMinutes();
-								result.add(compareClashInTasks(periodInMins.intValue(), newTaskPeriodInMins.intValue(),
-										timeClashInMins.intValue()));
-								if (result.get(result.size() - 1) == 1) {
-									trackPosition.add(i);
-									trackClashedTimings.add(timeClashInMins.intValue());
-									tracker++;
-								}
-							}
-						}
-					}
-				}
-			}
+	
+	private void blockTask(Command retrievedCommand) {
+		Task slotToBlock = retrievedCommand.getTaskDetails();
+		blockedEndDateTime = LocalDateTime.of(slotToBlock.getEndDate(), slotToBlock.getEndTime());
+		
+		if (slotToBlock.getStartDate() != null) {
+			blockedStartDateTime = LocalDateTime.of(slotToBlock.getStartDate(), slotToBlock.getStartTime());
+		} else {
+			blockedStartDateTime = LocalDateTime.now();
 		}
-		if ((result.size() == 1) && (result.get(0) == 1) && (tracker == 2)) {
-			scheduledTasksToDo.get(trackPosition.get(0)).setAsOverLapped(true);
-			taskToAdd.setAsOverLapped(true);
+		setFeedBack("Slot blocked from " + blockedStartDateTime + "to " + blockedEndDateTime);
+	}
+	
+	private boolean compareWithBlockedRange(Task executeTask) {
+		LocalDateTime taskEndDateTime = LocalDateTime.of(executeTask.getEndDate(), executeTask.getEndTime());
+		LocalDateTime taskStartDateTime = null;
+		
+		if (executeTask.getStartDate() != null) {
+			taskStartDateTime = LocalDateTime.of(executeTask.getStartDate(), executeTask.getStartTime());
+		}
+		if ((taskStartDateTime != null) && (taskEndDateTime.compareTo(blockedStartDateTime)>0) && (taskStartDateTime.compareTo(blockedEndDateTime)<0)) {
 			return true;
-		} else if ((result.size() == 0) && (tracker == 0)) {
+		} else if ((taskStartDateTime == null) && (taskEndDateTime.compareTo(blockedStartDateTime)>0) && (taskEndDateTime.compareTo(blockedEndDateTime)<0)) {
 			return true;
 		} else {
 			return false;
-		}
-	}
-
-	private int compareClashInTasks(int existingTaskDuration, int newTaskDuration, int timeClash) {
-
-		if ((existingTaskDuration <= 60) || (newTaskDuration <= 60)) {
-			if (timeClash > 0) {
-				return -1;
-			} else {
-				return 1;
-			}
-		} else if ((existingTaskDuration <= 120) || (newTaskDuration <= 120)) {
-			if ((timeClash >= 0) && (timeClash <= 30)) {
-				return 1;
-			} else {
-				return -1;
-			}
-		} else if ((existingTaskDuration <= 180) || (newTaskDuration <= 180)) {
-			if ((timeClash >= 0) && (timeClash <= 60)) {
-				return 1;
-			} else {
-				return -1;
-			}
-		} else if ((existingTaskDuration <= 240) || (newTaskDuration <= 240)) {
-			if ((timeClash >= 0) && (timeClash <= 90)) {
-				return 1;
-			} else {
-				return -1;
-			}
-		} else {
-			return 1;
 		}
 	}
 
@@ -509,22 +408,6 @@ public class Logic {
 
 						/* setScheduledTasksOverDue(scheduledTasksOverDue); */
 					} else if (taskDigit.get(i) <= scheduledTasksOverDue.size() + scheduledTasksToDo.size()) {
-						if ((scheduledTasksToDo.get(taskDigit.get(i) - 1 - scheduledTasksOverDue.size())
-								.getOverLapped()) == true) {
-							int keepTrack = 0;
-							for (int j = 0; j <= (taskDigit.get(i) - 1 - scheduledTasksOverDue.size()); j++) {
-								if ((scheduledTasksToDo.get(j).getOverLapped()) == true) {
-									keepTrack++;
-								}
-							}
-							if ((keepTrack % 2) == 0) {
-								scheduledTasksToDo.get(taskDigit.get(i) - 2 - scheduledTasksOverDue.size())
-										.setAsOverLapped(false);
-							} else if ((keepTrack % 2) == 1) {
-								scheduledTasksToDo.get(taskDigit.get(i) - scheduledTasksOverDue.size())
-										.setAsOverLapped(false);
-							}
-						}
 						removedTask = scheduledTasksToDo.remove(taskDigit.get(i) - 1 - scheduledTasksOverDue.size());
 						taskList.add(0, removedTask);
 						setFeedBack(FEEDBACK_TASK_DELETED);
@@ -627,22 +510,6 @@ public class Logic {
 								taskToComplete);
 						taskList.add(0, completedTask);
 					} else if (taskToComplete < scheduledTasksToDo.size() + scheduledTasksOverDue.size()) {
-						if ((scheduledTasksToDo.get(taskIndex.get(i) - 1 - scheduledTasksOverDue.size())
-								.getOverLapped()) == true) {
-							int keepTrack = 0;
-							for (int j = 0; j <= (taskIndex.get(i) - 1 - scheduledTasksOverDue.size()); j++) {
-								if ((scheduledTasksToDo.get(j).getOverLapped()) == true) {
-									keepTrack++;
-								}
-							}
-							if ((keepTrack % 2) == 0) {
-								scheduledTasksToDo.get(taskIndex.get(i) - 2 - scheduledTasksOverDue.size())
-										.setAsOverLapped(false);
-							} else if ((keepTrack % 2) == 1) {
-								scheduledTasksToDo.get(taskIndex.get(i) - scheduledTasksOverDue.size())
-										.setAsOverLapped(false);
-							}
-						}
 						taskToComplete -= (scheduledTasksOverDue.size());
 						Task completedTask = markAsComplete(scheduledTasksToDo, scheduledTasksComplete, taskToComplete);
 						taskList.add(0, completedTask);
