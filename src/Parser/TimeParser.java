@@ -140,17 +140,9 @@ public class TimeParser {
 				.cleanupExtraWhitespace(taskDetails.replace(textToRemove, ParserConstants.STRING_WHITESPACE));
 	}
 
-	private boolean isValidEnd(String endText) {
-		if (endText.isEmpty()) {
-			return true;
-		}
-		String firstCharacter = endText.charAt(ParserConstants.FIRST_INDEX) + ParserConstants.STRING_EMPTY;
-		return hasInDictionary(ParserConstants.VALID_END, firstCharacter);
-	}
-
 	public LocalTime getParsedTimeDuration(String inputString) {
 		try {
-			String firstWord = getFirstXWords(inputString, ParserConstants.ONE_WORD);
+			String firstWord = getStartString(getFirstXWords(inputString, ParserConstants.ONE_WORD));
 			String secondWord = "";
 			if (isFirstWordTimeDuration(inputString)) {
 				int splitPos = -1;
@@ -164,7 +156,7 @@ public class TimeParser {
 				secondWord = firstWord.substring(splitPos);
 				firstWord = firstWord.substring(ParserConstants.FIRST_INDEX, splitPos);
 			} else {
-				String first2Words = getFirstXWords(inputString, ParserConstants.TWO_WORDS);
+				String first2Words = getStartString(getFirstXWords(inputString, ParserConstants.TWO_WORDS));
 				secondWord = first2Words.replace(firstWord, ParserConstants.STRING_WHITESPACE).trim();
 				removeTimeFromTaskDetails(first2Words);
 			}
@@ -204,6 +196,9 @@ public class TimeParser {
 	public boolean isFirstWordTimeDuration(String inputString)
 			throws NullPointerException, NumberFormatException, IndexOutOfBoundsException {
 		String firstWord = getFirstXWords(inputString, ParserConstants.ONE_WORD);
+		String endString = getEnd(firstWord);
+		firstWord = getStartString(firstWord);
+		
 		if (firstWord.matches(ParserConstants.REGEX_POSSIBLE_DURATION)) {
 			int splitPos = -1;
 			for (int index = ParserConstants.FIRST_INDEX; index < firstWord.length(); index++) {
@@ -214,7 +209,7 @@ public class TimeParser {
 			}
 			String secondWord = firstWord.substring(splitPos);
 			firstWord = firstWord.substring(ParserConstants.FIRST_INDEX, splitPos);
-			if (hasInDictionary(ParserConstants.TIME_DURATION, secondWord)) {
+			if (hasInDictionary(ParserConstants.TIME_DURATION, secondWord) && isValidEnd(endString)) {
 				Integer.parseInt(firstWord);
 				return true;
 			}
@@ -226,8 +221,9 @@ public class TimeParser {
 		String firstWord = getFirstXWords(inputString, ParserConstants.ONE_WORD);
 		String first2Words = getFirstXWords(inputString, ParserConstants.TWO_WORDS);
 		String secondWord = first2Words.replace(firstWord, ParserConstants.STRING_WHITESPACE).trim();
+		String endString = getEnd(secondWord);
 
-		if (hasInDictionary(ParserConstants.TIME_DURATION, secondWord)) {
+		if (hasInDictionary(ParserConstants.TIME_DURATION, getStartString(secondWord)) && isValidEnd(endString)) {
 			Integer.parseInt(firstWord);
 			return true;
 		}
@@ -242,6 +238,30 @@ public class TimeParser {
 		return LocalTime.now().truncatedTo(ChronoUnit.MINUTES);
 	}
 
+	private boolean isValidEnd(String endText) {
+		if (endText.isEmpty()) {
+			return true;
+		}
+		String firstCharacter = endText.charAt(ParserConstants.FIRST_INDEX) + ParserConstants.STRING_EMPTY;
+		return hasInDictionary(ParserConstants.VALID_END, firstCharacter);
+	}
+
+	private String getEnd(String text) {
+		int indexOfNonWord = getIndexOfNonWordChar(text);
+		if (indexOfNonWord > ParserConstants.DEFAULT_INDEX_NUMBER) {
+			return text.substring(indexOfNonWord);
+		}
+		return ParserConstants.STRING_EMPTY;
+	}
+
+	private String getStartString(String text) {
+		int indexOfNonWord = getIndexOfNonWordChar(text);
+		if (indexOfNonWord > ParserConstants.DEFAULT_INDEX_NUMBER) {
+			return text.substring(ParserConstants.FIRST_INDEX, indexOfNonWord);
+		}
+		return text;
+	}
+	
 	public String getFirstXWords(String wordToSplit, int x) {
 
 		if (wordToSplit != null && !wordToSplit.isEmpty() && x > 0) {
@@ -268,6 +288,24 @@ public class TimeParser {
 			}
 		}
 		return ParserConstants.DEFAULT_INDEX_NUMBER; // if absent
+	}
+	
+	public int getIndexOfNonWordChar(String word) {
+		int index = ParserConstants.DEFAULT_INDEX_NUMBER;
+
+		if (word != null) {
+
+			for (index = ParserConstants.FIRST_INDEX; index < word.length(); index++) {
+				if (!Character.isLetterOrDigit(word.charAt(index)) && !Character.isWhitespace(word.charAt(index))) {
+					break;
+				}
+			}
+
+			if (index == word.length()) {
+				return ParserConstants.DEFAULT_INDEX_NUMBER;
+			}
+		}
+		return index;
 	}
 
 	private boolean hasInDictionary(String[] dictionary, String wordToFind) {
