@@ -23,7 +23,7 @@ public class Logic {
 	private History historyObject = History.getInstance();
 
 	private ArrayList<Task> floatingTasksToDo = new ArrayList<Task>();
-	private ArrayList<Task> floatingTasksComplete = new ArrayList<Task>();
+	ArrayList<Task> floatingTasksComplete = new ArrayList<Task>();
 	private ArrayList<Task> scheduledTasksToDo = new ArrayList<Task>();
 	private ArrayList<Task> scheduledTasksComplete = new ArrayList<Task>();
 	private ArrayList<Task> scheduledTasksOverDue = new ArrayList<Task>();
@@ -179,6 +179,10 @@ public class Logic {
 			typeCommand = getCommand(existingCommand);
 			Task getTaskToExecute = getTaskDescription(existingCommand);
 			execute(typeCommand, existingCommand, getTaskToExecute);
+			for (int i=0; i<scheduledTasksOverDue.size(); i++) {
+				addTask(scheduledTasksOverDue.remove(i), false);
+			}
+			autoChangeTaskStatus();
 			storage.storeToFiles(getFloatingTasksToDo(), getFloatingTasksComplete(), getScheduledTasksToDo(),
 					getScheduledTasksComplete(), getScheduledTasksOverDue());
 		} catch (Exception e) {
@@ -555,7 +559,7 @@ public class Logic {
 	 * scheduledtaskstodo to scheduledtasksoverdue when date and time has
 	 * exceeded due date and due time specified for scheduled task
 	 */
-	public void autoChangeTaskStatus() {
+	private void autoChangeTaskStatus() {
 		LocalDateTime presentDateTime = LocalDateTime.now();
 
 		for (int i = 0; i < scheduledTasksToDo.size(); i++) {
@@ -569,7 +573,7 @@ public class Logic {
 	}
 
 	private void changeStatusToOverdue(int i) {
-		scheduledTasksOverDue.add(scheduledTasksOverDue.size(), scheduledTasksToDo.get(i));
+		scheduledTasksOverDue.add(scheduledTasksToDo.get(i));
 		setFeedBack("Task " + scheduledTasksToDo.get(i).getDescription() + " has exceeded deadline");
 		scheduledTasksToDo.remove(i);
 		/*
