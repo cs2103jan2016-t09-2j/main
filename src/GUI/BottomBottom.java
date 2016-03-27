@@ -47,7 +47,7 @@ public class BottomBottom extends JPanel{
         listenerList.add(DetailListener.class, listener);
     }
 
-    public void removeDetailListener(DetailListener listener) {
+ /*   public void removeDetailListener(DetailListener listener) {
         listenerList.remove(DetailListener.class, listener);
-    }
+    }*/
 }

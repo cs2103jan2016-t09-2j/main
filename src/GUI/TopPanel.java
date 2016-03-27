@@ -6,14 +6,14 @@ import java.awt.GridBagLayout;
 import javax.swing.BorderFactory;
 import javax.swing.JPanel;
 
-public class newTopPanel extends JPanel{
+public class TopPanel extends JPanel{
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
 
-	public newTopPanel(){
+	public TopPanel(){
 		Dimension size = getPreferredSize();
 		size.height = 270;
 		setPreferredSize(size);
@@ -24,17 +24,17 @@ public class newTopPanel extends JPanel{
 		
 		gbc.fill = GridBagConstraints.HORIZONTAL;
 		
-		newTopLeftPanel newtopleftPanel = new newTopLeftPanel();
-		newTopRightPanel newtoprightPanel = new newTopRightPanel();
+		TopLeftPanel topLeftPanel = new TopLeftPanel();
+		TopRightPanel topRightPanel = new TopRightPanel();
 		
 		gbc.gridx = 0;
 		gbc.gridy = 0;
 		gbc.weightx = 0.9;
-		add(newtopleftPanel, gbc);
+		add(topLeftPanel, gbc);
 		
 		gbc.gridx = 1;
 		gbc.gridy = 0;
 		gbc.weightx = 0.3;
-		add(newtoprightPanel, gbc);
+		add(topRightPanel, gbc);
 	}
 }

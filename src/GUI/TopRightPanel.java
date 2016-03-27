@@ -11,7 +11,7 @@ import javax.swing.JTextArea;
 
 import ScheduleHacks.Task;
 
-public class newTopRightPanel extends JPanel{
+public class TopRightPanel extends JPanel{
 
 	/**
 	 * 
@@ -23,7 +23,7 @@ public class newTopRightPanel extends JPanel{
 	private static String FLOATING_HEADER = "FLOATING TASKS";
 	private static String CENTER_FORMAT = "         ";
 
-	public newTopRightPanel(){
+	public TopRightPanel(){
 		Dimension size = getPreferredSize();
 		size.height = 268;
 		setPreferredSize(size);
