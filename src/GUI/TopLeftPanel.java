@@ -11,7 +11,7 @@ import javax.swing.JTextArea;
 
 import ScheduleHacks.Task;
 
-public class newTopLeftPanel extends JPanel{
+public class TopLeftPanel extends JPanel{
 
 	/**
 	 * 
@@ -25,7 +25,7 @@ public class newTopLeftPanel extends JPanel{
 	private static String OVERDUE_HEADER = "OVERDUE TASKS";
 	private static String CENTER_FORMAT = "\t" + "                       ";
 	
-	public newTopLeftPanel(){
+	public TopLeftPanel(){
 		Dimension size = getPreferredSize();
 		size.height = 268;
 		setPreferredSize(size);
@@ -45,7 +45,7 @@ public class newTopLeftPanel extends JPanel{
 	public static void setText(ArrayList<Task> OList, ArrayList<Task> SList){
 		printOutSO(OList, "overdue");
 		printOutSO(SList, "schedule");
-		newTopRightPanel.setCount(count);
+		TopRightPanel.setCount(count);
 		count = 1;
 	}
 	

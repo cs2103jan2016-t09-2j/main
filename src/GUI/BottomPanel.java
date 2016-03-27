@@ -8,65 +8,98 @@ import java.util.ArrayList;
 import javax.swing.BorderFactory;
 import javax.swing.JPanel;
 
+import Logic.Logic;
+import ScheduleHacks.Task;
+
 public class BottomPanel extends JPanel{
+
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	
+
 	private BottomTop bottomTop;
 	private BottomBottom bottomBottom;
+	String text;
 
-	private ArrayList<Object> panels;
-//	private static Logic logicObj = new Logic ();
-	
 	public BottomPanel(){
 		Dimension size = getPreferredSize();
 		size.height = 100;
 		setPreferredSize(size);
 		setBorder(BorderFactory.createTitledBorder(""));
-		
+		Logic logicObj = Logic.getInstance();
+
 		setLayout(new GridBagLayout());
 		GridBagConstraints gc = new GridBagConstraints();
-		
+
 		bottomTop = new BottomTop();
 		bottomBottom = new BottomBottom();
 		bottomBottom.addDetailListener(new DetailListener(){
 			public void detailEventOccurred(DetailEvent event){
-				String text = event.getText();
-				bottomTop.setText(text);
-				actionDone(panels);
+				text = event.getText();
+
+				logicObj.executeCommand(text);
+				System.out.println(text);
+				bottomTop.setText(logicObj.getFeedBack());
+
+				ArrayList<Task> OList = new ArrayList<Task>();
+				ArrayList<Task> SList = new ArrayList<Task>();
+				ArrayList<Task> FList = new ArrayList<Task>();
+
+				if (!logicObj.hasSearchList()) { //print the normal display
+					OList = logicObj.getScheduledTasksOverDue();
+					SList = logicObj.getScheduledTasksToDo();
+					FList = logicObj.getFloatingTasksToDo();
+				}
+				else{ //search display
+					ArrayList<Task> searchList = new ArrayList<Task>();
+					searchList = logicObj.getSearchTasksList();
+
+					for(Task task : searchList){
+						if(task.isFloatingTask()){
+							FList.add(task);
+						}
+						else if(task.isScheduledTask()){
+							SList.add(task);
+						}
+						else{
+							OList.add(task);
+							System.out.println("Enter this magic circle");
+						}
+					}
+				}
+
+				TopLeftPanel.clearText();
+				TopLeftPanel.setText(OList, SList);
+				TopRightPanel.clearText();
+				TopRightPanel.setText(FList);
+
+
 			}
 		});
-		
+
+		gc.fill = GridBagConstraints.HORIZONTAL;
+
 		gc.weighty = 0.9;
+		gc.weightx = 1;
 		gc.gridx = 0;
 		gc.gridy = 0;
 		add(bottomTop,gc);
-		
+
 		gc.weighty = 0.3;
 		gc.gridx = 0;
 		gc.gridy = 1;
 		add(bottomBottom,gc);
-		
-	}
-	
-	private void actionDone(ArrayList<Object> panels){
 
-			FloatPanel floatPanel = (FloatPanel) panels.get(0);
-			floatPanel.setList();
-			OverduePanel overduePanel = (OverduePanel) panels.get(1);
-			overduePanel.setList();
-			SchedulePanel schedulePanel = (SchedulePanel) panels.get(2);
-			schedulePanel.setList();
 	}
 
-	public void setPanel(ArrayList<Object> panels) {
-		this.panels = panels;
+	public String getText(){
+		System.out.println(text);
+		return text;
 	}
-	
-/*	public void setLogicObject(Logic logicObj){
-		this.logicObj = logicObj;
-	}*/
-	
+
+	public void setFeedback(String feedBack) {
+		bottomTop.setText(text);
+	}
 }
+
