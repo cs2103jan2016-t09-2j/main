@@ -34,8 +34,12 @@ public class IndexParser {
 
 	/****************** SETTER METHODS ***********************/
 	protected void setTaskDetails(String newTaskDetails) {
-		newTaskDetails = cleanupExtraWhitespace(newTaskDetails);
-		this.taskDetails = newTaskDetails;
+		if (newTaskDetails == null || newTaskDetails.isEmpty()) {
+			this.taskDetails = ParserConstants.STRING_EMPTY;
+		} else {
+			newTaskDetails = cleanupExtraWhitespace(newTaskDetails);
+			this.taskDetails = newTaskDetails;
+		}
 	}
 
 	public void setCommandDetails(Command newCommandDetails) {
