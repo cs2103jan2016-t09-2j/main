@@ -14,14 +14,14 @@ public class DateParserTest {
 	public void testIsValidDate1() {
 		String testString = "3/6/2016";
 		dateObj = new DateParser(testString);
-		assertEquals(true, dateObj.addToListIfValidDate(testString));
+		assertEquals(true, dateObj.addToListIfValidDate(testString, ""));
 	}
 
 	@Test
 	public void testIsValidDate2() {
 		String testString = "3 june 2016";
 		dateObj = new DateParser(testString);
-		assertEquals(true, dateObj.addToListIfValidDate(testString));
+		assertEquals(true, dateObj.addToListIfValidDate(testString, ""));
 	}
 
 	@Test
@@ -29,7 +29,7 @@ public class DateParserTest {
 		
 		String testString = "3 June 26";
 		dateObj = new DateParser(testString);
-		assertEquals(true, dateObj.addToListIfValidDate(testString));
+		assertEquals(true, dateObj.addToListIfValidDate(testString, ""));
 	}
 
 	@Test
@@ -37,7 +37,7 @@ public class DateParserTest {
 		
 		String testString = "28jun16";
 		dateObj = new DateParser(testString);
-		assertEquals(true, dateObj.addToListIfValidDate(testString));
+		assertEquals(true, dateObj.addToListIfValidDate(testString, ""));
 	}
 
 	@Test
@@ -45,7 +45,7 @@ public class DateParserTest {
 		
 		String testString = "  3 june   2016";
 		dateObj = new DateParser(testString);
-		assertEquals(true, dateObj.addToListIfValidDate(testString));
+		assertEquals(true, dateObj.addToListIfValidDate(testString, ""));
 	}
 
 	@Test
@@ -53,7 +53,7 @@ public class DateParserTest {
 		
 		String testString = "3-6-2016";
 		dateObj = new DateParser(testString);
-		assertEquals(true, dateObj.addToListIfValidDate(testString));
+		assertEquals(true, dateObj.addToListIfValidDate(testString, ""));
 	}
 
 	@Test
@@ -61,7 +61,7 @@ public class DateParserTest {
 		
 		String testString = "3 janua 2016";
 		dateObj = new DateParser(testString);
-		assertEquals(false, dateObj.addToListIfValidDate(testString));
+		assertEquals(false, dateObj.addToListIfValidDate(testString, ""));
 	}
 
 	@Test
@@ -69,7 +69,7 @@ public class DateParserTest {
 		
 		String testString = "   3 abc 2016";
 		dateObj = new DateParser(testString);
-		assertEquals(false, dateObj.addToListIfValidDate(testString));
+		assertEquals(false, dateObj.addToListIfValidDate(testString, ""));
 	}
 
 	@Test
@@ -77,7 +77,7 @@ public class DateParserTest {
 		
 		String testString = "3-8-19 2016";
 		dateObj = new DateParser(testString);
-		assertEquals(true, dateObj.addToListIfValidDate(testString));
+		assertEquals(true, dateObj.addToListIfValidDate(testString, ""));
 	}
 
 	/*
@@ -91,7 +91,7 @@ public class DateParserTest {
 		
 		String testString = "3-8-19-13 2016";
 		dateObj = new DateParser(testString);
-		assertEquals(false, dateObj.addToListIfValidDate(testString));
+		assertEquals(false, dateObj.addToListIfValidDate(testString, ""));
 	}
 	
 	@Test
@@ -99,7 +99,7 @@ public class DateParserTest {
 		
 		String testString = "3-8-1-2016";
 		dateObj = new DateParser(testString);
-		assertEquals(false, dateObj.addToListIfValidDate(testString));
+		assertEquals(false, dateObj.addToListIfValidDate(testString,""));
 	}
 
 	@Test
@@ -107,7 +107,7 @@ public class DateParserTest {
 		
 		String testString = "3mar4apr";
 		dateObj = new DateParser(testString);
-		assertEquals(false, dateObj.addToListIfValidDateWithoutYear(testString));
+		assertEquals(false, dateObj.addToListIfValidDateWithoutYear(testString, ""));
 	}
 	
 	@Test
@@ -118,7 +118,7 @@ public class DateParserTest {
 		for (LocalDate date : dateObj.getDateList()) {
 			output = output + date.toString();
 		}
-		assertEquals("She is getting married on", dateObj.getTaskDetails());
+		assertEquals("She is getting married", dateObj.getTaskDetails());
 		assertEquals("2016-06-03", output);
 	}
 
@@ -130,7 +130,7 @@ public class DateParserTest {
 		for (LocalDate date : dateObj.getDateList()) {
 			output = output + date.toString();
 		}
-		assertEquals("She is getting married on", dateObj.getTaskDetails());
+		assertEquals("She is getting married", dateObj.getTaskDetails());
 		assertEquals("2016-06-03", output);
 	}
 
@@ -158,7 +158,7 @@ public class DateParserTest {
 		}
 		String expected = "2016-01-022016-01-03";
 		assertEquals(expected, output.trim());
-		assertEquals("Meet ABCD at 16:00 on and at the hotel", dateObj.getTaskDetails());
+		assertEquals("Meet ABCD at 16:00 and at the hotel", dateObj.getTaskDetails());
 	}
 
 	@Test
@@ -282,7 +282,7 @@ public class DateParserTest {
 		}
 		String expected = "2016-03-30";
 		assertEquals(expected, output.trim());
-		assertEquals("Meet ABCD on at the hotel", dateObj.getTaskDetails());
+		assertEquals("Meet ABCD at the hotel", dateObj.getTaskDetails());
 	}
 	
 	@Test
