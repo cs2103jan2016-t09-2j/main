@@ -752,12 +752,13 @@ public class Logic {
 	}
 
 	private void searchTask(Task taskToFind) {
-
-		if(taskToFind.getDescription().equalsIgnoreCase("all")) {
-			execute(Command.COMMAND_TYPE.HOME, null, null);
-			return;
+		if ((taskToFind.getDescription() != null) && !(taskToFind.getDescription().isEmpty())) {
+			if(taskToFind.getDescription().equalsIgnoreCase("all")) {
+				execute(Command.COMMAND_TYPE.HOME, null, null);
+				return;
+			}
 		}
-
+		
 		isSearchCommand = true;
 
 		search_Snigdha obj = new search_Snigdha();
