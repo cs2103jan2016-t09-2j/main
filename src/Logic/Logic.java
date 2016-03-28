@@ -29,9 +29,8 @@ public class Logic {
 	private ArrayList<Task> scheduledTasksOverDue = new ArrayList<Task>();
 	private ArrayList<Task> recentAddedList = new ArrayList<Task>();
 	private ArrayList<Task> searchTasks = new ArrayList<Task>();
+	private ArrayList<LocalDateTime> blockedSlots = new ArrayList<LocalDateTime>();
 	private int recentAddedPosition;
-	private LocalDateTime blockedStartDateTime = LocalDateTime.of(2099, 12, 31, 23, 59);
-	private LocalDateTime blockedEndDateTime = LocalDateTime.of(2199, 12, 31, 23, 59);
 
 	private static final String FEEDBACK_INVALID_COMMAND = "Invalid Command!";
 	private static final String FEEDBACK_INVALID_COMMAND_TYPE = "Invalid command type entered!";
@@ -330,7 +329,7 @@ public class Logic {
 				setFeedBack(FEEDBACK_TASK_ADDED);
 				position = position + scheduledTasksOverDue.size();
 			} else {
-				setFeedBack("Task not added as it inteferes with blocked slot of "+blockedStartDateTime+"to "+blockedEndDateTime);
+				
 			}
 		}
 
@@ -339,31 +338,52 @@ public class Logic {
 
 	private void blockTask(Command retrievedCommand) {
 		Task slotToBlock = retrievedCommand.getTaskDetails();
-		blockedEndDateTime = LocalDateTime.of(slotToBlock.getEndDate(), slotToBlock.getEndTime());
-
+		LocalDateTime blockedEndDateTime = LocalDateTime.of(slotToBlock.getEndDate(), slotToBlock.getEndTime());
+		LocalDateTime blockedStartDateTime;
+		
 		if (slotToBlock.getStartDate() != null) {
 			blockedStartDateTime = LocalDateTime.of(slotToBlock.getStartDate(), slotToBlock.getStartTime());
 		} else {
 			blockedStartDateTime = LocalDateTime.now();
 		}
 		setFeedBack("Slot blocked from " + blockedStartDateTime + "to " + blockedEndDateTime);
+		
+		blockedSlots.add(blockedStartDateTime);
+		blockedSlots.add(blockedEndDateTime);
 	}
 
 	private boolean compareWithBlockedRange(Task executeTask) {
 		LocalDateTime taskEndDateTime = LocalDateTime.of(executeTask.getEndDate(), executeTask.getEndTime());
 		LocalDateTime taskStartDateTime = null;
-
+		int trackBlock = 0;
+		ArrayList<Integer> blockedIndex = new ArrayList<Integer> ();
+		
 		if (executeTask.getStartDate() != null) {
 			taskStartDateTime = LocalDateTime.of(executeTask.getStartDate(), executeTask.getStartTime());
 		}
-		if ((taskStartDateTime != null) && (taskEndDateTime.compareTo(blockedStartDateTime)>0) && (taskStartDateTime.compareTo(blockedEndDateTime)<0)) {
-			return true;
-		} else if ((taskStartDateTime == null) && (taskEndDateTime.compareTo(blockedStartDateTime)>0) && (taskEndDateTime.compareTo(blockedEndDateTime)<0)) {
-			return true;
-		} else {
+		for (int i=0; i<blockedSlots.size()-1; i+=2) {
+			if ((taskStartDateTime != null) && (taskEndDateTime.compareTo(blockedSlots.get(i))>0) && (taskStartDateTime.compareTo(blockedSlots.get(i+1))<0)) {
+				trackBlock++;
+				blockedIndex.add(i);
+				blockedIndex.add(i+1);
+			} else if ((taskStartDateTime == null) && (taskEndDateTime.compareTo(blockedSlots.get(i))>0) && (taskEndDateTime.compareTo(blockedSlots.get(i+1))<0)) {
+				trackBlock++;
+				blockedIndex.add(i);
+				blockedIndex.add(i+1);
+			}
+		}
+		if (trackBlock == 0) {
 			return false;
+		} else {
+			if (blockedIndex.size() == 2) {
+				setFeedBack("Task not added as it interferes with blocked slot of "+blockedSlots.get(blockedIndex.get(0))+" to "+blockedSlots.get(blockedIndex.get(1)));
+			} else {
+				setFeedBack("Task not added as it interferes with multiple blocked slots!");
+			}
+			return true;
 		}
 	}
+
 
 	private int sortTaskList(ArrayList<Task> taskList, Task task) {
 		LocalDateTime taskStartDateTime = null;
