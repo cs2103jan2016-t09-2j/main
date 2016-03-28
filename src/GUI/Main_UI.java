@@ -19,7 +19,7 @@ public class Main_UI {
             	System.out.println("Width size: " + width);
             	System.out.println("Height size: " + height);
             	int width1 = (int) (width / 2);
-            	int height1 = (int) (height / 1.5);
+            	int height1 = (int) (height / 1.92);
             	newFrame.setSize(width1, height1);
             	//newFrame.setSize(600, 400);
                 newFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
