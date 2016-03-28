@@ -99,11 +99,14 @@ public class TimeParser {
 				} else {
 					if (hasTimeDuration(tempString)) {
 						String timeDuration = getTimeDurationWord(tempString);
-						addValidTimeToList(getParsedTimeDuration(timeDuration));
-						if (isValidKeyWord(previousWord) || isValidRangeKeyWord(previousWord)) {
-							removeTimeFromTaskDetails(previousWord + ParserConstants.STRING_WHITESPACE + timeDuration);
-						} else {
-							removeTimeFromTaskDetails(timeDuration);
+						if (taskDetailsContains(timeDuration)) {
+							addValidTimeToList(getParsedTimeDuration(timeDuration));
+							if (isValidKeyWord(previousWord) || isValidRangeKeyWord(previousWord)) {
+								removeTimeFromTaskDetails(
+										previousWord + ParserConstants.STRING_WHITESPACE + timeDuration);
+							} else {
+								removeTimeFromTaskDetails(timeDuration);
+							}
 						}
 					}
 				}
@@ -131,7 +134,7 @@ public class TimeParser {
 				}
 				statement = statement.substring(ParserConstants.FIRST_INDEX, index.getIndex());
 
-				if (taskDetails.contains(statement) && isValidEnd(end)) {
+				if (taskDetailsContains(statement) && isValidEnd(end)) {
 					addValidTimeToList(parsedTime);
 					if (isValidKeyWord(keyword) || isValidRangeKeyWord(keyword)) {
 						removeTimeFromTaskDetails(keyword + ParserConstants.STRING_WHITESPACE + statement);
@@ -322,7 +325,7 @@ public class TimeParser {
 	public String getLastWordInRange(String text, int endIndex) {
 
 		if (text != null && !text.isEmpty() && endIndex > 0) {
-			text=text.substring(ParserConstants.FIRST_INDEX, endIndex);
+			text = text.substring(ParserConstants.FIRST_INDEX, endIndex);
 			String[] words = text.split(ParserConstants.STRING_WHITESPACE);
 			return words[words.length - 1];
 		}
@@ -356,6 +359,15 @@ public class TimeParser {
 			}
 		}
 		return index;
+	}
+
+	public boolean taskDetailsContains(String text) {
+		Pattern containPattern = Pattern.compile(ParserConstants.REGEX_VALID_START + text);
+		Matcher containMatcher = containPattern.matcher(taskDetails);
+		if (containMatcher.find()) {
+			return true;
+		}
+		return false;
 	}
 
 	private boolean hasInDictionary(String[] dictionary, String wordToFind) {

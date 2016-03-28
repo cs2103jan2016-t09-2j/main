@@ -153,6 +153,11 @@ public class Logic {
 			setScheduledTasksComplete(storage.getScheduledTasksComplete());
 			setScheduledTasksToDo(storage.getScheduledTasksToDo());
 			setScheduledTasksOverDue(storage.getScheduledTasksOverDue());
+			
+			for (int i=0; i<scheduledTasksOverDue.size(); i++) {
+				addTask(scheduledTasksOverDue.remove(i), true);
+			}
+			
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
 		}
@@ -179,9 +184,6 @@ public class Logic {
 			typeCommand = getCommand(existingCommand);
 			Task getTaskToExecute = getTaskDescription(existingCommand);
 			execute(typeCommand, existingCommand, getTaskToExecute);
-			for (int i=0; i<scheduledTasksOverDue.size(); i++) {
-				addTask(scheduledTasksOverDue.remove(i), true);
-			}
 			autoChangeTaskStatus();
 			storage.storeToFiles(getFloatingTasksToDo(), getFloatingTasksComplete(), getScheduledTasksToDo(),
 					getScheduledTasksComplete(), getScheduledTasksOverDue());

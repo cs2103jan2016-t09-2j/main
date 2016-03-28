@@ -31,6 +31,7 @@ public class ParserConstants {
 	static final String REGEX_POSSIBLE_TIME = "(^|\\s)\\d";
 	// static final String REGEX_POSSIBLE_TIME = "(^|\\s|\\G)\\d";
 	static final String REGEX_DIGITS_VALID_END = "(\\s|^|,|-|\\G)\\d+(\\s|$|,|-)";
+	static final String REGEX_VALID_START = "(^|\\s)";
 	static final String REGEX_DIGITS_AT_START = "^\\d+\\s";
 	static final String REGEX_INDEX_DELIMITER = "(,|\\s)";
 	static final String REGEX_RANGE_DELIMITER = "\\s*((to)|-)\\s*";
@@ -90,10 +91,11 @@ public class ParserConstants {
 	static final int LAST_INDEX_OF_WEEK = 3;
 	static final int LAST_INDEX_OF_MONTH = 5;
 	static final int LAST_INDEX_OF_YEAR = 9;
-	static final String[] DATE_KEYWORD = {"by", "on", "in", "before", "from", "frm"};
+	static final String[] DATE_KEYWORD = { "by", "on", "in", "before", "from", "frm" };
 
 	static final String[] UPCOMING_DAYS = { "today", "tdy", "tomorrow", "tmr", "tmw", "tmrw", "overmorrow",
-			"day after tomorrow", "day after tmr", "day after tmw", "day after tmrw" };
+			"day after tomorrow", "day after tmr", "day after tmw", "day after tmrw", "day aftr tomorrow",
+			"day aftr tmr", "day aftr tmw", "day aftr tmrw" };
 	static final String[] UPCOMING_PERIOD_KEYWORD = { "this", "next", /* "next to next" */ };
 	// Days of the week
 	static final String[] DAYS_OF_WEEK_SHORT = { "", "mon", "tue", "wed", "thu", "fri", "sat", "sun" };
@@ -102,7 +104,7 @@ public class ParserConstants {
 			"sunday" };
 
 	static final int MIN_SIZE = 1;
-	
+
 	// Time related constants
 	static final int MAX_MINUTES = 59;
 	static final int MAX_HOUR = 23;
@@ -122,7 +124,7 @@ public class ParserConstants {
 	static final String[] TIME_DURATION = { "mins", "min", "minutes", "minute", "hr", "hrs", "hours", "hour" };
 	static final int LAST_INDEX_OF_MIN = 3;
 	static final int LAST_INDEX_OF_HOUR = 7;
-	static final String[] TIME_KEYWORD = {"by", "at", "in", "before", "from", "frm"};
+	static final String[] TIME_KEYWORD = { "by", "at", "in", "before", "from", "frm" };
 
 	static final char WHITE_SPACE = ' ';
 

@@ -21,6 +21,7 @@ public class TimeParserTest {
 		}
 		String expected ="13:30";
 		assertEquals(expected, output);
+		assertEquals("at Starbucks", timeObj.getTaskDetails());
 	}
 	
 	@Test
@@ -34,7 +35,7 @@ public class TimeParserTest {
 		}
 		String expectedTime ="14:30";
 		assertEquals(expectedTime, output);
-		assertEquals("Meet Jim at", timeObj.getTaskDetails());
+		assertEquals("Meet Jim", timeObj.getTaskDetails());
 	}
 	
 	@Test
@@ -48,7 +49,7 @@ public class TimeParserTest {
 		}
 		String expectedTime ="14:3003:30";
 		assertEquals(expectedTime, output);
-		assertEquals("Meet Jim -", timeObj.getTaskDetails());
+		assertEquals("Meet Jim", timeObj.getTaskDetails());
 	}
 	
 	@Test
