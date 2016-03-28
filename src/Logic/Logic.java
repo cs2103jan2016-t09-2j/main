@@ -35,6 +35,8 @@ public class Logic {
 	private static final String FEEDBACK_INVALID_COMMAND = "Invalid Command!";
 	private static final String FEEDBACK_INVALID_COMMAND_TYPE = "Invalid command type entered!";
 	private static final String FEEDBACK_TASK_ADDED = "Task Added Successfully";
+	private static final String FEEDBACK_BLOCK_SLOT_INVALID = "Entered block slot duration exceeds with existing blocked timeslot!";
+	private static final String FEEDBACK_BLOCK_OVERLAP_WITH_MULTIPLE_SLOTS = "Task entered by user overlaps with multiple blocked timeslots!";
 	private static final String FEEDBACK_TASK_DELETED = "Task Deleted Successfully";
 	private static final String FEEDBACK_NON_EXISTENT_TASK_NUM = "Task number entered was not found!";
 	private static final String FEEDBACK_NEGATIVE_TASK_NUM = "Task number entered cannot be 0 or negative!";
@@ -171,6 +173,7 @@ public class Logic {
 	 * this method gets back the parsed Command class from parser. Proceeds to
 	 * execute function aft obtaining COMMAND_TYPE and Task classes
 	 */
+
 	public void retrieveParsedCommand(String originalDescription) {
 		try {
 			Command.COMMAND_TYPE typeCommand = null;
@@ -178,10 +181,10 @@ public class Logic {
 			Command existingCommand = CommandParser.getParsedCommand(originalDescription);
 			typeCommand = getCommand(existingCommand);
 			Task getTaskToExecute = getTaskDescription(existingCommand);
-			execute(typeCommand, existingCommand, getTaskToExecute);
 			for (int i=0; i<scheduledTasksOverDue.size(); i++) {
 				addTask(scheduledTasksOverDue.remove(i), true);
 			}
+			execute(typeCommand, existingCommand, getTaskToExecute);
 			autoChangeTaskStatus();
 			storage.storeToFiles(getFloatingTasksToDo(), getFloatingTasksComplete(), getScheduledTasksToDo(),
 					getScheduledTasksComplete(), getScheduledTasksOverDue());
@@ -332,11 +335,8 @@ public class Logic {
 				setMostRecentTaskAdded(scheduledTasksToDo, position);
 				setFeedBack(FEEDBACK_TASK_ADDED);
 				position = position + scheduledTasksOverDue.size();
-			} else {
-				
 			}
 		}
-
 		return position + 1;
 	}
 
@@ -344,16 +344,53 @@ public class Logic {
 		Task slotToBlock = retrievedCommand.getTaskDetails();
 		LocalDateTime blockedEndDateTime = LocalDateTime.of(slotToBlock.getEndDate(), slotToBlock.getEndTime());
 		LocalDateTime blockedStartDateTime;
+		boolean validBlockedStatus = false;
 		
 		if (slotToBlock.getStartDate() != null) {
 			blockedStartDateTime = LocalDateTime.of(slotToBlock.getStartDate(), slotToBlock.getStartTime());
 		} else {
 			blockedStartDateTime = LocalDateTime.now();
 		}
-		setFeedBack("Slot blocked from " + blockedStartDateTime + "to " + blockedEndDateTime);
+
+		validBlockedStatus = compareBlockedSlots(blockedSlots, blockedStartDateTime, blockedEndDateTime);
+		if (validBlockedStatus == true) {
+			int positionToSort = sortBlockedSlots(blockedSlots, blockedStartDateTime, blockedEndDateTime);
+			blockedSlots.add(positionToSort, blockedStartDateTime);
+			blockedSlots.add(positionToSort+1, blockedEndDateTime);
+			setFeedBack("Slot blocked from " + blockedStartDateTime + " to " + blockedEndDateTime);
+		} else {
+			setFeedBack(FEEDBACK_BLOCK_SLOT_INVALID);
+		}
+	}
+	
+	private boolean compareBlockedSlots(ArrayList<LocalDateTime> blockedSlotsList, LocalDateTime blockStart, LocalDateTime blockEnd) {
+		if ((blockedSlotsList.size()>=2) && ((blockStart.compareTo(blockedSlotsList.get(blockedSlotsList.size()-1))) >= 0) && 
+				(blockEnd.isAfter(blockedSlotsList.get(blockedSlotsList.size()-1)))) {
+			return true;
+		} else if ((blockedSlotsList.size()>=2) && ((blockStart.isBefore(blockedSlotsList.get(0)))) && 
+				(blockEnd.compareTo(blockedSlotsList.get(0)))<=0) {
+			return true;
+		} else if (blockedSlotsList.isEmpty()) {
+			return true;
+		} else {
+			for (int i=1; i<blockedSlotsList.size()-1; i++) {
+				if (((blockStart.compareTo(blockedSlotsList.get(i)))>=0) && ((blockEnd.compareTo(blockedSlotsList.get(i+1)))<=0)) {
+					return true;
+				}
+			}
+			return false;
+		}
+	}
+	
+	private int sortBlockedSlots(ArrayList<LocalDateTime> blockedSlotsList, LocalDateTime blockStart, LocalDateTime blockEnd) {
+		int sortedIndex = blockedSlotsList.size();
 		
-		blockedSlots.add(blockedStartDateTime);
-		blockedSlots.add(blockedEndDateTime);
+		for (int i=0; i<blockedSlotsList.size()-1; i+=2) {
+			if ((blockStart.isBefore(blockedSlotsList.get(i))) && ((blockEnd.compareTo(blockedSlotsList.get(i)))<=0)) {
+				return sortedIndex = i;
+			}
+		}
+		return sortedIndex;
 	}
 
 	private boolean compareWithBlockedRange(Task executeTask) {
@@ -366,11 +403,11 @@ public class Logic {
 			taskStartDateTime = LocalDateTime.of(executeTask.getStartDate(), executeTask.getStartTime());
 		}
 		for (int i=0; i<blockedSlots.size()-1; i+=2) {
-			if ((taskStartDateTime != null) && (taskEndDateTime.compareTo(blockedSlots.get(i))>0) && (taskStartDateTime.compareTo(blockedSlots.get(i+1))<0)) {
+			if ((taskStartDateTime != null) && (taskEndDateTime.isAfter(blockedSlots.get(i))) && (taskStartDateTime.isBefore(blockedSlots.get(i+1)))) {
 				trackBlock++;
 				blockedIndex.add(i);
 				blockedIndex.add(i+1);
-			} else if ((taskStartDateTime == null) && (taskEndDateTime.compareTo(blockedSlots.get(i))>0) && (taskEndDateTime.compareTo(blockedSlots.get(i+1))<0)) {
+			} else if ((taskStartDateTime == null) && (taskEndDateTime.isAfter(blockedSlots.get(i))) && (taskEndDateTime.isBefore(blockedSlots.get(i+1)))) {
 				trackBlock++;
 				blockedIndex.add(i);
 				blockedIndex.add(i+1);
@@ -382,7 +419,7 @@ public class Logic {
 			if (blockedIndex.size() == 2) {
 				setFeedBack("Task not added as it interferes with blocked slot of "+blockedSlots.get(blockedIndex.get(0))+" to "+blockedSlots.get(blockedIndex.get(1)));
 			} else {
-				setFeedBack("Task not added as it interferes with multiple blocked slots!");
+				setFeedBack(FEEDBACK_BLOCK_OVERLAP_WITH_MULTIPLE_SLOTS);
 			}
 			return true;
 		}
@@ -418,6 +455,7 @@ public class Logic {
 		}
 		return taskPosition;
 	}
+
 
 	/*
 	 * deleteTask from scheduledTasksToDo or floatingTasksToDo based on task
