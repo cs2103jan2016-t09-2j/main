@@ -32,11 +32,7 @@ public class History {
 
 	public void addToUndoList(OldCommand cmd) {
 		OldCommand tempCmd = new OldCommand(cmd.getCommandType(), cmd.getTaskList(), cmd.getIndexList());
-		System.out.println("0. " + tempCmd.getCommandType());
-		System.out.println("1. " + cmd.getCommandType());
 		undoDeque.addFirst(execute(tempCmd));
-		System.out.println("2. " + tempCmd.getCommandType());
-		System.out.println("3. " + cmd.getCommandType());
 	}
 
 	public void addToRedoList(OldCommand cmd) {
@@ -72,13 +68,10 @@ public class History {
 
 		switch (commandType) {
 		case ADD_TASK:
-			System.out.println("22");
 			executeCommand.setCommandType(COMMAND_TYPE.DELETE_TASK);
 			break;
 		case DELETE_TASK:
-			System.out.println("11");
 			executeCommand.setCommandType(COMMAND_TYPE.ADD_TASK);
-			System.out.println("33");
 			break;
 		case MODIFY_TASK:
 			/*

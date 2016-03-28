@@ -319,9 +319,10 @@ public class TimeParser {
 		return null;
 	}
 
-	public String getLastWordInRange(String text, int startIndex) {
+	public String getLastWordInRange(String text, int endIndex) {
 
-		if (text != null && !text.isEmpty() && startIndex > 0) {
+		if (text != null && !text.isEmpty() && endIndex > 0) {
+			text=text.substring(ParserConstants.FIRST_INDEX, endIndex);
 			String[] words = text.split(ParserConstants.STRING_WHITESPACE);
 			return words[words.length - 1];
 		}

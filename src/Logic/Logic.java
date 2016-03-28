@@ -611,9 +611,6 @@ public class Logic {
 		try {
 			OldCommand toUndo = historyObject.getFromUndoList();
 			OldCommand.COMMAND_TYPE cmdType = toUndo.getCommandType();
-			
-			System.out.println(cmdType.toString());
-			System.out.println(toUndo.getIndexList());
 
 			switch (cmdType) {
 			case ADD_TASK:
