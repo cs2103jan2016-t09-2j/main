@@ -167,15 +167,14 @@ public class CommandParser {
 		}
 
 		try {
-			taskStatement = cleanupExtraWhitespace(taskStatement);
 			if (taskStatement != null && !taskStatement.isEmpty()) {
+				taskStatement = cleanupExtraWhitespace(taskStatement);
 				newTask.setDescription(taskStatement);
 			}
 		} catch (Exception e) {
 			// taskStatement is null
 			// do nothing
 		}
-
 		return newTask;
 	}
 

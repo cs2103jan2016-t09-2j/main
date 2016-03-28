@@ -141,7 +141,7 @@ public class DateParser {
 				if (index.getIndex() < statement.length()) {
 					end = statement.substring(index.getIndex());
 				}
-
+				
 				statement = statement.substring(ParserConstants.FIRST_INDEX, index.getIndex());
 
 				if (taskDetails.contains(statement) && isValidEnd(end)) {
@@ -216,6 +216,7 @@ public class DateParser {
 
 	public LocalDate getDayOfWeekDate(String dayOfWeek) {
 
+		dayOfWeek = getStartString(dayOfWeek);
 		assert isDayOfWeek(dayOfWeek);
 
 		LocalDate newDate = getTodayDate();
@@ -473,9 +474,14 @@ public class DateParser {
 	}
 
 	public boolean isValidRangeKeyWord(String keyword) {
-		keyword = keyword.trim();
-		return (keyword.equalsIgnoreCase(ParserConstants.STRING_HYPHEN)
-				|| keyword.equalsIgnoreCase(ParserConstants.STRING_TO)) && (dateList.size() > ParserConstants.MIN_SIZE);
+		if (keyword == null || keyword.isEmpty()) {
+			return false;
+		} else {
+			keyword = keyword.trim();
+			return (keyword.equalsIgnoreCase(ParserConstants.STRING_HYPHEN)
+					|| keyword.equalsIgnoreCase(ParserConstants.STRING_TO))
+					&& (dateList.size() > ParserConstants.MIN_SIZE);
+		}
 	}
 
 	private boolean isValidEnd(String endText) {
