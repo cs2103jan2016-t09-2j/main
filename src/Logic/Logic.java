@@ -180,7 +180,7 @@ public class Logic {
 			Task getTaskToExecute = getTaskDescription(existingCommand);
 			execute(typeCommand, existingCommand, getTaskToExecute);
 			for (int i=0; i<scheduledTasksOverDue.size(); i++) {
-				addTask(scheduledTasksOverDue.remove(i), false);
+				addTask(scheduledTasksOverDue.remove(i), true);
 			}
 			autoChangeTaskStatus();
 			storage.storeToFiles(getFloatingTasksToDo(), getFloatingTasksComplete(), getScheduledTasksToDo(),
@@ -258,14 +258,18 @@ public class Logic {
 			break;
 		case HOME:
 			setFeedBack(FEEDBACK_EMPTY_STRING);
+			historyObject.clearRedoStack();
 			break;
 		case BLOCK_SLOT:
 			blockTask(retrievedCommand);
+			historyObject.clearRedoStack();
 			break;
 		case HELP:
 			// do the needful
 			// incomplete
 			setFeedBack(FEEDBACK_EMPTY_STRING);
+			historyObject.clearRedoStack();
+			break;
 		case EXIT:
 			exit();
 			historyObject.clearRedoStack();
@@ -402,11 +406,11 @@ public class Logic {
 			LocalDateTime selectedTaskEndDateTime = LocalDateTime.of(taskList.get(i).getEndDate(),
 					taskList.get(i).getEndTime());
 
-			if ((taskEndDateTime.compareTo(selectedTaskEndDateTime)) < 0) {
+			if (taskEndDateTime.isBefore(selectedTaskEndDateTime)) {
 				return i;
-			} else if ((taskEndDateTime.compareTo(selectedTaskEndDateTime)) == 0) {
+			} else if (taskEndDateTime.isEqual(selectedTaskEndDateTime)) {
 				if ((selectedTaskStartDateTime != null) && (taskStartDateTime != null)) {
-					if ((taskStartDateTime.compareTo(selectedTaskStartDateTime)) < 0) {
+					if (taskStartDateTime.isBefore(selectedTaskStartDateTime)) {
 						return i;
 					}
 				}
@@ -607,6 +611,9 @@ public class Logic {
 		try {
 			OldCommand toUndo = historyObject.getFromUndoList();
 			OldCommand.COMMAND_TYPE cmdType = toUndo.getCommandType();
+			
+			System.out.println(cmdType.toString());
+			System.out.println(toUndo.getIndexList());
 
 			switch (cmdType) {
 			case ADD_TASK:
