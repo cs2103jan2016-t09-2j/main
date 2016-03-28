@@ -98,11 +98,19 @@ public class History {
 		commandHistory.add(command);
 	}
 	
-	public String getFromCommandHistory() {
+	public String moveUpCommandHistory() {
 		if(indexOfCommand < 0) {
 			return "";
 		} else {
 			return commandHistory.get(indexOfCommand--);
+		}
+	}
+	
+	public String moveDownCommandHistory() {
+		if(indexOfCommand >= commandHistory.size()) {
+			return "";
+		}else {
+			return commandHistory.get(indexOfCommand++);
 		}
 	}
 
