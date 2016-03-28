@@ -263,6 +263,7 @@ public class CommandParser {
 	
 	public static String addCriteriaDateDuration(Task newTask, String taskStatement) {
 		DateParser dateObj = new DateParser(taskStatement);
+		taskStatement = dateObj.getDayDurationWord(taskStatement);
 		newTask.setStartDate(getCurrentDate());
 		newTask.setEndDate(dateObj.getParsedDayDurationDate(taskStatement));
 		return dateObj.getTaskDetails();
