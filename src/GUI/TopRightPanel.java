@@ -48,7 +48,7 @@ public class TopRightPanel extends JPanel{
 		for (Task task : List) {
 			String string = task.getDescription();
 			textArea.append(count + ".");
-			if(string.length() < 17){
+			if(string.length() < 19){
 				textArea.append(" " + string + "\n");
 			}
 			else{

@@ -13,12 +13,15 @@ public class Main_UI {
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
             	JFrame newFrame = new MainFrame("Schedule Hacks");
-            	Dimension screensize = Toolkit.getDefaultToolkit().getScreenSize();
-            	double width = screensize.getWidth();
-            	double height = screensize.getHeight();
-            	System.out.println(width);
-            	System.out.println(height);
-            	newFrame.setSize(600, 400);
+            	Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+            	double width = screenSize.getWidth();
+            	double height = screenSize.getHeight();
+            	System.out.println("Width size: " + width);
+            	System.out.println("Height size: " + height);
+            	int width1 = (int) (width / 2);
+            	int height1 = (int) (height / 1.5);
+            	newFrame.setSize(width1, height1);
+            	//newFrame.setSize(600, 400);
                 newFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
                 newFrame.setVisible(true);
                 newFrame.setResizable(false);
