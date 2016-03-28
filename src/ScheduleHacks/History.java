@@ -15,7 +15,8 @@ public class History {
 	Deque<OldCommand> undoDeque;
 	Deque<OldCommand> redoDeque;
 	
-	ArrayList<String> stringHistory = new ArrayList<String>();
+	ArrayList<String> commandHistory = new ArrayList<String>();
+	private static int indexOfCommand = -1;
 
 	private History() {
 		undoDeque = new ArrayDeque<OldCommand>();
@@ -92,13 +93,18 @@ public class History {
 		return executeCommand;
 	}
 	
-	public void commandHistory(String command){
-	
-		stringHistory.add("");
-		String display = command;
-		
+	public void addToCommandHistory(String command){
+		indexOfCommand++;
+		commandHistory.add(command);
 	}
 	
+	public String getFromCommandHistory() {
+		if(indexOfCommand < 0) {
+			return "";
+		} else {
+			return commandHistory.get(indexOfCommand--);
+		}
+	}
 
 	public void keyPressed(KeyEvent e) {
 
