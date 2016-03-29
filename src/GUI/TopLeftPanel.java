@@ -1,4 +1,7 @@
-package GUI;import java.awt.Dimension;
+package GUI;
+
+import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.GridLayout;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
@@ -11,7 +14,7 @@ import javax.swing.JTextArea;
 
 import ScheduleHacks.Task;
 
-public class TopLeftPanel extends JPanel{
+public class TopLeftPanel extends JPanel {
 
 	/**
 	 * 
@@ -24,8 +27,11 @@ public class TopLeftPanel extends JPanel{
 	private static String SCHEDULE_HEADER = "SCHEDULED TASKS";
 	private static String OVERDUE_HEADER = "OVERDUE TASKS";
 	private static String CENTER_FORMAT = "\t" + "                       ";
-	
-	public TopLeftPanel(){
+
+	private static final Font TITLE_FONT = new Font("Papyrus", Font.BOLD, 16);
+	private static final Font TASK_FONT = new Font("Papyrus", Font.PLAIN, 16);
+
+	public TopLeftPanel() {
 		Dimension size = getPreferredSize();
 		size.height = 268;
 		setPreferredSize(size);
@@ -38,30 +44,37 @@ public class TopLeftPanel extends JPanel{
 		add(scrollPane);
 		textArea.append(CENTER_FORMAT + OVERDUE_HEADER + "\n");
 		textArea.append(CENTER_FORMAT + SCHEDULE_HEADER + "\n");
+		textArea.setFont(TASK_FONT);
 	}
 
 	public static void clearText() {
 		textArea.setText(null);
 	}
 
-	public static void setText(ArrayList<Task> OList, ArrayList<Task> SList){
-		printOutSO(OList, "overdue");
-		printOutSO(SList, "schedule");
-		TopRightPanel.setCount(count);
-		count = 1;
-	}
-	
-	public static void printOutSO(ArrayList<Task> List, String type){
-		if(type.equalsIgnoreCase("schedule")){
-			textArea.append(CENTER_FORMAT + SCHEDULE_HEADER + "\n");
+	public static void setText(ArrayList<Task> OList, ArrayList<Task> SList, ArrayList<Integer> indexList) {
+		// TopRightPanel.setCount(count);
+		int index;
+		if (indexList == null || indexList.isEmpty()) {
+			indexList = new ArrayList<Integer>();
+			for (index = 0; index < OList.size() + SList.size(); index++) {
+				indexList.add(index + 1);
+			}
 		}
-		else{
+		printOutSO(OList, "overdue", new ArrayList<Integer>(indexList.subList(0, OList.size())));
+		printOutSO(SList, "schedule", new ArrayList<Integer>(indexList.subList(OList.size(), indexList.size())));
+	}
+
+	public static void printOutSO(ArrayList<Task> List, String type, ArrayList<Integer> indexList) {
+		int count = 0;
+		if (type.equalsIgnoreCase("schedule")) {
+			textArea.append(CENTER_FORMAT + SCHEDULE_HEADER + "\n");
+		} else {
 			textArea.append(CENTER_FORMAT + OVERDUE_HEADER + "\n");
 		}
-		
+
 		for (Task task : List) {
 			String string = task.getDescription();
-			textArea.append(count + ". " + string + "\n");
+			textArea.append(indexList.get(count)+". " + string + "\n");
 			if (task.getStartDate() != null && task.getStartTime() != null) {
 				textArea.append("\t From ");
 				if (!task.getStartTime().equals(LocalTime.MAX)) {

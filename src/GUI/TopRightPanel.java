@@ -11,7 +11,7 @@ import javax.swing.JTextArea;
 
 import ScheduleHacks.Task;
 
-public class TopRightPanel extends JPanel{
+public class TopRightPanel extends JPanel {
 
 	/**
 	 * 
@@ -23,7 +23,7 @@ public class TopRightPanel extends JPanel{
 	private static String FLOATING_HEADER = "FLOATING TASKS";
 	private static String CENTER_FORMAT = "         ";
 
-	public TopRightPanel(){
+	public TopRightPanel() {
 		Dimension size = getPreferredSize();
 		size.height = 268;
 		setPreferredSize(size);
@@ -37,35 +37,39 @@ public class TopRightPanel extends JPanel{
 		textArea.append(CENTER_FORMAT + FLOATING_HEADER + "\n");
 	}
 
-	public static void setText(ArrayList<Task> FList){
-		printOut(FList);
-		count = 1;
+	public static void setText(ArrayList<Task> FList, ArrayList<Integer> indexList) {
+		if (indexList == null || indexList.isEmpty()) {
+			indexList = new ArrayList<Integer>();
+			for (int index = 0; index < FList.size(); index++) {
+				indexList.add(index+1);
+			}
+		}
+		printOut(FList, indexList);
 	}
 
-	public static void printOut(ArrayList<Task> List){
+	public static void printOut(ArrayList<Task> List, ArrayList<Integer> indexList) {
 		String combinedString = "";
 		int total_length;
+		int count = 0;
 		textArea.append(CENTER_FORMAT + FLOATING_HEADER + "\n");
 		for (Task task : List) {
 			String string = task.getDescription();
-			textArea.append(count + ".");
-			if(string.length() < 19){
+			textArea.append(indexList.get(count) + ".");
+			if (string.length() < 19) {
 				textArea.append(" " + string + "\n");
-			}
-			else{
+			} else {
 				String[] arr = string.split(" ");
-				for(int i = 0; i < arr.length; i++){
+				for (int i = 0; i < arr.length; i++) {
 					total_length = combinedString.length() + arr[i].length();
-					if(total_length < 17){
+					if (total_length < 17) {
 						combinedString += " ";
 						combinedString += arr[i];
-					}
-					else{
+					} else {
 						textArea.append(combinedString + "\n");
 						combinedString = "    ";
 						combinedString += arr[i];
 					}
-					if(i == arr.length - 1){
+					if (i == arr.length - 1) {
 						textArea.append(combinedString + "\n");
 						combinedString = "";
 					}
@@ -79,7 +83,7 @@ public class TopRightPanel extends JPanel{
 		textArea.setText(null);
 	}
 
-	public static void setCount(int noOfTask){
+	public static void setCount(int noOfTask) {
 		count = noOfTask;
 	}
 }
