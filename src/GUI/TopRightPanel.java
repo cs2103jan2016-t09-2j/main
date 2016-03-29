@@ -10,6 +10,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
+import Logic.Logic;
 import ScheduleHacks.Task;
 
 public class TopRightPanel extends JPanel {
@@ -17,13 +18,15 @@ public class TopRightPanel extends JPanel {
 	/**
 	 * 
 	 */
+	private static Logic logicObj = Logic.getInstance();
+	
 	private static final long serialVersionUID = 1L;
 	private static JTextArea textArea;
 	private JScrollPane scrollPane;
 	private static int count;
 	private static String FLOATING_HEADER = "FLOATING TASKS";
 	private static String CENTER_FORMAT = "         ";
-	
+
 	private static final Font TITLE_FONT = new Font("Comic Sans", Font.BOLD, 16);
 	private static final Font TASK_FONT = new Font("Comic Sans", Font.PLAIN, 16);
 
@@ -36,10 +39,13 @@ public class TopRightPanel extends JPanel {
 		setLayout(new GridLayout());
 		textArea = new JTextArea();
 		scrollPane = new JScrollPane(textArea);
+		textArea.setLineWrap(true);
+		textArea.setWrapStyleWord(true);
 		textArea.setEditable(false);
 		textArea.setFont(TASK_FONT);
 		add(scrollPane);
-		textArea.append(CENTER_FORMAT + FLOATING_HEADER + "\n");
+		setText(logicObj.getFloatingTasksToDo(), null, logicObj.getScheduledTasksOverDue().size() + logicObj.getScheduledTasksToDo().size());
+		//textArea.append(CENTER_FORMAT + FLOATING_HEADER + "\n");
 	}
 
 	public static void setText(ArrayList<Task> FList, ArrayList<Integer> indexList, int UpcomingTaskSize) {
@@ -60,26 +66,7 @@ public class TopRightPanel extends JPanel {
 		for (Task task : List) {
 			String string = task.getDescription();
 			textArea.append(indexList.get(count) + ".");
-			if (string.length() < 19) {
-				textArea.append(" " + string + "\n");
-			} else {
-				String[] arr = string.split(" ");
-				for (int i = 0; i < arr.length; i++) {
-					total_length = combinedString.length() + arr[i].length();
-					if (total_length < 17) {
-						combinedString += " ";
-						combinedString += arr[i];
-					} else {
-						textArea.append(combinedString + "\n");
-						combinedString = "    ";
-						combinedString += arr[i];
-					}
-					if (i == arr.length - 1) {
-						textArea.append(combinedString + "\n");
-						combinedString = "";
-					}
-				}
-			}
+			textArea.append(" " + string + "\n");
 			count++;
 		}
 	}

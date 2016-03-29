@@ -154,10 +154,11 @@ public class Logic {
 			setScheduledTasksComplete(storage.getScheduledTasksComplete());
 			setScheduledTasksToDo(storage.getScheduledTasksToDo());
 			setScheduledTasksOverDue(storage.getScheduledTasksOverDue());
-
-			for (int i = 0; i < scheduledTasksOverDue.size(); i++) {
+			
+			// remove if not needed
+			/*for (int i = 0; i < scheduledTasksOverDue.size(); i++) {
 				addTask(scheduledTasksOverDue.remove(i), true);
-			}
+			}*/
 
 		} catch (Exception e) {
 			System.out.println(e.getMessage());

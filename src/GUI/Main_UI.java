@@ -5,6 +5,8 @@ import java.awt.Toolkit;
 
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
+
+import Logic.Logic;
  
 public class Main_UI {
  
@@ -28,5 +30,9 @@ public class Main_UI {
                 newFrame.setResizable(false);
             }
         });
+        
+        Logic logicObj = Logic.getInstance();
+        logicObj.startExecution();
+        
     }
 }

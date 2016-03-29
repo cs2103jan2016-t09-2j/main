@@ -13,12 +13,16 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
 import ScheduleHacks.Task;
+import Logic.Logic;
 
 public class TopLeftPanel extends JPanel {
 
 	/**
 	 * 
 	 */
+
+	private static Logic logicObj = Logic.getInstance();
+
 	private static final long serialVersionUID = 1L;
 	private static int count = 1;
 	private static DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("dd-MM-uuuu");
@@ -41,9 +45,12 @@ public class TopLeftPanel extends JPanel {
 		textArea = new JTextArea();
 		scrollPane = new JScrollPane(textArea);
 		textArea.setEditable(false);
+		textArea.setLineWrap(true);
+		textArea.setWrapStyleWord(true);
 		add(scrollPane);
-		textArea.append(CENTER_FORMAT + OVERDUE_HEADER + "\n");
-		textArea.append(CENTER_FORMAT + SCHEDULE_HEADER + "\n");
+		setText(logicObj.getScheduledTasksOverDue(), logicObj.getScheduledTasksToDo(), null);
+		// textArea.append(CENTER_FORMAT + OVERDUE_HEADER + "\n");
+		// textArea.append(CENTER_FORMAT + SCHEDULE_HEADER + "\n");
 		textArea.setFont(TASK_FONT);
 	}
 
@@ -66,6 +73,7 @@ public class TopLeftPanel extends JPanel {
 
 	public static void printOutSO(ArrayList<Task> List, String type, ArrayList<Integer> indexList) {
 		int count = 0;
+
 		if (type.equalsIgnoreCase("schedule")) {
 			textArea.append(CENTER_FORMAT + SCHEDULE_HEADER + "\n");
 		} else {
@@ -74,7 +82,7 @@ public class TopLeftPanel extends JPanel {
 
 		for (Task task : List) {
 			String string = task.getDescription();
-			textArea.append(indexList.get(count)+". " + string + "\n");
+			textArea.append(indexList.get(count) + ". " + string + "\n");
 			if (task.getStartDate() != null && task.getStartTime() != null) {
 				textArea.append("\t From ");
 				if (!task.getStartTime().equals(LocalTime.MAX)) {
@@ -93,8 +101,8 @@ public class TopLeftPanel extends JPanel {
 			count++;
 		}
 	}
-	
-	/*public static int getUpcomingTaskSize() {
-		return OL
-	}*/
+
+	/*
+	 * public static int getUpcomingTaskSize() { return OL }
+	 */
 }
