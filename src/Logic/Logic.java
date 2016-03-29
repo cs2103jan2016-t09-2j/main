@@ -846,6 +846,7 @@ public class Logic {
 		if (searchTaskList.size() > 0) {
 			setFeedBack(FEEDBACK_SEARCH_VALID);
 			BottomBottom.setSearchResult(searchTaskList, searchIndexList);
+			(new TempCLI()).printSearchTaskLists(searchTaskList, searchIndexList);
 		} else {
 			setFeedBack(FEEDBACK_SEARCH_INVALID);
 		}

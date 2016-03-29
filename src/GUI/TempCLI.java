@@ -30,6 +30,7 @@ public class TempCLI {
 	private DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("dd-MM-uuuu");
 
 	public static int count = 1;
+	public static int sindex;
 
 	private String userCommand;
 
@@ -72,18 +73,20 @@ public class TempCLI {
 
 	}
 
-	public void printSearchTaskLists(ArrayList<Task> listToPrint) {
+	public void printSearchTaskLists(ArrayList<Task> listToPrint, ArrayList<Integer> indexList) {
 		System.out.println();
 		System.out.println("***********************************************************");
 		System.out.println("                          SEARCH QUERY ");
 		System.out.println("***********************************************************");
 		// showTimedTaskListToUser(logicObj.getSearchedTasks());
-
+		
+		sindex = 0;
+		
 		for (Task task : listToPrint) {
 			if (task.isFloatingTask())
-				printUntimedTask(task);
+				printUntimedTask(task, indexList.get(sindex++));
 			else
-				printTimedTask(task);
+				printTimedTask(task, indexList.get(sindex++));
 		}
 
 		System.out.println("***********************************************************");
@@ -103,22 +106,22 @@ public class TempCLI {
 
 	public void showTimedTaskListToUser(ArrayList<Task> taskList) {
 		for (Task task : taskList) {
-			printTimedTask(task);
+			printTimedTask(task, count++);
 		}
 	}
 
 	public void showUntimedTaskListToUser(ArrayList<Task> taskList) {
 		for (Task task : taskList) {
-			printUntimedTask(task);
+			printUntimedTask(task, count++);
 		}
 	}
 
-	private void printUntimedTask(Task task) {
-		System.out.println((count++) + ". " + task.getDescription());
+	private void printUntimedTask(Task task, int index) {
+		System.out.println(index + ". " + task.getDescription());
 	}
 
-	private void printTimedTask(Task task) {
-		System.out.println((count++) + ". " + task.getDescription());
+	private void printTimedTask(Task task, int index) {
+		System.out.println(index + ". " + task.getDescription());
 		if (task.getStartDate() != null && task.getStartTime() != null) {
 			System.out.print("\t From ");
 			if (!task.getStartTime().equals(LocalTime.MAX)) {
