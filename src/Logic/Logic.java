@@ -243,7 +243,8 @@ public class Logic {
 			historyObject.clearRedoStack();
 			break;
 		case INCOMPLETE_TASK:
-			// do the needful
+			incompleteTask(retrievedCommand.getIndexList(), false);
+			historyObject.clearRedoStack();
 			break;
 		case UNDO_TASK:
 			undoTask();
@@ -273,6 +274,7 @@ public class Logic {
 			break;
 		case UNBLOCK_SLOT:
 			// do the needful
+			historyObject.clearRedoStack();
 			break;
 		case HELP:
 			setHelpInstructions();
@@ -649,6 +651,8 @@ public class Logic {
 		// undo parameter
 		ArrayList<Task> taskList = new ArrayList<Task>();
 
+		boolean isAborted = false;
+
 		int minIndex = scheduledTasksOverDue.size() + scheduledTasksToDo.size() + floatingTasksToDo.size() + 1;
 		int maxIndex = minIndex + scheduledTasksComplete.size() + floatingTasksComplete.size();
 
@@ -656,20 +660,29 @@ public class Logic {
 			for (int index = indexList.size() - 1; index >= 0; index--) {
 				if ((indexList.get(index) >= minIndex) && (indexList.get(index) <= maxIndex)) {
 					if (indexList.get(index) <= minIndex + scheduledTasksComplete.size()) {
-						markTaskIncomplete(scheduledTasksComplete.get(indexList.get(index) - minIndex));
+						Task taskToMark = scheduledTasksComplete.get(indexList.get(index) - minIndex);
+						markTaskIncomplete(taskToMark);
+						taskList.add(taskToMark);
 					} else {
-						markTaskIncomplete(floatingTasksComplete
-								.get(indexList.get(index) - minIndex - scheduledTasksComplete.size()));
+						Task taskToMark = floatingTasksComplete
+								.get(indexList.get(index) - minIndex - scheduledTasksComplete.size());
+						markTaskIncomplete(taskToMark);
+						taskList.add(taskToMark);
 					}
 					setFeedBack(FEEDBACK_TASK_INCOMPLETED);
 				} else {
-					setFeedBack(FEEDBACK_TASK_INCOMPLETED_INVALID);
+					isAborted = true;
 				}
 			}
 			if (!isUndoOperation) {
 				// for undo functionality
 				OldCommand recentCommand = new OldCommand(COMMAND_TYPE.COMPLETE_TASK, taskList, indexList);
 				historyObject.addToUndoList(recentCommand);
+			}
+
+			if (isAborted && !taskList.isEmpty()) {
+				undoTask();
+				setFeedBack(FEEDBACK_TASK_INCOMPLETED_INVALID);
 			}
 		}
 	}
