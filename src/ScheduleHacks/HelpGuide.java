@@ -2,15 +2,25 @@ package ScheduleHacks;
 
 import java.util.ArrayList;
 
-public class helpGuide {
 
+public class HelpGuide {
+	
+	
+	private static HelpGuide object;
+	
+	public static HelpGuide getInstance() {
+		if (object == null) {
+			object = new HelpGuide();
+		}
+		return object;
+	}
 
 	ArrayList<String> addList = new ArrayList<String>();
 	ArrayList<String> deleteList = new ArrayList<String>();
 	ArrayList<String> editList = new ArrayList<String>();
 	ArrayList<String> searchList = new ArrayList<String>();
 	ArrayList<String> undoAndRedoList = new ArrayList<String>();
-	ArrayList<String> completeList = new ArrayList<String>();
+	ArrayList<String> completeAndIncompleteList = new ArrayList<String>();
 	ArrayList<String> exitList = new ArrayList<String>();
 	ArrayList<String> blockList = new ArrayList<String>();
 	ArrayList<String> collatedHelpList = new ArrayList<String>();
@@ -22,13 +32,13 @@ public class helpGuide {
 
 	public void collateGuide() {
 		collatedHelpList.addAll(addList);
-		addList.addAll(deleteList);
-		deleteList.addAll(editList);
-		editList.addAll(searchList);
-		searchList.addAll(undoAndRedoList);
-		undoAndRedoList.addAll(completeList);
-		completeList.addAll(blockList);
-		blockList.addAll(exitList);
+		collatedHelpList.addAll(deleteList);
+		collatedHelpList.addAll(editList);
+		collatedHelpList.addAll(searchList);
+		collatedHelpList.addAll(undoAndRedoList);
+		collatedHelpList.addAll(completeAndIncompleteList);
+		collatedHelpList.addAll(blockList);
+		collatedHelpList.addAll(exitList);
 	}
 
 
@@ -94,18 +104,24 @@ public class helpGuide {
 	}
 
 	public void completeGuide() {
-		completeList.add("********COMPLETE********");
-		completeList.add("complete <index>");
-		completeList.add("done <index>, <index>, <index> ");
-		completeList.add("finish <index range>");
-		completeList.add("\n");
-		completeList.add("\n");
+		completeAndIncompleteList.add("********COMPLETE********");
+		completeAndIncompleteList.add("complete <index>");
+		completeAndIncompleteList.add("done <index>, <index>, <index> ");
+		completeAndIncompleteList.add("finish <index range>");
+		completeAndIncompleteList.add("********INCOMPLETE********");
+		completeAndIncompleteList.add("incomplete <index>");
+		completeAndIncompleteList.add("undone <index>, <index>, <index> ");
+		completeAndIncompleteList.add("\n");
+		completeAndIncompleteList.add("\n");
 	}
 
 	public void blockGuide() {
 		searchList.add("********BLOCK********");
-		searchList.add("block <index> ");
-		searchList.add("block <index>, <index>, <index>");
+		searchList.add("block <date> ");
+		searchList.add("block <date>, <time>");
+		searchList.add("********BLOCK********");
+		searchList.add("unblock <date> ");
+		searchList.add("unblock <date>, <time>");
 		searchList.add("\n");
 		searchList.add("\n");
 	}
