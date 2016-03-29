@@ -1,6 +1,7 @@
 package Logic;
 
 import java.util.ArrayList;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import ScheduleHacks.Task;
@@ -154,11 +155,12 @@ public class Logic {
 			setScheduledTasksComplete(storage.getScheduledTasksComplete());
 			setScheduledTasksToDo(storage.getScheduledTasksToDo());
 			setScheduledTasksOverDue(storage.getScheduledTasksOverDue());
-			
+
 			// remove if not needed
-			/*for (int i = 0; i < scheduledTasksOverDue.size(); i++) {
-				addTask(scheduledTasksOverDue.remove(i), true);
-			}*/
+			/*
+			 * for (int i = 0; i < scheduledTasksOverDue.size(); i++) {
+			 * addTask(scheduledTasksOverDue.remove(i), true); }
+			 */
 
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
@@ -655,7 +657,7 @@ public class Logic {
 		boolean isAborted = false;
 
 		int minIndex = scheduledTasksOverDue.size() + scheduledTasksToDo.size() + floatingTasksToDo.size() + 1;
-		int maxIndex = minIndex + scheduledTasksComplete.size() + floatingTasksComplete.size();
+		int maxIndex = minIndex + scheduledTasksComplete.size() + floatingTasksComplete.size() - 1;
 
 		if (indexList != null && !indexList.isEmpty()) {
 			for (int index = indexList.size() - 1; index >= 0; index--) {
@@ -673,6 +675,7 @@ public class Logic {
 					setFeedBack(FEEDBACK_TASK_INCOMPLETED);
 				} else {
 					isAborted = true;
+					setFeedBack(FEEDBACK_TASK_INCOMPLETED_INVALID);
 				}
 			}
 			if (!isUndoOperation) {
@@ -837,11 +840,20 @@ public class Logic {
 		}
 
 		isSearchCommand = true;
+		ArrayList<Task> searchTaskList;
+		ArrayList<Integer> searchIndexList = new ArrayList<Integer>();
 
-		Search obj = new Search();
-		obj.searchTask(taskToFind);
-		ArrayList<Task> searchTaskList = obj.getSearchList();
-		ArrayList<Integer> searchIndexList = obj.getSearchIndexList();
+		if (taskToFind.getStartDate() != null && taskToFind.getStartDate() == LocalDate.MIN) {
+			searchTaskList = new ArrayList<Task>(getScheduledTasksOverDue());
+			for (int i = 0; i < scheduledTasksOverDue.size(); i++) {
+				searchIndexList.add(i + 1);
+			}
+		} else {
+			Search obj = new Search();
+			obj.searchTask(taskToFind);
+			searchTaskList = obj.getSearchList();
+			searchIndexList = obj.getSearchIndexList();
+		}
 
 		if (searchTaskList.size() > 0) {
 			setFeedBack(FEEDBACK_SEARCH_VALID);

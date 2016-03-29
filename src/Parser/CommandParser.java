@@ -165,6 +165,9 @@ public class CommandParser {
 
 		if (hasInDictionary(ParserConstants.UPCOMING_PERIOD_KEYWORD, firstWord)) {
 			taskStatement = setUpcomingDateRange(taskStatement, newTask, firstWord);
+		} else if(firstWord.equalsIgnoreCase(ParserConstants.STRING_OVERDUE)) {
+			taskStatement = removeFirstWord(taskStatement);
+			setOverdueCriteria(newTask);
 		} else {
 			taskStatement = getSearchCriteria(taskStatement, newTask);
 		}
@@ -179,6 +182,13 @@ public class CommandParser {
 			// do nothing
 		}
 		return newTask;
+	}
+
+	public static void setOverdueCriteria(Task newTask) {
+		newTask.setStartDate(LocalDate.MIN);
+		newTask.setEndDate(getCurrentDate());
+		newTask.setEndTime(LocalTime.now());
+		newTask.setAsIncomplete();
 	}
 
 	public static String getSearchCriteria(String taskStatement, Task newTask) throws Exception {

@@ -135,6 +135,7 @@ public class ParserConstants {
 	static final String STRING_COMMA = ",";
 	static final String STRING_HYPHEN = "-";
 	static final String STRING_TO = "to";
+	static final String STRING_OVERDUE = "overdue";
 
 	// Number in words
 	static final String[] NUM_TO_WORDS = { "", "one", "two", "three", "four", "five" };
