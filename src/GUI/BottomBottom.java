@@ -23,6 +23,8 @@ public class BottomBottom extends JPanel implements KeyListener {
 	private static ArrayList<Task> searchOList = new ArrayList<Task>();
 	private static ArrayList<Task> searchSList = new ArrayList<Task>();
 	private static ArrayList<Task> searchFList = new ArrayList<Task>();
+	
+	private static Logic logicObj = Logic.getInstance();
 
 	public BottomBottom() {
 		setLayout(new GridLayout(1, 1));
@@ -46,7 +48,6 @@ public class BottomBottom extends JPanel implements KeyListener {
 			String input = commandField.getText();
 			commandField.setText("");
 
-			Logic logicObj = Logic.getInstance();
 			logicObj.executeCommand(input);
 			System.out.println(input);
 			BottomPanel.setFeedback(logicObj.getFeedBack());
@@ -64,7 +65,7 @@ public class BottomBottom extends JPanel implements KeyListener {
 				TopLeftPanel.clearText();
 				TopLeftPanel.setText(OList, SList, null);
 				TopRightPanel.clearText();
-				TopRightPanel.setText(FList, null);
+				TopRightPanel.setText(FList, null, OList.size() + SList.size());
 			}
 		}
 
@@ -111,7 +112,7 @@ public class BottomBottom extends JPanel implements KeyListener {
 				searchIndexList.subList(searchOList.size() + searchSList.size(), searchIndexList.size()));
 		
 		TopLeftPanel.setText(searchOList, searchSList, UpcomingTaskIndex);
-		TopRightPanel.setText(searchFList, FloatingTaskIndex);
+		TopRightPanel.setText(searchFList, FloatingTaskIndex, UpcomingTaskIndex.size());
 	}
 
 	public static void clearArrayList() {

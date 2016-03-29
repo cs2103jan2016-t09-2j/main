@@ -22,6 +22,7 @@ public class Main_UI {
             	int height1 = (int) (height / 1.92);
             	newFrame.setSize(width1, height1);
             	//newFrame.setSize(600, 400);
+            	newFrame.setIconImage(Toolkit.getDefaultToolkit().getImage("SHIcon.png"));
                 newFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
                 newFrame.setVisible(true);
                 newFrame.setResizable(false);

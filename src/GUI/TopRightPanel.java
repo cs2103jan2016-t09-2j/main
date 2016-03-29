@@ -1,6 +1,7 @@
 package GUI;
 
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.GridLayout;
 import java.util.ArrayList;
 
@@ -22,6 +23,9 @@ public class TopRightPanel extends JPanel {
 	private static int count;
 	private static String FLOATING_HEADER = "FLOATING TASKS";
 	private static String CENTER_FORMAT = "         ";
+	
+	private static final Font TITLE_FONT = new Font("Comic Sans", Font.BOLD, 16);
+	private static final Font TASK_FONT = new Font("Comic Sans", Font.PLAIN, 16);
 
 	public TopRightPanel() {
 		Dimension size = getPreferredSize();
@@ -33,15 +37,16 @@ public class TopRightPanel extends JPanel {
 		textArea = new JTextArea();
 		scrollPane = new JScrollPane(textArea);
 		textArea.setEditable(false);
+		textArea.setFont(TASK_FONT);
 		add(scrollPane);
 		textArea.append(CENTER_FORMAT + FLOATING_HEADER + "\n");
 	}
 
-	public static void setText(ArrayList<Task> FList, ArrayList<Integer> indexList) {
+	public static void setText(ArrayList<Task> FList, ArrayList<Integer> indexList, int UpcomingTaskSize) {
 		if (indexList == null || indexList.isEmpty()) {
 			indexList = new ArrayList<Integer>();
-			for (int index = 0; index < FList.size(); index++) {
-				indexList.add(index+1);
+			for (int index = 1; index <= FList.size(); index++) {
+				indexList.add(index + UpcomingTaskSize);
 			}
 		}
 		printOut(FList, indexList);
