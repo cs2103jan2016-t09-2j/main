@@ -7,8 +7,7 @@ import ScheduleHacks.Task;
 public class Command {
 
 	public enum COMMAND_TYPE {
-		ADD_TASK, DELETE_TASK, MODIFY_TASK, COMPLETE_TASK, INCOMPLETE_TASK, SEARCH_TASK, VIEW_LIST, 
-		UNDO_TASK, REDO_TASK, SET_DIRECTORY, HOME, BLOCK_SLOT, UNBLOCK_SLOT, HELP, EXIT
+		ADD_TASK, DELETE_TASK, MODIFY_TASK, COMPLETE_TASK, INCOMPLETE_TASK, SEARCH_TASK, VIEW_LIST, UNDO_TASK, REDO_TASK, SET_DIRECTORY, HOME, BLOCK_SLOT, UNBLOCK_SLOT, HELP, EXIT
 	};
 
 	public boolean isFirstWordCommand;
@@ -110,6 +109,8 @@ public class Command {
 			return COMMAND_TYPE.MODIFY_TASK;
 		} else if (hasInDictionary(ParserConstants.COMMAND_COMPLETE, commandFirstWord)) {
 			return COMMAND_TYPE.COMPLETE_TASK;
+		} else if (hasInDictionary(ParserConstants.COMMAND_INCOMPLETE, commandFirstWord)) {
+			return COMMAND_TYPE.INCOMPLETE_TASK;
 		} else if (hasInDictionary(ParserConstants.COMMAND_SEARCH, commandFirstWord)) {
 			return COMMAND_TYPE.SEARCH_TASK;
 		} else if (hasInDictionary(ParserConstants.COMMAND_VIEW, commandFirstWord)) {
@@ -124,6 +125,8 @@ public class Command {
 			return COMMAND_TYPE.HOME;
 		} else if (hasInDictionary(ParserConstants.COMMAND_BLOCK_SLOT, commandFirstWord)) {
 			return COMMAND_TYPE.BLOCK_SLOT;
+		} else if (hasInDictionary(ParserConstants.COMMAND_BLOCK_SLOT, commandFirstWord)) {
+			return COMMAND_TYPE.UNBLOCK_SLOT;
 		} else if (hasInDictionary(ParserConstants.COMMAND_HELP, commandFirstWord)) {
 			return COMMAND_TYPE.HELP;
 		} else if (hasInDictionary(ParserConstants.COMMAND_EXIT, commandFirstWord)) {

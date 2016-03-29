@@ -80,6 +80,9 @@ public class CommandParser {
 				case BLOCK_SLOT:
 					newTask = blockSlot(taskStatement);
 					break;
+				case UNBLOCK_SLOT:
+					newTask = blockSlot(taskStatement);
+					break;
 				default:
 					// do nothing
 					break;
@@ -179,40 +182,37 @@ public class CommandParser {
 	}
 
 	public static String getSearchCriteria(String taskStatement, Task newTask) throws Exception {
-		DateParser dateObj = new DateParser(taskStatement);
 		String firstWord = getFirstWord(taskStatement);
-		LocalDate currentDate = getCurrentDate();
 
-		if (dateObj.isUpcomingDayString(taskStatement)) {
-			// if today or tomorrow
-			String upcomingDay = dateObj.getUpComingDayWord(taskStatement);
-			newTask.setEndDate(dateObj.getUpcomingDayDate(upcomingDay));
-			taskStatement = taskStatement.replace(upcomingDay, ParserConstants.STRING_WHITESPACE);
-		} else if (dateObj.isDayOfWeek(firstWord)) {
-			// if any day of the week
-			newTask.setEndDate(dateObj.getDayOfWeekDate(firstWord));
-			taskStatement = taskStatement.replace(firstWord, ParserConstants.STRING_WHITESPACE);
-		} else if (hasInDictionary(ParserConstants.COMMAND_COMPLETE, firstWord)) {
+		if (hasInDictionary(ParserConstants.COMMAND_COMPLETE, firstWord)) {
 			newTask.setAsComplete();
 			taskStatement = taskStatement.replace(firstWord, ParserConstants.STRING_WHITESPACE);
-		} else if (dateObj.addToListIfValidDate(taskStatement, ParserConstants.STRING_EMPTY)) {
-			// if date
-			newTask.setEndDate(dateObj.getDateList().get(ParserConstants.FIRST_INDEX));
-			taskStatement = dateObj.getTaskDetails();
-		} else if (dateObj.isMonth(firstWord)) {
-			// if month
-			int monthNum = dateObj.getMonthNum(firstWord);
-			int currentMonthNum = currentDate.getMonthValue();
-			if (monthNum < currentMonthNum) {
-				newTask.setStartDate(
-						LocalDate.of(currentDate.getYear() + 1, monthNum, ParserConstants.FIRST_DAY_OF_MONTH));
-			} else {
-				newTask.setStartDate(LocalDate.of(currentDate.getYear(), monthNum, ParserConstants.FIRST_DAY_OF_MONTH));
+		} else {
+			DateParser dateObj = new DateParser(taskStatement);
+			LocalDate currentDate = getCurrentDate();
+			dateObj.findDates();
+			if (dateObj.getDateList() != null) {
+				int dateListSize = dateObj.getDateList().size();
+				newTask.setEndDate(dateObj.getDateList().get(dateListSize - 1));
+				if (dateListSize > 1) {
+					newTask.setEndDate(dateObj.getDateList().get(ParserConstants.FIRST_INDEX));
+				}
+				taskStatement = dateObj.getTaskDetails();
+			} else if (dateObj.isMonth(firstWord)) {
+				// if month
+				int monthNum = dateObj.getMonthNum(firstWord);
+				int currentMonthNum = currentDate.getMonthValue();
+				if (monthNum < currentMonthNum) {
+					newTask.setStartDate(
+							LocalDate.of(currentDate.getYear() + 1, monthNum, ParserConstants.FIRST_DAY_OF_MONTH));
+				} else {
+					newTask.setStartDate(
+							LocalDate.of(currentDate.getYear(), monthNum, ParserConstants.FIRST_DAY_OF_MONTH));
+				}
+				newTask.setEndDate(newTask.getStartDate().plusMonths(1).minusDays(1));
+				taskStatement = taskStatement.replace(firstWord, ParserConstants.STRING_WHITESPACE);
+
 			}
-			newTask.setEndDate(newTask.getStartDate().plusMonths(1).minusDays(1));
-			taskStatement = taskStatement.replace(firstWord, ParserConstants.STRING_WHITESPACE);
-		} else if(dateObj.hasDayDuration(taskStatement)) {
-			taskStatement = addCriteriaDateDuration(newTask, taskStatement);
 		}
 		return taskStatement;
 	}
@@ -260,13 +260,13 @@ public class CommandParser {
 		}
 		return taskStatement;
 	}
-	
+
 	public static String addCriteriaDateDuration(Task newTask, String taskStatement) {
 		DateParser dateObj = new DateParser(taskStatement);
 		taskStatement = dateObj.getDayDurationWord(taskStatement);
 		newTask.setStartDate(getCurrentDate());
 		newTask.setEndDate(dateObj.getParsedDayDurationDate(taskStatement));
-		return dateObj.getTaskDetails();
+		return taskStatement.replace(taskStatement, ParserConstants.STRING_EMPTY);
 	}
 
 	/**
@@ -372,6 +372,8 @@ public class CommandParser {
 		switch (commandType) {
 		case COMPLETE_TASK:
 			return false;
+		case INCOMPLETE_TASK:
+			return false;
 		case DELETE_TASK:
 			return false;
 		case UNDO_TASK:
@@ -401,6 +403,8 @@ public class CommandParser {
 	public static boolean hasIndexNumber(COMMAND_TYPE commandType) {
 		switch (commandType) {
 		case COMPLETE_TASK:
+			return true;
+		case INCOMPLETE_TASK:
 			return true;
 		case DELETE_TASK:
 			return true;

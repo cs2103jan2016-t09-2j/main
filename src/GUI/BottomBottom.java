@@ -1,53 +1,93 @@
 package GUI;
 
 import java.awt.GridLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+import java.util.ArrayList;
 
 import javax.swing.JPanel;
 import javax.swing.JTextField;
-import javax.swing.event.EventListenerList;
+import Logic.Logic;
+import ScheduleHacks.Task;
 
-public class BottomBottom extends JPanel{
+public class BottomBottom extends JPanel implements KeyListener{
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
 
-	private EventListenerList listenerList = new EventListenerList();
 	private JTextField commandField;
-	private String command;
 	
 	public BottomBottom(){
 		setLayout(new GridLayout(1,1));
-		commandField = new JTextField();
-		//commandField = new JTextField(89);	
+		commandField = new JTextField();	
 		add(commandField);
-		
-		commandField.addActionListener(new ActionListener(){
-			public void actionPerformed(ActionEvent e){
-				command = commandField.getText();
-				commandField.setText("");
-				fireDetailEvent(new DetailEvent(this, command));
-			}
-		});
+		commandField.addKeyListener(this);
 	}
 	
-	public void fireDetailEvent(DetailEvent event) {
-        Object[] listeners = listenerList.getListenerList();
-        
-        for(int i=0; i < listeners.length; i += 2) {
-            if(listeners[i] == DetailListener.class) {
-                ((DetailListener)listeners[i+1]).detailEventOccurred(event);
-            }
-        }
-    }
+	public void keyReleased(KeyEvent arg0) {
+		//not used
+	}
 
-    public void addDetailListener(DetailListener listener) {
-        listenerList.add(DetailListener.class, listener);
-    }
+	public void keyTyped(KeyEvent arg0) {
+		//not used
+	}
+	
+    public void keyPressed(KeyEvent e){
+    	int keyCode = e.getKeyCode();
+    	
+    	if(keyCode == KeyEvent.VK_ENTER){
+    		String input = commandField.getText();
+    		commandField.setText("");
+ 
+    		Logic logicObj = Logic.getInstance();
+    		logicObj.executeCommand(input);
+			System.out.println(input);
+			BottomPanel.setFeedback(logicObj.getFeedBack());
 
- /*   public void removeDetailListener(DetailListener listener) {
-        listenerList.remove(DetailListener.class, listener);
-    }*/
+			ArrayList<Task> OList = new ArrayList<Task>();
+			ArrayList<Task> SList = new ArrayList<Task>();
+			ArrayList<Task> FList = new ArrayList<Task>();
+
+			if (!logicObj.hasSearchList()) { //print the normal display
+				OList = logicObj.getScheduledTasksOverDue();
+				SList = logicObj.getScheduledTasksToDo();
+				FList = logicObj.getFloatingTasksToDo();
+			}
+			else{ //search display
+				ArrayList<Task> searchList = new ArrayList<Task>();
+				searchList = logicObj.getSearchTasksList();
+
+				for(Task task : searchList){
+					if(task.isFloatingTask()){
+						FList.add(task);
+					}
+					else if(task.isScheduledTask()){
+						SList.add(task);
+					}
+					else{
+						OList.add(task);
+						System.out.println("Enter this magic circle");
+					}
+				}
+			}
+
+			TopLeftPanel.clearText();
+			TopLeftPanel.setText(OList, SList);
+			TopRightPanel.clearText();
+			TopRightPanel.setText(FList);
+    	}
+    	
+    	if(keyCode == KeyEvent.VK_UP){
+    		BottomPanel.setFeedback("You have pressed the up arrow");
+    	}
+    	
+    	if(keyCode == KeyEvent.VK_DOWN){
+    		BottomPanel.setFeedback("You have pressed the down arrow");
+    	}
+    	
+    	if(keyCode == KeyEvent.VK_ESCAPE){
+    		System.exit(0);
+    	}
+    }
 }

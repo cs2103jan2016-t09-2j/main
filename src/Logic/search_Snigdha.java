@@ -96,8 +96,14 @@ public class search_Snigdha {
 
 	public void matchDescription(ArrayList<Task> destinationList, Task taskToFind, Task taskToCheck) {
 		String descToFind = taskToFind.getDescription().toLowerCase();
-		if (taskToCheck.getDescription().toLowerCase().contains(descToFind)) {
-			destinationList.add(taskToCheck);
+		if (descToFind.length() == 1) {
+			if (taskToCheck.getDescription().toLowerCase().startsWith(descToFind)) {
+				destinationList.add(taskToCheck);
+			}
+		} else {
+			if (taskToCheck.getDescription().toLowerCase().contains(descToFind)) {
+				destinationList.add(taskToCheck);
+			}
 		}
 	}
 

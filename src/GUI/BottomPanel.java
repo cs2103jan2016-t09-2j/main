@@ -3,13 +3,8 @@ package GUI;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.util.ArrayList;
-
 import javax.swing.BorderFactory;
 import javax.swing.JPanel;
-
-import Logic.Logic;
-import ScheduleHacks.Task;
 
 public class BottomPanel extends JPanel{
 
@@ -18,7 +13,7 @@ public class BottomPanel extends JPanel{
 	 */
 	private static final long serialVersionUID = 1L;
 
-	private BottomTop bottomTop;
+	private static BottomTop bottomTop;
 	private BottomBottom bottomBottom;
 	String text;
 
@@ -27,56 +22,11 @@ public class BottomPanel extends JPanel{
 		size.height = 100;
 		setPreferredSize(size);
 		setBorder(BorderFactory.createTitledBorder(""));
-		Logic logicObj = Logic.getInstance();
-
 		setLayout(new GridBagLayout());
 		GridBagConstraints gc = new GridBagConstraints();
 
 		bottomTop = new BottomTop();
 		bottomBottom = new BottomBottom();
-		bottomBottom.addDetailListener(new DetailListener(){
-			public void detailEventOccurred(DetailEvent event){
-				text = event.getText();
-
-				logicObj.executeCommand(text);
-				System.out.println(text);
-				bottomTop.setText(logicObj.getFeedBack());
-
-				ArrayList<Task> OList = new ArrayList<Task>();
-				ArrayList<Task> SList = new ArrayList<Task>();
-				ArrayList<Task> FList = new ArrayList<Task>();
-
-				if (!logicObj.hasSearchList()) { //print the normal display
-					OList = logicObj.getScheduledTasksOverDue();
-					SList = logicObj.getScheduledTasksToDo();
-					FList = logicObj.getFloatingTasksToDo();
-				}
-				else{ //search display
-					ArrayList<Task> searchList = new ArrayList<Task>();
-					searchList = logicObj.getSearchTasksList();
-
-					for(Task task : searchList){
-						if(task.isFloatingTask()){
-							FList.add(task);
-						}
-						else if(task.isScheduledTask()){
-							SList.add(task);
-						}
-						else{
-							OList.add(task);
-							System.out.println("Enter this magic circle");
-						}
-					}
-				}
-
-				TopLeftPanel.clearText();
-				TopLeftPanel.setText(OList, SList);
-				TopRightPanel.clearText();
-				TopRightPanel.setText(FList);
-
-
-			}
-		});
 
 		gc.fill = GridBagConstraints.HORIZONTAL;
 
@@ -98,8 +48,8 @@ public class BottomPanel extends JPanel{
 		return text;
 	}
 
-	public void setFeedback(String feedBack) {
-		bottomTop.setText(text);
+	public static void setFeedback(String feedBack) {
+		bottomTop.setText(feedBack);
 	}
 }
 
