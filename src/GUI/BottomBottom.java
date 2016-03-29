@@ -68,7 +68,6 @@ public class BottomBottom extends JPanel implements KeyListener {
 				OList = new ArrayList<Task>(logicObj.getScheduledTasksOverDue());
 				SList = new ArrayList<Task>(logicObj.getScheduledTasksToDo());
 				FList = new ArrayList<Task>(logicObj.getFloatingTasksToDo());
-				System.out.println(OList.size() + "*" + SList.size() + "*" + FList.size());
 				TopLeftPanel.clearText();
 				TopLeftPanel.setText(OList, SList, null);
 				TopRightPanel.clearText();
