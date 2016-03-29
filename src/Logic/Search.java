@@ -7,30 +7,31 @@ import GUI.TempCLI;
 
 import java.time.LocalDate;
 
-public class search_Snigdha {
+public class Search {
 
 	static int count = 1;
+	private ArrayList<Task> matchedTaskList = new ArrayList<Task>();
+	private ArrayList<Integer> indexList = new ArrayList<Integer>();
 
-	public ArrayList<Task> searchTask(Task taskToFind) {
-
-		Logic obj = Logic.getInstance();
-
-		ArrayList<Task> matchedTaskList = new ArrayList<Task>();
-
-		findMatches(obj.getScheduledTasksOverDue(), matchedTaskList, taskToFind);
-		findMatches(obj.getScheduledTasksToDo(), matchedTaskList, taskToFind);
-		findMatches(obj.getFloatingTasksToDo(), matchedTaskList, taskToFind);
-
-		findMatches(obj.getScheduledTasksComplete(), matchedTaskList, taskToFind);
-		findMatches(obj.getFloatingTasksComplete(), matchedTaskList, taskToFind);
-
-		printList(matchedTaskList);
-		
+	public ArrayList<Task> getSearchList() {
 		return matchedTaskList;
-		
 	}
 
-	public void findMatches(ArrayList<Task> sourceList, ArrayList<Task> destinationList, Task taskToFind) {
+	public ArrayList<Integer> getSearchIndexList() {
+		return indexList;
+	}
+
+	public void searchTask(Task taskToFind) {
+		Logic obj = Logic.getInstance();
+
+		findMatches(obj.getScheduledTasksOverDue(), taskToFind);
+		findMatches(obj.getScheduledTasksToDo(), taskToFind);
+		findMatches(obj.getFloatingTasksToDo(), taskToFind);
+		findMatches(obj.getScheduledTasksComplete(), taskToFind);
+		findMatches(obj.getFloatingTasksComplete(), taskToFind);
+	}
+
+	public void findMatches(ArrayList<Task> sourceList, Task taskToFind) {
 
 		/*
 		 * if (taskToFind.isComplete()) { matchComplete(sourceList,
@@ -39,40 +40,46 @@ public class search_Snigdha {
 
 		for (Task task : sourceList) {
 			// matching description
+
 			if (taskToFind.getDescription() != null && !taskToFind.getDescription().isEmpty()) {
-				matchDescription(destinationList, taskToFind, task);
+				matchDescription(taskToFind, task);
 			}
 
 			// matching complete
 			if (taskToFind.isComplete() && task.isComplete()) {
-				destinationList.add(task);
+				indexList.add(count);
+				matchedTaskList.add(task);
 			}
 
 			// matching only end date
 			if (taskToFind.getEndDate() != null && taskToFind.getStartDate() == null) {
-				matchSingleDate(destinationList, taskToFind, task);
+				matchSingleDate(taskToFind, task);
 			}
 
 			// matching date range
 			if (taskToFind.getEndDate() != null && taskToFind.getStartDate() != null) {
-				matchDateRange(destinationList, taskToFind, task);
+				matchDateRange(taskToFind, task);
 			}
+
+			count++;
 		}
 	}
 
-	public void matchSingleDate(ArrayList<Task> destinationList, Task taskToFind, Task taskToCheck) {
+	public void matchSingleDate(Task taskToFind, Task taskToCheck) {
 		LocalDate dateToFind = taskToFind.getEndDate();
 		if (taskToCheck.isScheduledTask()) {
 			if (taskToCheck.getStartDate() != null && taskToCheck.getStartDate().isEqual(dateToFind)) {
-				destinationList.add(taskToCheck);
+				indexList.add(count);
+				matchedTaskList.add(taskToCheck);
 			}
 			if (taskToCheck.getEndDate().isEqual(dateToFind)) {
-				destinationList.add(taskToCheck);
+				indexList.add(count);
+				matchedTaskList.add(taskToCheck);
 			}
 		}
 	}
 
-	public void matchDateRange(ArrayList<Task> destinationList, Task taskToFind, Task taskToCheck) {
+	public void matchDateRange(Task taskToFind, Task taskToCheck) {
 		LocalDate startDate = taskToFind.getStartDate();
 		LocalDate endDate = taskToFind.getEndDate();
 
@@ -81,35 +88,35 @@ public class search_Snigdha {
 			if (taskToCheck.getStartDate() != null) {
 				LocalDate taskStartDate = taskToCheck.getStartDate();
 				if (dateLiesInRange(taskStartDate, startDate, endDate)) {
-					destinationList.add(taskToCheck);
+					indexList.add(count);
+					matchedTaskList.add(taskToCheck);
 					return;
 				} else if (taskStartDate.isBefore(startDate) && taskEndDate.isAfter(endDate)) {
-					destinationList.add(taskToCheck);
+					indexList.add(count);
+					matchedTaskList.add(taskToCheck);
 					return;
 				}
 			}
 			if (dateLiesInRange(taskEndDate, startDate, endDate)) {
-				destinationList.add(taskToCheck);
+				indexList.add(count);
+				matchedTaskList.add(taskToCheck);
 			}
 		}
 	}
 
-	public void matchDescription(ArrayList<Task> destinationList, Task taskToFind, Task taskToCheck) {
+	public void matchDescription(Task taskToFind, Task taskToCheck) {
 		String descToFind = taskToFind.getDescription().toLowerCase();
 		if (descToFind.length() == 1) {
 			if (taskToCheck.getDescription().toLowerCase().startsWith(descToFind)) {
-				destinationList.add(taskToCheck);
+				indexList.add(count);
+				matchedTaskList.add(taskToCheck);
 			}
 		} else {
 			if (taskToCheck.getDescription().toLowerCase().contains(descToFind)) {
-				destinationList.add(taskToCheck);
+				indexList.add(count);
+				matchedTaskList.add(taskToCheck);
 			}
 		}
-	}
-
-	public void printList(ArrayList<Task> listToPrint) {
-		TempCLI printManager = new TempCLI();
-		printManager.printSearchTaskLists(listToPrint);
 	}
 
 	public boolean dateLiesInRange(LocalDate dateToCheck, LocalDate startDate, LocalDate endDate) {

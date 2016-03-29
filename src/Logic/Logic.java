@@ -30,7 +30,6 @@ public class Logic {
 	private ArrayList<Task> scheduledTasksComplete = new ArrayList<Task>();
 	private ArrayList<Task> scheduledTasksOverDue = new ArrayList<Task>();
 	private ArrayList<Task> recentAddedList = new ArrayList<Task>();
-	private ArrayList<Task> searchTasks = new ArrayList<Task>();
 	private ArrayList<LocalDateTime> blockedSlots = new ArrayList<LocalDateTime>();
 	private int recentAddedPosition;
 
@@ -131,10 +130,6 @@ public class Logic {
 		return recentAddedList;
 	}
 	
-	public ArrayList<Task> getSearchTasksList() {
-		return searchTasks;
-	}
-
 	private int getRecentAddedPosition() {
 		return recentAddedPosition;
 	}
@@ -245,6 +240,9 @@ public class Logic {
 			completeTask(retrievedCommand.getIndexList(), false);
 			historyObject.clearRedoStack();
 			break;
+		case INCOMPLETE_TASK:
+			//do the needful
+			break;
 		case UNDO_TASK:
 			undoTask();
 			break;
@@ -270,6 +268,9 @@ public class Logic {
 		case BLOCK_SLOT:
 			blockTask(retrievedCommand);
 			historyObject.clearRedoStack();
+			break;
+		case UNBLOCK_SLOT:
+			// do the needful
 			break;
 		case HELP:
 			setHelpInstructions();
@@ -769,12 +770,14 @@ public class Logic {
 		
 		isSearchCommand = true;
 
-		search_Snigdha obj = new search_Snigdha();
-		searchTasks = obj.searchTask(taskToFind);
+		Search obj = new Search();
+		obj.searchTask(taskToFind);
+		ArrayList<Task> searchTaskList = obj.getSearchList();
+		ArrayList<Integer> searchIndexList = obj.getSearchIndexList();
 
-		if(searchTasks.size() > 0){
+		if(searchTaskList.size() > 0){
 			setFeedBack(FEEDBACK_SEARCH_VALID);
-			BottomBottom.setSearchResult(searchTasks);
+			BottomBottom.setSearchResult(searchTaskList, searchIndexList);
 		}
 		else{
 			setFeedBack(FEEDBACK_SEARCH_INVALID);
