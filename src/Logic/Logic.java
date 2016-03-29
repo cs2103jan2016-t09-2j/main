@@ -44,6 +44,8 @@ public class Logic {
 	private static final String FEEDBACK_TASK_MODIFIED = "Task Edited Successfully";
 	private static final String FEEDBACK_TASK_NOT_MODIFIED = "Task was not modified";
 	private static final String FEEDBACK_TASK_COMPLETED = "Task Completed Successfully";
+	private static final String FEEDBACK_TASK_INCOMPLETED = "Task Marked Undone Successfully";
+	private static final String FEEDBACK_TASK_INCOMPLETED_INVALID = "Invalid Undone Operation!";
 	private static final String FEEDBACK_UNDO_INVALID = "Invalid Undo!";
 	private static final String FEEDBACK_UNDO_VALID = "Last Action Un-Done!";
 	private static final String FEEDBACK_REDO_VALID = "Last Action Re-Done!";
@@ -129,7 +131,7 @@ public class Logic {
 	private ArrayList<Task> getRecentAddedList() {
 		return recentAddedList;
 	}
-	
+
 	private int getRecentAddedPosition() {
 		return recentAddedPosition;
 	}
@@ -152,11 +154,11 @@ public class Logic {
 			setScheduledTasksComplete(storage.getScheduledTasksComplete());
 			setScheduledTasksToDo(storage.getScheduledTasksToDo());
 			setScheduledTasksOverDue(storage.getScheduledTasksOverDue());
-			
-			for (int i=0; i<scheduledTasksOverDue.size(); i++) {
+
+			for (int i = 0; i < scheduledTasksOverDue.size(); i++) {
 				addTask(scheduledTasksOverDue.remove(i), true);
 			}
-			
+
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
 		}
@@ -241,7 +243,7 @@ public class Logic {
 			historyObject.clearRedoStack();
 			break;
 		case INCOMPLETE_TASK:
-			//do the needful
+			// do the needful
 			break;
 		case UNDO_TASK:
 			undoTask();
@@ -292,10 +294,10 @@ public class Logic {
 			setFeedBack("Invalid Directory Path!!");
 		}
 	}
-	
+
 	public void setHelpInstructions() {
 		ArrayList<String> helpInstruction = (new HelpGuide()).getCollatedList();
-		//display help guide
+		// display help guide
 	}
 
 	/*
@@ -354,7 +356,7 @@ public class Logic {
 		LocalDateTime blockedEndDateTime = LocalDateTime.of(slotToBlock.getEndDate(), slotToBlock.getEndTime());
 		LocalDateTime blockedStartDateTime;
 		boolean validBlockedStatus = false;
-		
+
 		if (slotToBlock.getStartDate() != null) {
 			blockedStartDateTime = LocalDateTime.of(slotToBlock.getStartDate(), slotToBlock.getStartTime());
 		} else {
@@ -365,37 +367,42 @@ public class Logic {
 		if (validBlockedStatus == true) {
 			int positionToSort = sortBlockedSlots(blockedSlots, blockedStartDateTime, blockedEndDateTime);
 			blockedSlots.add(positionToSort, blockedStartDateTime);
-			blockedSlots.add(positionToSort+1, blockedEndDateTime);
+			blockedSlots.add(positionToSort + 1, blockedEndDateTime);
 			setFeedBack("Slot blocked from " + blockedStartDateTime + " to " + blockedEndDateTime);
 		} else {
 			setFeedBack(FEEDBACK_BLOCK_SLOT_INVALID);
 		}
 	}
-	
-	private boolean compareBlockedSlots(ArrayList<LocalDateTime> blockedSlotsList, LocalDateTime blockStart, LocalDateTime blockEnd) {
-		if ((blockedSlotsList.size()>=2) && ((blockStart.compareTo(blockedSlotsList.get(blockedSlotsList.size()-1))) >= 0) && 
-				(blockEnd.isAfter(blockedSlotsList.get(blockedSlotsList.size()-1)))) {
+
+	private boolean compareBlockedSlots(ArrayList<LocalDateTime> blockedSlotsList, LocalDateTime blockStart,
+			LocalDateTime blockEnd) {
+		if ((blockedSlotsList.size() >= 2)
+				&& ((blockStart.compareTo(blockedSlotsList.get(blockedSlotsList.size() - 1))) >= 0)
+				&& (blockEnd.isAfter(blockedSlotsList.get(blockedSlotsList.size() - 1)))) {
 			return true;
-		} else if ((blockedSlotsList.size()>=2) && ((blockStart.isBefore(blockedSlotsList.get(0)))) && 
-				(blockEnd.compareTo(blockedSlotsList.get(0)))<=0) {
+		} else if ((blockedSlotsList.size() >= 2) && ((blockStart.isBefore(blockedSlotsList.get(0))))
+				&& (blockEnd.compareTo(blockedSlotsList.get(0))) <= 0) {
 			return true;
 		} else if (blockedSlotsList.isEmpty()) {
 			return true;
 		} else {
-			for (int i=1; i<blockedSlotsList.size()-1; i++) {
-				if (((blockStart.compareTo(blockedSlotsList.get(i)))>=0) && ((blockEnd.compareTo(blockedSlotsList.get(i+1)))<=0)) {
+			for (int i = 1; i < blockedSlotsList.size() - 1; i++) {
+				if (((blockStart.compareTo(blockedSlotsList.get(i))) >= 0)
+						&& ((blockEnd.compareTo(blockedSlotsList.get(i + 1))) <= 0)) {
 					return true;
 				}
 			}
 			return false;
 		}
 	}
-	
-	private int sortBlockedSlots(ArrayList<LocalDateTime> blockedSlotsList, LocalDateTime blockStart, LocalDateTime blockEnd) {
+
+	private int sortBlockedSlots(ArrayList<LocalDateTime> blockedSlotsList, LocalDateTime blockStart,
+			LocalDateTime blockEnd) {
 		int sortedIndex = blockedSlotsList.size();
-		
-		for (int i=0; i<blockedSlotsList.size()-1; i+=2) {
-			if ((blockStart.isBefore(blockedSlotsList.get(i))) && ((blockEnd.compareTo(blockedSlotsList.get(i)))<=0)) {
+
+		for (int i = 0; i < blockedSlotsList.size() - 1; i += 2) {
+			if ((blockStart.isBefore(blockedSlotsList.get(i)))
+					&& ((blockEnd.compareTo(blockedSlotsList.get(i))) <= 0)) {
 				return sortedIndex = i;
 			}
 		}
@@ -406,34 +413,36 @@ public class Logic {
 		LocalDateTime taskEndDateTime = LocalDateTime.of(executeTask.getEndDate(), executeTask.getEndTime());
 		LocalDateTime taskStartDateTime = null;
 		int trackBlock = 0;
-		ArrayList<Integer> blockedIndex = new ArrayList<Integer> ();
-		
+		ArrayList<Integer> blockedIndex = new ArrayList<Integer>();
+
 		if (executeTask.getStartDate() != null) {
 			taskStartDateTime = LocalDateTime.of(executeTask.getStartDate(), executeTask.getStartTime());
 		}
-		for (int i=0; i<blockedSlots.size()-1; i+=2) {
-			if ((taskStartDateTime != null) && (taskEndDateTime.isAfter(blockedSlots.get(i))) && (taskStartDateTime.isBefore(blockedSlots.get(i+1)))) {
+		for (int i = 0; i < blockedSlots.size() - 1; i += 2) {
+			if ((taskStartDateTime != null) && (taskEndDateTime.isAfter(blockedSlots.get(i)))
+					&& (taskStartDateTime.isBefore(blockedSlots.get(i + 1)))) {
 				trackBlock++;
 				blockedIndex.add(i);
-				blockedIndex.add(i+1);
-			} else if ((taskStartDateTime == null) && (taskEndDateTime.isAfter(blockedSlots.get(i))) && (taskEndDateTime.isBefore(blockedSlots.get(i+1)))) {
+				blockedIndex.add(i + 1);
+			} else if ((taskStartDateTime == null) && (taskEndDateTime.isAfter(blockedSlots.get(i)))
+					&& (taskEndDateTime.isBefore(blockedSlots.get(i + 1)))) {
 				trackBlock++;
 				blockedIndex.add(i);
-				blockedIndex.add(i+1);
+				blockedIndex.add(i + 1);
 			}
 		}
 		if (trackBlock == 0) {
 			return false;
 		} else {
 			if (blockedIndex.size() == 2) {
-				setFeedBack("Task not added as it interferes with blocked slot of "+blockedSlots.get(blockedIndex.get(0))+" to "+blockedSlots.get(blockedIndex.get(1)));
+				setFeedBack("Task not added as it interferes with blocked slot of "
+						+ blockedSlots.get(blockedIndex.get(0)) + " to " + blockedSlots.get(blockedIndex.get(1)));
 			} else {
 				setFeedBack(FEEDBACK_BLOCK_OVERLAP_WITH_MULTIPLE_SLOTS);
 			}
 			return true;
 		}
 	}
-
 
 	private int sortTaskList(ArrayList<Task> taskList, Task task) {
 		LocalDateTime taskStartDateTime = null;
@@ -465,7 +474,6 @@ public class Logic {
 		return taskPosition;
 	}
 
-
 	/*
 	 * deleteTask from scheduledTasksToDo or floatingTasksToDo based on task
 	 * number
@@ -488,20 +496,32 @@ public class Logic {
 						removedTask = scheduledTasksOverDue.remove(taskDigit.get(i) - 1);
 						taskList.add(0, removedTask);
 						setFeedBack(FEEDBACK_TASK_DELETED);
-
-						/* setScheduledTasksOverDue(scheduledTasksOverDue); */
 					} else if (taskDigit.get(i) <= scheduledTasksOverDue.size() + scheduledTasksToDo.size()) {
 						removedTask = scheduledTasksToDo.remove(taskDigit.get(i) - 1 - scheduledTasksOverDue.size());
 						taskList.add(0, removedTask);
 						setFeedBack(FEEDBACK_TASK_DELETED);
-						/* setScheduledTasksToDo(scheduledTasksToDo); */
+
 					} else if (taskDigit.get(i) <= scheduledTasksToDo.size() + floatingTasksToDo.size()
-					+ scheduledTasksOverDue.size()) {
+							+ scheduledTasksOverDue.size()) {
 						removedTask = floatingTasksToDo.remove(
 								taskDigit.get(i) - 1 - scheduledTasksToDo.size() - scheduledTasksOverDue.size());
 						taskList.add(0, removedTask);
 						setFeedBack(FEEDBACK_TASK_DELETED);
-						/* setFloatingTasksToDo(floatingTasksToDo); */
+
+					} else if (taskDigit.get(i) <= scheduledTasksToDo.size() + floatingTasksToDo.size()
+							+ scheduledTasksOverDue.size() + scheduledTasksComplete.size()) {
+						removedTask = scheduledTasksComplete.remove(taskDigit.get(i) - 1 - scheduledTasksToDo.size()
+								- scheduledTasksOverDue.size() - floatingTasksToDo.size());
+						taskList.add(0, removedTask);
+						setFeedBack(FEEDBACK_TASK_DELETED);
+					} else if (taskDigit.get(i) <= scheduledTasksToDo.size() + floatingTasksToDo.size()
+							+ scheduledTasksOverDue.size() + scheduledTasksComplete.size()
+							+ floatingTasksComplete.size()) {
+						removedTask = floatingTasksComplete
+								.remove(taskDigit.get(i) - 1 - scheduledTasksToDo.size() - scheduledTasksOverDue.size()
+										- floatingTasksToDo.size() - scheduledTasksComplete.size());
+						taskList.add(0, removedTask);
+						setFeedBack(FEEDBACK_TASK_DELETED);
 					} else {
 						setFeedBack(FEEDBACK_NON_EXISTENT_TASK_NUM);
 					}
@@ -536,7 +556,7 @@ public class Logic {
 			} else if (indexToEdit <= scheduledTasksOverDue.size() + scheduledTasksToDo.size()) {
 				taskToEdit = scheduledTasksToDo.remove(indexToEdit - 1 - scheduledTasksOverDue.size());
 			} else if (indexToEdit <= scheduledTasksToDo.size() + floatingTasksToDo.size()
-			+ scheduledTasksOverDue.size()) {
+					+ scheduledTasksOverDue.size()) {
 				taskToEdit = floatingTasksToDo
 						.remove(indexToEdit - 1 - scheduledTasksToDo.size() - scheduledTasksOverDue.size());
 			} else {
@@ -597,7 +617,7 @@ public class Logic {
 						Task completedTask = markAsComplete(scheduledTasksToDo, scheduledTasksComplete, taskToComplete);
 						taskList.add(0, completedTask);
 					} else if (taskToComplete < scheduledTasksOverDue.size() + scheduledTasksToDo.size()
-					+ floatingTasksToDo.size()) {
+							+ floatingTasksToDo.size()) {
 						taskToComplete -= (scheduledTasksToDo.size() + scheduledTasksOverDue.size());
 						Task completedTask = markAsComplete(floatingTasksToDo, floatingTasksComplete, taskToComplete);
 						taskList.add(0, completedTask);
@@ -623,6 +643,46 @@ public class Logic {
 		completeList.add(completeTask);
 		setFeedBack(FEEDBACK_TASK_COMPLETED);
 		return completeTask;
+	}
+
+	public void incompleteTask(ArrayList<Integer> indexList, boolean isUndoOperation) {
+		// undo parameter
+		ArrayList<Task> taskList = new ArrayList<Task>();
+
+		int minIndex = scheduledTasksOverDue.size() + scheduledTasksToDo.size() + floatingTasksToDo.size() + 1;
+		int maxIndex = minIndex + scheduledTasksComplete.size() + floatingTasksComplete.size();
+
+		if (indexList != null && !indexList.isEmpty()) {
+			for (int index = indexList.size() - 1; index >= 0; index--) {
+				if ((indexList.get(index) >= minIndex) && (indexList.get(index) <= maxIndex)) {
+					if (indexList.get(index) <= minIndex + scheduledTasksComplete.size()) {
+						markTaskIncomplete(scheduledTasksComplete.get(indexList.get(index) - minIndex));
+					} else {
+						markTaskIncomplete(floatingTasksComplete
+								.get(indexList.get(index) - minIndex - scheduledTasksComplete.size()));
+					}
+					setFeedBack(FEEDBACK_TASK_INCOMPLETED);
+				} else {
+					setFeedBack(FEEDBACK_TASK_INCOMPLETED_INVALID);
+				}
+			}
+			if (!isUndoOperation) {
+				// for undo functionality
+				OldCommand recentCommand = new OldCommand(COMMAND_TYPE.COMPLETE_TASK, taskList, indexList);
+				historyObject.addToUndoList(recentCommand);
+			}
+		}
+	}
+
+	public void markTaskIncomplete(Task task) {
+		task.setAsIncomplete();
+		if (task.isFloatingTask()) {
+			floatingTasksComplete.remove(task);
+			addTask(task, true);
+		} else if (task.isScheduledTask()) {
+			scheduledTasksComplete.remove(task);
+			addTask(task, true);
+		}
 	}
 
 	/*
@@ -736,13 +796,7 @@ public class Logic {
 
 	public void markAsIncompleteList(ArrayList<Task> taskList, ArrayList<Integer> indexList) {
 		for (Task task : taskList) {
-			if (task.isFloatingTask()) {
-				floatingTasksComplete.remove(task);
-				addTask(task, true);
-			} else if (task.isScheduledTask()) {
-				scheduledTasksComplete.remove(task);
-				addTask(task, true);
-			}
+			markTaskIncomplete(task);
 		}
 	}
 
@@ -762,12 +816,12 @@ public class Logic {
 
 	private void searchTask(Task taskToFind) {
 		if ((taskToFind.getDescription() != null) && !(taskToFind.getDescription().isEmpty())) {
-			if(taskToFind.getDescription().equalsIgnoreCase("all")) {
+			if (taskToFind.getDescription().equalsIgnoreCase("all")) {
 				execute(Command.COMMAND_TYPE.HOME, null, null);
 				return;
 			}
 		}
-		
+
 		isSearchCommand = true;
 
 		Search obj = new Search();
@@ -775,11 +829,10 @@ public class Logic {
 		ArrayList<Task> searchTaskList = obj.getSearchList();
 		ArrayList<Integer> searchIndexList = obj.getSearchIndexList();
 
-		if(searchTaskList.size() > 0){
+		if (searchTaskList.size() > 0) {
 			setFeedBack(FEEDBACK_SEARCH_VALID);
 			BottomBottom.setSearchResult(searchTaskList, searchIndexList);
-		}
-		else{
+		} else {
 			setFeedBack(FEEDBACK_SEARCH_INVALID);
 		}
 	}
