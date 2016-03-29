@@ -188,7 +188,6 @@ public class Logic {
 			typeCommand = getCommand(existingCommand);
 			Task getTaskToExecute = getTaskDescription(existingCommand);
 			execute(typeCommand, existingCommand, getTaskToExecute);
-			System.out.println(4);
 			autoChangeTaskStatus();
 			storage.storeToFiles(getFloatingTasksToDo(), getFloatingTasksComplete(), getScheduledTasksToDo(),
 					getScheduledTasksComplete(), getScheduledTasksOverDue());
@@ -652,7 +651,6 @@ public class Logic {
 
 	public void incompleteTask(ArrayList<Integer> indexList, boolean isUndoOperation) {
 		// undo parameter
-		System.out.println("check");
 		ArrayList<Task> taskList = new ArrayList<Task>();
 
 		boolean isAborted = false;
@@ -866,7 +864,6 @@ public class Logic {
 		} else {
 			setFeedBack(FEEDBACK_SEARCH_INVALID);
 		}
-		System.out.println(30);
 	}
 
 	public boolean hasSearchList() {

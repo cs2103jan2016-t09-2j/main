@@ -222,7 +222,7 @@ public class Storage {
 		}
 	}
 
-	public void writeToArchiveFile(ArrayList<Task> scheduledTasksComplete, ArrayList<Task> floatingTasksComplete) {
+	public void writeToArchiveFile(ArrayList<Task> floatingTasksComplete, ArrayList<Task> scheduledTasksComplete) {
 		
 		assert scheduledTasksComplete != null : ASSERTION_NULL_PARAMETER;
 		assert floatingTasksComplete != null : ASSERTION_NULL_PARAMETER;
@@ -231,7 +231,7 @@ public class Storage {
 		try {
 			BufferedWriter bw = new BufferedWriter(new FileWriter(f1));
 
-			for (Task newTask1 : scheduledTasksComplete) {
+			for (Task newTask1 : floatingTasksComplete) {
 				String json1 = gson.toJson(newTask1);
 				bw.write(json1);
 				bw.newLine();
