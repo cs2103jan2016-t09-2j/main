@@ -34,6 +34,7 @@ public class TopRightPanel extends JPanel{
 		scrollPane = new JScrollPane(textArea);
 		textArea.setEditable(false);
 		add(scrollPane);
+		textArea.append(CENTER_FORMAT + FLOATING_HEADER + "\n");
 	}
 
 	public static void setText(ArrayList<Task> FList){

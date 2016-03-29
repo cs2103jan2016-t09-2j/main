@@ -10,6 +10,7 @@ import ScheduleHacks.History;
 import ScheduleHacks.HelpGuide;
 import Parser.CommandParser;
 import Parser.Command;
+import GUI.BottomBottom;
 import GUI.TempCLI;
 import Storage.Storage;
 
@@ -773,6 +774,7 @@ public class Logic {
 
 		if(searchTasks.size() > 0){
 			setFeedBack(FEEDBACK_SEARCH_VALID);
+			BottomBottom.setSearchResult(searchTasks);
 		}
 		else{
 			setFeedBack(FEEDBACK_SEARCH_INVALID);

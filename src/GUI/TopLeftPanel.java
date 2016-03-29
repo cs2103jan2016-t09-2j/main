@@ -36,6 +36,8 @@ public class TopLeftPanel extends JPanel{
 		scrollPane = new JScrollPane(textArea);
 		textArea.setEditable(false);
 		add(scrollPane);
+		textArea.append(CENTER_FORMAT + OVERDUE_HEADER + "\n");
+		textArea.append(CENTER_FORMAT + SCHEDULE_HEADER + "\n");
 	}
 
 	public static void clearText() {

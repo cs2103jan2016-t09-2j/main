@@ -17,6 +17,12 @@ public class BottomBottom extends JPanel implements KeyListener{
 	private static final long serialVersionUID = 1L;
 
 	private JTextField commandField;
+	private ArrayList<Task> OList = new ArrayList<Task>();
+	private ArrayList<Task> SList = new ArrayList<Task>();
+	private ArrayList<Task> FList = new ArrayList<Task>();
+	private static ArrayList<Task> searchOList = new ArrayList<Task>();
+	private static ArrayList<Task> searchSList = new ArrayList<Task>();
+	private static ArrayList<Task> searchFList = new ArrayList<Task>();
 	
 	public BottomBottom(){
 		setLayout(new GridLayout(1,1));
@@ -44,38 +50,21 @@ public class BottomBottom extends JPanel implements KeyListener{
     		logicObj.executeCommand(input);
 			System.out.println(input);
 			BottomPanel.setFeedback(logicObj.getFeedBack());
-
-			ArrayList<Task> OList = new ArrayList<Task>();
-			ArrayList<Task> SList = new ArrayList<Task>();
-			ArrayList<Task> FList = new ArrayList<Task>();
+			
+/*			if(input.equalsIgnoreCase("Help")){
+				HelpFrame helpFrame = new HelpFrame();
+			}*/
 
 			if (!logicObj.hasSearchList()) { //print the normal display
+				System.out.println("Printing normal");
 				OList = logicObj.getScheduledTasksOverDue();
 				SList = logicObj.getScheduledTasksToDo();
 				FList = logicObj.getFloatingTasksToDo();
+				TopLeftPanel.clearText();
+				TopLeftPanel.setText(OList, SList);
+				TopRightPanel.clearText();
+				TopRightPanel.setText(FList);
 			}
-			else{ //search display
-				ArrayList<Task> searchList = new ArrayList<Task>();
-				searchList = logicObj.getSearchTasksList();
-
-				for(Task task : searchList){
-					if(task.isFloatingTask()){
-						FList.add(task);
-					}
-					else if(task.isScheduledTask()){
-						SList.add(task);
-					}
-					else{
-						OList.add(task);
-						System.out.println("Enter this magic circle");
-					}
-				}
-			}
-
-			TopLeftPanel.clearText();
-			TopLeftPanel.setText(OList, SList);
-			TopRightPanel.clearText();
-			TopRightPanel.setText(FList);
     	}
     	
     	if(keyCode == KeyEvent.VK_UP){
@@ -89,5 +78,38 @@ public class BottomBottom extends JPanel implements KeyListener{
     	if(keyCode == KeyEvent.VK_ESCAPE){
     		System.exit(0);
     	}
+    }
+    
+    public static void setSearchResult(ArrayList<Task> searchResult){
+    	clearArrayList();
+    	for(Task task : searchResult){
+			if(task.isFloatingTask()){
+				searchFList.add(task);
+			}
+			else if(task.isScheduledTask()){
+				searchSList.add(task);
+			}
+			else{
+				searchOList.add(task);
+			}
+    	}
+    	setPanel(searchFList,searchSList,searchOList);
+    }
+    
+    public static void clearPanel(){
+    	TopLeftPanel.clearText();
+    	TopRightPanel.clearText();
+    }
+    
+    public static void setPanel(ArrayList<Task> searchFList, ArrayList<Task> searchSList, ArrayList<Task> searchOList){
+    	clearPanel();
+    	TopLeftPanel.setText(searchOList, searchSList);
+		TopRightPanel.setText(searchFList);
+    }
+    
+    public static void clearArrayList(){
+    	searchFList.clear();
+    	searchOList.clear();
+    	searchSList.clear();
     }
 }
