@@ -270,8 +270,7 @@ public class Logic {
 			historyObject.clearRedoStack();
 			break;
 		case HELP:
-			// do the needful
-			// incomplete
+			setHelpInstructions();
 			setFeedBack(FEEDBACK_EMPTY_STRING);
 			historyObject.clearRedoStack();
 			break;
@@ -289,6 +288,10 @@ public class Logic {
 		} catch (Exception e) {
 			setFeedBack("Invalid Directory Path!!");
 		}
+	}
+	
+	public void setHelpInstructions() {
+		ArrayList<String> helpInstruction = (new HelpGuide()).getCollatedList();
 	}
 
 	/*
