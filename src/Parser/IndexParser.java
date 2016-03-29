@@ -70,10 +70,22 @@ public class IndexParser {
 
 	public void findIndexList() throws Exception {
 		Command.COMMAND_TYPE commandType = command.getCommandType();
-		if (commandType.equals(COMMAND_TYPE.DELETE_TASK) || commandType.equals(COMMAND_TYPE.COMPLETE_TASK)) {
+		switch (commandType) {
+		case DELETE_TASK:
 			detectMultipleIndexes();
-		} else if (commandType.equals(COMMAND_TYPE.MODIFY_TASK)) {
+			break;
+		case COMPLETE_TASK:
+			detectMultipleIndexes();
+			break;
+		case INCOMPLETE_TASK:
+			detectMultipleIndexes();
+			break;
+		case MODIFY_TASK:
 			detectSingleIndex();
+			break;
+		default:
+			// return
+			break;
 		}
 	}
 

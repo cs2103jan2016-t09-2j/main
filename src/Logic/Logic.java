@@ -652,6 +652,7 @@ public class Logic {
 
 	public void incompleteTask(ArrayList<Integer> indexList, boolean isUndoOperation) {
 		// undo parameter
+		System.out.println("check");
 		ArrayList<Task> taskList = new ArrayList<Task>();
 
 		boolean isAborted = false;
@@ -659,6 +660,8 @@ public class Logic {
 		int minIndex = scheduledTasksOverDue.size() + scheduledTasksToDo.size() + floatingTasksToDo.size() + 1;
 		int maxIndex = minIndex + scheduledTasksComplete.size() + floatingTasksComplete.size() - 1;
 
+		//System.out.println(minIndex+"*"+maxIndex);
+		
 		if (indexList != null && !indexList.isEmpty()) {
 			for (int index = indexList.size() - 1; index >= 0; index--) {
 				if ((indexList.get(index) >= minIndex) && (indexList.get(index) <= maxIndex)) {
