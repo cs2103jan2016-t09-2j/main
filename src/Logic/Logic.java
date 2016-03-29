@@ -7,6 +7,7 @@ import ScheduleHacks.Task;
 import ScheduleHacks.OldCommand;
 import ScheduleHacks.OldCommand.COMMAND_TYPE;
 import ScheduleHacks.History;
+import ScheduleHacks.HelpGuide;
 import Parser.CommandParser;
 import Parser.Command;
 import GUI.TempCLI;
@@ -292,6 +293,7 @@ public class Logic {
 	
 	public void setHelpInstructions() {
 		ArrayList<String> helpInstruction = (new HelpGuide()).getCollatedList();
+		//display help guide
 	}
 
 	/*
