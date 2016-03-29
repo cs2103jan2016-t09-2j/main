@@ -184,11 +184,11 @@ public class Logic {
 	public void retrieveParsedCommand(String originalDescription) {
 		try {
 			Command.COMMAND_TYPE typeCommand = null;
-
 			Command existingCommand = CommandParser.getParsedCommand(originalDescription);
 			typeCommand = getCommand(existingCommand);
 			Task getTaskToExecute = getTaskDescription(existingCommand);
 			execute(typeCommand, existingCommand, getTaskToExecute);
+			System.out.println(4);
 			autoChangeTaskStatus();
 			storage.storeToFiles(getFloatingTasksToDo(), getFloatingTasksComplete(), getScheduledTasksToDo(),
 					getScheduledTasksComplete(), getScheduledTasksOverDue());
@@ -843,7 +843,7 @@ public class Logic {
 		}
 
 		isSearchCommand = true;
-		ArrayList<Task> searchTaskList;
+		ArrayList<Task> searchTaskList = new ArrayList<Task>();
 		ArrayList<Integer> searchIndexList = new ArrayList<Integer>();
 
 		if (taskToFind.getStartDate() != null && taskToFind.getStartDate() == LocalDate.MIN) {
@@ -858,13 +858,15 @@ public class Logic {
 			searchIndexList = obj.getSearchIndexList();
 		}
 
+		
 		if (searchTaskList.size() > 0) {
 			setFeedBack(FEEDBACK_SEARCH_VALID);
 			BottomBottom.setSearchResult(searchTaskList, searchIndexList);
-			(new TempCLI()).printSearchTaskLists(searchTaskList, searchIndexList);
+			//(new TempCLI()).printSearchTaskLists(searchTaskList, searchIndexList);
 		} else {
 			setFeedBack(FEEDBACK_SEARCH_INVALID);
 		}
+		System.out.println(30);
 	}
 
 	public boolean hasSearchList() {

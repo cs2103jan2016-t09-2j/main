@@ -38,30 +38,32 @@ public class Search {
 		 * destinationList); }
 		 */
 
-		for (Task task : sourceList) {
-			// matching description
+		if (sourceList != null && !sourceList.isEmpty()) {
+			for (Task task : sourceList) {
 
-			if (taskToFind.getDescription() != null && !taskToFind.getDescription().isEmpty()) {
-				matchDescription(taskToFind, task);
+				// matching description
+				if (taskToFind.getDescription() != null && !taskToFind.getDescription().isEmpty()) {
+					matchDescription(taskToFind, task);
+				}
+
+				// matching complete
+				if (taskToFind.isComplete() && task.isComplete()) {
+					indexList.add(count);
+					matchedTaskList.add(task);
+				}
+
+				// matching only end date
+				if (taskToFind.getEndDate() != null && taskToFind.getStartDate() == null) {
+					matchSingleDate(taskToFind, task);
+				}
+
+				// matching date range
+				if (taskToFind.getEndDate() != null && taskToFind.getStartDate() != null) {
+					matchDateRange(taskToFind, task);
+				}
+
+				count++;
 			}
-
-			// matching complete
-			if (taskToFind.isComplete() && task.isComplete()) {
-				indexList.add(count);
-				matchedTaskList.add(task);
-			}
-
-			// matching only end date
-			if (taskToFind.getEndDate() != null && taskToFind.getStartDate() == null) {
-				matchSingleDate(taskToFind, task);
-			}
-
-			// matching date range
-			if (taskToFind.getEndDate() != null && taskToFind.getStartDate() != null) {
-				matchDateRange(taskToFind, task);
-			}
-
-			count++;
 		}
 	}
 
