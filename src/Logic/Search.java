@@ -21,6 +21,7 @@ public class Search {
 	}
 
 	public void searchTask(Task taskToFind) {
+		count = 1;
 		Logic obj = Logic.getInstance();
 
 		findMatches(obj.getScheduledTasksOverDue(), taskToFind);
