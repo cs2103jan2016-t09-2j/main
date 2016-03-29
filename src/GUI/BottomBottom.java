@@ -1,5 +1,6 @@
 package GUI;
 
+import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
@@ -23,14 +24,19 @@ public class BottomBottom extends JPanel implements KeyListener {
 	private static ArrayList<Task> searchOList = new ArrayList<Task>();
 	private static ArrayList<Task> searchSList = new ArrayList<Task>();
 	private static ArrayList<Task> searchFList = new ArrayList<Task>();
-	
+
+	private static final Font INPUT_FONT = new Font("Courier New", Font.BOLD, 16);
+
 	private static Logic logicObj = Logic.getInstance();
 
 	public BottomBottom() {
 		setLayout(new GridLayout(1, 1));
 		commandField = new JTextField();
+		commandField.setFont(INPUT_FONT);
+		commandField.requestFocus();
 		add(commandField);
 		commandField.addKeyListener(this);
+		logicObj.startExecution();
 	}
 
 	public void keyReleased(KeyEvent arg0) {
@@ -59,9 +65,10 @@ public class BottomBottom extends JPanel implements KeyListener {
 
 			if (!logicObj.hasSearchList()) { // print the normal display
 				System.out.println("Printing normal");
-				OList = logicObj.getScheduledTasksOverDue();
-				SList = logicObj.getScheduledTasksToDo();
-				FList = logicObj.getFloatingTasksToDo();
+				OList = new ArrayList<Task>(logicObj.getScheduledTasksOverDue());
+				SList = new ArrayList<Task>(logicObj.getScheduledTasksToDo());
+				FList = new ArrayList<Task>(logicObj.getFloatingTasksToDo());
+				System.out.println(OList.size() + "*" + SList.size() + "*" + FList.size());
 				TopLeftPanel.clearText();
 				TopLeftPanel.setText(OList, SList, null);
 				TopRightPanel.clearText();
@@ -83,7 +90,7 @@ public class BottomBottom extends JPanel implements KeyListener {
 	}
 
 	public static void setSearchResult(ArrayList<Task> searchTaskList, ArrayList<Integer> searchIndexList) {
-		clearArrayList();
+		 clearArrayList();
 
 		for (Task task : searchTaskList) {
 			if (task.isFloatingTask()) {
@@ -110,14 +117,14 @@ public class BottomBottom extends JPanel implements KeyListener {
 				searchIndexList.subList(0, searchOList.size() + searchSList.size()));
 		ArrayList<Integer> FloatingTaskIndex = new ArrayList<Integer>(
 				searchIndexList.subList(searchOList.size() + searchSList.size(), searchIndexList.size()));
-		
+
 		TopLeftPanel.setText(searchOList, searchSList, UpcomingTaskIndex);
 		TopRightPanel.setText(searchFList, FloatingTaskIndex, UpcomingTaskIndex.size());
 	}
 
 	public static void clearArrayList() {
-		searchFList.clear();
-		searchOList.clear();
-		searchSList.clear();
+		searchFList = new ArrayList<Task>();
+		searchOList = new ArrayList<Task>();
+		searchSList = new ArrayList<Task>();
 	}
 }

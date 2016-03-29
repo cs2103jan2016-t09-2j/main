@@ -79,6 +79,7 @@ public class TopLeftPanel extends JPanel {
 		} else {
 			textArea.append(CENTER_FORMAT + OVERDUE_HEADER + "\n");
 		}
+		textArea.append("\n");
 
 		for (Task task : List) {
 			String string = task.getDescription();

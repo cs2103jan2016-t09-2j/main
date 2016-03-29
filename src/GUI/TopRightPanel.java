@@ -63,6 +63,7 @@ public class TopRightPanel extends JPanel {
 		int total_length;
 		int count = 0;
 		textArea.append(CENTER_FORMAT + FLOATING_HEADER + "\n");
+		textArea.append("\n");
 		for (Task task : List) {
 			String string = task.getDescription();
 			textArea.append(indexList.get(count) + ".");
