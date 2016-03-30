@@ -3,6 +3,8 @@ package GUI;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.event.ComponentAdapter;
+
 import javax.swing.BorderFactory;
 import javax.swing.JPanel;
 
@@ -27,6 +29,13 @@ public class BottomPanel extends JPanel{
 
 		bottomTop = new BottomTop();
 		bottomBottom = new BottomBottom();
+		bottomBottom.addComponentListener(new ComponentAdapter() {
+	        @Override 
+	        public void componentShown(java.awt.event.ComponentEvent e) 
+	        {
+	            bottomBottom.commandField.requestFocusInWindow();
+	        }
+	    });
 
 		gc.fill = GridBagConstraints.HORIZONTAL;
 

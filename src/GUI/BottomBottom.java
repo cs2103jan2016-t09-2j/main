@@ -14,7 +14,6 @@ import javax.swing.JTextField;
 import Logic.Logic;
 import ScheduleHacks.History;
 import ScheduleHacks.Task;
-import ScheduleHacks.OldCommand;
 
 public class BottomBottom extends JPanel implements KeyListener {
 	/**
@@ -75,11 +74,9 @@ public class BottomBottom extends JPanel implements KeyListener {
 			commandField.setText("");
 
 			logicObj.executeCommand(input);
-			System.out.println(input);
 			BottomPanel.setFeedback(logicObj.getFeedBack());
 
 			if (!logicObj.hasSearchList()) { // print the normal display
-				System.out.println("Printing normal");
 				OList = new ArrayList<Task>(logicObj.getScheduledTasksOverDue());
 				SList = new ArrayList<Task>(logicObj.getScheduledTasksToDo());
 				FList = new ArrayList<Task>(logicObj.getFloatingTasksToDo());
@@ -97,7 +94,7 @@ public class BottomBottom extends JPanel implements KeyListener {
 
 		if (keyCode == KeyEvent.VK_DOWN) {
 			BottomPanel.setFeedback("Next Command");
-			commandField.setText(history.moveUpCommandHistory());
+			commandField.setText(history.moveDownCommandHistory());
 		}
 
 		if (keyCode == KeyEvent.VK_ESCAPE) {

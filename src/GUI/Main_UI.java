@@ -16,8 +16,6 @@ public class Main_UI {
             	Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
             	double width = screenSize.getWidth();
             	double height = screenSize.getHeight();
-            	System.out.println("Width size: " + width);
-            	System.out.println("Height size: " + height);
             	int width1 = (int) (width / 2);
             	int height1 = (int) (height / 1.92);
             	newFrame.setSize(width1, height1);
