@@ -26,7 +26,7 @@ public class HelpFrame extends JFrame{
     	super(title);
     	setLayout(new GridLayout());
     	textArea = new JTextArea();
-    	scrollPane = new JScrollPane();
+    	scrollPane = new JScrollPane(textArea);
     	textArea.setEditable(false);
     	/*textPane = new JTextPane();
 		scrollPane = new JScrollPane(textPane);
@@ -39,6 +39,7 @@ public class HelpFrame extends JFrame{
 	
 	public void setHelpSheet(ArrayList<String> collatedHelpList){
 		System.out.println(collatedHelpList.size());
+		textArea.append("hello");
 		for(int i = 0; i < collatedHelpList.size(); i++){
 			textArea.append(collatedHelpList.get(i));
 			System.out.println(collatedHelpList.get(i));
