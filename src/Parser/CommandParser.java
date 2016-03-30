@@ -330,8 +330,8 @@ public class CommandParser {
 		} else {
 			if (timeList != null) {
 				if (timeList.size() > oldTimeList.size()) {
-					dateList.add(oldTask.getEndDate());
 					dateList = new ArrayList<LocalDate>();
+					dateList.add(oldTask.getEndDate());
 					if (LocalDateTime.of(oldTask.getEndDate(), timeList.get(ParserConstants.FIRST_INDEX))
 							.isAfter(LocalDateTime.of(oldTask.getEndDate(), timeList.get(1)))) {
 						dateList.add(oldTask.getEndDate().plusDays(1));
@@ -348,12 +348,14 @@ public class CommandParser {
 					timeList.add(LocalTime.MAX);
 					timeList.add(oldTask.getEndTime());
 				} else if (dateList.size() < oldDateList.size()) {
-					if (LocalDateTime.of(dateList.get(0), oldTask.getStartTime())
+					oldTask.setStartDate(null); oldTask.setStartTime(null);
+					oldTask.setEndTime(LocalTime.MAX);
+					/*if (LocalDateTime.of(dateList.get(0), oldTask.getStartTime())
 							.isAfter(LocalDateTime.of(dateList.get(0), oldTask.getEndTime()))) {
 						dateList.add(dateList.get(0).plusDays(1));
 					} else {
 						dateList.add(dateList.get(0));
-					}
+					}*/
 				}
 			}
 		}
