@@ -68,7 +68,7 @@ public class HelpGuide {
 		addList.add("\n");
 		addList.add("<task details>");
 		addList.add("\n");
-		addList.add("\n");
+
 	}
 
 	public void deleteGuide() {
@@ -84,7 +84,7 @@ public class HelpGuide {
 		deleteList.add("\n");
 		deleteList.add("d <index range>; eg. d 3-8");
 		deleteList.add("\n");
-		deleteList.add("\n");
+	
 	}
 
 	public void editGuide() {
@@ -100,7 +100,7 @@ public class HelpGuide {
 		editList.add("\n");
 		editList.add("edit <number> delete <date>");
 		editList.add("\n");
-		editList.add("\n");
+	
 	}
 
 	public void searchGuide() {
@@ -113,7 +113,9 @@ public class HelpGuide {
 		searchList.add("display <category>");
 		searchList.add("\n");
 		searchList.add("\n");
-		searchList.add("The various categories made available for the view command are as follows:");
+		searchList.add("The various categories made available");
+		searchList.add("\n");
+		searchList.add("for the view command are as follows:");
 		searchList.add("\n");
 		searchList.add("Today / Tomorrow/");
 		searchList.add("\n");
@@ -125,8 +127,7 @@ public class HelpGuide {
 		searchList.add("\n");
 		searchList.add("Keyword present in any Task");
 		searchList.add("\n");
-		searchList.add("\n");
-		searchList.add("\n");
+	
 	}
 
 	public void undoAndRedoGuide() {
@@ -138,7 +139,7 @@ public class HelpGuide {
 		undoAndRedoList.add("\n");
 		undoAndRedoList.add("redo");
 		undoAndRedoList.add("\n");
-		undoAndRedoList.add("\n");
+	
 	}
 
 	public void completeGuide() {
@@ -156,8 +157,7 @@ public class HelpGuide {
 		completeAndIncompleteList.add("\n");
 		completeAndIncompleteList.add("undone <index>, <index>, <index> ");
 		completeAndIncompleteList.add("\n");
-		completeAndIncompleteList.add("\n");
-		completeAndIncompleteList.add("\n");
+	
 	}
 
 	public void blockGuide() {
@@ -173,7 +173,7 @@ public class HelpGuide {
 		searchList.add("\n");
 		searchList.add("unblock <date>, <time>");
 		searchList.add("\n");
-		searchList.add("\n");
+	
 	}
 
 	public void exitGuide() {
@@ -184,7 +184,6 @@ public class HelpGuide {
 		exitList.add("quit");
 		exitList.add("\n");
 		exitList.add("q");
-		exitList.add("\n");
 		exitList.add("\n");
 		exitList.add("        END OF GUIDE");
 	}
