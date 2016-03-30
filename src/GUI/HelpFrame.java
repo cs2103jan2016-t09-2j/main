@@ -8,6 +8,8 @@ import java.util.ArrayList;
 import javax.swing.JFrame;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
+
+import ScheduleHacks.HelpGuide;
 //import javax.swing.JTextPane;
 //import javax.swing.text.BadLocationException;
 //import javax.swing.text.StyledDocument;
@@ -35,17 +37,14 @@ public class HelpFrame extends JFrame implements KeyListener{
 		textPane.setEditable(false); */
 		add(scrollPane);
 		collatedHelpList = new ArrayList<String>();
-		collatedHelpList = ScheduleHacks.HelpGuide.getCollatedList();
+		collatedHelpList = (new HelpGuide()).getCollatedList();
 		setHelpSheet(collatedHelpList);
 		textArea.addKeyListener(this);
     }
 	
 	public void setHelpSheet(ArrayList<String> collatedHelpList){
-		System.out.println(collatedHelpList.size());
-		textArea.append("hello");
 		for(int i = 0; i < collatedHelpList.size(); i++){
 			textArea.append(collatedHelpList.get(i));
-			System.out.println(collatedHelpList.get(i));
 			/*textPane.setText(collatedHelpList.get(i));
 			StyledDocument document = (StyledDocument) textPane.getDocument();
 		     try {
