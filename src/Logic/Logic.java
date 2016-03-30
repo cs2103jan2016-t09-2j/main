@@ -582,7 +582,7 @@ public class Logic {
 		} else {
 			Task editedTask = CommandParser.editExistingTask(taskToEdit, editInfo);
 			int newIndex = addTask(editedTask, true);
-
+			
 			if (!isUndoOperation) {
 				ArrayList<Task> taskList = new ArrayList<Task>();
 				taskList.add(taskToEdit);

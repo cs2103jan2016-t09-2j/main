@@ -1,6 +1,7 @@
 package Parser;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -165,7 +166,7 @@ public class CommandParser {
 
 		if (hasInDictionary(ParserConstants.UPCOMING_PERIOD_KEYWORD, firstWord)) {
 			taskStatement = setUpcomingDateRange(taskStatement, newTask, firstWord);
-		} else if(firstWord.equalsIgnoreCase(ParserConstants.STRING_OVERDUE)) {
+		} else if (firstWord.equalsIgnoreCase(ParserConstants.STRING_OVERDUE)) {
 			taskStatement = removeFirstWord(taskStatement);
 			setOverdueCriteria(newTask);
 		} else {
@@ -308,12 +309,64 @@ public class CommandParser {
 	public static Task editScheduledTask(String taskStatement, Task oldTask, ArrayList<LocalDate> dateList,
 			ArrayList<LocalTime> timeList) {
 
+		ArrayList<LocalDate> oldDateList = new ArrayList<LocalDate>();
+		ArrayList<LocalTime> oldTimeList = new ArrayList<LocalTime>();
+
+		if (oldTask.getStartDate() != null) {
+			oldDateList.add(oldTask.getStartDate());
+		}
+		oldDateList.add(oldTask.getEndDate());
+
+		if (oldTask.getStartTime() != null) {
+			oldTimeList.add(oldTask.getStartTime());
+		}
+		oldTimeList.add(oldTask.getEndTime());
+
 		if (dateList != null && timeList != null) {
 			DateTimeParser objDateTime = new DateTimeParser(dateList, timeList);
 			objDateTime.arrangeDateTimeList();
 			dateList = objDateTime.getDateList();
 			timeList = objDateTime.getTimeList();
+		} else {
+			if (timeList != null) {
+				if (timeList.size() > oldTimeList.size()) {
+					dateList.add(oldTask.getEndDate());
+					dateList = new ArrayList<LocalDate>();
+					if (LocalDateTime.of(oldTask.getEndDate(), timeList.get(ParserConstants.FIRST_INDEX))
+							.isAfter(LocalDateTime.of(oldTask.getEndDate(), timeList.get(1)))) {
+						dateList.add(oldTask.getEndDate().plusDays(1));
+					} else {
+						dateList.add(oldTask.getEndDate());
+					}
+
+				} else if (timeList.size() < oldTimeList.size()) {
+					oldTask.setStartDate(null);
+				}
+			} else {
+				if (dateList.size() > oldDateList.size()) {
+					timeList = new ArrayList<LocalTime>();
+					timeList.add(LocalTime.MAX);
+					timeList.add(oldTask.getEndTime());
+				} else if (dateList.size() < oldDateList.size()) {
+					if (LocalDateTime.of(dateList.get(0), oldTask.getStartTime())
+							.isAfter(LocalDateTime.of(dateList.get(0), oldTask.getEndTime()))) {
+						dateList.add(dateList.get(0).plusDays(1));
+					} else {
+						dateList.add(dateList.get(0));
+					}
+				}
+			}
 		}
+
+		if (dateList != null) {
+			oldTask.setEndDate(null);
+			oldTask.setStartDate(null);
+		}
+		if (timeList != null) {
+			oldTask.setEndTime(null);
+			oldTask.setStartTime(null);
+		}
+
 		setDates(dateList, oldTask);
 		setTimes(timeList, oldTask);
 
@@ -333,9 +386,7 @@ public class CommandParser {
 				oldTask = addScheduledTaskDetails(oldTask.getDescription(), dateList, timeList);
 			}
 		} else {
-			System.out.println("4");
 			if (taskStatement != null && !taskStatement.isEmpty()) {
-				System.out.println("5");
 				oldTask.setDescription(taskStatement);
 			}
 		}
