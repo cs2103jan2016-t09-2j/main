@@ -2,12 +2,14 @@ package ScheduleHacks;
 
 import java.util.ArrayList;
 
-
 public class HelpGuide {
-	
-	
+
 	private static HelpGuide object;
-	
+
+	public HelpGuide() {
+		collateGuide();
+	}
+
 	public static HelpGuide getInstance() {
 		if (object == null) {
 			object = new HelpGuide();
@@ -25,9 +27,7 @@ public class HelpGuide {
 	ArrayList<String> blockList = new ArrayList<String>();
 	ArrayList<String> collatedHelpList = new ArrayList<String>();
 
-	
-	public ArrayList<String> getCollatedList(){
-		collateGuide();
+	public ArrayList<String> getCollatedList() {
 		return collatedHelpList;
 	}
 
@@ -40,7 +40,7 @@ public class HelpGuide {
 		completeGuide();
 		blockGuide();
 		exitGuide();
-		
+
 		collatedHelpList.addAll(addList);
 		collatedHelpList.addAll(deleteList);
 		collatedHelpList.addAll(editList);
@@ -50,7 +50,6 @@ public class HelpGuide {
 		collatedHelpList.addAll(blockList);
 		collatedHelpList.addAll(exitList);
 	}
-
 
 	public void addGuide() {
 		addList.add("        HELP GUIDE");

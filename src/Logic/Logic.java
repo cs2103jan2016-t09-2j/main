@@ -171,6 +171,7 @@ public class Logic {
 	public void executeCommand(String userInput) {
 		try {
 			historyObject.addToCommandHistory(userInput);
+			System.out.println("**");
 			historyObject.setIndexCommandHistory();
 			retrieveParsedCommand(userInput);
 		} catch (Exception e) {
