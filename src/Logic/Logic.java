@@ -354,10 +354,8 @@ public class Logic {
 			setMostRecentTaskAdded(scheduledTasksOverDue, position);
 			setFeedBack(FEEDBACK_TASK_ADDED);
 		} else {
-			System.out.print(33);
 			overLapWithBlock = compareWithBlockedRange(executeTask);
 			if (overLapWithBlock == false) {
-				System.out.print(44);
 				position = sortTaskList(scheduledTasksToDo, executeTask);
 				scheduledTasksToDo.add(position, executeTask);
 				setMostRecentTaskAdded(scheduledTasksToDo, position);
@@ -462,11 +460,9 @@ public class Logic {
 			if ((taskStartDateTime != null) && (taskEndDateTime.isAfter(startDateTime)) && 
 					(taskStartDateTime.isBefore(endDateTime))) {
 				listOfTasks.get(i).setAsBlocked();
-				System.out.println(111);
 			} else if ((taskStartDateTime == null) && (taskEndDateTime.isAfter(startDateTime)) && 
 					(taskEndDateTime.isBefore(endDateTime))) {
 				listOfTasks.get(i).setAsBlocked();
-				System.out.println(222);
 			} else {
 				listOfTasks.get(i).setAsUnBlocked();
 			}
@@ -506,7 +502,6 @@ public class Logic {
 				}*/
 			}
 			if (trackBlock == 0) {
-				System.out.print(77);
 				return false;
 			} else {
 				if (blockedIndex.size() == 2) {
@@ -514,7 +509,6 @@ public class Logic {
 				} else {
 					setFeedBack(FEEDBACK_BLOCK_OVERLAP_WITH_MULTIPLE_SLOTS);
 				}
-				System.out.print(88);
 				return true;
 			}
 		}	
@@ -661,10 +655,8 @@ public class Logic {
 			if (conflict) {
 				if (taskOriginal.isBlocked()) {
 					editedTask.setAsBlocked();
-					System.out.print(45);
 				} else if (taskOriginal.isUnBlocked()) {
 					editedTask = taskOriginal;
-					System.out.print(67);
 				}
 			}
 			

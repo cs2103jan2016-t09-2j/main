@@ -202,7 +202,9 @@ public class CommandParser {
 			DateParser dateObj = new DateParser(taskStatement);
 			LocalDate currentDate = getCurrentDate();
 			dateObj.findDates();
-			if (dateObj.getDateList() != null) {
+			if ((new DateParser()).hasDayDuration(taskStatement)) {
+				taskStatement = addCriteriaDateDuration(newTask, taskStatement);
+			} else if (dateObj.getDateList() != null) {
 				int dateListSize = dateObj.getDateList().size();
 				newTask.setEndDate(dateObj.getDateList().get(dateListSize - 1));
 				if (dateListSize > 1) {
@@ -274,10 +276,10 @@ public class CommandParser {
 
 	public static String addCriteriaDateDuration(Task newTask, String taskStatement) {
 		DateParser dateObj = new DateParser(taskStatement);
-		taskStatement = dateObj.getDayDurationWord(taskStatement);
+		String dayDuration = dateObj.getDayDurationWord(taskStatement);
 		newTask.setStartDate(getCurrentDate());
-		newTask.setEndDate(dateObj.getParsedDayDurationDate(taskStatement));
-		return taskStatement.replace(taskStatement, ParserConstants.STRING_EMPTY);
+		newTask.setEndDate(dateObj.getParsedDayDurationDate(dayDuration));
+		return taskStatement.replace(dayDuration, ParserConstants.STRING_EMPTY);
 	}
 
 	/**
@@ -348,14 +350,17 @@ public class CommandParser {
 					timeList.add(LocalTime.MAX);
 					timeList.add(oldTask.getEndTime());
 				} else if (dateList.size() < oldDateList.size()) {
-					oldTask.setStartDate(null); oldTask.setStartTime(null);
+					oldTask.setStartDate(null);
+					oldTask.setStartTime(null);
 					oldTask.setEndTime(LocalTime.MAX);
-					/*if (LocalDateTime.of(dateList.get(0), oldTask.getStartTime())
-							.isAfter(LocalDateTime.of(dateList.get(0), oldTask.getEndTime()))) {
-						dateList.add(dateList.get(0).plusDays(1));
-					} else {
-						dateList.add(dateList.get(0));
-					}*/
+					/*
+					 * if (LocalDateTime.of(dateList.get(0),
+					 * oldTask.getStartTime())
+					 * .isAfter(LocalDateTime.of(dateList.get(0),
+					 * oldTask.getEndTime()))) {
+					 * dateList.add(dateList.get(0).plusDays(1)); } else {
+					 * dateList.add(dateList.get(0)); }
+					 */
 				}
 			}
 		}
