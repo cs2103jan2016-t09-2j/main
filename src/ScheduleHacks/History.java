@@ -99,6 +99,7 @@ public class History {
 	}
 
 	public String moveUpCommandHistory() {
+		System.out.println("UP  "+indexOfCommand+"*"+commandHistory.size());
 		if (indexOfCommand <= 0) {
 			return null;
 		} else {
@@ -107,6 +108,7 @@ public class History {
 	}
 
 	public String moveDownCommandHistory() {
+		System.out.println("DOWN  "+indexOfCommand+"*"+commandHistory.size());
 		if (indexOfCommand >= commandHistory.size() - 1) {
 			return null;
 		} else {
