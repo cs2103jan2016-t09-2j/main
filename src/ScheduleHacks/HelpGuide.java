@@ -23,10 +23,10 @@ public class HelpGuide {
 	ArrayList<String> completeAndIncompleteList = new ArrayList<String>();
 	ArrayList<String> exitList = new ArrayList<String>();
 	ArrayList<String> blockList = new ArrayList<String>();
-	ArrayList<String> collatedHelpList = new ArrayList<String>();
+	static ArrayList<String> collatedHelpList = new ArrayList<String>();
 
 	
-	public ArrayList<String> getCollatedList() {
+	public static ArrayList<String> getCollatedList() {
 		return collatedHelpList;
 	}
 

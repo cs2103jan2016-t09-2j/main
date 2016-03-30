@@ -1,11 +1,14 @@
 package GUI;
 
+import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridLayout;
+import java.awt.Toolkit;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.util.ArrayList;
 
+import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import Logic.Logic;
@@ -39,6 +42,20 @@ public class BottomBottom extends JPanel implements KeyListener {
 		logicObj.startExecution();
 	}
 
+	public static void HelpPopUp(){
+		JFrame Help = new HelpFrame("HELP");
+		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+    	double width = screenSize.getWidth();
+    	double height = screenSize.getHeight();
+    	int width1 = (int) (width / 3);
+    	int height1 = (int) (height / 1.2);
+    	Help.setSize(width1, height1);
+    	//newFrame.setSize(600, 400);
+        Help.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        Help.setVisible(true);
+        Help.setResizable(false);
+	}
+	
 	public void keyReleased(KeyEvent arg0) {
 		// not used
 	}
@@ -57,11 +74,6 @@ public class BottomBottom extends JPanel implements KeyListener {
 			logicObj.executeCommand(input);
 			System.out.println(input);
 			BottomPanel.setFeedback(logicObj.getFeedBack());
-
-			/*
-			 * if(input.equalsIgnoreCase("Help")){ HelpFrame helpFrame = new
-			 * HelpFrame(); }
-			 */
 
 			if (!logicObj.hasSearchList()) { // print the normal display
 				System.out.println("Printing normal");
@@ -88,6 +100,10 @@ public class BottomBottom extends JPanel implements KeyListener {
 		}
 	}
 
+	public static void setHelp(){
+		HelpPopUp();
+	}
+	
 	public static void setSearchResult(ArrayList<Task> searchTaskList, ArrayList<Integer> searchIndexList) {
 		 clearArrayList();
 

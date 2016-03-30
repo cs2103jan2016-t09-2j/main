@@ -54,6 +54,7 @@ public class Logic {
 	private static final String FEEDBACK_EMPTY_STRING = "";
 	private static final String FEEDBACK_SEARCH_VALID = "Search Found";
 	private static final String FEEDBACK_SEARCH_INVALID = "Search Not Found";
+	private static final String FEEDBACK_HELP_CALLED = "Help sheet activated";
 	private static final String FEEDBACK_START_DATE_LATER_THAN_DEADLINE = "Start Date of Task cannot be later than Due Date of Task!";
 	private static final String FEEDBACK_INSTANCE_START_DATE_EXCEEDS_DEADLINE = "Task starts and ends on same day. Start Time of Task cannot be later or equals to End Time of Task";
 
@@ -280,7 +281,7 @@ public class Logic {
 			break;
 		case HELP:
 			setHelpInstructions();
-			setFeedBack(FEEDBACK_EMPTY_STRING);
+			setFeedBack(FEEDBACK_HELP_CALLED);
 			historyObject.clearRedoStack();
 			break;
 		case EXIT:
@@ -300,7 +301,8 @@ public class Logic {
 	}
 
 	public void setHelpInstructions() {
-		ArrayList<String> helpInstruction = (new HelpGuide()).getCollatedList();
+		BottomBottom.setHelp();
+		//ArrayList<String> helpInstruction = (new HelpGuide()).getCollatedList();
 		// display help guide
 	}
 
