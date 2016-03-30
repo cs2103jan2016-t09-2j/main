@@ -15,12 +15,13 @@ public class History {
 	Deque<OldCommand> undoDeque;
 	Deque<OldCommand> redoDeque;
 
-	ArrayList<String> commandHistory = new ArrayList<String>();
-	private static int indexOfCommand = -1;
+	ArrayList<String> commandHistory;
+	private static int indexOfCommand;
 
 	private History() {
 		undoDeque = new ArrayDeque<OldCommand>();
 		redoDeque = new ArrayDeque<OldCommand>();
+		commandHistory = new ArrayList<String>();
 	}
 
 	public static History getInstance() {
@@ -94,34 +95,31 @@ public class History {
 	}
 
 	public void addToCommandHistory(String command) {
-		indexOfCommand++;
-		commandHistory.add(command);
+		commandHistory.add(new String(command));
 	}
 
 	public String moveUpCommandHistory() {
-		if (indexOfCommand < 0) {
+		if (indexOfCommand <= 0) {
 			return null;
 		} else {
-			return commandHistory.get(indexOfCommand--);
+			return commandHistory.get(--indexOfCommand);
 		}
 	}
 
 	public String moveDownCommandHistory() {
-		if (indexOfCommand >= commandHistory.size()) {
+		if (indexOfCommand >= commandHistory.size() - 1) {
 			return null;
 		} else {
-			return commandHistory.get(indexOfCommand++);
+			return commandHistory.get(++indexOfCommand);
 		}
 	}
 
-	public void keyPressed(KeyEvent e) {
-
-		int key = e.getKeyCode();
-
-		if (key == KeyEvent.VK_UP) {
-			System.out.println("helooooooooo");
+	public void setIndexCommandHistory() {
+		if (commandHistory != null) {
+			indexOfCommand = commandHistory.size();
+		} else {
+			indexOfCommand = 0;
 		}
-
 	}
 
 }

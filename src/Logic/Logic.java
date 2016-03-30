@@ -171,6 +171,7 @@ public class Logic {
 	public void executeCommand(String userInput) {
 		try {
 			historyObject.addToCommandHistory(userInput);
+			historyObject.setIndexCommandHistory();
 			retrieveParsedCommand(userInput);
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
@@ -683,7 +684,7 @@ public class Logic {
 			}
 			if (!isUndoOperation) {
 				// for undo functionality
-				OldCommand recentCommand = new OldCommand(COMMAND_TYPE.COMPLETE_TASK, taskList, indexList);
+				OldCommand recentCommand = new OldCommand(COMMAND_TYPE.INCOMPLETE_TASK, taskList, indexList);
 				historyObject.addToUndoList(recentCommand);
 			}
 

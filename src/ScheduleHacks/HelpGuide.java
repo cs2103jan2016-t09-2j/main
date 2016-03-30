@@ -23,14 +23,24 @@ public class HelpGuide {
 	ArrayList<String> completeAndIncompleteList = new ArrayList<String>();
 	ArrayList<String> exitList = new ArrayList<String>();
 	ArrayList<String> blockList = new ArrayList<String>();
-	static ArrayList<String> collatedHelpList = new ArrayList<String>();
+	ArrayList<String> collatedHelpList = new ArrayList<String>();
 
 	
-	public static ArrayList<String> getCollatedList() {
+	public ArrayList<String> getCollatedList(){
+		collateGuide();
 		return collatedHelpList;
 	}
 
 	public void collateGuide() {
+		addGuide();
+		deleteGuide();
+		editGuide();
+		searchGuide();
+		undoAndRedoGuide();
+		completeGuide();
+		blockGuide();
+		exitGuide();
+		
 		collatedHelpList.addAll(addList);
 		collatedHelpList.addAll(deleteList);
 		collatedHelpList.addAll(editList);
