@@ -12,7 +12,9 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import Logic.Logic;
+import ScheduleHacks.History;
 import ScheduleHacks.Task;
+import ScheduleHacks.OldCommand;
 
 public class BottomBottom extends JPanel implements KeyListener {
 	/**
@@ -27,6 +29,7 @@ public class BottomBottom extends JPanel implements KeyListener {
 	private static ArrayList<Task> searchOList = new ArrayList<Task>();
 	private static ArrayList<Task> searchSList = new ArrayList<Task>();
 	private static ArrayList<Task> searchFList = new ArrayList<Task>();
+	History history = History.getInstance();
 
 	private static final Font INPUT_FONT = new Font("Courier New", Font.BOLD, 16);
 
@@ -36,7 +39,7 @@ public class BottomBottom extends JPanel implements KeyListener {
 		setLayout(new GridLayout(1, 1));
 		commandField = new JTextField();
 		commandField.setFont(INPUT_FONT);
-		commandField.requestFocus();
+		commandField.grabFocus();
 		add(commandField);
 		commandField.addKeyListener(this);
 		logicObj.startExecution();
@@ -89,10 +92,11 @@ public class BottomBottom extends JPanel implements KeyListener {
 
 		if (keyCode == KeyEvent.VK_UP) {
 			BottomPanel.setFeedback("You have pressed the up arrow");
+			commandField.setText(history.moveUpCommandHistory());
 		}
 
 		if (keyCode == KeyEvent.VK_DOWN) {
-			BottomPanel.setFeedback("You have pressed the down arrow");
+			commandField.setText(history.moveUpCommandHistory());
 		}
 
 		if (keyCode == KeyEvent.VK_ESCAPE) {
