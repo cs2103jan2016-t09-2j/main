@@ -91,11 +91,12 @@ public class BottomBottom extends JPanel implements KeyListener {
 		}
 
 		if (keyCode == KeyEvent.VK_UP) {
-			BottomPanel.setFeedback("You have pressed the up arrow");
+			BottomPanel.setFeedback("Previous Command");
 			commandField.setText(history.moveUpCommandHistory());
 		}
 
 		if (keyCode == KeyEvent.VK_DOWN) {
+			BottomPanel.setFeedback("Next Command");
 			commandField.setText(history.moveUpCommandHistory());
 		}
 
