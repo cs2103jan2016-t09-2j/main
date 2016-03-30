@@ -47,6 +47,7 @@ public class Logic {
 	private static final String FEEDBACK_TASK_COMPLETED = "Task Completed Successfully";
 	private static final String FEEDBACK_TASK_INCOMPLETED = "Task Marked Undone Successfully";
 	private static final String FEEDBACK_TASK_INCOMPLETED_INVALID = "Invalid Undone Operation!";
+	private static final String FEEDBACK_EMPTY_TASK_DESCRIPTION = "Empty Task Description. Adding Unsucessful!";
 	private static final String FEEDBACK_UNDO_INVALID = "Invalid Undo!";
 	private static final String FEEDBACK_UNDO_VALID = "Last Action Un-Done!";
 	private static final String FEEDBACK_REDO_VALID = "Last Action Re-Done!";
@@ -315,6 +316,11 @@ public class Logic {
 	private int addTask(Task executeTask, boolean isUndoOperation) {
 
 		int indexOfTask = -1;
+		
+		if(executeTask.getDescription()==null ||executeTask.getDescription().isEmpty() ) {
+			setFeedBack(FEEDBACK_EMPTY_TASK_DESCRIPTION);
+			return indexOfTask;
+		}
 
 		if (executeTask.isScheduledTask()) {
 			indexOfTask = addTaskInOrder(executeTask);
