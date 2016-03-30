@@ -763,7 +763,7 @@ public class Logic {
 		if (indexList != null && !indexList.isEmpty()) {
 			for (int index = indexList.size() - 1; index >= 0; index--) {
 				if ((indexList.get(index) >= minIndex) && (indexList.get(index) <= maxIndex)) {
-					if (indexList.get(index) <= minIndex + scheduledTasksComplete.size()) {
+					if (indexList.get(index) < minIndex + scheduledTasksComplete.size()) {
 						Task taskToMark = scheduledTasksComplete.get(indexList.get(index) - minIndex);
 						markTaskIncomplete(taskToMark);
 						taskList.add(taskToMark);
