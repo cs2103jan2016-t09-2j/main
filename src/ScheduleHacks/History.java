@@ -15,12 +15,13 @@ public class History {
 	Deque<OldCommand> undoDeque;
 	Deque<OldCommand> redoDeque;
 
-	ArrayList<String> commandHistory = new ArrayList<String>();
-	private static int indexOfCommand = 0;
+	ArrayList<String> commandHistory;
+	private static int indexOfCommand;
 
 	private History() {
 		undoDeque = new ArrayDeque<OldCommand>();
 		redoDeque = new ArrayDeque<OldCommand>();
+		commandHistory = new ArrayList<String>();
 	}
 
 	public static History getInstance() {
@@ -94,8 +95,7 @@ public class History {
 	}
 
 	public void addToCommandHistory(String command) {
-		commandHistory.add(command);
-		//indexOfCommand++;
+		commandHistory.add(new String(command));
 	}
 
 	public String moveUpCommandHistory() {
@@ -115,7 +115,11 @@ public class History {
 	}
 
 	public void setIndexCommandHistory() {
-		indexOfCommand = commandHistory.size();
+		if (commandHistory != null) {
+			indexOfCommand = commandHistory.size();
+		} else {
+			indexOfCommand = 0;
+		}
 	}
 
 }
