@@ -1,6 +1,8 @@
 package GUI;
 
 import java.awt.GridLayout;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.util.ArrayList;
 
 import javax.swing.JFrame;
@@ -10,7 +12,7 @@ import javax.swing.JTextArea;
 //import javax.swing.text.BadLocationException;
 //import javax.swing.text.StyledDocument;
  
-public class HelpFrame extends JFrame{
+public class HelpFrame extends JFrame implements KeyListener{
 
     /**
 	 * 
@@ -35,6 +37,7 @@ public class HelpFrame extends JFrame{
 		collatedHelpList = new ArrayList<String>();
 		collatedHelpList = ScheduleHacks.HelpGuide.getCollatedList();
 		setHelpSheet(collatedHelpList);
+		textArea.addKeyListener(this);
     }
 	
 	public void setHelpSheet(ArrayList<String> collatedHelpList){
@@ -50,6 +53,21 @@ public class HelpFrame extends JFrame{
 			} catch (BadLocationException e) {
 				e.printStackTrace();
 			}*/
+		}
+	}
+	
+	public void keyReleased(KeyEvent arg0) {
+		// not used
+	}
+
+	public void keyTyped(KeyEvent arg0) {
+		// not used
+	}
+
+	public void keyPressed(KeyEvent e) {
+		int keyCode = e.getKeyCode();
+		if (keyCode == KeyEvent.VK_ESCAPE) {
+			setVisible(false);
 		}
 	}
 }
