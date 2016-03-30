@@ -29,13 +29,6 @@ public class BottomPanel extends JPanel{
 
 		bottomTop = new BottomTop();
 		bottomBottom = new BottomBottom();
-		bottomBottom.addComponentListener(new ComponentAdapter() {
-	        @Override 
-	        public void componentShown(java.awt.event.ComponentEvent e) 
-	        {
-	            bottomBottom.commandField.requestFocusInWindow();
-	        }
-	    });
 
 		gc.fill = GridBagConstraints.HORIZONTAL;
 
