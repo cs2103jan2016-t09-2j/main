@@ -30,7 +30,8 @@ public class StorageTest {
 			
 		 testStorage.setCurrentPathName("C:\\SH");
 		 
-		 assertEquals(testDirectory.getAbsolutePath(), testStorage.getCurrentPathName());
+		 assertEquals(testDirectory.getAbsolutePath(), Storage.getCurrentPathName());
+		
 
 	}
 	
@@ -42,7 +43,7 @@ public class StorageTest {
 		 testStorage.setCurrentPathName("C:\\SH1");
 		 testStorage.setCurrentPathName("C:\\SH2");
 
-		 assertEquals("C:\\SH2",testStorage.getCurrentPathName());
+		 assertEquals("C:\\SH2",Storage.getCurrentPathName());
 		 
 	}
 	
@@ -54,7 +55,7 @@ public class StorageTest {
 		 testStorage.setCurrentPathName("C:\\sameName");
 		 testStorage.setCurrentPathName("C:\\sameName");
 
-		 assertEquals("C:\\sameName",testStorage.getCurrentPathName());
+		 assertEquals("C:\\sameName",Storage.getCurrentPathName());
 		 
 	}
 	
@@ -65,7 +66,7 @@ public class StorageTest {
 		
 		 testStorage.setCurrentPathName("C:\\test\\testtest");
 		
-		 assertEquals("C:\\test\\testtest",testStorage.getCurrentPathName());
+		 assertEquals("C:\\test\\testtest",Storage.getCurrentPathName());
 		 
 	}
 	@Test
@@ -75,7 +76,7 @@ public class StorageTest {
 		
 		 testStorage.setCurrentPathName("C:\\test\\testtest\\testtesttest");
 		
-		 assertEquals("C:\\test\\testtest\\testtesttest",testStorage.getCurrentPathName());
+		 assertEquals("C:\\test\\testtest\\testtesttest",Storage.getCurrentPathName());
 		 
 	}
 	
@@ -86,7 +87,7 @@ public class StorageTest {
 		
 		 testStorage.setCurrentPathName("C:SH1");
 
-		 assertNotSame("C:\\SH2",testStorage.getCurrentPathName());
+		 assertNotSame("C:\\SH2",Storage.getCurrentPathName());
 		 
 	}
 	
