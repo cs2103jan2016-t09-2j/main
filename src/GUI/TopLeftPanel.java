@@ -102,6 +102,7 @@ public class TopLeftPanel extends JPanel {
 			document = textArea.getStyledDocument();
 			document.insertString(document.getLength(), "Search Results (" + indexList.size() + " results)\n\n",
 					header);
+			document.setParagraphAttributes(0, document.getLength(), header, false);
 			count = 0;
 			for (Task task : List) {
 				// System.out.println(task.getDescription());
@@ -138,7 +139,8 @@ public class TopLeftPanel extends JPanel {
 			} else {
 				document.insertString(document.getLength(), OVERDUE_HEADER + "\n\n", header);
 			}
-
+			document.setParagraphAttributes(0, document.getLength(), header, true);
+			int end = document.getLength();
 			for (Task task : List) {
 				String string = task.getDescription();
 				document.insertString(document.getLength(), indexList.get(count) + ". " + string + "\n", taskInfo);
@@ -160,6 +162,7 @@ public class TopLeftPanel extends JPanel {
 				count++;
 			}
 			document.insertString(document.getLength(), "\n", taskInfo);
+			document.setParagraphAttributes(end, document.getLength(), taskInfo, true);
 			textArea.setStyledDocument(document);
 		} catch (BadLocationException e) {
 			// do nothing
@@ -175,6 +178,7 @@ public class TopLeftPanel extends JPanel {
 			count = 0;
 			document.insertString(document.getLength(), "DUE TODAY" + "\n", header);
 			document.insertString(document.getLength(), "\n", header);
+			document.setParagraphAttributes(0, document.getLength(), header, false);
 			if (firstList != null) {
 				for (Task task : firstList) {
 					if (!task.getEndDate().isAfter(today)) {
@@ -205,9 +209,12 @@ public class TopLeftPanel extends JPanel {
 				}
 			}
 			document.insertString(document.getLength(), "\n", taskInfo);
+			int end = document.getLength();
 
 			document.insertString(document.getLength(), "DUE TOMORROW" + "\n", header);
 			document.insertString(document.getLength(), "\n", header);
+			document.setParagraphAttributes(end, document.getLength(), header, true);
+			end  = document.getLength();
 			if (firstList != null) {
 				for (int index = count; index < firstList.size(); index++) {
 					Task task = firstList.get(index);
@@ -232,6 +239,7 @@ public class TopLeftPanel extends JPanel {
 					count++;
 				}
 			}
+			document.setParagraphAttributes(end, document.getLength(), taskInfo, true);
 			textArea.setStyledDocument(document);
 		} catch (BadLocationException e) {
 			// do nothing

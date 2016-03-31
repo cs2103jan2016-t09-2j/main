@@ -90,12 +90,14 @@ public class TopRightPanel extends JPanel {
 			document = textArea.getStyledDocument();
 			document.insertString(document.getLength(), "Search Results (" + indexList.size() + " results)\n\n",
 					header);
+			document.setParagraphAttributes(0, document.getLength(), header, false);
+			int end = document.getLength();
 			for (Task task : List) {
 				String string = task.getDescription();
 				document.insertString(document.getLength(), indexList.get(count) + ". " + string + "\n", taskInfo);
 				count++;
 			}
-
+			document.setParagraphAttributes(end, document.getLength(), taskInfo,true);
 			textArea.setStyledDocument(document);
 		} catch (BadLocationException e) {
 			// do nothing
@@ -107,6 +109,8 @@ public class TopRightPanel extends JPanel {
 			int count = 0;
 			document = textArea.getStyledDocument();
 			document.insertString(document.getLength(), FLOATING_HEADER + "\n\n", header);
+			document.setParagraphAttributes(0, document.getLength(), header, false);
+			int end = document.getLength();
 			if (List != null) {
 				for (Task task : List) {
 					String string = task.getDescription();
@@ -115,6 +119,7 @@ public class TopRightPanel extends JPanel {
 					count++;
 				}
 			}
+			document.setParagraphAttributes(end, document.getLength(), taskInfo,true);
 			textArea.setStyledDocument(document);
 		} catch (BadLocationException e) {
 			// do nothing
@@ -131,6 +136,7 @@ public class TopRightPanel extends JPanel {
 		document = textArea.getStyledDocument();
 		try {
 			document.insertString(document.getLength(),FLOATING_HEADER + "\n\n", header);
+			document.setParagraphAttributes(0, document.getLength(), header, false);
 			if (firstList != null) {
 				for (Task task : firstList) {
 					String string = task.getDescription();
