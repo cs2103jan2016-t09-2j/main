@@ -13,6 +13,8 @@ import Parser.CommandParser;
 import Parser.Command;
 import GUI.BottomBottom;
 import GUI.TempCLI;
+import GUI.TopLeftPanel;
+import GUI.TopRightPanel;
 import Storage.Storage;
 
 public class Logic {
@@ -954,6 +956,8 @@ public class Logic {
 			BottomBottom.setSearchResult(searchTaskList, searchIndexList);
 			//(new TempCLI()).printSearchTaskLists(searchTaskList, searchIndexList);
 		} else {
+			TopRightPanel.clearText();
+			TopLeftPanel.clearText();
 			setFeedBack(FEEDBACK_SEARCH_INVALID);
 		}
 	}

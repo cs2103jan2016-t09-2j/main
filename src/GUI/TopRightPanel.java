@@ -19,7 +19,7 @@ public class TopRightPanel extends JPanel {
 	 * 
 	 */
 	private static Logic logicObj = Logic.getInstance();
-	
+
 	private static final long serialVersionUID = 1L;
 	private static JTextArea textArea;
 	private JScrollPane scrollPane;
@@ -44,8 +44,9 @@ public class TopRightPanel extends JPanel {
 		textArea.setEditable(false);
 		textArea.setFont(TASK_FONT);
 		add(scrollPane);
-		setText(logicObj.getFloatingTasksToDo(), null, logicObj.getScheduledTasksOverDue().size() + logicObj.getScheduledTasksToDo().size());
-		//textArea.append(CENTER_FORMAT + FLOATING_HEADER + "\n");
+		setText(logicObj.getFloatingTasksToDo(), null,
+				logicObj.getScheduledTasksOverDue().size() + logicObj.getScheduledTasksToDo().size());
+		// textArea.append(CENTER_FORMAT + FLOATING_HEADER + "\n");
 	}
 
 	public static void setText(ArrayList<Task> FList, ArrayList<Integer> indexList, int UpcomingTaskSize) {
@@ -56,6 +57,27 @@ public class TopRightPanel extends JPanel {
 			}
 		}
 		printOut(FList, indexList);
+	}
+
+	public static void setSearchText(ArrayList<Task> FList, ArrayList<Integer> indexList, int UpcomingTaskSize) {
+		if (indexList == null || indexList.isEmpty()) {
+			indexList = new ArrayList<Integer>();
+			for (int index = 1; index <= FList.size(); index++) {
+				indexList.add(index + UpcomingTaskSize);
+			}
+		}
+		printSearchQuery(FList, indexList);
+	}
+
+	public static void printSearchQuery(ArrayList<Task> List, ArrayList<Integer> indexList) {
+		textArea.append("Search Results (" + indexList.size() + " results)\n");
+		textArea.append("\n");
+		for (Task task : List) {
+			String string = task.getDescription();
+			textArea.append(indexList.get(count) + ".");
+			textArea.append(" " + string + "\n");
+			count++;
+		}
 	}
 
 	public static void printOut(ArrayList<Task> List, ArrayList<Integer> indexList) {

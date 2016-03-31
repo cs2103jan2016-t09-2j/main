@@ -41,25 +41,25 @@ public class BottomBottom extends JPanel implements KeyListener {
 		commandField.addKeyListener(this);
 		logicObj.startExecution();
 	}
-	
-	public static JTextField getCommandField(){
+
+	public static JTextField getCommandField() {
 		return commandField;
 	}
 
-	public static void HelpPopUp(){
+	public static void HelpPopUp() {
 		JFrame Help = new HelpFrame("HELP");
 		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-    	double width = screenSize.getWidth();
-    	double height = screenSize.getHeight();
-    	int width1 = (int) (width / 3);
-    	int height1 = (int) (height / 1.2);
-    	Help.setSize(width1, height1);
-    	//newFrame.setSize(600, 400);
-        Help.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        Help.setVisible(true);
-        Help.setResizable(false);
+		double width = screenSize.getWidth();
+		double height = screenSize.getHeight();
+		int width1 = (int) (width / 3);
+		int height1 = (int) (height / 1.2);
+		Help.setSize(width1, height1);
+		// newFrame.setSize(600, 400);
+		Help.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		Help.setVisible(true);
+		Help.setResizable(false);
 	}
-	
+
 	public void keyReleased(KeyEvent arg0) {
 		// not used
 	}
@@ -104,23 +104,38 @@ public class BottomBottom extends JPanel implements KeyListener {
 		}
 	}
 
-	public static void setHelp(){
+	public static void setHelp() {
 		HelpPopUp();
 	}
-	
+
 	public static void setSearchResult(ArrayList<Task> searchTaskList, ArrayList<Integer> searchIndexList) {
-		 clearArrayList();
+		clearArrayList();
 
 		for (Task task : searchTaskList) {
 			if (task.isFloatingTask()) {
 				searchFList.add(task);
-			} else if (task.isScheduledTask()) {
-				searchSList.add(task);
 			} else {
-				searchOList.add(task);
+				searchSList.add(task);
 			}
 		}
-		setPanel(searchFList, searchSList, searchOList, searchIndexList);
+		setSearchPanel(searchFList, searchSList, searchIndexList);
+	}
+
+	public static void setSearchPanel(ArrayList<Task> timedList, ArrayList<Task> trivialList,
+			ArrayList<Integer> searchIndexList) {
+		
+		clearPanel();	
+		ArrayList<Integer> UpcomingTaskIndex = new ArrayList<Integer>(
+				searchIndexList.subList(0, searchSList.size()));
+		ArrayList<Integer> FloatingTaskIndex = new ArrayList<Integer>(
+				searchIndexList.subList(searchOList.size() + searchSList.size(), searchIndexList.size()));
+
+		TopLeftPanel.setSearchText(searchSList, UpcomingTaskIndex);
+		TopRightPanel.setSearchText(searchFList, FloatingTaskIndex, UpcomingTaskIndex.size());
+	}
+	
+	public static void failedSearch() {
+		clearPanel();
 	}
 
 	public static void clearPanel() {

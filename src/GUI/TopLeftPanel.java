@@ -32,7 +32,7 @@ public class TopLeftPanel extends JPanel {
 	private static String OVERDUE_HEADER = "OVERDUE TASKS";
 	private static String CENTER_FORMAT = "\t" + "                       ";
 
-	private static final Font TITLE_FONT = new Font("Comic Sans", Font.BOLD, 16);
+	//private static final Font TITLE_FONT = new Font("Comic Sans", Font.BOLD, 16);
 	private static final Font TASK_FONT = new Font("Comic Sans", Font.PLAIN, 16);
 
 	public TopLeftPanel() {
@@ -69,6 +69,42 @@ public class TopLeftPanel extends JPanel {
 		}
 		printOutSO(OList, "overdue", new ArrayList<Integer>(indexList.subList(0, OList.size())));
 		printOutSO(SList, "schedule", new ArrayList<Integer>(indexList.subList(OList.size(), indexList.size())));
+	}
+
+	public static void setSearchText(ArrayList<Task> SList, ArrayList<Integer> indexList) {
+		int index;
+		if (indexList == null || indexList.isEmpty()) {
+			indexList = new ArrayList<Integer>();
+			for (index = 0; index < SList.size(); index++) {
+				indexList.add(index + 1);
+			}
+		}
+		printSearchQuery(SList, new ArrayList<Integer>(indexList.subList(0, indexList.size())));
+	}
+
+	public static void printSearchQuery(ArrayList<Task> List, ArrayList<Integer> indexList) {
+		textArea.append("Search Results (" + indexList.size() + " results)\n");
+		textArea.append("\n");
+		for (Task task : List) {
+			String string = task.getDescription();
+			textArea.append(indexList.get(count) + ". " + string + "\n");
+			if (task.getStartDate() != null && task.getStartTime() != null) {
+				textArea.append("\t From ");
+				if (!task.getStartTime().equals(LocalTime.MAX)) {
+					textArea.append(task.getStartTime().toString() + ", ");
+				}
+				textArea.append(task.getStartDate().format(dateFormat));
+				textArea.append("\t To ");
+			} else {
+				textArea.append("\t At ");
+			}
+			if (!task.getEndTime().equals(LocalTime.MAX)) {
+				textArea.append(task.getEndTime().toString() + ", ");
+			}
+			textArea.append(task.getEndDate().format(dateFormat));
+			textArea.append("\n");
+			count++;
+		}
 	}
 
 	public static void printOutSO(ArrayList<Task> List, String type, ArrayList<Integer> indexList) {
