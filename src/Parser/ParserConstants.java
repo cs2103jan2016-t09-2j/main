@@ -14,7 +14,7 @@ public class ParserConstants {
 	static final String[] COMMAND_UNDO = { "undo", "u", "z" };
 	static final String[] COMMAND_REDO = { "redo" };
 	static final String[] COMMAND_SET_DIRECTORY = { "set" };
-	static final String[] COMMAND_HOME = { "home", "back" };
+	static final String[] COMMAND_HOME = { "home"};
 	static final String[] COMMAND_BLOCK_SLOT = { "block" };
 	static final String[] COMMAND_UNBLOCK_SLOT = { "unblock" };
 	static final String[] COMMAND_HELP = { "help" };

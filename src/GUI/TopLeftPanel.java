@@ -182,7 +182,7 @@ public class TopLeftPanel extends JPanel {
 		textArea.append("DUE TOMORROW" + "\n");
 		textArea.append("\n");
 		if (firstList != null) {
-			for (int index = count; index < indexList.size(); index++) {
+			for (int index = count; index < firstList.size(); index++) {
 				Task task = firstList.get(index);
 				String string = task.getDescription();
 				textArea.append(indexList.get(count) + ". " + string + "\n");

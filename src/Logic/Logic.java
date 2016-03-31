@@ -162,13 +162,13 @@ public class Logic {
 			setScheduledTasksToDo(storage.getScheduledTasksToDo());
 			setScheduledTasksOverDue(storage.getScheduledTasksOverDue());
 
-			/*executeCommand("view 2days");
-			setFeedBack("Welcome to Schedule Hacks! \n");
-			setFeedBack("Tasks Due Today and Tomorrow Displayed \n");
-
-			// remove if not needed
 			/*
-			 * for (int i = 0; i < scheduledTasksOverDue.size(); i++) {
+			 * executeCommand("view 2days"); setFeedBack(
+			 * "Welcome to Schedule Hacks! \n"); setFeedBack(
+			 * "Tasks Due Today and Tomorrow Displayed \n");
+			 * 
+			 * // remove if not needed /* for (int i = 0; i <
+			 * scheduledTasksOverDue.size(); i++) {
 			 * addTask(scheduledTasksOverDue.remove(i), true); }
 			 */
 
@@ -181,7 +181,6 @@ public class Logic {
 		ArrayList<Task> firstList = new ArrayList<Task>();
 		ArrayList<Integer> indexList = new ArrayList<Integer>();
 		firstList = setDueTodayTomorrowList(firstList, indexList);
-		System.out.println(firstList.size() +" *** " + indexList.size());
 		TopLeftPanel.firstSet(firstList, indexList);
 		indexList = setFloatingIndexList();
 		TopRightPanel.firstSet(floatingTasksToDo, indexList);
@@ -189,13 +188,14 @@ public class Logic {
 
 	public ArrayList<Task> setDueTodayTomorrowList(ArrayList<Task> firstList, ArrayList<Integer> indexList) {
 		int count = 1;
+
 		if (scheduledTasksToDo != null) {
 			LocalDate tmw = LocalDate.now().plusDays(1);
 			for (Task task : scheduledTasksToDo) {
 				if (task.getEndDate().isAfter(tmw)) {
-					firstList = new ArrayList<Task>(scheduledTasksToDo.subList(0, scheduledTasksToDo.indexOf(task)));
 					break;
 				}
+				firstList.add(task);
 				indexList.add(count++);
 			}
 		}
@@ -312,6 +312,11 @@ public class Logic {
 			historyObject.clearRedoStack();
 			break;
 		case HOME:
+			firstRun();
+			setFeedBack("Home Screen Display");
+			historyObject.clearRedoStack();
+			break;
+		case VIEW_ALL:
 			setFeedBack(FEEDBACK_EMPTY_STRING);
 			historyObject.clearRedoStack();
 			break;
@@ -981,7 +986,7 @@ public class Logic {
 		if ((taskToFind.getDescription() != null) && !(taskToFind.getDescription().isEmpty())) {
 			System.out.println("Enter not empty");
 			if (taskToFind.getDescription().equalsIgnoreCase("all")) {
-				execute(Command.COMMAND_TYPE.HOME, null, null);
+				execute(Command.COMMAND_TYPE.VIEW_ALL, null, null);
 				return;
 			}
 		}
