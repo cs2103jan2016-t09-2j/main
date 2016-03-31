@@ -163,4 +163,5 @@ public class BottomBottom extends JPanel implements KeyListener {
 		searchOList = new ArrayList<Task>();
 		searchSList = new ArrayList<Task>();
 	}
+	
 }

@@ -27,7 +27,7 @@ public class TopRightPanel extends JPanel {
 	private static String FLOATING_HEADER = "TRIVIAL TASKS";
 	private static String CENTER_FORMAT = "         ";
 
-	private static final Font TITLE_FONT = new Font("Comic Sans", Font.BOLD, 13);
+	//private static final Font TITLE_FONT = new Font("Comic Sans", Font.BOLD, 13);
 	private static final Font TASK_FONT = new Font("Comic Sans", Font.PLAIN, 13);
 
 	public TopRightPanel() {
@@ -77,8 +77,7 @@ public class TopRightPanel extends JPanel {
 		textArea.append("\n");
 		for (Task task : List) {
 			String string = task.getDescription();
-			textArea.append(indexList.get(count) + ".");
-			textArea.append(" " + string + "\n");
+			textArea.append(indexList.get(count) + ". " + string + "\n");
 			count++;
 		}
 	}
@@ -99,6 +98,10 @@ public class TopRightPanel extends JPanel {
 		textArea.setText(null);
 	}
 
-	public static void setCount(int noOfTask) {
+	public static void firstSet(ArrayList<Task> firstList, ArrayList<Integer> indexList){
+		for(Task task : firstList){
+			String string = task.getDescription();
+			textArea.append(indexList.get(count) + ". " + string + "\n");
+		}
 	}
 }

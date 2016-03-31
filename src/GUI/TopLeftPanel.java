@@ -3,7 +3,6 @@ package GUI;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridLayout;
-import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -33,7 +32,7 @@ public class TopLeftPanel extends JPanel {
 	private static String OVERDUE_HEADER = "OVERDUE TASKS";
 	private static String CENTER_FORMAT = "\t" + "                       ";
 
-	private static final Font TITLE_FONT = new Font("Comic Sans", Font.BOLD, 13);
+	//private static final Font TITLE_FONT = new Font("Comic Sans", Font.BOLD, 13);
 	private static final Font TASK_FONT = new Font("Comic Sans", Font.PLAIN, 13);
 
 	public TopLeftPanel() {
@@ -131,7 +130,8 @@ public class TopLeftPanel extends JPanel {
 				}
 				textArea.append(task.getStartDate().format(dateFormat));
 				textArea.append("\t To ");
-			} else {
+			} 
+			else {
 				textArea.append("\t At ");
 			}
 			if (!task.getEndTime().equals(LocalTime.MAX)) {
@@ -143,7 +143,27 @@ public class TopLeftPanel extends JPanel {
 		}
 	}
 
-	/*
-	 * public static int getUpcomingTaskSize() { return OL }
-	 */
+	public static void firstSet(ArrayList<Task> firstList, ArrayList<Integer> indexList){
+		for(Task task : firstList){
+			String string = task.getDescription();
+			textArea.append(indexList.get(count) + ". " + string + "\n");
+			if (task.getStartDate() != null && task.getStartTime() != null) {
+				textArea.append("\t From ");
+				if (!task.getStartTime().equals(LocalTime.MAX)) {
+					textArea.append(task.getStartTime().toString() + ", ");
+				}
+				textArea.append(task.getStartDate().format(dateFormat));
+				textArea.append("\t To ");
+			} 
+			else {
+				textArea.append("\t At ");
+			}
+			if (!task.getEndTime().equals(LocalTime.MAX)) {
+				textArea.append(task.getEndTime().toString() + ", ");
+			}
+			textArea.append(task.getEndDate().format(dateFormat));
+			textArea.append("\n");
+			count++;
+		}
+	}
 }
