@@ -35,9 +35,8 @@ public class TopLeftPanel extends JPanel {
 	private static DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("dd-MM-uuuu");
 	private static JTextPane textArea;
 	private JScrollPane scrollPane;
-	private static String SCHEDULE_HEADER = "SCHEDULED TASKS";
+	private static String SCHEDULE_HEADER = "UPCOMING TASKS";
 	private static String OVERDUE_HEADER = "OVERDUE TASKS";
-	private static String CENTER_FORMAT = "\t" + "                       ";
 
 	private static StyledDocument document;
 
@@ -123,7 +122,7 @@ public class TopLeftPanel extends JPanel {
 							taskInfo);
 					document.insertString(document.getLength(), "\t To ", taskInfo);
 				} else {
-					document.insertString(document.getLength(), "\t At ", taskInfo);
+					document.insertString(document.getLength(), "\t By ", taskInfo);
 				}
 				if (!task.getEndTime().equals(LocalTime.MAX)) {
 					document.insertString(document.getLength(), task.getEndTime().toString() + ", ", taskInfo);
@@ -163,7 +162,7 @@ public class TopLeftPanel extends JPanel {
 							taskInfo);
 					document.insertString(document.getLength(), "\t To ", taskInfo);
 				} else {
-					document.insertString(document.getLength(), "\t At ", taskInfo);
+					document.insertString(document.getLength(), "\t By ", taskInfo);
 				}
 				if (!task.getEndTime().equals(LocalTime.MAX)) {
 					document.insertString(document.getLength(), task.getEndTime().toString() + ", ", taskInfo);
@@ -205,7 +204,7 @@ public class TopLeftPanel extends JPanel {
 									taskInfo);
 							document.insertString(document.getLength(), "\t To ", taskInfo);
 						} else {
-							document.insertString(document.getLength(), "\t At ", taskInfo);
+							document.insertString(document.getLength(), "\t By ", taskInfo);
 						}
 						if (!task.getEndTime().equals(LocalTime.MAX)) {
 							document.insertString(document.getLength(), task.getEndTime().toString() + ", ", taskInfo);
@@ -239,7 +238,7 @@ public class TopLeftPanel extends JPanel {
 						document.insertString(document.getLength(), task.getStartDate().format(dateFormat), taskInfo);
 						document.insertString(document.getLength(), "\t To ", taskInfo);
 					} else {
-						document.insertString(document.getLength(), "\t At ", taskInfo);
+						document.insertString(document.getLength(), "\t By ", taskInfo);
 					}
 					if (!task.getEndTime().equals(LocalTime.MAX)) {
 						document.insertString(document.getLength(), task.getEndTime().toString() + ", ", taskInfo);

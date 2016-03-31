@@ -141,6 +141,7 @@ public class TopRightPanel extends JPanel {
 		try {
 			document.insertString(document.getLength(),FLOATING_HEADER + "\n\n", header);
 			document.setParagraphAttributes(0, document.getLength(), header, false);
+			int end = document.getLength();
 			if (firstList != null) {
 				for (Task task : firstList) {
 					String string = task.getDescription();
@@ -148,6 +149,7 @@ public class TopRightPanel extends JPanel {
 					count++;
 				}
 			}
+			document.setParagraphAttributes(end, document.getLength(), taskInfo, true);
 			textArea.setStyledDocument(document);
 		} catch (BadLocationException e) {
 			// do nothing
