@@ -33,13 +33,15 @@ public class BottomBottom extends JPanel implements KeyListener {
 	private static final Font INPUT_FONT = new Font("Courier New", Font.BOLD, 16);
 
 	private static Logic logicObj = Logic.getInstance();
-
+	String startInput = "view 2 days";
+	
 	public BottomBottom() {
 		setLayout(new GridLayout(1, 1));
 		commandField.setFont(INPUT_FONT);
 		add(commandField);
 		commandField.addKeyListener(this);
 		logicObj.startExecution();
+		//logicObj.executeCommand(startInput);
 	}
 
 	public static JTextField getCommandField() {
@@ -54,7 +56,6 @@ public class BottomBottom extends JPanel implements KeyListener {
 		int width1 = (int) (width / 3);
 		int height1 = (int) (height / 1.2);
 		Help.setSize(width1, height1);
-		// newFrame.setSize(600, 400);
 		Help.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		Help.setVisible(true);
 		Help.setResizable(false);
@@ -108,9 +109,8 @@ public class BottomBottom extends JPanel implements KeyListener {
 		HelpPopUp();
 	}
 
-	public static void setSearchResult(ArrayList<Task> searchTaskList, ArrayList<Integer> searchIndexList) {
+		public static void setSearchResult(ArrayList<Task> searchTaskList, ArrayList<Integer> searchIndexList) {
 		clearArrayList();
-
 		for (Task task : searchTaskList) {
 			if (task.isFloatingTask()) {
 				searchFList.add(task);
@@ -165,4 +165,5 @@ public class BottomBottom extends JPanel implements KeyListener {
 		searchOList = new ArrayList<Task>();
 		searchSList = new ArrayList<Task>();
 	}
+	
 }
