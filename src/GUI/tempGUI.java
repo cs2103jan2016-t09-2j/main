@@ -3,6 +3,8 @@ package GUI;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Toolkit;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -29,21 +31,23 @@ public class tempGUI extends JFrame {
 	private static final Font TITLE_FONT = new Font("Arial Black", Font.BOLD, 16);
 	private static final Font TASK_FONT = new Font("Arial", Font.PLAIN, 16);
 	private static final Font INPUT_FONT = new Font("Courier New", Font.BOLD, 16);
-	
+
 	private static Logic logicObj = Logic.getInstance();
 	private static final DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("dd-MM-uuuu");
 	
+	JTextField commandTab;
+
 	private static int count = 1;
 
 	public static void main(String[] args) {
-		//new tempGUI();
+		// new tempGUI();
 		tempGUI uiObj = new tempGUI();
 		uiObj.startScheduleHacks();
-		
+
 		// tempGUI uiObj = new tempGUI();
-		
+
 	}
-	
+
 	private tempGUI() {
 	}
 
@@ -51,8 +55,8 @@ public class tempGUI extends JFrame {
 		logicObj.startExecution();
 		setFrame();
 		while (true) {
-			//readInput();
-			//executeInput();
+			// readInput();
+			// executeInput();
 		}
 	}
 
@@ -65,6 +69,12 @@ public class tempGUI extends JFrame {
 		this.setIconImage(Toolkit.getDefaultToolkit().getImage("SHIcon.png"));
 		setPanel();
 		this.setVisible(true);
+		// Make textField get the focus whenever frame is activated.
+		this.addWindowFocusListener(new WindowAdapter() {
+			public void windowGainedFocus(WindowEvent e) {
+				commandTab.requestFocusInWindow();
+			}
+		});
 	}
 
 	public void setPanel() {
@@ -79,7 +89,6 @@ public class tempGUI extends JFrame {
 		setCommandInputField(DisplayPanel, constraints);
 		setFeedbackArea(DisplayPanel, constraints);
 		// setFeedbackPanel();
-		
 
 		this.add(DisplayPanel);
 	}
@@ -87,7 +96,7 @@ public class tempGUI extends JFrame {
 	public void setTopHeaders(JPanel DisplayPanel, GridBagConstraints constraints) {
 		JLabel TimedTaskLabel = getHeaderLabel("Upcoming Tasks");
 		JLabel UntimedTaskLabel = getHeaderLabel("Floating Tasks");
-		
+
 		constraints.gridx = 1;
 		constraints.gridy = 1;
 		constraints.gridwidth = 1;
@@ -102,7 +111,7 @@ public class tempGUI extends JFrame {
 		constraints.gridx = 4;
 		DisplayPanel.add(UntimedTaskLabel, constraints);
 	}
-	
+
 	public void setTaskLists(JPanel DisplayPanel, GridBagConstraints constraints) {
 		JTextArea UpcomingTasks = getTaskListArea(logicObj.getScheduledTasksToDo());
 		JTextArea FloatingTasks = getTaskListArea(logicObj.getFloatingTasksToDo());
@@ -112,39 +121,39 @@ public class tempGUI extends JFrame {
 		constraints.weightx = 3;
 		constraints.weighty = 15;
 		DisplayPanel.add(UpcomingTasks, constraints);
-		
+
 		constraints.weightx = 1;
 		constraints.gridx = 4;
 		DisplayPanel.add(FloatingTasks, constraints);
 	}
 
 	public void setCommandInputField(JPanel DisplayPanel, GridBagConstraints constraints) {
-		JTextField commandTab = new JTextField("Enter Your Command Here!", 4);
-		//commandTab.setLineWrap(true);
-		//commandTab.setWrapStyleWord(true);
+		commandTab = new JTextField("Enter Your Command Here!", 4);
+		// commandTab.setLineWrap(true);
+		// commandTab.setWrapStyleWord(true);
 		commandTab.requestFocus();
 		commandTab.setEditable(true);
 		commandTab.setFont(INPUT_FONT);
-		
+
 		constraints.gridx = 1;
 		constraints.gridy = 12;
 		constraints.weightx = 3;
 		constraints.weighty = 2;
 		DisplayPanel.add(commandTab, constraints);
 	}
-	
+
 	public void setFeedbackArea(JPanel DisplayPanel, GridBagConstraints constraints) {
 		JTextArea textArea = new JTextArea("Feedback Panel");
-		//JTextArea textArea = new JTextArea(logicObj.getFeedBack());
-		
-		//textArea.append("\n");
-		//textArea.append(str);
-		
+		// JTextArea textArea = new JTextArea(logicObj.getFeedBack());
+
+		// textArea.append("\n");
+		// textArea.append(str);
+
 		textArea.setLineWrap(true);
 		textArea.setWrapStyleWord(true);
 		textArea.setFont(TASK_FONT);
 		textArea.setEditable(false);
-		
+
 		constraints.gridx = 1;
 		constraints.gridy = 14;
 		constraints.weightx = 3;
@@ -162,19 +171,19 @@ public class tempGUI extends JFrame {
 		JTextArea textArea = new JTextArea("");
 		JScrollPane scrollbar = new JScrollPane(textArea, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
 				JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-		
-		for(Task task: taskList) {
-			textArea.append((count++)+". "+task.getDescription()+"\n");
-			if(task.isScheduledTask()) {
+
+		for (Task task : taskList) {
+			textArea.append((count++) + ". " + task.getDescription() + "\n");
+			if (task.isScheduledTask()) {
 				appendDateTime(textArea, task);
 			}
 		}
-		
+
 		textArea.setLineWrap(true);
 		textArea.setWrapStyleWord(true);
 		textArea.setFont(TASK_FONT);
 		textArea.setEditable(false);
-		//textArea.add(scrollbar);
+		// textArea.add(scrollbar);
 		return textArea;
 	}
 
@@ -184,7 +193,7 @@ public class tempGUI extends JFrame {
 			if (!task.getStartTime().equals(LocalTime.MAX)) {
 				textArea.append(task.getStartTime().toString() + ", ");
 			}
-			textArea.append(task.getStartDate().format(dateFormat)+"\n");
+			textArea.append(task.getStartDate().format(dateFormat) + "\n");
 			textArea.append("\t To ");
 		} else {
 			textArea.append("\t At ");
@@ -192,6 +201,6 @@ public class tempGUI extends JFrame {
 		if (!task.getEndTime().equals(LocalTime.MAX)) {
 			textArea.append(task.getEndTime().toString() + ", ");
 		}
-		textArea.append(task.getEndDate().format(dateFormat)+"\n");
+		textArea.append(task.getEndDate().format(dateFormat) + "\n");
 	}
 }

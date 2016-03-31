@@ -223,24 +223,6 @@ public class CommandParserTest {
 	}
 
 	@Test
-	public void checkGetParsedCommand11() throws Exception {
-		String testString = "e 2 21/3/16 1700";
-		Command cmd = CommandParser.getParsedCommand(testString);
-		assertEquals(COMMAND_TYPE.MODIFY_TASK, cmd.getCommandType());
-		String output = "";
-		for (int x : cmd.getIndexList()) {
-			output += x;
-		}
-		assertEquals("2", output);
-		Task newTask = cmd.getTaskDetails();
-		assertEquals("21/3/16 1700", newTask.getDescription());
-		assertEquals(null, newTask.getStartDate());
-		assertEquals(null, newTask.getEndDate());
-		assertEquals(null, newTask.getStartTime());
-		assertEquals(null, newTask.getEndTime());
-	}
-
-	@Test
 	public void checkGetCriteria1() throws Exception {
 		String testString = "this week";
 		Task newTask = CommandParser.getCriteria(testString);
@@ -489,7 +471,6 @@ public class CommandParserTest {
 		assertEquals(true, newTask.isScheduledTask());
 	}
 
-	// Convert Floating to Scheduled
 	@Test
 	public void checkEditExistingTask5() throws Exception {
 		Task oldTask = new Task("buy dog", null, null, null, null);
@@ -506,7 +487,6 @@ public class CommandParserTest {
 		assertEquals(true, newTask.isScheduledTask());
 	}
 
-	// Convert Floating to Scheduled
 	@Test
 	public void checkEditExistingTask6() throws Exception {
 		Task oldTask = new Task("buy dog", null, null, null, null);
@@ -518,6 +498,22 @@ public class CommandParserTest {
 		assertEquals("2017-02-25", newTask.getEndDate().toString());
 		assertEquals("17:00", newTask.getStartTime().toString());
 		assertEquals(LocalTime.MAX, newTask.getEndTime());
+		assertEquals(false, newTask.isComplete());
+		assertEquals(false, newTask.isFloatingTask());
+		assertEquals(true, newTask.isScheduledTask());
+	}
+	
+	@Test
+	public void checkEditExistingTask7() throws Exception {
+		Task oldTask = new Task("buy dog", LocalDate.parse("2016-06-08"), LocalDate.parse("2016-08-08"), LocalTime.parse("12:00"), LocalTime.parse("16:00"));
+		oldTask.setFloatingTask();
+		String testString = "3pm 5pm";
+		Task newTask = CommandParser.editExistingTask(oldTask, testString);
+		assertEquals("buy dog", newTask.getDescription());
+		//assertEquals("2016-06-08", newTask.getStartDate().toString());
+		//assertEquals("2016-08-08", newTask.getEndDate().toString());
+		assertEquals("15:00", newTask.getStartTime().toString());
+		assertEquals("17:00", newTask.getEndTime().toString());
 		assertEquals(false, newTask.isComplete());
 		assertEquals(false, newTask.isFloatingTask());
 		assertEquals(true, newTask.isScheduledTask());

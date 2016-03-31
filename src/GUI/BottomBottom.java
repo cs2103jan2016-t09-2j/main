@@ -21,7 +21,7 @@ public class BottomBottom extends JPanel implements KeyListener {
 	 */
 	private static final long serialVersionUID = 1L;
 
-	private JTextField commandField = new JTextField();
+	private static JTextField commandField = new JTextField();
 	private ArrayList<Task> OList = new ArrayList<Task>();
 	private ArrayList<Task> SList = new ArrayList<Task>();
 	private ArrayList<Task> FList = new ArrayList<Task>();
@@ -42,7 +42,7 @@ public class BottomBottom extends JPanel implements KeyListener {
 		logicObj.startExecution();
 	}
 	
-	public JTextField getCommandField(){
+	public static JTextField getCommandField(){
 		return commandField;
 	}
 

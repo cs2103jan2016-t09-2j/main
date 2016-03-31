@@ -99,20 +99,22 @@ public class History {
 	}
 
 	public String moveUpCommandHistory() {
-		System.out.println("UP  "+indexOfCommand+"*"+commandHistory.size());
 		if (indexOfCommand <= 0) {
+			indexOfCommand = -1;
 			return null;
 		} else {
-			return commandHistory.get(--indexOfCommand);
+			indexOfCommand--;
+			return commandHistory.get(indexOfCommand);
 		}
 	}
 
 	public String moveDownCommandHistory() {
-		System.out.println("DOWN  "+indexOfCommand+"*"+commandHistory.size());
-		if (indexOfCommand >= commandHistory.size() - 1) {
-			return null;
+		indexOfCommand++;
+		if (indexOfCommand < commandHistory.size()) {
+			return commandHistory.get(indexOfCommand);
 		} else {
-			return commandHistory.get(++indexOfCommand);
+			setIndexCommandHistory();
+			return null;
 		}
 	}
 
