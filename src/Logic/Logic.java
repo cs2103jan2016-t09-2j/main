@@ -165,7 +165,7 @@ public class Logic {
 			executeCommand("view 2days");
 			setFeedBack("Welcome to Schedule Hacks! \n");
 			setFeedBack("Tasks Due Today and Tomorrow Displayed \n");
-			
+
 			// remove if not needed
 			/*
 			 * for (int i = 0; i < scheduledTasksOverDue.size(); i++) {
@@ -176,18 +176,38 @@ public class Logic {
 			System.out.println(e.getMessage());
 		}
 	}
-	
 
 	public void firstRun() {
+		ArrayList<Task> firstList = new ArrayList<Task>();
+		ArrayList<Integer> indexList = new ArrayList<Integer>();
+		setDueTodayTomorrowList(firstList, indexList);
+		TopLeftPanel.firstSet(firstList, indexList);
+		indexList = setFloatingIndexList();
+		TopRightPanel.firstSet(floatingTasksToDo, indexList);
+	}
+
+	public void setDueTodayTomorrowList(ArrayList<Task> firstList, ArrayList<Integer> indexList) {
+		int count = 1;
 		if (scheduledTasksToDo != null) {
-			LocalDate today = LocalDate.now();
-			LocalDate tmw = today.plusDays(1);
-			for (Task task : List) {
-			if()
+			LocalDate tmw = LocalDate.now().plusDays(1);
+			for (Task task : scheduledTasksToDo) {
+				if (task.getEndDate().isAfter(tmw)) {
+					firstList = (ArrayList<Task>) scheduledTasksToDo.subList(0, scheduledTasksToDo.indexOf(task));
+					break;
+				}
+				indexList.add(count++);
 			}
 		}
 	}
 
+	public ArrayList<Integer> setFloatingIndexList() {
+		ArrayList<Integer> index = new ArrayList<Integer>();
+		int count = scheduledTasksOverDue.size() + scheduledTasksToDo.size();
+		for (int i = 1; i <= floatingTasksToDo.size(); i++) {
+			index.add(i + count);
+		}
+		return index;
+	}
 
 	public void executeCommand(String userInput) {
 		System.out.println(userInput);
@@ -325,7 +345,8 @@ public class Logic {
 
 	public void setHelpInstructions() {
 		BottomBottom.setHelp();
-		//ArrayList<String> helpInstruction = (new HelpGuide()).getCollatedList();
+		// ArrayList<String> helpInstruction = (new
+		// HelpGuide()).getCollatedList();
 		// display help guide
 	}
 
@@ -338,7 +359,7 @@ public class Logic {
 
 		int indexOfTask = -1;
 
-	if(executeTask.getDescription()==null ||executeTask.getDescription().isEmpty() ) {
+		if (executeTask.getDescription() == null || executeTask.getDescription().isEmpty()) {
 			setFeedBack(FEEDBACK_EMPTY_TASK_DESCRIPTION);
 			return indexOfTask;
 		}
@@ -390,23 +411,23 @@ public class Logic {
 		LocalDateTime blockedEndDateTime = LocalDateTime.of(slotToBlock.getEndDate(), slotToBlock.getEndTime());
 		LocalDateTime blockedStartDateTime;
 		boolean checkBlockParameters = false, validBlockedStatus = false;
-		
+
 		if (slotToBlock.getStartDate() != null) {
 			blockedStartDateTime = LocalDateTime.of(slotToBlock.getStartDate(), slotToBlock.getStartTime());
 		} else {
 			blockedStartDateTime = LocalDateTime.now();
 		}
 		checkBlockParameters = checkBlockedSlotParameters(blockedStartDateTime, blockedEndDateTime);
-		
+
 		if (checkBlockParameters) {
 			validBlockedStatus = compareBlockedSlots(blockedSlots, blockedStartDateTime, blockedEndDateTime);
 			if (validBlockedStatus == true) {
 				int positionToSort = sortBlockedSlots(blockedSlots, blockedStartDateTime, blockedEndDateTime);
 				blockedSlots.add(positionToSort, blockedStartDateTime);
-				blockedSlots.add(positionToSort+1, blockedEndDateTime);
-				//cleanUpBlockedTimeSlots(blockedSlots);
+				blockedSlots.add(positionToSort + 1, blockedEndDateTime);
+				// cleanUpBlockedTimeSlots(blockedSlots);
 				assignBlockStatusToTasks(blockedStartDateTime, blockedEndDateTime, scheduledTasksToDo);
-				
+
 				setFeedBack("Slot blocked from " + blockedStartDateTime + " to " + blockedEndDateTime);
 			} else {
 				setFeedBack(FEEDBACK_BLOCK_SLOT_INVALID);
@@ -414,73 +435,83 @@ public class Logic {
 		} else {
 			setFeedBack(FEEDBACK_BLOCK_SLOT_PARAMETERS_INCORRECT);
 		}
-		
+
 	}
-	
+
 	private boolean checkBlockedSlotParameters(LocalDateTime blockedStartDateTime, LocalDateTime blockedEndDateTime) {
-		if (blockedEndDateTime.compareTo(blockedStartDateTime)<=0) {
+		if (blockedEndDateTime.compareTo(blockedStartDateTime) <= 0) {
 			return false;
 		} else {
 			return true;
 		}
 	}
-	private boolean compareBlockedSlots(ArrayList<LocalDateTime> blockedSlotsList, LocalDateTime blockStart, LocalDateTime blockEnd) {
-		if ((blockedSlotsList.size()>=2) && ((blockStart.compareTo(blockedSlotsList.get(blockedSlotsList.size()-1))) >= 0) && 
-				(blockEnd.isAfter(blockedSlotsList.get(blockedSlotsList.size()-1)))) {
+
+	private boolean compareBlockedSlots(ArrayList<LocalDateTime> blockedSlotsList, LocalDateTime blockStart,
+			LocalDateTime blockEnd) {
+		if ((blockedSlotsList.size() >= 2)
+				&& ((blockStart.compareTo(blockedSlotsList.get(blockedSlotsList.size() - 1))) >= 0)
+				&& (blockEnd.isAfter(blockedSlotsList.get(blockedSlotsList.size() - 1)))) {
 			return true;
-		} else if ((blockedSlotsList.size()>=2) && ((blockStart.isBefore(blockedSlotsList.get(0)))) && 
-				(blockEnd.compareTo(blockedSlotsList.get(0)))<=0) {
+		} else if ((blockedSlotsList.size() >= 2) && ((blockStart.isBefore(blockedSlotsList.get(0))))
+				&& (blockEnd.compareTo(blockedSlotsList.get(0))) <= 0) {
 			return true;
 		} else if (blockedSlotsList.isEmpty()) {
 			return true;
 		} else {
-			for (int i=1; i<blockedSlotsList.size()-1; i++) {
-				if (((blockStart.compareTo(blockedSlotsList.get(i)))>=0) && ((blockEnd.compareTo(blockedSlotsList.get(i+1)))<=0)) {
+			for (int i = 1; i < blockedSlotsList.size() - 1; i++) {
+				if (((blockStart.compareTo(blockedSlotsList.get(i))) >= 0)
+						&& ((blockEnd.compareTo(blockedSlotsList.get(i + 1))) <= 0)) {
 					return true;
 				}
 			}
 			return false;
 		}
 	}
-	
-	private int sortBlockedSlots(ArrayList<LocalDateTime> blockedSlotsList, LocalDateTime blockStart, LocalDateTime blockEnd) {
+
+	private int sortBlockedSlots(ArrayList<LocalDateTime> blockedSlotsList, LocalDateTime blockStart,
+			LocalDateTime blockEnd) {
 		int sortedIndex = blockedSlotsList.size();
-		
-		for (int i=0; i<blockedSlotsList.size()-1; i+=2) {
-			if ((blockStart.isBefore(blockedSlotsList.get(i))) && ((blockEnd.compareTo(blockedSlotsList.get(i)))<=0)) {
+
+		for (int i = 0; i < blockedSlotsList.size() - 1; i += 2) {
+			if ((blockStart.isBefore(blockedSlotsList.get(i)))
+					&& ((blockEnd.compareTo(blockedSlotsList.get(i))) <= 0)) {
 				return sortedIndex = i;
 			}
 		}
 		return sortedIndex;
 	}
-	
+
 	private void cleanUpBlockedTimeSlots(ArrayList<LocalDateTime> blockedSlotsList) {
-		for (int i=0; i<blockedSlotsList.size()-1; i+=2) {
+		for (int i = 0; i < blockedSlotsList.size() - 1; i += 2) {
 			LocalDateTime blockedSlotStart = blockedSlotsList.get(i);
-			LocalDateTime blockedSlotEnd = blockedSlotsList.get(i+1);
-			
-			if (((blockedSlotStart).compareTo(LocalDateTime.now())<=0) && (blockedSlotEnd.isAfter(LocalDateTime.now()))) {
+			LocalDateTime blockedSlotEnd = blockedSlotsList.get(i + 1);
+
+			if (((blockedSlotStart).compareTo(LocalDateTime.now()) <= 0)
+					&& (blockedSlotEnd.isAfter(LocalDateTime.now()))) {
 				blockedSlotStart = LocalDateTime.now();
-			} else if ((blockedSlotEnd).compareTo(LocalDateTime.now())<=0) {
-				blockedSlotsList.remove(i+1);
+			} else if ((blockedSlotEnd).compareTo(LocalDateTime.now()) <= 0) {
+				blockedSlotsList.remove(i + 1);
 				blockedSlotsList.remove(i);
 			}
 		}
 	}
-	private void assignBlockStatusToTasks(LocalDateTime startDateTime, LocalDateTime endDateTime, ArrayList<Task> listOfTasks) {
+
+	private void assignBlockStatusToTasks(LocalDateTime startDateTime, LocalDateTime endDateTime,
+			ArrayList<Task> listOfTasks) {
 		LocalDateTime taskStartDateTime = null;
-		LocalDateTime taskEndDateTime = null; 
-		
-		for (int i=0; i<listOfTasks.size(); i++) {
+		LocalDateTime taskEndDateTime = null;
+
+		for (int i = 0; i < listOfTasks.size(); i++) {
 			taskEndDateTime = LocalDateTime.of(listOfTasks.get(i).getEndDate(), listOfTasks.get(i).getEndTime());
 			if (listOfTasks.get(i).getStartDate() != null) {
-				taskStartDateTime = LocalDateTime.of(listOfTasks.get(i).getStartDate(), listOfTasks.get(i).getStartTime());
+				taskStartDateTime = LocalDateTime.of(listOfTasks.get(i).getStartDate(),
+						listOfTasks.get(i).getStartTime());
 			}
-			if ((taskStartDateTime != null) && (taskEndDateTime.isAfter(startDateTime)) && 
-					(taskStartDateTime.isBefore(endDateTime))) {
+			if ((taskStartDateTime != null) && (taskEndDateTime.isAfter(startDateTime))
+					&& (taskStartDateTime.isBefore(endDateTime))) {
 				listOfTasks.get(i).setAsBlocked();
-			} else if ((taskStartDateTime == null) && (taskEndDateTime.isAfter(startDateTime)) && 
-					(taskEndDateTime.isBefore(endDateTime))) {
+			} else if ((taskStartDateTime == null) && (taskEndDateTime.isAfter(startDateTime))
+					&& (taskEndDateTime.isBefore(endDateTime))) {
 				listOfTasks.get(i).setAsBlocked();
 			} else {
 				listOfTasks.get(i).setAsUnBlocked();
@@ -495,45 +526,48 @@ public class Logic {
 			LocalDateTime taskEndDateTime = LocalDateTime.of(executeTask.getEndDate(), executeTask.getEndTime());
 			LocalDateTime taskStartDateTime = null;
 			int trackBlock = 0;
-			ArrayList<Integer> blockedIndex = new ArrayList<Integer> ();
-			
+			ArrayList<Integer> blockedIndex = new ArrayList<Integer>();
+
 			if (executeTask.getStartDate() != null) {
 				taskStartDateTime = LocalDateTime.of(executeTask.getStartDate(), executeTask.getStartTime());
 			}
-			for (int i=0; i<blockedSlots.size()-1; i+=2) {
-				if ((taskStartDateTime != null) && (taskEndDateTime.isAfter(blockedSlots.get(i))) && (taskStartDateTime.isBefore(blockedSlots.get(i+1)))) {
+			for (int i = 0; i < blockedSlots.size() - 1; i += 2) {
+				if ((taskStartDateTime != null) && (taskEndDateTime.isAfter(blockedSlots.get(i)))
+						&& (taskStartDateTime.isBefore(blockedSlots.get(i + 1)))) {
 					trackBlock++;
 					blockedIndex.add(i);
-					blockedIndex.add(i+1);
-				} else if ((taskStartDateTime == null) && (taskEndDateTime.isAfter(blockedSlots.get(i))) && (taskEndDateTime.isBefore(blockedSlots.get(i+1)))) {
+					blockedIndex.add(i + 1);
+				} else if ((taskStartDateTime == null) && (taskEndDateTime.isAfter(blockedSlots.get(i)))
+						&& (taskEndDateTime.isBefore(blockedSlots.get(i + 1)))) {
 					trackBlock++;
 					blockedIndex.add(i);
-					blockedIndex.add(i+1);
-				} /*else if ((taskStartDateTime != null) && ((taskEndDateTime.compareTo(blockedSlots.get(i+1))>=0) &&
-						(taskStartDateTime.compareTo(blockedSlots.get(i))<=0))) {
-					return true;
-				} else if ((taskStartDateTime != null) && ((taskEndDateTime.compareTo(blockedSlots.get(i+1))>=0) &&
-						(taskStartDateTime.compareTo(blockedSlots.get(i))<=0))) {
-					return true;
-				} else if ((taskStartDateTime != null) && ((taskEndDateTime.compareTo(blockedSlots.get(i+1))<=0) &&
-						(taskStartDateTime.compareTo(blockedSlots.get(i))>=0))) {
-					return true;
-				}*/
+					blockedIndex.add(i + 1);
+				} /*
+					 * else if ((taskStartDateTime != null) &&
+					 * ((taskEndDateTime.compareTo(blockedSlots.get(i+1))>=0) &&
+					 * (taskStartDateTime.compareTo(blockedSlots.get(i))<=0))) {
+					 * return true; } else if ((taskStartDateTime != null) &&
+					 * ((taskEndDateTime.compareTo(blockedSlots.get(i+1))>=0) &&
+					 * (taskStartDateTime.compareTo(blockedSlots.get(i))<=0))) {
+					 * return true; } else if ((taskStartDateTime != null) &&
+					 * ((taskEndDateTime.compareTo(blockedSlots.get(i+1))<=0) &&
+					 * (taskStartDateTime.compareTo(blockedSlots.get(i))>=0))) {
+					 * return true; }
+					 */
 			}
 			if (trackBlock == 0) {
 				return false;
 			} else {
 				if (blockedIndex.size() == 2) {
-					setFeedBack("Task not added as it interferes with blocked slot of "+blockedSlots.get(blockedIndex.get(0))+" to "+blockedSlots.get(blockedIndex.get(1)));
+					setFeedBack("Task not added as it interferes with blocked slot of "
+							+ blockedSlots.get(blockedIndex.get(0)) + " to " + blockedSlots.get(blockedIndex.get(1)));
 				} else {
 					setFeedBack(FEEDBACK_BLOCK_OVERLAP_WITH_MULTIPLE_SLOTS);
 				}
 				return true;
 			}
-		}	
+		}
 	}
-
-
 
 	private int sortTaskList(ArrayList<Task> taskList, Task task) {
 		LocalDateTime taskStartDateTime = null;
@@ -564,7 +598,6 @@ public class Logic {
 		}
 		return taskPosition;
 	}
-
 
 	/*
 	 * deleteTask from scheduledTasksToDo or floatingTasksToDo based on task
@@ -650,7 +683,7 @@ public class Logic {
 				taskToEdit = scheduledTasksOverDue.remove(indexToEdit - 1);
 			} else if (indexToEdit <= scheduledTasksOverDue.size() + scheduledTasksToDo.size()) {
 				int index = indexToEdit - 1 - scheduledTasksOverDue.size();
-				taskOriginal = scheduledTasksToDo.get(indexToEdit - 1 - scheduledTasksOverDue.size()); 
+				taskOriginal = scheduledTasksToDo.get(indexToEdit - 1 - scheduledTasksOverDue.size());
 				taskToEdit = scheduledTasksToDo.remove(indexToEdit - 1 - scheduledTasksOverDue.size());
 			} else if (indexToEdit <= scheduledTasksToDo.size() + floatingTasksToDo.size()
 					+ scheduledTasksOverDue.size()) {
@@ -668,9 +701,9 @@ public class Logic {
 		} else {
 			Task editedTask = CommandParser.editExistingTask(taskToEdit, editInfo);
 			editedTask.setAsUnBlocked();
-			
+
 			conflict = compareWithBlockedRange(editedTask);
-			
+
 			if (conflict) {
 				if (taskOriginal.isBlocked()) {
 					editedTask.setAsBlocked();
@@ -678,9 +711,9 @@ public class Logic {
 					editedTask = taskOriginal;
 				}
 			}
-			
+
 			int newIndex = addTask(editedTask, true);
-			
+
 			if (!isUndoOperation) {
 				ArrayList<Task> taskList = new ArrayList<Task>();
 				taskList.add(taskToEdit);
@@ -690,7 +723,7 @@ public class Logic {
 				historyObject.addToUndoList(recentCommand);
 
 			}
-			if ((conflict) && (taskOriginal.isUnBlocked())){
+			if ((conflict) && (taskOriginal.isUnBlocked())) {
 				setFeedBack(FEEDBACK_BLOCK_EDITED_TASK_CLASH);
 			} else {
 				setFeedBack(FEEDBACK_TASK_MODIFIED);
@@ -769,8 +802,8 @@ public class Logic {
 		int minIndex = scheduledTasksOverDue.size() + scheduledTasksToDo.size() + floatingTasksToDo.size() + 1;
 		int maxIndex = minIndex + scheduledTasksComplete.size() + floatingTasksComplete.size() - 1;
 
-		//System.out.println(minIndex+"*"+maxIndex);
-		
+		// System.out.println(minIndex+"*"+maxIndex);
+
 		if (indexList != null && !indexList.isEmpty()) {
 			for (int index = indexList.size() - 1; index >= 0; index--) {
 				if ((indexList.get(index) >= minIndex) && (indexList.get(index) <= maxIndex)) {
@@ -965,16 +998,18 @@ public class Logic {
 			Search obj = new Search();
 			obj.searchTask(taskToFind);
 			searchTaskList = obj.getSearchList();
-			/*for(Task task: searchTaskList) 
-				System.out.println(task.getDescription());*/
+			/*
+			 * for(Task task: searchTaskList)
+			 * System.out.println(task.getDescription());
+			 */
 			searchIndexList = obj.getSearchIndexList();
 		}
 
-		
 		if (searchTaskList.size() > 0) {
 			setFeedBack(FEEDBACK_SEARCH_VALID);
 			BottomBottom.setSearchResult(searchTaskList, searchIndexList);
-			//(new TempCLI()).printSearchTaskLists(searchTaskList, searchIndexList);
+			// (new TempCLI()).printSearchTaskLists(searchTaskList,
+			// searchIndexList);
 		} else {
 			BottomBottom.failedSearch();
 			setFeedBack(FEEDBACK_SEARCH_INVALID);
