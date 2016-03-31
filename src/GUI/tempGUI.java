@@ -3,6 +3,10 @@ package GUI;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Toolkit;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.time.LocalTime;
@@ -13,6 +17,8 @@ import javax.swing.*;
 
 import Logic.Logic;
 import ScheduleHacks.Task;
+import ScheduleHacks.History;
+import ScheduleHacks.HelpGuide;
 
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -21,7 +27,7 @@ import java.awt.GridLayout;
 import java.awt.Insets;
 import java.awt.Label;
 
-public class tempGUI extends JFrame {
+public class tempGUI extends JFrame implements KeyListener {
 
 	private static final int WIDTH = 800;
 	private static final int HEIGHT = 700;
@@ -33,9 +39,12 @@ public class tempGUI extends JFrame {
 	private static final Font INPUT_FONT = new Font("Courier New", Font.BOLD, 16);
 
 	private static Logic logicObj = Logic.getInstance();
+	private static History history = History.getInstance();
 	private static final DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("dd-MM-uuuu");
 	
 	JTextField commandTab;
+	JTextArea textArea;
+	JTextArea textArea2;
 
 	private static int count = 1;
 
@@ -87,6 +96,7 @@ public class tempGUI extends JFrame {
 		setTopHeaders(DisplayPanel, constraints);
 		setTaskLists(DisplayPanel, constraints);
 		setCommandInputField(DisplayPanel, constraints);
+		setTabButtons(DisplayPanel, constraints);
 		setFeedbackArea(DisplayPanel, constraints);
 		// setFeedbackPanel();
 
@@ -95,7 +105,7 @@ public class tempGUI extends JFrame {
 
 	public void setTopHeaders(JPanel DisplayPanel, GridBagConstraints constraints) {
 		JLabel TimedTaskLabel = getHeaderLabel("Upcoming Tasks");
-		JLabel UntimedTaskLabel = getHeaderLabel("Floating Tasks");
+		JLabel UntimedTaskLabel = getHeaderLabel("Trivial Tasks");
 
 		constraints.gridx = 1;
 		constraints.gridy = 1;
@@ -128,12 +138,13 @@ public class tempGUI extends JFrame {
 	}
 
 	public void setCommandInputField(JPanel DisplayPanel, GridBagConstraints constraints) {
-		commandTab = new JTextField("Enter Your Command Here!", 4);
+		commandTab = new JTextField("", 4);
 		// commandTab.setLineWrap(true);
 		// commandTab.setWrapStyleWord(true);
 		commandTab.requestFocus();
 		commandTab.setEditable(true);
 		commandTab.setFont(INPUT_FONT);
+		commandTab.addKeyListener(this);
 
 		constraints.gridx = 1;
 		constraints.gridy = 12;
@@ -141,9 +152,32 @@ public class tempGUI extends JFrame {
 		constraints.weighty = 2;
 		DisplayPanel.add(commandTab, constraints);
 	}
-
+	
+	public void setTabButtons(JPanel DisplayPanel, GridBagConstraints constraints) {
+		JButton UpComingButton = new JButton("Upcoming Tasks");
+		JButton TrivialButton = new JButton("Trivial Tasks");
+		JButton HomeButton = new JButton("Home");
+		JButton HelpButton = new JButton("Help");
+		
+		constraints.gridx = 4;
+		constraints.gridy = 12;
+		constraints.weightx = 1;
+		constraints.weighty = 2;
+		DisplayPanel.add(UpComingButton, constraints);
+		
+		constraints.gridy = 14;
+		DisplayPanel.add(TrivialButton, constraints);
+		
+		constraints.gridy = 16;
+		DisplayPanel.add(HomeButton, constraints);
+		
+		constraints.gridy = 18;
+		DisplayPanel.add(HelpButton, constraints);
+	}	
+	
 	public void setFeedbackArea(JPanel DisplayPanel, GridBagConstraints constraints) {
-		JTextArea textArea = new JTextArea("Feedback Panel");
+		textArea = new JTextArea("Feedback Panel");
+		textArea2 = new JTextArea("Task Info Panel");
 		// JTextArea textArea = new JTextArea(logicObj.getFeedBack());
 
 		// textArea.append("\n");
@@ -153,12 +187,20 @@ public class tempGUI extends JFrame {
 		textArea.setWrapStyleWord(true);
 		textArea.setFont(TASK_FONT);
 		textArea.setEditable(false);
+		
+		textArea2.setLineWrap(true);
+		textArea2.setWrapStyleWord(true);
+		textArea2.setFont(TASK_FONT);
+		textArea2.setEditable(false);
 
 		constraints.gridx = 1;
 		constraints.gridy = 14;
 		constraints.weightx = 3;
-		constraints.weighty = 4;
+		constraints.weighty = 2;
 		DisplayPanel.add(textArea, constraints);
+		
+		constraints.gridy = 16;
+		DisplayPanel.add(textArea2, constraints);
 	}
 
 	public JLabel getHeaderLabel(String text) {
@@ -202,5 +244,50 @@ public class tempGUI extends JFrame {
 			textArea.append(task.getEndTime().toString() + ", ");
 		}
 		textArea.append(task.getEndDate().format(dateFormat) + "\n");
+	}
+
+	@Override
+	public void keyPressed(KeyEvent e) {
+		int keyCode = e.getKeyCode();
+
+		if (keyCode == KeyEvent.VK_ENTER) {
+			String input = commandTab.getText();
+			commandTab.setText("");
+
+			logicObj.executeCommand(input);
+			textArea.setText(logicObj.getFeedBack());
+			textArea2.setText(input);
+
+			/*if (!logicObj.hasSearchList()) { // print the normal display
+				OList = new ArrayList<Task>(logicObj.getScheduledTasksOverDue());
+				SList = new ArrayList<Task>(logicObj.getScheduledTasksToDo());
+				FList = new ArrayList<Task>(logicObj.getFloatingTasksToDo());
+				TopLeftPanel.clearText();
+				TopLeftPanel.setText(OList, SList, null);
+				TopRightPanel.clearText();
+				TopRightPanel.setText(FList, null, OList.size() + SList.size());
+			}*/
+		}
+
+		if (keyCode == KeyEvent.VK_UP) {
+			textArea.setText("Previous Command");
+			commandTab.setText(history.moveUpCommandHistory());
+		}
+		if (keyCode == KeyEvent.VK_DOWN) {
+			textArea.setText("Next Command");
+			commandTab.setText(history.moveDownCommandHistory());
+		}
+		if (keyCode == KeyEvent.VK_ESCAPE) {
+			System.exit(0);
+		}
+
+	}
+
+	@Override
+	public void keyReleased(KeyEvent arg0) {
+	}
+
+	@Override
+	public void keyTyped(KeyEvent arg0) {
 	}
 }
