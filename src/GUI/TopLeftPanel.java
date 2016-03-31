@@ -143,6 +143,7 @@ public class TopLeftPanel extends JPanel {
 			textArea.append("\n");
 			count++;
 		}
+		textArea.append("\n");
 	}
 
 	public static void firstSet(ArrayList<Task> firstList, ArrayList<Integer> indexList) {
