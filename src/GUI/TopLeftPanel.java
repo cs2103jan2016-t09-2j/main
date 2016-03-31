@@ -3,6 +3,7 @@ package GUI;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridLayout;
+import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -144,26 +145,56 @@ public class TopLeftPanel extends JPanel {
 	}
 
 	public static void firstSet(ArrayList<Task> firstList, ArrayList<Integer> indexList){
+		LocalDate today = LocalDate.now();
+
 		for(Task task : firstList){
-			String string = task.getDescription();
-			textArea.append(indexList.get(count) + ". " + string + "\n");
-			if (task.getStartDate() != null && task.getStartTime() != null) {
-				textArea.append("\t From ");
-				if (!task.getStartTime().equals(LocalTime.MAX)) {
-					textArea.append(task.getStartTime().toString() + ", ");
+			if(task.getEndDate() == today){
+				String string = task.getDescription();
+				textArea.append("TODAY" + "\n");
+				textArea.append(indexList.get(count) + ". " + string + "\n");
+				if (task.getStartDate() != null && task.getStartTime() != null) {
+					textArea.append("\t From ");
+					if (!task.getStartTime().equals(LocalTime.MAX)) {
+						textArea.append(task.getStartTime().toString() + ", ");
+					}
+					textArea.append(task.getStartDate().format(dateFormat));
+					textArea.append("\t To ");
+				} 
+				else {
+					textArea.append("\t At ");
 				}
-				textArea.append(task.getStartDate().format(dateFormat));
-				textArea.append("\t To ");
-			} 
-			else {
-				textArea.append("\t At ");
+				if (!task.getEndTime().equals(LocalTime.MAX)) {
+					textArea.append(task.getEndTime().toString() + ", ");
+				}
+				textArea.append(task.getEndDate().format(dateFormat));
+				textArea.append("\n");
+				count++;
 			}
-			if (!task.getEndTime().equals(LocalTime.MAX)) {
-				textArea.append(task.getEndTime().toString() + ", ");
+		}
+		
+		for(Task task : firstList){
+			if(task.getEndDate() != today){
+				String string = task.getDescription();
+				textArea.append("TOMORROW" + "\n");
+				textArea.append(indexList.get(count) + ". " + string + "\n");
+				if (task.getStartDate() != null && task.getStartTime() != null) {
+					textArea.append("\t From ");
+					if (!task.getStartTime().equals(LocalTime.MAX)) {
+						textArea.append(task.getStartTime().toString() + ", ");
+					}
+					textArea.append(task.getStartDate().format(dateFormat));
+					textArea.append("\t To ");
+				} 
+				else {
+					textArea.append("\t At ");
+				}
+				if (!task.getEndTime().equals(LocalTime.MAX)) {
+					textArea.append(task.getEndTime().toString() + ", ");
+				}
+				textArea.append(task.getEndDate().format(dateFormat));
+				textArea.append("\n");
+				count++;
 			}
-			textArea.append(task.getEndDate().format(dateFormat));
-			textArea.append("\n");
-			count++;
 		}
 	}
 }

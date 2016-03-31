@@ -86,11 +86,13 @@ public class TopRightPanel extends JPanel {
 		int count = 0;
 		textArea.append(CENTER_FORMAT + FLOATING_HEADER + "\n");
 		textArea.append("\n");
-		for (Task task : List) {
-			String string = task.getDescription();
-			textArea.append(indexList.get(count) + ".");
-			textArea.append(" " + string + "\n");
-			count++;
+		if(List != null){
+			for (Task task : List) {
+				String string = task.getDescription();
+				textArea.append(indexList.get(count) + ".");
+				textArea.append(" " + string + "\n");
+				count++;
+			}
 		}
 	}
 
@@ -99,9 +101,15 @@ public class TopRightPanel extends JPanel {
 	}
 
 	public static void firstSet(ArrayList<Task> firstList, ArrayList<Integer> indexList){
-		for(Task task : firstList){
-			String string = task.getDescription();
-			textArea.append(indexList.get(count) + ". " + string + "\n");
+		count = 0;
+		textArea.append(CENTER_FORMAT + FLOATING_HEADER + "\n");
+		textArea.append("\n");
+		if(firstList != null){
+			for(Task task : firstList){
+				String string = task.getDescription();
+				textArea.append(indexList.get(count) + ". " + string + "\n");
+				count++;
+			}
 		}
 	}
 }
