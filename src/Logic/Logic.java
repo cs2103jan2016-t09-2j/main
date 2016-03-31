@@ -947,6 +947,8 @@ public class Logic {
 			Search obj = new Search();
 			obj.searchTask(taskToFind);
 			searchTaskList = obj.getSearchList();
+			/*for(Task task: searchTaskList) 
+				System.out.println(task.getDescription());*/
 			searchIndexList = obj.getSearchIndexList();
 		}
 

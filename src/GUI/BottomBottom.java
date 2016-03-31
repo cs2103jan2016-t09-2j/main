@@ -129,9 +129,11 @@ public class BottomBottom extends JPanel implements KeyListener {
 				searchIndexList.subList(0, searchSList.size()));
 		ArrayList<Integer> FloatingTaskIndex = new ArrayList<Integer>(
 				searchIndexList.subList(searchSList.size(), searchIndexList.size()));
-
+		
 		TopLeftPanel.setSearchText(searchSList, UpcomingTaskIndex);
+		System.out.println(55);
 		TopRightPanel.setSearchText(searchFList, FloatingTaskIndex, UpcomingTaskIndex.size());
+		System.out.println(88);
 	}
 	
 	public static void failedSearch() {

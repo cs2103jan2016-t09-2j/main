@@ -73,7 +73,7 @@ public class TopLeftPanel extends JPanel {
 
 	public static void setSearchText(ArrayList<Task> SList, ArrayList<Integer> indexList) {
 		int index;
-		if(SList == null) {
+		if (SList == null) {
 			SList = new ArrayList<Task>();
 		}
 		if (indexList == null || indexList.isEmpty()) {
@@ -82,13 +82,15 @@ public class TopLeftPanel extends JPanel {
 				indexList.add(index + 1);
 			}
 		}
-		printSearchQuery(SList, new ArrayList<Integer>(indexList.subList(0, indexList.size())));
+		printSearchQuery(SList, indexList);
 	}
 
 	public static void printSearchQuery(ArrayList<Task> List, ArrayList<Integer> indexList) {
 		textArea.append("Search Results (" + indexList.size() + " results)\n");
 		textArea.append("\n");
+		count = 0;
 		for (Task task : List) {
+			// System.out.println(task.getDescription());
 			String string = task.getDescription();
 			textArea.append(indexList.get(count) + ". " + string + "\n");
 			if (task.getStartDate() != null && task.getStartTime() != null) {
