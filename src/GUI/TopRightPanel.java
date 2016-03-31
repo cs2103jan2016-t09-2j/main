@@ -23,7 +23,6 @@ public class TopRightPanel extends JPanel {
 	private static final long serialVersionUID = 1L;
 	private static JTextArea textArea;
 	private JScrollPane scrollPane;
-	private static int count;
 	private static String FLOATING_HEADER = "FLOATING TASKS";
 	private static String CENTER_FORMAT = "         ";
 
@@ -59,8 +58,6 @@ public class TopRightPanel extends JPanel {
 	}
 
 	public static void printOut(ArrayList<Task> List, ArrayList<Integer> indexList) {
-		String combinedString = "";
-		int total_length;
 		int count = 0;
 		textArea.append(CENTER_FORMAT + FLOATING_HEADER + "\n");
 		textArea.append("\n");
@@ -77,6 +74,5 @@ public class TopRightPanel extends JPanel {
 	}
 
 	public static void setCount(int noOfTask) {
-		count = noOfTask;
 	}
 }

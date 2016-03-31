@@ -3,8 +3,6 @@ package GUI;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.event.ComponentAdapter;
-
 import javax.swing.BorderFactory;
 import javax.swing.JPanel;
 

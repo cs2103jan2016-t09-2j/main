@@ -160,6 +160,10 @@ public class Logic {
 			setScheduledTasksToDo(storage.getScheduledTasksToDo());
 			setScheduledTasksOverDue(storage.getScheduledTasksOverDue());
 
+			executeCommand("view 2days");
+			setFeedBack("Welcome to Schedule Hacks! \n");
+			setFeedBack("Tasks Due Today and Tomorrow Displayed \n");
+			
 			// remove if not needed
 			/*
 			 * for (int i = 0; i < scheduledTasksOverDue.size(); i++) {
@@ -170,8 +174,21 @@ public class Logic {
 			System.out.println(e.getMessage());
 		}
 	}
+	
+
+	public void firstRun() {
+		if (scheduledTasksToDo != null) {
+			LocalDate today = LocalDate.now();
+			LocalDate tmw = today.plusDays(1);
+			for (Task task : List) {
+			if()
+			}
+		}
+	}
+
 
 	public void executeCommand(String userInput) {
+		System.out.println(userInput);
 		try {
 			historyObject.addToCommandHistory(userInput);
 			historyObject.setIndexCommandHistory();
@@ -926,6 +943,7 @@ public class Logic {
 
 	private void searchTask(Task taskToFind) {
 		if ((taskToFind.getDescription() != null) && !(taskToFind.getDescription().isEmpty())) {
+			System.out.println("Enter not empty");
 			if (taskToFind.getDescription().equalsIgnoreCase("all")) {
 				execute(Command.COMMAND_TYPE.HOME, null, null);
 				return;

@@ -33,15 +33,17 @@ public class BottomBottom extends JPanel implements KeyListener {
 	private static final Font INPUT_FONT = new Font("Courier New", Font.BOLD, 16);
 
 	private static Logic logicObj = Logic.getInstance();
-
+	String startInput = "view 2 days";
+	
 	public BottomBottom() {
 		setLayout(new GridLayout(1, 1));
 		commandField.setFont(INPUT_FONT);
 		add(commandField);
 		commandField.addKeyListener(this);
 		logicObj.startExecution();
+		//logicObj.executeCommand(startInput);
 	}
-	
+
 	public static JTextField getCommandField(){
 		return commandField;
 	}
@@ -49,17 +51,17 @@ public class BottomBottom extends JPanel implements KeyListener {
 	public static void HelpPopUp(){
 		JFrame Help = new HelpFrame("HELP");
 		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-    	double width = screenSize.getWidth();
-    	double height = screenSize.getHeight();
-    	int width1 = (int) (width / 3);
-    	int height1 = (int) (height / 1.2);
-    	Help.setSize(width1, height1);
-    	//newFrame.setSize(600, 400);
-        Help.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        Help.setVisible(true);
-        Help.setResizable(false);
+		double width = screenSize.getWidth();
+		double height = screenSize.getHeight();
+		int width1 = (int) (width / 3);
+		int height1 = (int) (height / 1.2);
+		Help.setSize(width1, height1);
+		//newFrame.setSize(600, 400);
+		Help.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		Help.setVisible(true);
+		Help.setResizable(false);
 	}
-	
+
 	public void keyReleased(KeyEvent arg0) {
 		// not used
 	}
@@ -107,10 +109,9 @@ public class BottomBottom extends JPanel implements KeyListener {
 	public static void setHelp(){
 		HelpPopUp();
 	}
-	
-	public static void setSearchResult(ArrayList<Task> searchTaskList, ArrayList<Integer> searchIndexList) {
-		 clearArrayList();
 
+	public static void setSearchResult(ArrayList<Task> searchTaskList, ArrayList<Integer> searchIndexList) {
+		clearArrayList();
 		for (Task task : searchTaskList) {
 			if (task.isFloatingTask()) {
 				searchFList.add(task);

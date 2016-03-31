@@ -3,6 +3,7 @@ package GUI;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridLayout;
+import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -48,9 +49,9 @@ public class TopLeftPanel extends JPanel {
 		textArea.setLineWrap(true);
 		textArea.setWrapStyleWord(true);
 		add(scrollPane);
-		setText(logicObj.getScheduledTasksOverDue(), logicObj.getScheduledTasksToDo(), null);
-		// textArea.append(CENTER_FORMAT + OVERDUE_HEADER + "\n");
-		// textArea.append(CENTER_FORMAT + SCHEDULE_HEADER + "\n");
+		logicObj.firstRun();
+		// setText(logicObj.getScheduledTasksOverDue(),
+		// logicObj.getScheduledTasksToDo(), null);
 		textArea.setFont(TASK_FONT);
 	}
 

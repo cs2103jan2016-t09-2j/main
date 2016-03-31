@@ -12,6 +12,7 @@ public class MainFrame extends JFrame {
 	 */
 	private static final long serialVersionUID = 1L;
 	
+	
 	public MainFrame(String title) {
 		super(title);
 		setLayout(new GridBagLayout());
@@ -21,6 +22,7 @@ public class MainFrame extends JFrame {
 		
 		BottomPanel bottomPanel = new BottomPanel();
 		TopPanel topPanel = new TopPanel();
+		
 		
 		gbc.gridx = 0;
 		gbc.gridy = 0;
