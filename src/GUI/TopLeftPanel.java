@@ -3,6 +3,7 @@ package GUI;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridLayout;
+import java.awt.Toolkit;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
@@ -45,7 +46,10 @@ public class TopLeftPanel extends JPanel {
 
 	public TopLeftPanel() {
 		Dimension size = getPreferredSize();
-		size.height = 268;
+		/*Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+		double height = screenSize.getHeight();*/
+		size.height = 495;
+		//size.height = 268;
 		setPreferredSize(size);
 		setBorder(BorderFactory.createTitledBorder(""));
 
@@ -113,7 +117,8 @@ public class TopLeftPanel extends JPanel {
 					if (!task.getStartTime().equals(LocalTime.MAX)) {
 						document.insertString(document.getLength(), task.getStartTime().toString() + ", ", taskInfo);
 					}
-					document.insertString(document.getLength(), task.getStartDate().format(dateFormat), taskInfo);
+					document.insertString(document.getLength(), task.getStartDate().format(dateFormat) + "\n",
+							taskInfo);
 					document.insertString(document.getLength(), "\t To ", taskInfo);
 				} else {
 					document.insertString(document.getLength(), "\t At ", taskInfo);
@@ -149,7 +154,8 @@ public class TopLeftPanel extends JPanel {
 					if (!task.getStartTime().equals(LocalTime.MAX)) {
 						document.insertString(document.getLength(), task.getStartTime().toString() + ", ", taskInfo);
 					}
-					document.insertString(document.getLength(), task.getStartDate().format(dateFormat), taskInfo);
+					document.insertString(document.getLength(), task.getStartDate().format(dateFormat) + "\n",
+							taskInfo);
 					document.insertString(document.getLength(), "\t To ", taskInfo);
 				} else {
 					document.insertString(document.getLength(), "\t At ", taskInfo);
@@ -191,7 +197,7 @@ public class TopLeftPanel extends JPanel {
 								document.insertString(document.getLength(), task.getStartTime().toString() + ", ",
 										taskInfo);
 							}
-							document.insertString(document.getLength(), task.getStartDate().format(dateFormat),
+							document.insertString(document.getLength(), task.getStartDate().format(dateFormat) + "\n",
 									taskInfo);
 							document.insertString(document.getLength(), "\t To ", taskInfo);
 						} else {
@@ -214,7 +220,7 @@ public class TopLeftPanel extends JPanel {
 			document.insertString(document.getLength(), "DUE TOMORROW" + "\n", header);
 			document.insertString(document.getLength(), "\n", header);
 			document.setParagraphAttributes(end, document.getLength(), header, true);
-			end  = document.getLength();
+			end = document.getLength();
 			if (firstList != null) {
 				for (int index = count; index < firstList.size(); index++) {
 					Task task = firstList.get(index);

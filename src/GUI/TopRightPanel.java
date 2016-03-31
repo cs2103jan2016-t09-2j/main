@@ -3,6 +3,7 @@ package GUI;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridLayout;
+import java.awt.Toolkit;
 import java.util.ArrayList;
 
 import javax.swing.BorderFactory;
@@ -37,7 +38,10 @@ public class TopRightPanel extends JPanel {
 
 	public TopRightPanel() {
 		Dimension size = getPreferredSize();
-		size.height = 268;
+		/*Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+		double width = screenSize.getWidth();
+		double height = screenSize.getHeight();*/
+		size.height = 495;
 		setPreferredSize(size);
 		setBorder(BorderFactory.createTitledBorder(""));
 

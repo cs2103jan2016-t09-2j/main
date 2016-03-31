@@ -15,7 +15,7 @@ public class TopPanel extends JPanel{
 
 	public TopPanel(){
 		Dimension size = getPreferredSize();
-		size.height = 270;
+		size.height = 500;
 		setPreferredSize(size);
 		setBorder(BorderFactory.createTitledBorder(""));
 
@@ -34,7 +34,7 @@ public class TopPanel extends JPanel{
 		
 		gbc.gridx = 1;
 		gbc.gridy = 0;
-		gbc.weightx = 0.3;
+		gbc.weightx = 0.45;
 		add(topRightPanel, gbc);
 	}
 }
