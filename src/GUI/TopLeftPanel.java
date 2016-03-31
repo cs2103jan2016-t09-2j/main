@@ -73,6 +73,9 @@ public class TopLeftPanel extends JPanel {
 
 	public static void setSearchText(ArrayList<Task> SList, ArrayList<Integer> indexList) {
 		int index;
+		if(SList == null) {
+			SList = new ArrayList<Task>();
+		}
 		if (indexList == null || indexList.isEmpty()) {
 			indexList = new ArrayList<Integer>();
 			for (index = 0; index < SList.size(); index++) {

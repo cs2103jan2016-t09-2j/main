@@ -956,8 +956,7 @@ public class Logic {
 			BottomBottom.setSearchResult(searchTaskList, searchIndexList);
 			//(new TempCLI()).printSearchTaskLists(searchTaskList, searchIndexList);
 		} else {
-			TopRightPanel.clearText();
-			TopLeftPanel.clearText();
+			BottomBottom.failedSearch();
 			setFeedBack(FEEDBACK_SEARCH_INVALID);
 		}
 	}
