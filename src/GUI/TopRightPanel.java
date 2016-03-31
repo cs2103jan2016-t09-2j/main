@@ -105,6 +105,8 @@ public class TopRightPanel extends JPanel {
 	}
 
 	public static void firstSet(ArrayList<Task> firstList, ArrayList<Integer> indexList){
+		clearText();
+		
 		count = 0;
 		textArea.append(CENTER_FORMAT + FLOATING_HEADER + "\n");
 		textArea.append("\n");

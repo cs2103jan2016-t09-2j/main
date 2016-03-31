@@ -147,6 +147,8 @@ public class TopLeftPanel extends JPanel {
 	}
 
 	public static void firstSet(ArrayList<Task> firstList, ArrayList<Integer> indexList) {
+		clearText();
+		
 		LocalDate today = LocalDate.now();
 
 		count = 0;

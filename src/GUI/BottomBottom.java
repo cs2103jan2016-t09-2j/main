@@ -79,7 +79,7 @@ public class BottomBottom extends JPanel implements KeyListener {
 			logicObj.executeCommand(input);
 			BottomPanel.setFeedback(logicObj.getFeedBack());
 
-			if (!logicObj.hasSearchList()) { // print the normal display
+			if (!logicObj.hasSearchList() && !logicObj.isHomeScreen()) { // print the normal display
 				OList = new ArrayList<Task>(logicObj.getScheduledTasksOverDue());
 				SList = new ArrayList<Task>(logicObj.getScheduledTasksToDo());
 				FList = new ArrayList<Task>(logicObj.getFloatingTasksToDo());

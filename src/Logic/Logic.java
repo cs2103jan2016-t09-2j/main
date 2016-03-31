@@ -21,6 +21,7 @@ public class Logic {
 
 	private String feedBack;
 	private boolean isSearchCommand;
+	private boolean isHomeScreen;
 
 	private static Logic logicObject = null;
 
@@ -142,6 +143,10 @@ public class Logic {
 	private int getRecentAddedPosition() {
 		return recentAddedPosition;
 	}
+	
+	public boolean isHomeScreen() {
+		return isHomeScreen;
+	}
 
 	/****************** OTHER METHODS ***********************/
 	/*
@@ -178,6 +183,7 @@ public class Logic {
 	}
 
 	public void firstRun() {
+		isHomeScreen = true;
 		ArrayList<Task> firstList = new ArrayList<Task>();
 		ArrayList<Integer> indexList = new ArrayList<Integer>();
 		firstList = setDueTodayTomorrowList(firstList, indexList);
@@ -271,6 +277,7 @@ public class Logic {
 	private void execute(Command.COMMAND_TYPE executeCommand, Command retrievedCommand, Task executeTask) {
 
 		isSearchCommand = false;
+		isHomeScreen = false;
 
 		switch (executeCommand) {
 		case ADD_TASK:
