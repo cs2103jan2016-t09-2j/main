@@ -185,9 +185,8 @@ public class TopLeftPanel extends JPanel {
 			clearText();
 			document = textArea.getStyledDocument();
 			LocalDate today = LocalDate.now();
-
 			count = 0;
-			document.insertString(document.getLength(), "DUE TODAY" + "\n", header);
+			document.insertString(document.getLength(), "DUE TODAY \n", header);
 			document.insertString(document.getLength(), "\n", header);
 			document.setParagraphAttributes(0, document.getLength(), header, true);
 			if (firstList != null) {
