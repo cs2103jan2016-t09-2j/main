@@ -57,6 +57,7 @@ public class TopRightPanel extends JPanel {
 		
 		StyleConstants.setFontFamily(taskInfo, "Comic Sans");
 		StyleConstants.setFontSize(taskInfo, 13);
+		StyleConstants.setLineSpacing(taskInfo, (float) 0.4);
 		
 		add(scrollPane);
 		logicObj.firstRun();

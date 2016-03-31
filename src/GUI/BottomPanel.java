@@ -1,8 +1,11 @@
 package GUI;
 
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.Toolkit;
+
 import javax.swing.BorderFactory;
 import javax.swing.JPanel;
 
@@ -19,7 +22,9 @@ public class BottomPanel extends JPanel{
 
 	public BottomPanel(){
 		Dimension size = getPreferredSize();
-		size.height = 100;
+		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+		double height = screenSize.getHeight();
+		size.height = (int)(height/7.2);
 		setPreferredSize(size);
 		setBorder(BorderFactory.createTitledBorder(""));
 		setLayout(new GridBagLayout());
@@ -40,6 +45,9 @@ public class BottomPanel extends JPanel{
 		gc.gridx = 0;
 		gc.gridy = 1;
 		add(bottomBottom,gc);
+		
+		this.setBackground(Color.LIGHT_GRAY);
+		this.setBorder(null);
 
 	}
 

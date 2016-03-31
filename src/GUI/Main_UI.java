@@ -1,5 +1,6 @@
 package GUI;
 
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.awt.event.WindowAdapter;
@@ -27,6 +28,7 @@ public class Main_UI {
 				newFrame.setVisible(true);
 				newFrame.setResizable(false);
 				newFrame.setLocationRelativeTo(null);
+				newFrame.getContentPane().setBackground(Color.LIGHT_GRAY);
 
 				// Make textField get the focus whenever frame is activated.
 				newFrame.addWindowFocusListener(new WindowAdapter() {

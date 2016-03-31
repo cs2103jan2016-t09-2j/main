@@ -1,5 +1,6 @@
 package GUI;
 
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -7,6 +8,7 @@ import java.awt.Toolkit;
 
 import javax.swing.BorderFactory;
 import javax.swing.JPanel;
+import javax.swing.border.Border;
 
 public class TopPanel extends JPanel{
 
@@ -30,6 +32,9 @@ public class TopPanel extends JPanel{
 		
 		TopLeftPanel topLeftPanel = new TopLeftPanel();
 		TopRightPanel topRightPanel = new TopRightPanel();
+		
+		this.setBackground(Color.LIGHT_GRAY);
+		this.setBorder(null);
 		
 		gbc.gridx = 0;
 		gbc.gridy = 0;

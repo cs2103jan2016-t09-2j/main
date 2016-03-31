@@ -2,6 +2,7 @@ package GUI;
 
 import java.awt.Dimension;
 import java.awt.GridLayout;
+import java.awt.Toolkit;
 
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
@@ -17,7 +18,9 @@ public class BottomTop extends JPanel{
 	
 	public BottomTop(){
 		Dimension size = getPreferredSize();
-		size.height = 70;
+		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+		double height = screenSize.getHeight();
+		size.height = (int)(height/11.2);
 		setPreferredSize(size);
 		//setBorder(BorderFactory.createTitledBorder("Feedback"));
 		
