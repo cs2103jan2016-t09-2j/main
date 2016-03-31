@@ -162,7 +162,7 @@ public class Logic {
 			setScheduledTasksToDo(storage.getScheduledTasksToDo());
 			setScheduledTasksOverDue(storage.getScheduledTasksOverDue());
 
-			executeCommand("view 2days");
+			/*executeCommand("view 2days");
 			setFeedBack("Welcome to Schedule Hacks! \n");
 			setFeedBack("Tasks Due Today and Tomorrow Displayed \n");
 
@@ -180,24 +180,26 @@ public class Logic {
 	public void firstRun() {
 		ArrayList<Task> firstList = new ArrayList<Task>();
 		ArrayList<Integer> indexList = new ArrayList<Integer>();
-		setDueTodayTomorrowList(firstList, indexList);
+		firstList = setDueTodayTomorrowList(firstList, indexList);
+		System.out.println(firstList.size() +" *** " + indexList.size());
 		TopLeftPanel.firstSet(firstList, indexList);
 		indexList = setFloatingIndexList();
 		TopRightPanel.firstSet(floatingTasksToDo, indexList);
 	}
 
-	public void setDueTodayTomorrowList(ArrayList<Task> firstList, ArrayList<Integer> indexList) {
+	public ArrayList<Task> setDueTodayTomorrowList(ArrayList<Task> firstList, ArrayList<Integer> indexList) {
 		int count = 1;
 		if (scheduledTasksToDo != null) {
 			LocalDate tmw = LocalDate.now().plusDays(1);
 			for (Task task : scheduledTasksToDo) {
 				if (task.getEndDate().isAfter(tmw)) {
-					firstList = (ArrayList<Task>) scheduledTasksToDo.subList(0, scheduledTasksToDo.indexOf(task));
+					firstList = new ArrayList<Task>(scheduledTasksToDo.subList(0, scheduledTasksToDo.indexOf(task)));
 					break;
 				}
 				indexList.add(count++);
 			}
 		}
+		return firstList;
 	}
 
 	public ArrayList<Integer> setFloatingIndexList() {
@@ -210,7 +212,6 @@ public class Logic {
 	}
 
 	public void executeCommand(String userInput) {
-		System.out.println(userInput);
 		try {
 			historyObject.addToCommandHistory(userInput);
 			historyObject.setIndexCommandHistory();

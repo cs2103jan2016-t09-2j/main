@@ -44,8 +44,9 @@ public class TopRightPanel extends JPanel {
 		textArea.setEditable(false);
 		textArea.setFont(TASK_FONT);
 		add(scrollPane);
-		setText(logicObj.getFloatingTasksToDo(), null,
-				logicObj.getScheduledTasksOverDue().size() + logicObj.getScheduledTasksToDo().size());
+		logicObj.firstRun();
+		//setText(logicObj.getFloatingTasksToDo(), null,
+		//		logicObj.getScheduledTasksOverDue().size() + logicObj.getScheduledTasksToDo().size());
 		// textArea.append(CENTER_FORMAT + FLOATING_HEADER + "\n");
 	}
 

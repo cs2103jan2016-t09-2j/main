@@ -33,7 +33,8 @@ public class TopLeftPanel extends JPanel {
 	private static String OVERDUE_HEADER = "OVERDUE TASKS";
 	private static String CENTER_FORMAT = "\t" + "                       ";
 
-	//private static final Font TITLE_FONT = new Font("Comic Sans", Font.BOLD, 13);
+	// private static final Font TITLE_FONT = new Font("Comic Sans", Font.BOLD,
+	// 13);
 	private static final Font TASK_FONT = new Font("Comic Sans", Font.PLAIN, 13);
 
 	public TopLeftPanel() {
@@ -49,7 +50,6 @@ public class TopLeftPanel extends JPanel {
 		textArea.setLineWrap(true);
 		textArea.setWrapStyleWord(true);
 		add(scrollPane);
-		logicObj.firstRun();
 		// setText(logicObj.getScheduledTasksOverDue(),
 		// logicObj.getScheduledTasksToDo(), null);
 		textArea.setFont(TASK_FONT);
@@ -133,8 +133,7 @@ public class TopLeftPanel extends JPanel {
 				}
 				textArea.append(task.getStartDate().format(dateFormat));
 				textArea.append("\t To ");
-			} 
-			else {
+			} else {
 				textArea.append("\t At ");
 			}
 			if (!task.getEndTime().equals(LocalTime.MAX)) {
@@ -146,38 +145,46 @@ public class TopLeftPanel extends JPanel {
 		}
 	}
 
-	public static void firstSet(ArrayList<Task> firstList, ArrayList<Integer> indexList){
+	public static void firstSet(ArrayList<Task> firstList, ArrayList<Integer> indexList) {
 		LocalDate today = LocalDate.now();
 
-		for(Task task : firstList){
-			if(task.getEndDate() == today){
-				String string = task.getDescription();
-				textArea.append("TODAY" + "\n");
-				textArea.append(indexList.get(count) + ". " + string + "\n");
-				if (task.getStartDate() != null && task.getStartTime() != null) {
-					textArea.append("\t From ");
-					if (!task.getStartTime().equals(LocalTime.MAX)) {
-						textArea.append(task.getStartTime().toString() + ", ");
+		count = 0;
+		textArea.append("DUE TODAY" + "\n");
+		textArea.append("\n");
+		if (firstList != null) {
+			for (Task task : firstList) {
+				if (!task.getEndDate().isAfter(today)) {
+					String string = task.getDescription();
+					textArea.append(indexList.get(count) + ". " + string + "\n");
+					if (task.getStartDate() != null && task.getStartTime() != null) {
+						textArea.append("\t From ");
+						if (!task.getStartTime().equals(LocalTime.MAX)) {
+							textArea.append(task.getStartTime().toString() + ", ");
+						}
+						textArea.append(task.getStartDate().format(dateFormat));
+						textArea.append("\t To ");
+					} else {
+						textArea.append("\t At ");
 					}
-					textArea.append(task.getStartDate().format(dateFormat));
-					textArea.append("\t To ");
-				} 
-				else {
-					textArea.append("\t At ");
+					if (!task.getEndTime().equals(LocalTime.MAX)) {
+						textArea.append(task.getEndTime().toString() + ", ");
+					}
+					textArea.append(task.getEndDate().format(dateFormat));
+					textArea.append("\n");
+					count++;
+				} else {
+					break;
 				}
-				if (!task.getEndTime().equals(LocalTime.MAX)) {
-					textArea.append(task.getEndTime().toString() + ", ");
-				}
-				textArea.append(task.getEndDate().format(dateFormat));
-				textArea.append("\n");
-				count++;
 			}
 		}
-		
-		for(Task task : firstList){
-			if(task.getEndDate() != today){
+		textArea.append("\n");
+
+		textArea.append("DUE TOMORROW" + "\n");
+		textArea.append("\n");
+		if (firstList != null) {
+			for (int index = count; index < indexList.size(); index++) {
+				Task task = firstList.get(index);
 				String string = task.getDescription();
-				textArea.append("TOMORROW" + "\n");
 				textArea.append(indexList.get(count) + ". " + string + "\n");
 				if (task.getStartDate() != null && task.getStartTime() != null) {
 					textArea.append("\t From ");
@@ -186,8 +193,7 @@ public class TopLeftPanel extends JPanel {
 					}
 					textArea.append(task.getStartDate().format(dateFormat));
 					textArea.append("\t To ");
-				} 
-				else {
+				} else {
 					textArea.append("\t At ");
 				}
 				if (!task.getEndTime().equals(LocalTime.MAX)) {
