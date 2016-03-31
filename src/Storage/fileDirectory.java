@@ -32,7 +32,6 @@ public class fileDirectory {
 			}
 		} catch (Exception E) {
 		}
-
 	}
 
 	public static void changeDirectory(String src, String destDir) {
@@ -40,20 +39,13 @@ public class fileDirectory {
 			File oldFolder = new File(src);
 			File newFolder = new File(destDir);
 
-			// System.out.println("Current Working Directory: " +
-			// oldFolder.getAbsolutePath());
-
-			// Files.move(oldFolder, newFolder, StandardCopyOption.ATOMIC_MOVE);
+		  //Files.move(oldFolder, newFolder, StandardCopyOption.ATOMIC_MOVE);
 			FileUtils.moveDirectory(oldFolder, newFolder);
 	
-			// System.out.println("Current Working Directory: " +
-			// newFolder.getAbsolutePath());
-
 		}
 
 		catch (Exception e) {
 			 myLogger.log(Level.INFO,LOG_DIRECTORY_ERROR);
-			//System.out.println(e.getMessage());
 		}
 	}
 }

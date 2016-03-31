@@ -41,7 +41,7 @@ public class Storage {
 
 	private static Storage object;
 
-	// Logging messages
+	/*Logger messages*/
 	private static final String LOG_IO_EXCEPTION = "Encountered Input Output Exception";
 	private static final String LOG_ARCHIVE_FILE_NOT_FOUND = "Archive file not found";
 	private static final String LOG_CURRENT_FILE_NOT_FOUND = "Current file not found";
@@ -55,16 +55,18 @@ public class Storage {
 	private static final String LOG_READING_ARCHIVE_FILE = "Reading archive file";
 	private static final String LOG_READING_CURRENT_FILE = "Reading current file";
 
-	//Assertion message
+	/*Assertion message*/
 	private static final String ASSERTION_NULL_PARAMETER = "Error. Null input passed.";
 	
+	
+	/*Constructor*/
 	private Storage() {
 		
 		initStorage();
 		
 	}
 
-
+	/*Inititates storage directory*/
 	private void initStorage() {
 		if(currentPathName == null || currentPathName.isEmpty()){
 			try {
@@ -89,7 +91,7 @@ public class Storage {
 	}
 
 
-	// apply singleton
+	/*Apply singleton pattern*/
 	public static Storage getInstance() {
 		if (object == null) {
 			object = new Storage();
@@ -97,7 +99,7 @@ public class Storage {
 		return object;
 	}
 
-	// decides current directory name
+	/*This method decides sets the latest directory name*/
 	public void setCurrentPathName(String inputDirectory) {	
 		if(inputDirectory != null && !inputDirectory.isEmpty()){
 			if(inputDirectory.equalsIgnoreCase("default")){
@@ -126,9 +128,9 @@ public class Storage {
 	}
 	
 	
-	/*
-	 * Setter Methods
-	 */
+	
+	/*Setter Methods*/
+	 
 	private void setScheduledTasksToDo(ArrayList<Task> currentTaskList) {
 		scheduledTasksToDo.clear();
 		scheduledTasksToDo = currentTaskList;
@@ -154,9 +156,9 @@ public class Storage {
 		floatingTasksComplete = currentTaskList;
 	}
 
-	/*
-	 * / Getter Methods
-	 */
+	
+	/*Getter Methods*/
+	 
 	public ArrayList<Task> getScheduledTasksToDo() {
 		return scheduledTasksToDo;
 	}
@@ -177,7 +179,11 @@ public class Storage {
 		return floatingTasksComplete;
 	}
 
-	// storage methods
+	/***** Storage Methods ********/
+	
+	
+	
+	/*Stores data from ArrayList of different tasks into relevant Json files*/
 	public void storeToFiles(ArrayList<Task> floatingTasksToDo, ArrayList<Task> floatingTasksComplete,
 			ArrayList<Task> scheduledTasksToDo, ArrayList<Task> scheduledTasksComplete,
 			ArrayList<Task> scheduledTasksOverDue) {
@@ -194,10 +200,10 @@ public class Storage {
 			writeToCurrentFile(scheduledTasksToDo, floatingTasksToDo, scheduledTasksOverDue);
 		} catch (Exception e) {
 			myLogger.log(Level.WARNING, LOG_ERROR_WRITE_CURRENT_FILE);
-			e.printStackTrace();
 		}
 	}
-
+	
+	/*Loads data from json files into Arraylist for Logic to retrieve*/
 	public void loadToList() {
 
 		setFloatingTasksComplete(new ArrayList<Task>());
@@ -211,14 +217,12 @@ public class Storage {
 			readFromArchiveFile(floatingTasksComplete, scheduledTasksComplete);
 		} catch (Exception e) {
 			myLogger.log(Level.INFO, LOG_ARCHIVE_FILE_NOT_FOUND);
-			e.printStackTrace();
 		}
 		try {
 			myLogger.log(Level.INFO, LOG_READING_CURRENT_FILE);
 			readFromCurrentFile(scheduledTasksToDo, floatingTasksToDo, scheduledTasksOverDue);
 		} catch (Exception e) {
 			myLogger.log(Level.INFO, LOG_CURRENT_FILE_NOT_FOUND);
-			e.printStackTrace();
 		}
 	}
 
@@ -287,9 +291,8 @@ public class Storage {
 
 		}
 	}
-
+	
 	public void readFromArchiveFile(ArrayList<Task> scheduledTasksComplete, ArrayList<Task> floatingTasksComplete) {
-
 		try {
 
 			File file = new File(currentPathName, archiveFile);
@@ -314,10 +317,8 @@ public class Storage {
 			myLogger.log(Level.WARNING, LOG_ARCHIVE_FILE_NOT_FOUND);
 		} catch (JsonSyntaxException e) {
 			myLogger.log(Level.WARNING, LOG_JSONSYNTAX_EXCEPTION);
-			e.printStackTrace();
 		} catch (IOException e) {
 			myLogger.log(Level.WARNING, LOG_IO_EXCEPTION);
-			e.printStackTrace();
 		}
 
 	}
@@ -350,14 +351,11 @@ public class Storage {
 		}
 
 		catch (FileNotFoundException f) {
-
 			myLogger.log(Level.WARNING, LOG_CURRENT_FILE_NOT_FOUND);
 		} catch (JsonSyntaxException e) {
 			myLogger.log(Level.WARNING, LOG_JSONSYNTAX_EXCEPTION);
-			e.printStackTrace();
 		} catch (IOException e) {
 			myLogger.log(Level.WARNING, LOG_IO_EXCEPTION);
-			e.printStackTrace();
 		}
 	}
 
