@@ -181,7 +181,6 @@ public class Logic {
 		ArrayList<Task> firstList = new ArrayList<Task>();
 		ArrayList<Integer> indexList = new ArrayList<Integer>();
 		firstList = setDueTodayTomorrowList(firstList, indexList);
-		System.out.println(firstList.size() +" *** " + indexList.size());
 		TopLeftPanel.firstSet(firstList, indexList);
 		indexList = setFloatingIndexList();
 		TopRightPanel.firstSet(floatingTasksToDo, indexList);
