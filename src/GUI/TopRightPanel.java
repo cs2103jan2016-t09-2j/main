@@ -63,6 +63,9 @@ public class TopRightPanel extends JPanel {
 	}
 
 	public static void setSearchText(ArrayList<Task> FList, ArrayList<Integer> indexList, int UpcomingTaskSize) {
+		if(FList == null) {
+			FList = new ArrayList<Task>();
+		}
 		if (indexList == null || indexList.isEmpty()) {
 			indexList = new ArrayList<Integer>();
 			for (int index = 1; index <= FList.size(); index++) {
