@@ -24,11 +24,11 @@ public class TopRightPanel extends JPanel {
 	private static JTextArea textArea;
 	private JScrollPane scrollPane;
 	private static int count;
-	private static String FLOATING_HEADER = "FLOATING TASKS";
+	private static String FLOATING_HEADER = "TRIVIAL TASKS";
 	private static String CENTER_FORMAT = "         ";
 
-	private static final Font TITLE_FONT = new Font("Comic Sans", Font.BOLD, 16);
-	private static final Font TASK_FONT = new Font("Comic Sans", Font.PLAIN, 16);
+	private static final Font TITLE_FONT = new Font("Comic Sans", Font.BOLD, 13);
+	private static final Font TASK_FONT = new Font("Comic Sans", Font.PLAIN, 13);
 
 	public TopRightPanel() {
 		Dimension size = getPreferredSize();

@@ -32,8 +32,8 @@ public class TopLeftPanel extends JPanel {
 	private static String OVERDUE_HEADER = "OVERDUE TASKS";
 	private static String CENTER_FORMAT = "\t" + "                       ";
 
-	private static final Font TITLE_FONT = new Font("Comic Sans", Font.BOLD, 16);
-	private static final Font TASK_FONT = new Font("Comic Sans", Font.PLAIN, 16);
+	private static final Font TITLE_FONT = new Font("Comic Sans", Font.BOLD, 13);
+	private static final Font TASK_FONT = new Font("Comic Sans", Font.PLAIN, 13);
 
 	public TopLeftPanel() {
 		Dimension size = getPreferredSize();
