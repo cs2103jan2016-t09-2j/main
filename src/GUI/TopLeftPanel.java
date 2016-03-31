@@ -46,9 +46,9 @@ public class TopLeftPanel extends JPanel {
 
 	public TopLeftPanel() {
 		Dimension size = getPreferredSize();
-		/*Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-		double height = screenSize.getHeight();*/
-		size.height = 495;
+		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+		double height = screenSize.getHeight();
+		size.height = (int)(height/2.2);
 		//size.height = 268;
 		setPreferredSize(size);
 		setBorder(BorderFactory.createTitledBorder(""));

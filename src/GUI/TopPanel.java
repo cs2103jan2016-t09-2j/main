@@ -3,6 +3,8 @@ package GUI;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.Toolkit;
+
 import javax.swing.BorderFactory;
 import javax.swing.JPanel;
 
@@ -15,7 +17,9 @@ public class TopPanel extends JPanel{
 
 	public TopPanel(){
 		Dimension size = getPreferredSize();
-		size.height = 500;
+		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+		double height = screenSize.getHeight();
+		size.height = (int)(height/2.16);
 		setPreferredSize(size);
 		setBorder(BorderFactory.createTitledBorder(""));
 

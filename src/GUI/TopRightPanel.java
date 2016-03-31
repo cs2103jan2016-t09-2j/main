@@ -38,10 +38,9 @@ public class TopRightPanel extends JPanel {
 
 	public TopRightPanel() {
 		Dimension size = getPreferredSize();
-		/*Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-		double width = screenSize.getWidth();
-		double height = screenSize.getHeight();*/
-		size.height = 495;
+		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+		double height = screenSize.getHeight();
+		size.height = (int)(height/2.2);
 		setPreferredSize(size);
 		setBorder(BorderFactory.createTitledBorder(""));
 
