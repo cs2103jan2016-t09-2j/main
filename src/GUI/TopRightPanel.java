@@ -8,7 +8,11 @@ import java.util.ArrayList;
 import javax.swing.BorderFactory;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
+import javax.swing.JTextPane;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.SimpleAttributeSet;
+import javax.swing.text.StyleConstants;
+import javax.swing.text.StyledDocument;
 
 import Logic.Logic;
 import ScheduleHacks.Task;
@@ -21,14 +25,15 @@ public class TopRightPanel extends JPanel {
 	private static Logic logicObj = Logic.getInstance();
 
 	private static final long serialVersionUID = 1L;
-	private static JTextArea textArea;
+	private static JTextPane textArea;
 	private JScrollPane scrollPane;
 	private static int count;
 	private static String FLOATING_HEADER = "TRIVIAL TASKS";
-	private static String CENTER_FORMAT = "         ";
 
-	//private static final Font TITLE_FONT = new Font("Comic Sans", Font.BOLD, 13);
-	private static final Font TASK_FONT = new Font("Comic Sans", Font.PLAIN, 13);
+	private static StyledDocument document;
+
+	private static SimpleAttributeSet header = new SimpleAttributeSet();
+	private static SimpleAttributeSet taskInfo = new SimpleAttributeSet();
 
 	public TopRightPanel() {
 		Dimension size = getPreferredSize();
@@ -37,21 +42,25 @@ public class TopRightPanel extends JPanel {
 		setBorder(BorderFactory.createTitledBorder(""));
 
 		setLayout(new GridLayout());
-		textArea = new JTextArea();
+		textArea = new JTextPane();
 		scrollPane = new JScrollPane(textArea);
-		textArea.setLineWrap(true);
-		textArea.setWrapStyleWord(true);
+		// textArea.setLineWrap(true);
+		// textArea.setWrapStyleWord(true);
 		textArea.setEditable(false);
-		textArea.setFont(TASK_FONT);
+	
+		StyleConstants.setFontFamily(header, "Comic Sans");
+		StyleConstants.setAlignment(header, StyleConstants.ALIGN_CENTER);
+		StyleConstants.setBold(header, true);
+		
+		StyleConstants.setFontFamily(taskInfo, "Comic Sans");
+		StyleConstants.setFontSize(taskInfo, 13);
+		
 		add(scrollPane);
 		logicObj.firstRun();
-		//setText(logicObj.getFloatingTasksToDo(), null,
-		//		logicObj.getScheduledTasksOverDue().size() + logicObj.getScheduledTasksToDo().size());
-		// textArea.append(CENTER_FORMAT + FLOATING_HEADER + "\n");
 	}
 
 	public static void setText(ArrayList<Task> FList, ArrayList<Integer> indexList, int UpcomingTaskSize) {
-		if(FList == null) {
+		if (FList == null) {
 			FList = new ArrayList<Task>();
 		}
 		if (indexList == null || indexList.isEmpty()) {
@@ -64,7 +73,7 @@ public class TopRightPanel extends JPanel {
 	}
 
 	public static void setSearchText(ArrayList<Task> FList, ArrayList<Integer> indexList, int UpcomingTaskSize) {
-		if(FList == null) {
+		if (FList == null) {
 			FList = new ArrayList<Task>();
 		}
 		if (indexList == null || indexList.isEmpty()) {
@@ -77,26 +86,38 @@ public class TopRightPanel extends JPanel {
 	}
 
 	public static void printSearchQuery(ArrayList<Task> List, ArrayList<Integer> indexList) {
-		textArea.append("Search Results (" + indexList.size() + " results)\n");
-		textArea.append("\n");
-		for (Task task : List) {
-			String string = task.getDescription();
-			textArea.append(indexList.get(count) + ". " + string + "\n");
-			count++;
+		try {
+			document = textArea.getStyledDocument();
+			document.insertString(document.getLength(), "Search Results (" + indexList.size() + " results)\n\n",
+					header);
+			for (Task task : List) {
+				String string = task.getDescription();
+				document.insertString(document.getLength(), indexList.get(count) + ". " + string + "\n", taskInfo);
+				count++;
+			}
+
+			textArea.setStyledDocument(document);
+		} catch (BadLocationException e) {
+			// do nothing
 		}
 	}
 
 	public static void printOut(ArrayList<Task> List, ArrayList<Integer> indexList) {
-		int count = 0;
-		textArea.append(CENTER_FORMAT + FLOATING_HEADER + "\n");
-		textArea.append("\n");
-		if(List != null){
-			for (Task task : List) {
-				String string = task.getDescription();
-				textArea.append(indexList.get(count) + ".");
-				textArea.append(" " + string + "\n");
-				count++;
+		try {
+			int count = 0;
+			document = textArea.getStyledDocument();
+			document.insertString(document.getLength(), FLOATING_HEADER + "\n\n", header);
+			if (List != null) {
+				for (Task task : List) {
+					String string = task.getDescription();
+					document.insertString(document.getLength(), indexList.get(count) + ".",taskInfo);
+					document.insertString(document.getLength(), " " + string + "\n", taskInfo);
+					count++;
+				}
 			}
+			textArea.setStyledDocument(document);
+		} catch (BadLocationException e) {
+			// do nothing
 		}
 	}
 
@@ -104,18 +125,22 @@ public class TopRightPanel extends JPanel {
 		textArea.setText(null);
 	}
 
-	public static void firstSet(ArrayList<Task> firstList, ArrayList<Integer> indexList){
+	public static void firstSet(ArrayList<Task> firstList, ArrayList<Integer> indexList) {
 		clearText();
-		
 		count = 0;
-		textArea.append(CENTER_FORMAT + FLOATING_HEADER + "\n");
-		textArea.append("\n");
-		if(firstList != null){
-			for(Task task : firstList){
-				String string = task.getDescription();
-				textArea.append(indexList.get(count) + ". " + string + "\n");
-				count++;
+		document = textArea.getStyledDocument();
+		try {
+			document.insertString(document.getLength(),FLOATING_HEADER + "\n\n", header);
+			if (firstList != null) {
+				for (Task task : firstList) {
+					String string = task.getDescription();
+					document.insertString(document.getLength(),indexList.get(count) + ". " + string + "\n", taskInfo);
+					count++;
+				}
 			}
+			textArea.setStyledDocument(document);
+		} catch (BadLocationException e) {
+			// do nothing
 		}
 	}
 }
