@@ -106,11 +106,6 @@ public class Logic {
 		floatingTasksComplete = currentTaskList;
 	}
 
-	private void setMostRecentTaskAdded(ArrayList<Task> addedList, int addedPosition) {
-		recentAddedList = addedList;
-		recentAddedPosition = addedPosition;
-	}
-
 	/****************** GETTER METHODS ***********************/
 	public String getFeedBack() {
 		return feedBack;
@@ -140,7 +135,7 @@ public class Logic {
 		return recentAddedList;
 	}
 
-	private int getRecentAddedPosition() {
+	public int getRecentAddedPosition() {
 		return recentAddedPosition;
 	}
 	
@@ -381,7 +376,6 @@ public class Logic {
 			indexOfTask = addTaskInOrder(executeTask);
 		} else if (executeTask.isFloatingTask()) {
 			floatingTasksToDo.add(executeTask);
-			setMostRecentTaskAdded(floatingTasksToDo, floatingTasksToDo.size() - 1);
 			indexOfTask = scheduledTasksOverDue.size() + scheduledTasksToDo.size() + floatingTasksToDo.size();
 			setFeedBack(FEEDBACK_TASK_ADDED);
 		}
@@ -394,6 +388,7 @@ public class Logic {
 			OldCommand recentCommand = new OldCommand(COMMAND_TYPE.ADD_TASK, taskList, indexList);
 			historyObject.addToUndoList(recentCommand);
 		}
+		recentAddedPosition = indexOfTask;
 		return indexOfTask;
 	}
 
@@ -404,14 +399,12 @@ public class Logic {
 		if (LocalDateTime.of(executeTask.getEndDate(), executeTask.getEndTime()).isBefore(LocalDateTime.now())) {
 			position = sortTaskList(scheduledTasksOverDue, executeTask);
 			scheduledTasksOverDue.add(position, executeTask);
-			setMostRecentTaskAdded(scheduledTasksOverDue, position);
 			setFeedBack(FEEDBACK_TASK_ADDED);
 		} else {
 			overLapWithBlock = compareWithBlockedRange(executeTask);
 			if (overLapWithBlock == false) {
 				position = sortTaskList(scheduledTasksToDo, executeTask);
 				scheduledTasksToDo.add(position, executeTask);
-				setMostRecentTaskAdded(scheduledTasksToDo, position);
 				setFeedBack(FEEDBACK_TASK_ADDED);
 				position = position + scheduledTasksOverDue.size();
 			}
@@ -714,16 +707,16 @@ public class Logic {
 		} else {
 			Task editedTask = CommandParser.editExistingTask(taskToEdit, editInfo);
 			editedTask.setAsUnBlocked();
-
-			conflict = compareWithBlockedRange(editedTask);
-
+			
+			/*conflict = compareWithBlockedRange(editedTask);
+			
 			if (conflict) {
 				if (taskOriginal.isBlocked()) {
 					editedTask.setAsBlocked();
 				} else if (taskOriginal.isUnBlocked()) {
 					editedTask = taskOriginal;
 				}
-			}
+			}*/
 
 			int newIndex = addTask(editedTask, true);
 
@@ -736,11 +729,11 @@ public class Logic {
 				historyObject.addToUndoList(recentCommand);
 
 			}
-			if ((conflict) && (taskOriginal.isUnBlocked())) {
+			/*if ((conflict) && (taskOriginal.isUnBlocked())) {
 				setFeedBack(FEEDBACK_BLOCK_EDITED_TASK_CLASH);
 			} else {
 				setFeedBack(FEEDBACK_TASK_MODIFIED);
-			}
+			}*/
 		}
 	}
 
