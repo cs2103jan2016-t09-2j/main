@@ -1,5 +1,6 @@
 package GUI;
 
+import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.GridLayout;
 
@@ -16,10 +17,10 @@ public class BottomTop extends JPanel{
 	private JTextArea feedbackField;
 	
 	public BottomTop(){
-		Dimension size = getPreferredSize();
-		size.height = 70;
-		setPreferredSize(size);
-		//setBorder(BorderFactory.createTitledBorder("Feedback"));
+		setLayout(new BorderLayout());
+		//Dimension size = getPreferredSize();
+		//size.height = 70;
+		//setPreferredSize(size);
 		
 		setLayout(new GridLayout());
         feedbackField = new JTextArea();

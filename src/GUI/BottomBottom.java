@@ -1,5 +1,6 @@
 package GUI;
 
+import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridLayout;
@@ -36,6 +37,7 @@ public class BottomBottom extends JPanel implements KeyListener {
 	String startInput = "view 2 days";
 	
 	public BottomBottom() {
+		//setLayout(new BorderLayout());
 		setLayout(new GridLayout(1, 1));
 		commandField.setFont(INPUT_FONT);
 		add(commandField);

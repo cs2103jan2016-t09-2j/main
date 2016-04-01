@@ -13,8 +13,8 @@ public class BottomPanel extends JPanel{
 	 */
 	private static final long serialVersionUID = 1L;
 
-	private static BottomTop bottomTop;
-	private BottomBottom bottomBottom;
+	private static BottomLeft bottomLeft;
+	private BottomRight bottomRight;
 	String text;
 
 	public BottomPanel(){
@@ -25,31 +25,20 @@ public class BottomPanel extends JPanel{
 		setLayout(new GridBagLayout());
 		GridBagConstraints gc = new GridBagConstraints();
 
-		bottomTop = new BottomTop();
-		bottomBottom = new BottomBottom();
+		bottomLeft = new BottomLeft();
+		bottomRight = new BottomRight();
 
 		gc.fill = GridBagConstraints.HORIZONTAL;
 
 		gc.weighty = 0.9;
-		gc.weightx = 1;
 		gc.gridx = 0;
 		gc.gridy = 0;
-		add(bottomTop,gc);
+		add(bottomLeft,gc);
 
 		gc.weighty = 0.3;
-		gc.gridx = 0;
-		gc.gridy = 1;
-		add(bottomBottom,gc);
+		gc.gridx = 1;
+		gc.gridy = 0;
+		add(bottomRight,gc);
 
-	}
-
-	public String getText(){
-		System.out.println(text);
-		return text;
-	}
-
-	public static void setFeedback(String feedBack) {
-		bottomTop.setText(feedBack);
 	}
 }
-
