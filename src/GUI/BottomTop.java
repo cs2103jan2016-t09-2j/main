@@ -18,20 +18,13 @@ public class BottomTop extends JPanel{
 	private JTextArea feedbackField;
 	
 	public BottomTop(){
-<<<<<<< HEAD
-		setLayout(new BorderLayout());
-		//Dimension size = getPreferredSize();
-		//size.height = 70;
-		//setPreferredSize(size);
-=======
 		Dimension size = getPreferredSize();
 		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 		double height = screenSize.getHeight();
 		size.height = (int)(height/11.2);
 		setPreferredSize(size);
 		//setBorder(BorderFactory.createTitledBorder("Feedback"));
->>>>>>> a0c65598ace1bd50eec298795b04f2cff0413b68
-		
+
 		setLayout(new GridLayout());
         feedbackField = new JTextArea();
         feedbackField.setEditable(false);
