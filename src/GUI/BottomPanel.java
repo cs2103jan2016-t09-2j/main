@@ -16,8 +16,8 @@ public class BottomPanel extends JPanel{
 	 */
 	private static final long serialVersionUID = 1L;
 
-	private static BottomLeft bottomLeft;
-	private BottomRight bottomRight;
+	//private static BottomLeft bottomLeft;
+	//private BottomRight bottomRight;
 	private BottomBottom bottomBottom;
 	private static BottomTop bottomTop;
 	String text;
@@ -32,8 +32,8 @@ public class BottomPanel extends JPanel{
 		setLayout(new GridBagLayout());
 		GridBagConstraints gc = new GridBagConstraints();
 
-		bottomLeft = new BottomLeft();
-		bottomRight = new BottomRight();
+		//bottomLeft = new BottomLeft();
+		//bottomRight = new BottomRight();
 		bottomBottom = new BottomBottom();
 		bottomTop = new BottomTop();
 		gc.fill = GridBagConstraints.HORIZONTAL;
