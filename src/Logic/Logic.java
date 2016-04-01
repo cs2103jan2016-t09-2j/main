@@ -22,6 +22,7 @@ public class Logic {
 	private String feedBack;
 	private boolean isSearchCommand;
 	private boolean isHomeScreen;
+	private boolean isHighlightOperation;
 
 	private static Logic logicObject = null;
 
@@ -142,6 +143,10 @@ public class Logic {
 	public boolean isHomeScreen() {
 		return isHomeScreen;
 	}
+	
+	public boolean isHighlightOperation() {
+		return isHighlightOperation;
+	}
 
 	/****************** OTHER METHODS ***********************/
 	/*
@@ -188,7 +193,7 @@ public class Logic {
 	}
 
 	public ArrayList<Task> setDueTodayTomorrowList(ArrayList<Task> firstList, ArrayList<Integer> indexList) {
-		int count = 1;
+		int count = scheduledTasksOverDue.size() + 1;
 
 		if (scheduledTasksToDo != null) {
 			LocalDate tmw = LocalDate.now().plusDays(1);
@@ -273,11 +278,13 @@ public class Logic {
 
 		isSearchCommand = false;
 		isHomeScreen = false;
+		isHighlightOperation = false;
 
 		switch (executeCommand) {
 		case ADD_TASK:
 			addTask(executeTask, false);
 			historyObject.clearRedoStack();
+			isHighlightOperation = true;
 			break;
 		case DELETE_TASK:
 			deleteTask(retrievedCommand.getIndexList(), false);
@@ -286,6 +293,7 @@ public class Logic {
 		case MODIFY_TASK:
 			editTask(retrievedCommand.getIndexList(), executeTask.getDescription(), false);
 			historyObject.clearRedoStack();
+			isHighlightOperation = true;
 			break;
 		case COMPLETE_TASK:
 			completeTask(retrievedCommand.getIndexList(), false);
@@ -984,7 +992,6 @@ public class Logic {
 
 	private void searchTask(Task taskToFind) {
 		if ((taskToFind.getDescription() != null) && !(taskToFind.getDescription().isEmpty())) {
-			System.out.println("Enter not empty");
 			if (taskToFind.getDescription().equalsIgnoreCase("all")) {
 				execute(Command.COMMAND_TYPE.VIEW_ALL, null, null);
 				return;

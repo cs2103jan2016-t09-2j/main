@@ -1,5 +1,6 @@
 package GUI;
 
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.Toolkit;
@@ -13,9 +14,14 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextPane;
 import javax.swing.text.BadLocationException;
+import javax.swing.text.DefaultHighlighter;
 import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
+
+import Logic.Logic;
+
+import javax.swing.text.DefaultHighlighter.DefaultHighlightPainter;
 
 import ScheduleHacks.Task;
 
@@ -34,12 +40,17 @@ public class TopLeftPanel extends JPanel {
 	private static SimpleAttributeSet header = new SimpleAttributeSet();
 	private static SimpleAttributeSet taskInfo = new SimpleAttributeSet();
 
+	private static DefaultHighlighter highlighter = new DefaultHighlighter();
+	private static DefaultHighlightPainter painter = new DefaultHighlightPainter(Color.YELLOW);
+
+	private static Logic logicObj = Logic.getInstance();
+
 	public TopLeftPanel() {
 		Dimension size = getPreferredSize();
 		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 		double height = screenSize.getHeight();
-		size.height = (int)(height/2.2);
-		//size.height = 268;
+		size.height = (int) (height / 2.2);
+		// size.height = 268;
 		setPreferredSize(size);
 		setBorder(BorderFactory.createTitledBorder(""));
 
@@ -47,6 +58,7 @@ public class TopLeftPanel extends JPanel {
 		textArea = new JTextPane();
 		scrollPane = new JScrollPane(textArea);
 		textArea.setEditable(false);
+		textArea.setHighlighter(highlighter);
 		// textArea.setLineWrap(true);
 		// textArea.setWrapStyleWord(true);
 
@@ -129,10 +141,12 @@ public class TopLeftPanel extends JPanel {
 	}
 
 	public static void printOutSO(ArrayList<Task> List, String type, ArrayList<Integer> indexList) {
+		int indexToHighlight = logicObj.getRecentAddedPosition();
 		int count = 0;
-		int end;
+		int end, startPos = -1;
 		try {
 			document = textArea.getStyledDocument();
+			highlighter.removeAllHighlights();
 			end = document.getLength();
 			if (type.equalsIgnoreCase("schedule")) {
 				document.insertString(document.getLength(), SCHEDULE_HEADER + "\n\n", header);
@@ -143,6 +157,7 @@ public class TopLeftPanel extends JPanel {
 			end = document.getLength();
 			for (Task task : List) {
 				String string = task.getDescription();
+				startPos = document.getLength();
 				document.insertString(document.getLength(), indexList.get(count) + ". " + string + "\n", taskInfo);
 				if (task.getStartDate() != null && task.getStartTime() != null) {
 					document.insertString(document.getLength(), "\t From ", taskInfo);
@@ -160,6 +175,9 @@ public class TopLeftPanel extends JPanel {
 				}
 				document.insertString(document.getLength(), task.getEndDate().format(dateFormat), taskInfo);
 				document.insertString(document.getLength(), "\n", taskInfo);
+				if (logicObj.isHighlightOperation() && indexList.get(count) == indexToHighlight) {
+					highlighter.addHighlight(startPos, document.getLength(), painter);
+				}
 				count++;
 			}
 			document.insertString(document.getLength(), "\n", taskInfo);
