@@ -118,7 +118,7 @@ public class TopRightPanel extends JPanel {
 		try {
 			highlighter.removeAllHighlights();
 			int indexToHighlight = logicObj.getRecentAddedPosition();
-			int count = 0;
+			int count = 0, positionToScroll = -1;
 			document = textArea.getStyledDocument();
 			document.insertString(document.getLength(), FLOATING_HEADER + "\n\n", header);
 			document.setParagraphAttributes(0, document.getLength(), header, true);
@@ -131,12 +131,16 @@ public class TopRightPanel extends JPanel {
 					document.insertString(document.getLength(), " " + string + "\n", taskInfo);
 					if (logicObj.isHighlightOperation() && indexList.get(count) == indexToHighlight) {
 						highlighter.addHighlight(startPos, document.getLength(), painter);
+						positionToScroll = document.getLength();
 					}
 					count++;	
 				}
 			}
 			document.setParagraphAttributes(end, document.getLength(), taskInfo, true);
 			textArea.setStyledDocument(document);
+			if (positionToScroll >= 0) {
+				textArea.setCaretPosition(positionToScroll);
+			}
 		} catch (BadLocationException e) {
 			// do nothing
 		}

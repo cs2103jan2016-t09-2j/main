@@ -143,7 +143,7 @@ public class TopLeftPanel extends JPanel {
 	public static void printOutSO(ArrayList<Task> List, String type, ArrayList<Integer> indexList) {
 		int indexToHighlight = logicObj.getRecentAddedPosition();
 		int count = 0;
-		int end, startPos = -1;
+		int end, positionToScroll = -1;
 		try {
 			document = textArea.getStyledDocument();
 			highlighter.removeAllHighlights();
@@ -157,7 +157,7 @@ public class TopLeftPanel extends JPanel {
 			end = document.getLength();
 			for (Task task : List) {
 				String string = task.getDescription();
-				startPos = document.getLength();
+				int startPos = document.getLength();
 				document.insertString(document.getLength(), indexList.get(count) + ". " + string + "\n", taskInfo);
 				if (task.getStartDate() != null && task.getStartTime() != null) {
 					document.insertString(document.getLength(), "\t From ", taskInfo);
@@ -173,18 +173,22 @@ public class TopLeftPanel extends JPanel {
 				if (!task.getEndTime().equals(LocalTime.MAX)) {
 					document.insertString(document.getLength(), task.getEndTime().toString() + ", ", taskInfo);
 				}
-				
+
 				document.insertString(document.getLength(), task.getEndDate().format(dateFormat), taskInfo);
 				int endPos = document.getLength();
 				document.insertString(document.getLength(), "\n", taskInfo);
 				if (logicObj.isHighlightOperation() && indexList.get(count) == indexToHighlight) {
 					highlighter.addHighlight(startPos, endPos, painter);
+					positionToScroll = endPos;
 				}
 				count++;
 			}
 			document.insertString(document.getLength(), "\n", taskInfo);
 			document.setParagraphAttributes(end, document.getLength(), taskInfo, true);
 			textArea.setStyledDocument(document);
+			if (positionToScroll >= 0) {
+				textArea.setCaretPosition(positionToScroll);
+			}
 		} catch (BadLocationException e) {
 			// do nothing
 		}
