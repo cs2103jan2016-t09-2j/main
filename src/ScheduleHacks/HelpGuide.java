@@ -52,7 +52,8 @@ public class HelpGuide {
 	}
 
 	public void addGuide() {
-		addList.add("           HELP GUIDE");
+		addList.add("\n");
+		addList.add("   Press <Esc> to exit the Help Guide");
 		addList.add("\n");
 		addList.add("**********ADD**********");
 		addList.add("\n");

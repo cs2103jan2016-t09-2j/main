@@ -185,9 +185,11 @@ public class TopLeftPanel extends JPanel {
 			document = textArea.getStyledDocument();
 			LocalDate today = LocalDate.now();
 			count = 0;
+			int end;
 			document.insertString(document.getLength(), "DUE TODAY \n", header);
 			document.insertString(document.getLength(), "\n", header);
 			document.setParagraphAttributes(0, document.getLength(), header, true);
+			end = document.getLength();
 			if (firstList != null) {
 				for (Task task : firstList) {
 					if (!task.getEndDate().isAfter(today)) {
@@ -217,8 +219,9 @@ public class TopLeftPanel extends JPanel {
 					}
 				}
 			}
+			document.setParagraphAttributes(end, document.getLength(), taskInfo, true);
 			document.insertString(document.getLength(), "\n", taskInfo);
-			int end = document.getLength();
+			end = document.getLength();
 
 			document.insertString(document.getLength(), "DUE TOMORROW" + "\n", header);
 			document.insertString(document.getLength(), "\n", header);

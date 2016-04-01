@@ -614,7 +614,19 @@ public class DateParser {
 				.add(DateTimeFormatter.ofPattern(ParserConstants.DATE_FORMAT_DAY_SPACE_MONTH_SHORT_SPACE_YEAR_LONG));
 		dateFormatList
 				.add(DateTimeFormatter.ofPattern(ParserConstants.DATE_FORMAT_DAY_SPACE_MONTH_SHORT_SPACE_YEAR_SHORT));
-
+ 
+		dateFormatList.add(DateTimeFormatter.ofPattern(ParserConstants.DATE_FORMAT_MONTH_LONG_DAY_SPACE_YEAR_LONG));
+		dateFormatList.add(DateTimeFormatter.ofPattern(ParserConstants.DATE_FORMAT_MONTH_LONG_DAY_SPACE_YEAR_SHORT));
+		dateFormatList.add(DateTimeFormatter.ofPattern(ParserConstants.DATE_FORMAT_MONTH_LONG_SPACE_DAY_YEAR_LONG));
+		dateFormatList.add(DateTimeFormatter.ofPattern(ParserConstants.DATE_FORMAT_MONTH_LONG_SPACE_DAY_YEAR_SHORT));
+		
+		dateFormatList.add(DateTimeFormatter.ofPattern(ParserConstants.DATE_FORMAT_MONTH_SHORT_DAY_SPACE_YEAR_LONG));
+		dateFormatList.add(DateTimeFormatter.ofPattern(ParserConstants.DATE_FORMAT_MONTH_SHORT_DAY_SPACE_YEAR_SHORT));
+		dateFormatList.add(DateTimeFormatter.ofPattern(ParserConstants.DATE_FORMAT_MONTH_SHORT_SPACE_DAY_SPACE_YEAR_LONG));
+		dateFormatList.add(DateTimeFormatter.ofPattern(ParserConstants.DATE_FORMAT_MONTH_SHORT_SPACE_DAY_SPACE_YEAR_SHORT));
+		
+		
+		
 		return dateFormatList;
 	}
 
@@ -624,6 +636,10 @@ public class DateParser {
 		dateFormatList.add(DateTimeFormatter.ofPattern(ParserConstants.DATE_FORMAT_DAY_MONTH_SHORT_NOSPACE));
 		dateFormatList.add(DateTimeFormatter.ofPattern(ParserConstants.DATE_FORMAT_DAY_MONTH_LONG));
 		dateFormatList.add(DateTimeFormatter.ofPattern(ParserConstants.DATE_FORMAT_DAY_MONTH_SHORT));
+		dateFormatList.add(DateTimeFormatter.ofPattern(ParserConstants.DATE_FORMAT_MONTH_LONG_DAY_NOSPACE));
+		dateFormatList.add(DateTimeFormatter.ofPattern(ParserConstants.DATE_FORMAT_MONTH_LONG_DAY));
+		dateFormatList.add(DateTimeFormatter.ofPattern(ParserConstants.DATE_FORMAT_MONTH_SHORT_DAY_NOSPACE));
+		dateFormatList.add(DateTimeFormatter.ofPattern(ParserConstants.DATE_FORMAT_MONTH_SHORT_DAY));
 		dateFormatList.add(DateTimeFormatter.ofPattern(ParserConstants.DATE_FORMAT_HASH_DAY_MONTH_NUM));
 		dateFormatList.add(DateTimeFormatter.ofPattern(ParserConstants.DATE_FORMAT_HYPHEN_DAY_MONTH_NUM));
 		return dateFormatList;

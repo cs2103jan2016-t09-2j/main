@@ -82,10 +82,24 @@ public class ParserConstants {
 	static final String DATE_FORMAT_DAY_SPACE_MONTH_LONG_SPACE_YEAR_SHORT = "d MMMM uu";
 	static final String DATE_FORMAT_DAY_SPACE_MONTH_SHORT_SPACE_YEAR_LONG = "d MMM uuuu";
 	static final String DATE_FORMAT_DAY_SPACE_MONTH_SHORT_SPACE_YEAR_SHORT = "d MMM uu";
+	
+	static final String DATE_FORMAT_MONTH_LONG_DAY_SPACE_YEAR_LONG = "MMMMd uuuu";
+	static final String DATE_FORMAT_MONTH_LONG_DAY_SPACE_YEAR_SHORT = "MMMMd uu";
+	static final String DATE_FORMAT_MONTH_LONG_SPACE_DAY_YEAR_LONG  = "MMMM d uuuu";
+	static final String DATE_FORMAT_MONTH_LONG_SPACE_DAY_YEAR_SHORT  = "MMMM d uu";
+	static final String DATE_FORMAT_MONTH_SHORT_DAY_SPACE_YEAR_LONG = "MMMd uuuu";
+	static final String DATE_FORMAT_MONTH_SHORT_DAY_SPACE_YEAR_SHORT = "MMMd uu";
+	static final String DATE_FORMAT_MONTH_SHORT_SPACE_DAY_SPACE_YEAR_LONG = "MMM d uuuu";
+	static final String DATE_FORMAT_MONTH_SHORT_SPACE_DAY_SPACE_YEAR_SHORT = "MMM d uu";
+	
 	static final String DATE_FORMAT_DAY_MONTH_LONG_NOSPACE = "dMMMM";
 	static final String DATE_FORMAT_DAY_MONTH_SHORT_NOSPACE = "dMMM";
 	static final String DATE_FORMAT_DAY_MONTH_SHORT = "d MMM";
-	static final String DATE_FORMAT_DAY_MONTH_LONG = "d MMMM";
+	static final String DATE_FORMAT_DAY_MONTH_LONG = "d MMMM";	
+	static final String DATE_FORMAT_MONTH_LONG_DAY_NOSPACE = "MMMMd";
+	static final String DATE_FORMAT_MONTH_LONG_DAY = "MMMM d";
+	static final String DATE_FORMAT_MONTH_SHORT_DAY_NOSPACE = "MMMd";
+	static final String DATE_FORMAT_MONTH_SHORT_DAY = "MMM d";
 
 	static final String[] DAY_DURATION = { "day", "days", "week", "weeks", "month", "months", "year", "years", "yr",
 			"yrs" };
