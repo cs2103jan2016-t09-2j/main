@@ -173,10 +173,12 @@ public class TopLeftPanel extends JPanel {
 				if (!task.getEndTime().equals(LocalTime.MAX)) {
 					document.insertString(document.getLength(), task.getEndTime().toString() + ", ", taskInfo);
 				}
+				
 				document.insertString(document.getLength(), task.getEndDate().format(dateFormat), taskInfo);
+				int endPos = document.getLength();
 				document.insertString(document.getLength(), "\n", taskInfo);
 				if (logicObj.isHighlightOperation() && indexList.get(count) == indexToHighlight) {
-					highlighter.addHighlight(startPos, document.getLength(), painter);
+					highlighter.addHighlight(startPos, endPos, painter);
 				}
 				count++;
 			}
