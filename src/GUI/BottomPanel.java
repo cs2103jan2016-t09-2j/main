@@ -7,6 +7,7 @@ import java.awt.GridBagLayout;
 import java.awt.Toolkit;
 
 import javax.swing.BorderFactory;
+import javax.swing.JButton;
 import javax.swing.JPanel;
 
 public class BottomPanel extends JPanel{
@@ -20,6 +21,11 @@ public class BottomPanel extends JPanel{
 	private BottomRight bottomRight;
 	private BottomBottom bottomBottom;
 	private static BottomTop bottomTop;
+	JButton button1 = new JButton("TRIVAL");
+	JButton button2 = new JButton("UPCOMING");
+	JButton button3 = new JButton("ARCHIEVE");
+	JButton button4 = new JButton("HOME");
+	JButton button5 = new JButton("HELP");
 	String text;
 
 	public BottomPanel(){
@@ -34,33 +40,54 @@ public class BottomPanel extends JPanel{
 
 		bottomLeft = new BottomLeft();
 		bottomRight = new BottomRight();
-		bottomBottom = new BottomBottom();
+		gc.fill = GridBagConstraints.BOTH;
+		gc.weightx = 3;
+		gc.weighty = 1;
+		gc.gridx = 0;
+		gc.gridy = 0;
+		add(bottomLeft, gc);
+		
+		gc.weightx = 1;
+		gc.gridx = 3;
+		gc.gridy = 0;
+		add(bottomRight, gc);
+		
+		/*bottomBottom = new BottomBottom();
 		bottomTop = new BottomTop();
 		gc.fill = GridBagConstraints.HORIZONTAL;
 		
-		gc.weightx = 1;
-		gc.weighty = 0.9;
+		gc.weightx = 3;
+		gc.weighty = 3;
 		gc.gridx = 0;
 		gc.gridy = 0;
 		add(bottomTop,gc);
-		
-/*		gc.weighty = 0.9;
-		gc.gridx = 0;
-		gc.gridy = 0;
-		add(bottomLeft,gc);
 
-		gc.weighty = 0.9;
+		gc.weighty = 1;
 		gc.gridx = 0;
-		gc.gridy = 0;
-		add(bottomLeft,gc);*/
-
-		gc.weighty = 0.3;
-		gc.gridx = 0;
-		gc.gridy = 1;
+		gc.gridy = 3;
 		add(bottomBottom,gc);
 		
+		gc.fill = GridBagConstraints.VERTICAL;
+		gc.weightx = 1;
+		gc.weighty = 1;
+		gc.gridx = 3;
+		gc.gridy = 0;
+		add(button1,gc);
+		
+		gc.gridy = 1;
+		add(button2);
+		
+		gc.gridy = 2;
+		add(button3);
+		
+		gc.gridy = 3;
+		add(button4);
+		
+		gc.gridy = 4;
+		add(button5);
+		
 		this.setBackground(new Color(107, 179, 166));
-		this.setBorder(null);
+		this.setBorder(null); */
 
 	}
 

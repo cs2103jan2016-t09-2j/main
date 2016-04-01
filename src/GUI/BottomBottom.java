@@ -79,7 +79,7 @@ public class BottomBottom extends JPanel implements KeyListener {
 			commandField.setText("");
 
 			logicObj.executeCommand(input);
-			BottomPanel.setFeedback(logicObj.getFeedBack());
+			BottomLeft.setFeedback(logicObj.getFeedBack());
 
 			if (!logicObj.hasSearchList() && !logicObj.isHomeScreen()) { // print the normal display
 				OList = new ArrayList<Task>(logicObj.getScheduledTasksOverDue());
@@ -93,12 +93,12 @@ public class BottomBottom extends JPanel implements KeyListener {
 		}
 
 		if (keyCode == KeyEvent.VK_UP) {
-			BottomPanel.setFeedback("Previous Command");
+			BottomLeft.setFeedback("Previous Command");
 			commandField.setText(history.moveUpCommandHistory());
 		}
 
 		if (keyCode == KeyEvent.VK_DOWN) {
-			BottomPanel.setFeedback("Next Command");
+			BottomLeft.setFeedback("Next Command");
 			commandField.setText(history.moveDownCommandHistory());
 		}
 
