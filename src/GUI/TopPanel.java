@@ -33,7 +33,7 @@ public class TopPanel extends JPanel{
 		TopLeftPanel topLeftPanel = new TopLeftPanel();
 		TopRightPanel topRightPanel = new TopRightPanel();
 		
-		this.setBackground(Color.LIGHT_GRAY);
+		this.setBackground(new Color(107, 179, 166));
 		this.setBorder(null);
 		
 		gbc.gridx = 0;

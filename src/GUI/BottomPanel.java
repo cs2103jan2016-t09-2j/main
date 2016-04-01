@@ -46,7 +46,7 @@ public class BottomPanel extends JPanel{
 		gc.gridy = 1;
 		add(bottomBottom,gc);
 		
-		this.setBackground(Color.LIGHT_GRAY);
+		this.setBackground(new Color(107, 179, 166));
 		this.setBorder(null);
 
 	}

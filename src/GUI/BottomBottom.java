@@ -33,7 +33,7 @@ public class BottomBottom extends JPanel implements KeyListener {
 	private static final Font INPUT_FONT = new Font("Courier New", Font.BOLD, 16);
 
 	private static Logic logicObj = Logic.getInstance();
-	String startInput = "view 2 days";
+	//String startInput = "view 2 days";
 	
 	public BottomBottom() {
 		setLayout(new GridLayout(1, 1));
@@ -49,7 +49,7 @@ public class BottomBottom extends JPanel implements KeyListener {
 	}
 
 	public static void HelpPopUp() {
-		JFrame Help = new HelpFrame("HELP");
+		JFrame Help = new HelpFrame("HELP GUIDE");
 		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 		double width = screenSize.getWidth();
 		double height = screenSize.getHeight();

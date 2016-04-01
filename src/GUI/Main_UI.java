@@ -28,7 +28,7 @@ public class Main_UI {
 				newFrame.setVisible(true);
 				newFrame.setResizable(false);
 				newFrame.setLocationRelativeTo(null);
-				newFrame.getContentPane().setBackground(Color.LIGHT_GRAY);
+				newFrame.getContentPane().setBackground(new Color(107, 179, 166));
 
 				// Make textField get the focus whenever frame is activated.
 				newFrame.addWindowFocusListener(new WindowAdapter() {
