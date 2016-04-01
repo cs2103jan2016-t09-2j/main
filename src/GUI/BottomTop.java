@@ -1,11 +1,11 @@
 package GUI;
 
-import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.Toolkit;
 
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
 public class BottomTop extends JPanel{
@@ -16,6 +16,7 @@ public class BottomTop extends JPanel{
 	private static final long serialVersionUID = 1L;
 	
 	private JTextArea feedbackField;
+	JScrollPane scrollPane;
 	
 	public BottomTop(){
 		Dimension size = getPreferredSize();
@@ -23,12 +24,12 @@ public class BottomTop extends JPanel{
 		double height = screenSize.getHeight();
 		size.height = (int)(height/11.2);
 		setPreferredSize(size);
-		//setBorder(BorderFactory.createTitledBorder("Feedback"));
 
 		setLayout(new GridLayout());
         feedbackField = new JTextArea();
         feedbackField.setEditable(false);
-        add(feedbackField);
+        scrollPane = new JScrollPane(feedbackField);
+        add(scrollPane);
 	}
 	
 	public void setText(String input){

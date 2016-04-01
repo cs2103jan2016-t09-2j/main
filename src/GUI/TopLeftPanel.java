@@ -1,7 +1,6 @@
 package GUI;
 
 import java.awt.Dimension;
-import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.Toolkit;
 import java.time.LocalDate;
@@ -12,7 +11,6 @@ import java.util.ArrayList;
 import javax.swing.BorderFactory;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
 import javax.swing.JTextPane;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.SimpleAttributeSet;
@@ -20,15 +18,8 @@ import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
 
 import ScheduleHacks.Task;
-import Logic.Logic;
 
 public class TopLeftPanel extends JPanel {
-
-	/**
-	 * 
-	 */
-
-	private static Logic logicObj = Logic.getInstance();
 
 	private static final long serialVersionUID = 1L;
 	private static int count = 1;
