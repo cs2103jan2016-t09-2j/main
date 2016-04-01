@@ -176,7 +176,7 @@ public class tempGUI extends JFrame implements KeyListener {
 	}	
 	
 	public void setFeedbackArea(JPanel DisplayPanel, GridBagConstraints constraints) {
-		textArea = new JTextArea("Feedback Panel");
+		textArea = new JTextArea();
 		textArea2 = new JTextArea("Task Info Panel");
 		// JTextArea textArea = new JTextArea(logicObj.getFeedBack());
 

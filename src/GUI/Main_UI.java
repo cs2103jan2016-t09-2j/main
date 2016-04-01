@@ -1,5 +1,6 @@
 package GUI;
 
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.awt.event.WindowAdapter;
@@ -18,14 +19,16 @@ public class Main_UI {
 				Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 				double width = screenSize.getWidth();
 				double height = screenSize.getHeight();
-				int width1 = (int) (width / 2);
-				int height1 = (int) (height / 1.92);
+				int width1 = (int) (width / 2.4);
+				int height1 = (int) (height / 1.54);
 				newFrame.setSize(width1, height1);
 				// newFrame.setSize(600, 400);
 				newFrame.setIconImage(Toolkit.getDefaultToolkit().getImage("SHIcon.png"));
 				newFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 				newFrame.setVisible(true);
 				newFrame.setResizable(false);
+				newFrame.setLocationRelativeTo(null);
+				newFrame.getContentPane().setBackground(Color.LIGHT_GRAY);
 
 				// Make textField get the focus whenever frame is activated.
 				newFrame.addWindowFocusListener(new WindowAdapter() {
