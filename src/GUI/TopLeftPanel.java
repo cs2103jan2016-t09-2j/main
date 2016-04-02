@@ -56,9 +56,9 @@ public class TopLeftPanel extends JPanel {
 
 		setLayout(new GridLayout());
 		textArea = new JTextPane();
-		scrollPane = new JScrollPane(textArea);
 		textArea.setEditable(false);
 		textArea.setHighlighter(highlighter);
+		scrollPane = new JScrollPane(textArea);
 		// textArea.setLineWrap(true);
 		// textArea.setWrapStyleWord(true);
 
@@ -80,6 +80,7 @@ public class TopLeftPanel extends JPanel {
 	public static void setText(ArrayList<Task> OList, ArrayList<Task> SList, ArrayList<Integer> indexList) {
 		// TopRightPanel.setCount(count);
 		int index;
+		highlighter.removeAllHighlights();
 		if (indexList == null || indexList.isEmpty()) {
 			indexList = new ArrayList<Integer>();
 			for (index = 0; index < OList.size() + SList.size(); index++) {
@@ -142,11 +143,11 @@ public class TopLeftPanel extends JPanel {
 
 	public static void printOutSO(ArrayList<Task> List, String type, ArrayList<Integer> indexList) {
 		int indexToHighlight = logicObj.getRecentAddedPosition();
+		//System.out.println(indexToHighlight+ "*" + logicObj.isHighlightOperation());
 		int count = 0;
 		int end, positionToScroll = -1;
 		try {
 			document = textArea.getStyledDocument();
-			highlighter.removeAllHighlights();
 			end = document.getLength();
 			if (type.equalsIgnoreCase("schedule")) {
 				document.insertString(document.getLength(), SCHEDULE_HEADER + "\n\n", header);
@@ -179,7 +180,7 @@ public class TopLeftPanel extends JPanel {
 				document.insertString(document.getLength(), "\n", taskInfo);
 				if (logicObj.isHighlightOperation() && indexList.get(count) == indexToHighlight) {
 					highlighter.addHighlight(startPos, endPos, painter);
-					positionToScroll = endPos;
+					positionToScroll = (int)(startPos + endPos)/2;
 				}
 				count++;
 			}

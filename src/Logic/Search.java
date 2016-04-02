@@ -7,6 +7,8 @@ import ScheduleHacks.Task;
 import java.time.LocalDate;
 
 public class Search {
+	
+	private static final String STRING_WHITESPACE = " ";
 
 	static int count = 1;
 	private ArrayList<Task> matchedTaskList = new ArrayList<Task>();
@@ -114,7 +116,8 @@ public class Search {
 				matchedTaskList.add(taskToCheck);
 			}
 		} else {
-			if (taskToCheck.getDescription().toLowerCase().contains(descToFind)) {
+			String[] wordList =  descToFind.split(STRING_WHITESPACE);
+			if (areWordsPresent(wordList, taskToCheck.getDescription().toLowerCase())) {
 				indexList.add(count);
 				matchedTaskList.add(taskToCheck);
 			}
@@ -124,5 +127,17 @@ public class Search {
 	public boolean dateLiesInRange(LocalDate dateToCheck, LocalDate startDate, LocalDate endDate) {
 		return dateToCheck.isEqual(startDate) || dateToCheck.isEqual(endDate)
 				|| (dateToCheck.isAfter(startDate) && dateToCheck.isBefore(endDate));
+	}
+	
+	public boolean areWordsPresent(String[] wordList, String text) {
+		if(wordList.length == 0) {
+			return false;
+		}
+		for(String word: wordList) {
+			if(!text.contains(word)) {
+				return false;
+			}
+		}
+		return true;
 	}
 }

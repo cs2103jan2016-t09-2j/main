@@ -133,7 +133,7 @@ public class TopRightPanel extends JPanel {
 						highlighter.addHighlight(startPos, document.getLength(), painter);
 						positionToScroll = document.getLength();
 					}
-					count++;	
+					count++;
 				}
 			}
 			document.setParagraphAttributes(end, document.getLength(), taskInfo, true);

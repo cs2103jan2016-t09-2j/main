@@ -727,6 +727,7 @@ public class Logic {
 			}*/
 
 			int newIndex = addTask(editedTask, true);
+			recentAddedPosition = newIndex;
 
 			if (!isUndoOperation) {
 				ArrayList<Task> taskList = new ArrayList<Task>();

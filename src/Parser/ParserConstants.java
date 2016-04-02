@@ -6,7 +6,7 @@ public class ParserConstants {
 	static final String[] COMMAND_ADD = { "add", "+", "a" };
 	static final String[] COMMAND_DELETE = { "delete", "d", "del", "-", "remove", "rm" };
 	static final String[] COMMAND_MODIFY = { "edit", "update", "change", "e" };
-	static final String[] COMMAND_COMPLETE = { "complete", "done", "completed", "finished", "archive" };
+	static final String[] COMMAND_COMPLETE = { "complete", "done", "completed", "archive" };
 	static final String[] COMMAND_INCOMPLETE = {"undone"};
 	static final String[] COMMAND_VIEW = { "view", "v", "show", "display" };
 	static final String[] COMMAND_SEARCH = { "search", "find" };
