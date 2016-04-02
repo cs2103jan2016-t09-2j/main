@@ -208,7 +208,7 @@ public class CommandParser {
 				int dateListSize = dateObj.getDateList().size();
 				newTask.setEndDate(dateObj.getDateList().get(dateListSize - 1));
 				if (dateListSize > 1) {
-					newTask.setEndDate(dateObj.getDateList().get(ParserConstants.FIRST_INDEX));
+					newTask.setStartDate(dateObj.getDateList().get(ParserConstants.FIRST_INDEX));
 				}
 				taskStatement = dateObj.getTaskDetails();
 			} else if (dateObj.isMonth(firstWord)) {
@@ -329,7 +329,7 @@ public class CommandParser {
 			objDateTime.arrangeDateTimeList();
 			dateList = objDateTime.getDateList();
 			timeList = objDateTime.getTimeList();
-		} else {
+		} else if (timeList != null || dateList != null) {
 			if (timeList != null) {
 				if (timeList.size() > oldTimeList.size()) {
 					dateList = new ArrayList<LocalDate>();
@@ -364,7 +364,7 @@ public class CommandParser {
 				}
 			}
 		}
-
+		
 		if (dateList != null) {
 			oldTask.setEndDate(null);
 			oldTask.setStartDate(null);

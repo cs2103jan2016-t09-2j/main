@@ -218,7 +218,9 @@ public class TopLeftPanel extends JPanel {
 								document.insertString(document.getLength(), task.getStartTime().toString() + ", ",
 										taskInfo);
 							}
-							document.insertString(document.getLength(), task.getStartDate().format(dateFormat) + "\n",
+							document.insertString(document.getLength(), task.getStartDate().format(dateFormat),
+									taskInfo);
+							document.insertString(document.getLength(),"\n",
 									taskInfo);
 							document.insertString(document.getLength(), "\t To ", taskInfo);
 						} else {
@@ -254,7 +256,7 @@ public class TopLeftPanel extends JPanel {
 							document.insertString(document.getLength(), task.getStartTime().toString() + ", ",
 									taskInfo);
 						}
-						document.insertString(document.getLength(), task.getStartDate().format(dateFormat), taskInfo);
+						document.insertString(document.getLength(), task.getStartDate().format(dateFormat)+"\n", taskInfo);
 						document.insertString(document.getLength(), "\t To ", taskInfo);
 					} else {
 						document.insertString(document.getLength(), "\t By ", taskInfo);

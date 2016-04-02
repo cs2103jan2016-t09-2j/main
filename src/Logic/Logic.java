@@ -139,11 +139,11 @@ public class Logic {
 	public int getRecentAddedPosition() {
 		return recentAddedPosition;
 	}
-	
+
 	public boolean isHomeScreen() {
 		return isHomeScreen;
 	}
-	
+
 	public boolean isHighlightOperation() {
 		return isHighlightOperation;
 	}
@@ -243,7 +243,7 @@ public class Logic {
 			storage.storeToFiles(getFloatingTasksToDo(), getFloatingTasksComplete(), getScheduledTasksToDo(),
 					getScheduledTasksComplete(), getScheduledTasksOverDue());
 		} catch (Exception e) {
-			//e.printStackTrace();
+			// e.printStackTrace();
 			setFeedBack(FEEDBACK_INVALID_COMMAND);
 		}
 	}
@@ -709,22 +709,21 @@ public class Logic {
 				setFeedBack(FEEDBACK_NON_EXISTENT_TASK_NUM + "\n");
 			}
 		}
+		
 
 		if (taskToEdit == null) {
 			setFeedBack(FEEDBACK_NON_EXISTENT_TASK_NUM + "\n" + FEEDBACK_TASK_NOT_MODIFIED);
 		} else {
 			Task editedTask = CommandParser.editExistingTask(taskToEdit, editInfo);
 			editedTask.setAsUnBlocked();
-			
-			/*conflict = compareWithBlockedRange(editedTask);
-			
-			if (conflict) {
-				if (taskOriginal.isBlocked()) {
-					editedTask.setAsBlocked();
-				} else if (taskOriginal.isUnBlocked()) {
-					editedTask = taskOriginal;
-				}
-			}*/
+
+			/*
+			 * conflict = compareWithBlockedRange(editedTask);
+			 * 
+			 * if (conflict) { if (taskOriginal.isBlocked()) {
+			 * editedTask.setAsBlocked(); } else if (taskOriginal.isUnBlocked())
+			 * { editedTask = taskOriginal; } }
+			 */
 
 			int newIndex = addTask(editedTask, true);
 			recentAddedPosition = newIndex;
@@ -738,11 +737,11 @@ public class Logic {
 				historyObject.addToUndoList(recentCommand);
 
 			}
-			/*if ((conflict) && (taskOriginal.isUnBlocked())) {
-				setFeedBack(FEEDBACK_BLOCK_EDITED_TASK_CLASH);
-			} else {
-				setFeedBack(FEEDBACK_TASK_MODIFIED);
-			}*/
+			/*
+			 * if ((conflict) && (taskOriginal.isUnBlocked())) {
+			 * setFeedBack(FEEDBACK_BLOCK_EDITED_TASK_CLASH); } else {
+			 * setFeedBack(FEEDBACK_TASK_MODIFIED); }
+			 */
 		}
 	}
 

@@ -15,9 +15,9 @@ public class BottomRight extends JPanel{
 	 */
 	private static final long serialVersionUID = 1L;
 
-	JButton button1 = new JButton("TRIVAL");
-	JButton button2 = new JButton("UPCOMING");
-	JButton button3 = new JButton("ARCHIEVE");
+	JButton button1 = new JButton("TRIVIAL TASKS");
+	JButton button2 = new JButton("UPCOMING TASKS");
+	JButton button3 = new JButton("ARCHIVE");
 	JButton button4 = new JButton("HOME");
 	JButton button5 = new JButton("HELP");
 	

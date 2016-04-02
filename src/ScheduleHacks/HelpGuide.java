@@ -38,7 +38,6 @@ public class HelpGuide {
 		searchGuide();
 		undoAndRedoGuide();
 		completeGuide();
-		blockGuide();
 		exitGuide();
 
 		collatedHelpList.addAll(addList);
@@ -139,36 +138,16 @@ public class HelpGuide {
 	}
 
 	public void completeGuide() {
-		completeAndIncompleteList.add("**********COMPLETE**********");
-		completeAndIncompleteList.add("\n");
-		completeAndIncompleteList.add("      complete <index>");
+		completeAndIncompleteList.add("**********MARK COMPLETE**********");
 		completeAndIncompleteList.add("\n");
 		completeAndIncompleteList.add("      done <index>, <index>, <index> ");
 		completeAndIncompleteList.add("\n");
 		completeAndIncompleteList.add("      finish <index range>");
 		completeAndIncompleteList.add("\n");
-		completeAndIncompleteList.add("**********INCOMPLETE**********");
-		completeAndIncompleteList.add("\n");
-		completeAndIncompleteList.add("      incomplete <index>");
+		completeAndIncompleteList.add("**********MARK INCOMPLETE**********");
 		completeAndIncompleteList.add("\n");
 		completeAndIncompleteList.add("      undone <index>, <index>, <index> ");
 		completeAndIncompleteList.add("\n");
-	
-	}
-
-	public void blockGuide() {
-		searchList.add("**********BLOCK**********");
-		searchList.add("\n");
-		searchList.add("      block <date> ");
-		searchList.add("\n");
-		searchList.add("      block <date>, <time>");
-		searchList.add("\n");
-		searchList.add("**********UNBLOCK**********");
-		searchList.add("\n");
-		searchList.add("      unblock <date> ");
-		searchList.add("\n");
-		searchList.add("      unblock <date>, <time>");
-		searchList.add("\n");
 	
 	}
 

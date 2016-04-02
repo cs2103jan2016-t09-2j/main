@@ -71,6 +71,7 @@ public class Search {
 			if (taskToCheck.getStartDate() != null && taskToCheck.getStartDate().isEqual(dateToFind)) {
 				indexList.add(count);
 				matchedTaskList.add(taskToCheck);
+				return true;
 			}
 			if (taskToCheck.getEndDate().isEqual(dateToFind)) {
 				indexList.add(count);
