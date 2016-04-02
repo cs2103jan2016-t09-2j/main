@@ -118,7 +118,7 @@ public class TopRightPanel extends JPanel {
 	public static void printOut(ArrayList<Task> List, ArrayList<Integer> indexList) {
 		try {
 			highlighter.removeAllHighlights();
-			int indexToHighlight = logicObj.getRecentAddedPosition();
+			int indexToHighlight = logicObj.getRecentIndexOfTask();
 			int count = 0, positionToScroll = -1;
 			document = textArea.getStyledDocument();
 			document.insertString(document.getLength(), FLOATING_HEADER + "\n\n", header);

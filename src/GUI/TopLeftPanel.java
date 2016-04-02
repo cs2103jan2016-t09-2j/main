@@ -142,7 +142,7 @@ public class TopLeftPanel extends JPanel {
 	}
 
 	public static void printOutSO(ArrayList<Task> List, String type, ArrayList<Integer> indexList) {
-		int indexToHighlight = logicObj.getRecentAddedPosition();
+		int indexToHighlight = logicObj.getRecentIndexOfTask();
 		//System.out.println(indexToHighlight+ "*" + logicObj.isHighlightOperation());
 		int count = 0;
 		int end, positionToScroll = -1;
