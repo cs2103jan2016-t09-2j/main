@@ -71,6 +71,7 @@ public class HelpFrame extends JFrame implements KeyListener {
 			}
 			document.setParagraphAttributes(0, document.getLength(), helpInfo, true);
 			textArea.setStyledDocument(document);
+			textArea.setCaretPosition(0);
 		} catch (BadLocationException e) {
 			// do nothing
 		}
