@@ -243,7 +243,7 @@ public class Logic {
 			storage.storeToFiles(getFloatingTasksToDo(), getFloatingTasksComplete(), getScheduledTasksToDo(),
 					getScheduledTasksComplete(), getScheduledTasksOverDue());
 		} catch (Exception e) {
-			// System.out.println(e.getMessage());
+			//e.printStackTrace();
 			setFeedBack(FEEDBACK_INVALID_COMMAND);
 		}
 	}

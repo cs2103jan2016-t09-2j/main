@@ -97,6 +97,7 @@ public class TopRightPanel extends JPanel {
 
 	public static void printSearchQuery(ArrayList<Task> List, ArrayList<Integer> indexList) {
 		try {
+			int count = 0;
 			document = textArea.getStyledDocument();
 			document.insertString(document.getLength(), "Search Results (" + indexList.size() + " results)\n\n",
 					header);
