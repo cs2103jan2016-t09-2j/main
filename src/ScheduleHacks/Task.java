@@ -6,7 +6,7 @@ import java.time.LocalTime;
 public class Task {
 
 	private String description;
-	private boolean isFloatingType, isScheduledType, isComplete, isBlock, isUnBlock;
+	private boolean isFloatingType, isScheduledType, isComplete;
 	private LocalDate startDate, endDate;
 	private LocalTime startTime, endTime;
 
@@ -15,8 +15,6 @@ public class Task {
 		isFloatingType = false;
 		isScheduledType = false;
 		isComplete = false;
-		isBlock = false;
-		isUnBlock = true;
 		setStartDate(null);
 		setEndDate(null);
 		setStartTime(null);
@@ -28,8 +26,6 @@ public class Task {
 		isFloatingType = false;
 		isScheduledType = false;
 		isComplete = false;
-		isBlock = false;
-		isUnBlock = true;
 		setStartDate(startDate);
 		setEndDate(endDate);
 		setStartTime(startTime);
@@ -80,16 +76,6 @@ public class Task {
 	public boolean isFloatingTask() {
 		return isFloatingType;
 	}
-	
-	public void setAsBlocked() {
-		isBlock = true;
-		isUnBlock = false;
-	}
-	
-	public void setAsUnBlocked() {
-		isBlock = false;
-		isUnBlock = true;
-	}
 
 	public boolean isScheduledTask() {
 		return isScheduledType;
@@ -129,14 +115,6 @@ public class Task {
 
 	public LocalTime getEndTime() {
 		return this.endTime;
-	}
-	
-	public boolean isBlocked() {
-		return isBlock;
-	}
-	
-	public boolean isUnBlocked() {
-		return isUnBlock;
 	}
 
 	/*//@Override
