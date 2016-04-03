@@ -80,7 +80,7 @@ public class TopLeftPanel extends JPanel {
 		StyleConstants.setForeground(checkMark, new Color(0, 153, 0));
 
 		StyleConstants.setFontFamily(exclaimMark, "Comic Sans");
-		StyleConstants.setFontSize(exclaimMark, 10);
+		StyleConstants.setFontSize(exclaimMark, 12);
 		// StyleConstants.setBold(exclaimMark, true);
 		StyleConstants.setForeground(exclaimMark, new Color(255, 0, 0));
 
