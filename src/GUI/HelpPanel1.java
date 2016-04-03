@@ -53,7 +53,6 @@ public class HelpPanel1 extends JPanel implements KeyListener{
 	public void setHelpSheet(ArrayList<String> collatedHelpList) {
 		try {
 			document = textArea.getStyledDocument();
-			System.out.println(collatedHelpList.size());
 			for (int i = 0; i < 44; i++) {
 				document.insertString(document.getLength(), collatedHelpList.get(i), helpInfo);
 			}
