@@ -78,10 +78,10 @@ public class TopLeftPanel extends JPanel {
 		StyleConstants.setFontSize(checkMark, 16);
 		StyleConstants.setBold(checkMark, true);
 		StyleConstants.setForeground(checkMark, new Color(0, 153, 0));
-		
+
 		StyleConstants.setFontFamily(exclaimMark, "Comic Sans");
 		StyleConstants.setFontSize(exclaimMark, 10);
-		//StyleConstants.setBold(exclaimMark, true);
+		// StyleConstants.setBold(exclaimMark, true);
 		StyleConstants.setForeground(exclaimMark, new Color(255, 0, 0));
 
 		add(scrollPane);
@@ -134,7 +134,7 @@ public class TopLeftPanel extends JPanel {
 				if (task.isComplete()) {
 					document.insertString(document.getLength(), CHECK_MARK, checkMark);
 				} else {
-					if(LocalDateTime.of(task.getEndDate(), task.getEndTime()).isBefore(LocalDateTime.now())) {
+					if (LocalDateTime.of(task.getEndDate(), task.getEndTime()).isBefore(LocalDateTime.now())) {
 						document.insertString(document.getLength(), EXCLAMATION_MARK, exclaimMark);
 					}
 				}
@@ -186,7 +186,7 @@ public class TopLeftPanel extends JPanel {
 				if (task.isComplete()) {
 					document.insertString(document.getLength(), CHECK_MARK, checkMark);
 				} else {
-					if(type.equalsIgnoreCase("overdue")) {
+					if (type.equalsIgnoreCase("overdue")) {
 						document.insertString(document.getLength(), EXCLAMATION_MARK, exclaimMark);
 					}
 				}
@@ -242,6 +242,9 @@ public class TopLeftPanel extends JPanel {
 					if (!task.getEndDate().isAfter(today)) {
 						String string = task.getDescription();
 						document.insertString(document.getLength(), indexList.get(count) + ". ", taskInfo);
+						if (LocalDateTime.of(task.getEndDate(), task.getEndTime()).isBefore(LocalDateTime.now())) {
+							document.insertString(document.getLength(), EXCLAMATION_MARK, exclaimMark);
+						}
 						document.insertString(document.getLength(), string + "\n", taskInfo);
 						if (task.getStartDate() != null && task.getStartTime() != null) {
 							document.insertString(document.getLength(), "\t From ", taskInfo);

@@ -183,6 +183,15 @@ public class Logic {
 	}
 
 	public ArrayList<Task> setDueTodayTomorrowList(ArrayList<Task> firstList, ArrayList<Integer> indexList) {
+		if (scheduledTasksOverDue != null) {
+			for (Task task : scheduledTasksOverDue) {
+				if (task.getEndDate().isEqual(LocalDate.now())) {
+					firstList.add(task);
+					indexList.add(scheduledTasksOverDue.indexOf(task)+1);
+				}
+			}
+		}
+
 		int count = scheduledTasksOverDue.size() + 1;
 
 		if (scheduledTasksToDo != null) {
@@ -586,7 +595,7 @@ public class Logic {
 		int lastAddedIndex = -1;
 
 		if (taskDigit == null || taskDigit.isEmpty()) {
-			taskDigit= new ArrayList<Integer>();
+			taskDigit = new ArrayList<Integer>();
 			lastAddedIndex = getRecentIndexOfTask();
 			taskDigit.add(lastAddedIndex);
 			deleteSingleTask(lastAddedIndex, true);
@@ -811,7 +820,7 @@ public class Logic {
 			}
 		}
 	}
-	
+
 	public void markTaskComplete(Task task) {
 		task.setAsComplete();
 		if (task.isFloatingTask()) {
@@ -826,7 +835,7 @@ public class Logic {
 
 	public void markTaskIncomplete(Task task) {
 		task.setAsIncomplete();
-		//System.out.println(task.getDescription());
+		// System.out.println(task.getDescription());
 		if (task.isFloatingTask()) {
 			floatingTasksComplete.remove(task);
 			addTask(task, true);
@@ -944,7 +953,7 @@ public class Logic {
 			addTask(newTask, true);
 		}
 	}
-	
+
 	public void markAsCompleteListUndoOp(ArrayList<Task> taskList, ArrayList<Integer> indexList) {
 		for (Task task : taskList) {
 			markTaskComplete(task);
