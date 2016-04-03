@@ -54,7 +54,7 @@ public class BottomBottom extends JPanel implements KeyListener {
 		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 		double width = screenSize.getWidth();
 		double height = screenSize.getHeight();
-		int width1 = (int) (width / 3);
+		int width1 = (int) (width / 2);
 		int height1 = (int) (height / 1.2);
 		Help.setSize(width1, height1);
 		Help.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

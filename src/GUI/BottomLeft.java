@@ -26,7 +26,6 @@ public class BottomLeft extends JPanel{
 		double height = screenSize.getHeight();
 		size.height = (int)(height/7.2);
 		setPreferredSize(size);
-		setBorder(BorderFactory.createLineBorder(Color.black));
 		setLayout(new GridBagLayout());
 		GridBagConstraints gc = new GridBagConstraints();
 
