@@ -9,9 +9,7 @@ import ScheduleHacks.Task;
 import ScheduleHacks.OldCommand;
 import ScheduleHacks.OldCommand.COMMAND_TYPE;
 import ScheduleHacks.History;
-import ScheduleHacks.HelpGuide;
 import Parser.CommandParser;
-import Parser.TimeParser;
 import Parser.Command;
 import GUI.BottomBottom;
 import GUI.TempCLI;
@@ -37,8 +35,8 @@ public class Logic {
 	private ArrayList<Task> scheduledTasksComplete = new ArrayList<Task>();
 	private ArrayList<Task> scheduledTasksOverDue = new ArrayList<Task>();
 	private ArrayList<Task> trackConflictingTasks = new ArrayList<Task>();
-	private Integer recentIndex;
-	
+	private Integer recentIndex = -1;
+
 	private static final String FEEDBACK_INVALID_COMMAND = "Invalid Command!";
 	private static final String FEEDBACK_INVALID_COMMAND_TYPE = "Invalid command type entered!";
 	private static final String FEEDBACK_TASK_ADDED = "Task added successfully";
@@ -105,7 +103,7 @@ public class Logic {
 		floatingTasksComplete.clear();
 		floatingTasksComplete = currentTaskList;
 	}
-	
+
 	private void setRecentIndexOfTask(Integer recentIndex) {
 		this.recentIndex = recentIndex;
 	}
@@ -134,15 +132,15 @@ public class Logic {
 	public ArrayList<Task> getFloatingTasksComplete() {
 		return floatingTasksComplete;
 	}
-	
+
 	public Integer getRecentIndexOfTask() {
 		return recentIndex;
 	}
-	
+
 	public boolean isHomeScreen() {
 		return isHomeScreen;
 	}
-	
+
 	public boolean isHighlightOperation() {
 		return isHighlightOperation;
 	}
@@ -165,17 +163,10 @@ public class Logic {
 			setScheduledTasksComplete(storage.getScheduledTasksComplete());
 			setScheduledTasksToDo(storage.getScheduledTasksToDo());
 			setScheduledTasksOverDue(storage.getScheduledTasksOverDue());
-
-			/*
-			 * executeCommand("view 2days"); setFeedBack(
-			 * "Welcome to Schedule Hacks! \n"); setFeedBack(
-			 * "Tasks Due Today and Tomorrow Displayed \n");
-			 * 
-			 * // remove if not needed /* for (int i = 0; i <
-			 * scheduledTasksOverDue.size(); i++) {
-			 * addTask(scheduledTasksOverDue.remove(i), true); }
-			 */
-
+			for (int i = 0; i < scheduledTasksOverDue.size(); i++) {
+				addTask(scheduledTasksOverDue.remove(i), true);
+			}
+			setRecentIndexOfTask(-1);
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
 		}
@@ -234,23 +225,16 @@ public class Logic {
 	public void retrieveParsedCommand(String originalDescription) {
 		try {
 			Command.COMMAND_TYPE typeCommand = null;
-			System.out.print(1);
 			Command existingCommand = CommandParser.getParsedCommand(originalDescription);
-			System.out.print(2);
 			typeCommand = getCommand(existingCommand);
-			System.out.print(3);
 			Task getTaskToExecute = getTaskDescription(existingCommand);
-			System.out.print(4);
-			for (int i=0; i<scheduledTasksOverDue.size(); i++) {
-				addTask(scheduledTasksOverDue.remove(i), true);
-			}
 			execute(typeCommand, existingCommand, getTaskToExecute);
 			trackConflictingTasks.clear();
 			autoChangeTaskStatus();
 			storage.storeToFiles(getFloatingTasksToDo(), getFloatingTasksComplete(), getScheduledTasksToDo(),
 					getScheduledTasksComplete(), getScheduledTasksOverDue());
 		} catch (Exception e) {
-			//e.printStackTrace();
+			// e.printStackTrace();
 			setFeedBack(FEEDBACK_INVALID_COMMAND);
 		}
 	}
@@ -373,13 +357,13 @@ public class Logic {
 	private int addTask(Task executeTask, boolean isUndoOperation) {
 		int indexOfTask = -1;
 
-	if(executeTask.getDescription()==null ||executeTask.getDescription().isEmpty() ) {
+		if (executeTask.getDescription() == null || executeTask.getDescription().isEmpty()) {
 			setFeedBack(FEEDBACK_EMPTY_TASK_DESCRIPTION);
 			return indexOfTask;
 		}
 		indexOfTask = duplicationCheckProcedures(executeTask);
 		setRecentIndexOfTask(indexOfTask);
-		
+
 		if (!isUndoOperation) {
 			ArrayList<Task> taskList = new ArrayList<Task>();
 			ArrayList<Integer> indexList = new ArrayList<Integer>();
@@ -403,18 +387,18 @@ public class Logic {
 		}
 		return position + 1;
 	}
-	
+
 	private int standardAddScheduledTaskProcedures(ArrayList<Task> scheduledTaskList, Task taskAdd, int positionToAdd) {
 		boolean overLapWithTask = true;
-		
+
 		positionToAdd = sortTaskList(scheduledTaskList, taskAdd);
 		overLapWithTask = compareWithScheduledTasks(taskAdd, scheduledTaskList);
 		scheduledTaskList.add(positionToAdd, taskAdd);
 		if (overLapWithTask) {
 			if (trackConflictingTasks.size() == 1) {
-				setFeedBack(FEEDBACK_TASK_ADDED + " but new task is conflicting with " +trackConflictingTasks.get(0).getDescription());
-			}
-			else {
+				setFeedBack(FEEDBACK_TASK_ADDED + " but new task is conflicting with "
+						+ trackConflictingTasks.get(0).getDescription());
+			} else {
 				setFeedBack(FEEDBACK_TASK_ADDED_BUT_ENCOUNTERED_CONFLICTS);
 			}
 		} else {
@@ -422,12 +406,13 @@ public class Logic {
 		}
 		return positionToAdd;
 	}
-	
+
 	private int duplicationCheckProcedures(Task currentTask) {
-		ArrayList<Boolean> duplicate = new ArrayList<Boolean> ();
+		ArrayList<Boolean> duplicate = new ArrayList<Boolean>();
 		boolean checkForDuplication = true;
+		// boolean isDuplicate;
 		int currentIndexOfTask = -1;
-		
+
 		if (currentTask.isScheduledTask()) {
 			checkForDuplication = checkForScheduledDuplication(currentTask, scheduledTasksOverDue);
 			duplicate.add(checkForDuplication);
@@ -437,16 +422,15 @@ public class Logic {
 			checkForDuplication = checkForFloatingDuplication(currentTask, floatingTasksToDo);
 			duplicate.add(checkForDuplication);
 		}
-		
+
 		if (currentTask.isScheduledTask()) {
-			for (int i=0; i<2; i++) {
+			for (int i = 0; i < 2; i++) {
 				if (duplicate.size() == 1) {
 					if (duplicate.get(0) == false) {
-						System.out.print(13);
 						currentIndexOfTask = addTaskInOrder(currentTask);
-						} else if (duplicate.get(0)) {
-							setFeedBack(FEEDBACK_DUPLICATE_TASK_FOUND_WHEN_ADDING);
-						}
+					} else if (duplicate.get(0)) {
+						setFeedBack(FEEDBACK_DUPLICATE_TASK_FOUND_WHEN_ADDING);
+					}
 				} else {
 					if (duplicate.get(i)) {
 						setFeedBack(FEEDBACK_DUPLICATE_TASK_FOUND_WHEN_ADDING);
@@ -459,7 +443,8 @@ public class Logic {
 		} else if (currentTask.isFloatingTask()) {
 			if (duplicate.get(0) == false) {
 				floatingTasksToDo.add(currentTask);
-				currentIndexOfTask = scheduledTasksOverDue.size() + scheduledTasksToDo.size() + floatingTasksToDo.size();
+				currentIndexOfTask = scheduledTasksOverDue.size() + scheduledTasksToDo.size()
+						+ floatingTasksToDo.size();
 				setFeedBack(FEEDBACK_TASK_ADDED);
 			} else if (duplicate.get(0)) {
 				setFeedBack(FEEDBACK_DUPLICATE_TASK_FOUND_WHEN_ADDING);
@@ -468,29 +453,29 @@ public class Logic {
 		duplicate.clear();
 		return currentIndexOfTask;
 	}
-	
+
 	private boolean checkForScheduledDuplication(Task relevantTask, ArrayList<Task> scheduledTasks) {
-		for (int i=0; i<scheduledTasks.size(); i++) {
+		for (int i = 0; i < scheduledTasks.size(); i++) {
 			int tracker = 0;
 			if (relevantTask.getDescription().equals(scheduledTasks.get(i).getDescription())) {
 				tracker++;
 			}
-			if (((relevantTask.getStartDate() != null) && (scheduledTasks.get(i).getStartDate() != null) && 
-					(relevantTask.getStartDate().equals(scheduledTasks.get(i).getStartDate()))) || 
-					(relevantTask.getStartDate() == null) && (scheduledTasks.get(i).getStartDate() == null)) {
+			if (((relevantTask.getStartDate() != null) && (scheduledTasks.get(i).getStartDate() != null)
+					&& (relevantTask.getStartDate().equals(scheduledTasks.get(i).getStartDate())))
+					|| (relevantTask.getStartDate() == null) && (scheduledTasks.get(i).getStartDate() == null)) {
 				tracker++;
 			}
-			if (((relevantTask.getStartTime() != null) && (scheduledTasks.get(i).getStartTime() != null) && 
-					(relevantTask.getStartTime().equals(scheduledTasks.get(i).getStartTime()))) || 
-					(relevantTask.getStartTime() == null) && (scheduledTasks.get(i).getStartTime() == null)) {
+			if (((relevantTask.getStartTime() != null) && (scheduledTasks.get(i).getStartTime() != null)
+					&& (relevantTask.getStartTime().equals(scheduledTasks.get(i).getStartTime())))
+					|| (relevantTask.getStartTime() == null) && (scheduledTasks.get(i).getStartTime() == null)) {
 				tracker++;
 			}
 			if (relevantTask.getEndDate().equals(scheduledTasks.get(i).getEndDate())) {
 				tracker++;
 			}
-			if (((relevantTask.getEndTime() != null) && (scheduledTasks.get(i).getEndTime() != null) && 
-			(relevantTask.getEndTime().equals(scheduledTasks.get(i).getEndTime()))) || 
-			(relevantTask.getEndTime() == null) && (scheduledTasks.get(i).getEndTime() == null)){
+			if (((relevantTask.getEndTime() != null) && (scheduledTasks.get(i).getEndTime() != null)
+					&& (relevantTask.getEndTime().equals(scheduledTasks.get(i).getEndTime())))
+					|| (relevantTask.getEndTime() == null) && (scheduledTasks.get(i).getEndTime() == null)) {
 				tracker++;
 			}
 			if (tracker == 5) {
@@ -499,57 +484,62 @@ public class Logic {
 		}
 		return false;
 	}
-	
+
 	private boolean checkForFloatingDuplication(Task relevantTask, ArrayList<Task> floatingTasks) {
-		for (int i=0; i<floatingTasks.size(); i++) {
-			if (relevantTask.getDescription().equals(floatingTasks.get(i).getDescription())) {
+		for (int i = 0; i < floatingTasks.size(); i++) {
+			if (relevantTask.getDescription().equalsIgnoreCase(floatingTasks.get(i).getDescription())) {
 				return true;
 			}
 		}
 		return false;
 	}
 
-private boolean compareWithScheduledTasks(Task taskForAdd, ArrayList<Task> relevantTaskList) {
-			LocalDateTime taskEndDateTime = null, taskStartDateTime = null;
-			LocalDateTime relevantTaskEndDateTime = null, relevantTaskStartDateTime = null;
-			int trackBlock = 0;
-			
+	private boolean compareWithScheduledTasks(Task taskForAdd, ArrayList<Task> relevantTaskList) {
+		LocalDateTime taskEndDateTime = null, taskStartDateTime = null;
+		LocalDateTime relevantTaskEndDateTime = null, relevantTaskStartDateTime = null;
+		int trackBlock = 0;
+
 		if (taskForAdd.getEndDate() != null) {
 			taskEndDateTime = LocalDateTime.of(taskForAdd.getEndDate(), taskForAdd.getEndTime());
-			}
+		}
 		if (taskForAdd.getStartDate() != null) {
-				taskStartDateTime = LocalDateTime.of(taskForAdd.getStartDate(), taskForAdd.getStartTime());
-			}
-			
-		for (int i=0; i<relevantTaskList.size(); i++) {
-			relevantTaskEndDateTime = LocalDateTime.of(relevantTaskList.get(i).getEndDate(), relevantTaskList.get(i).getEndTime());
+			taskStartDateTime = LocalDateTime.of(taskForAdd.getStartDate(), taskForAdd.getStartTime());
+		}
+
+		for (int i = 0; i < relevantTaskList.size(); i++) {
+			relevantTaskEndDateTime = LocalDateTime.of(relevantTaskList.get(i).getEndDate(),
+					relevantTaskList.get(i).getEndTime());
 			if (relevantTaskList.get(i).getStartDate() != null) {
-				relevantTaskStartDateTime = LocalDateTime.of(relevantTaskList.get(i).getStartDate(), relevantTaskList.get(i).getStartTime());
+				relevantTaskStartDateTime = LocalDateTime.of(relevantTaskList.get(i).getStartDate(),
+						relevantTaskList.get(i).getStartTime());
 			}
-			
+
 			if (relevantTaskStartDateTime != null) {
-				if ((taskStartDateTime != null) && (taskEndDateTime.isAfter(relevantTaskStartDateTime)) && (taskStartDateTime.isBefore(relevantTaskEndDateTime))) {
+				if ((taskStartDateTime != null) && (taskEndDateTime.isAfter(relevantTaskStartDateTime))
+						&& (taskStartDateTime.isBefore(relevantTaskEndDateTime))) {
 					trackBlock++;
 					noteConflictingTask(relevantTaskList.get(i));
-				} else if ((taskStartDateTime == null) && (taskEndDateTime.isAfter(relevantTaskStartDateTime)) && (taskEndDateTime.isBefore(relevantTaskEndDateTime))) {
+				} else if ((taskStartDateTime == null) && (taskEndDateTime.isAfter(relevantTaskStartDateTime))
+						&& (taskEndDateTime.isBefore(relevantTaskEndDateTime))) {
 					trackBlock++;
 					noteConflictingTask(relevantTaskList.get(i));
 				}
 			} else if (relevantTaskStartDateTime == null) {
-				if ((taskStartDateTime != null) && (taskEndDateTime.isAfter(relevantTaskEndDateTime)) && (taskStartDateTime.isBefore(relevantTaskEndDateTime))) {
+				if ((taskStartDateTime != null) && (taskEndDateTime.isAfter(relevantTaskEndDateTime))
+						&& (taskStartDateTime.isBefore(relevantTaskEndDateTime))) {
 					trackBlock++;
 					noteConflictingTask(relevantTaskList.get(i));
 				}
 			}
 		}
-			
+
 		if (trackBlock == 0) {
 			return false;
 		} else {
 			return true;
 		}
 	}
-	
+
 	private void noteConflictingTask(Task conflict) {
 		trackConflictingTasks.add(conflict);
 	}
@@ -584,7 +574,6 @@ private boolean compareWithScheduledTasks(Task taskForAdd, ArrayList<Task> relev
 		return taskPosition;
 	}
 
-
 	/*
 	 * deleteTask from scheduledTasksToDo or floatingTasksToDo based on task
 	 * number
@@ -596,8 +585,10 @@ private boolean compareWithScheduledTasks(Task taskForAdd, ArrayList<Task> relev
 		Task removedTask = null;
 		int lastAddedIndex = -1;
 
-		if (taskDigit == null){
+		if (taskDigit == null || taskDigit.isEmpty()) {
+			taskDigit= new ArrayList<Integer>();
 			lastAddedIndex = getRecentIndexOfTask();
+			taskDigit.add(lastAddedIndex);
 			deleteSingleTask(lastAddedIndex, true);
 		} else {
 			for (int i = taskDigit.size() - 1; i >= 0; i--) {
@@ -655,19 +646,15 @@ private boolean compareWithScheduledTasks(Task taskForAdd, ArrayList<Task> relev
 		int indexToEdit = -1;
 		boolean duplicatedScheduledOverDue = false, duplicated = false;
 
-		/*
-		 * if (indexList == null ||indexList.isEmpty()) { ArrayList<Task>
-		 * listToDelete = getRecentAddedList(); int positionToDelete =
-		 * getRecentAddedPosition(); listToDelete.remove(positionToDelete);
-		 * setFeedBack(FEEDBACK_TASK_DELETED); return; }
-		 */
-		if (indexList == null) {
+		if (indexList == null || indexList.isEmpty()) {
 			indexToEdit = getRecentIndexOfTask();
+
+			indexList = new ArrayList<Integer>();
+			indexList.add(indexToEdit);
 		} else {
 			indexToEdit = indexList.get(0);
-			System.out.print(indexToEdit);
 		}
-		
+
 		if (indexToEdit > 0) {
 			if (indexToEdit <= scheduledTasksOverDue.size()) {
 				taskOriginal = scheduledTasksOverDue.get(indexToEdit - 1);
@@ -689,32 +676,32 @@ private boolean compareWithScheduledTasks(Task taskForAdd, ArrayList<Task> relev
 		if (taskToEdit == null) {
 			setFeedBack(FEEDBACK_NON_EXISTENT_TASK_NUM + "\n" + FEEDBACK_TASK_NOT_MODIFIED);
 		} else {
-			Task editedTask = CommandParser.editExistingTask(taskToEdit, editInfo);	
-			if(editedTask.isScheduledTask()) {
+			Task editedTask = CommandParser.editExistingTask(taskToEdit, editInfo);
+			if (editedTask.isScheduledTask()) {
 				duplicatedScheduledOverDue = checkForScheduledDuplication(editedTask, scheduledTasksOverDue);
 				duplicated = checkForScheduledDuplication(editedTask, scheduledTasksToDo);
-					
 				if ((duplicatedScheduledOverDue) || (duplicated)) {
 					editedTask = taskOriginal;
 					setFeedBack(FEEDBACK_DUPLICATE_TASK_FOUND_WHEN_EDITING);
 				}
 			} else if (editedTask.isFloatingTask()) {
 				duplicated = checkForFloatingDuplication(editedTask, floatingTasksToDo);
-					
+
 				if (duplicated) {
 					editedTask = taskOriginal;
 					setFeedBack(FEEDBACK_DUPLICATE_TASK_FOUND_WHEN_EDITING);
 				}
 			}
-			if ((duplicated == false) && (duplicatedScheduledOverDue == false)){
+			if ((duplicated == false) && (duplicatedScheduledOverDue == false)) {
 				setFeedBack(FEEDBACK_TASK_MODIFIED);
 			}
 			int newIndex = addTask(editedTask, true);
-			
+
 			if (getFeedBack().equals(FEEDBACK_TASK_ADDED)) {
 				setFeedBack(FEEDBACK_TASK_MODIFIED);
 			} else if (trackConflictingTasks.size() == 1) {
-				setFeedBack(FEEDBACK_TASK_MODIFIED + " but new task is conflicting with " +trackConflictingTasks.get(0).getDescription());
+				setFeedBack(FEEDBACK_TASK_MODIFIED + " but new task is conflicting with "
+						+ trackConflictingTasks.get(0).getDescription());
 			} else {
 				setFeedBack(FEEDBACK_TASK_MODIFIED_BUT_ENCOUNTERED_CONFLICTS);
 			}
@@ -726,9 +713,8 @@ private boolean compareWithScheduledTasks(Task taskForAdd, ArrayList<Task> relev
 				OldCommand recentCommand = new OldCommand(COMMAND_TYPE.MODIFY_TASK, taskList, indexList);
 				historyObject.addToUndoList(recentCommand);
 			}
-		} 
+		}
 	}
-
 
 	/*
 	 * adds task into the respective completeArrayList and removes that same
@@ -740,7 +726,8 @@ private boolean compareWithScheduledTasks(Task taskForAdd, ArrayList<Task> relev
 		ArrayList<Task> taskList = new ArrayList<Task>();
 		int indexToComplete = -1;
 
-		if (taskIndex.isEmpty()) {
+		if (taskIndex == null || taskIndex.isEmpty()) {
+			taskIndex = new ArrayList<Integer>();
 			indexToComplete = getRecentIndexOfTask();
 			taskIndex.add(indexToComplete);
 		}
@@ -748,8 +735,7 @@ private boolean compareWithScheduledTasks(Task taskForAdd, ArrayList<Task> relev
 			int taskToComplete = taskIndex.get(i) - 1;
 			if (taskToComplete >= 0) {
 				if (taskToComplete < scheduledTasksOverDue.size()) {
-					Task completedTask = markAsComplete(scheduledTasksOverDue, scheduledTasksComplete,
-							taskToComplete);
+					Task completedTask = markAsComplete(scheduledTasksOverDue, scheduledTasksComplete, taskToComplete);
 					taskList.add(0, completedTask);
 				} else if (taskToComplete < scheduledTasksToDo.size() + scheduledTasksOverDue.size()) {
 					taskToComplete -= (scheduledTasksOverDue.size());
@@ -762,18 +748,18 @@ private boolean compareWithScheduledTasks(Task taskForAdd, ArrayList<Task> relev
 					taskList.add(0, completedTask);
 				} else {
 					setFeedBack(FEEDBACK_NON_EXISTENT_TASK_NUM);
-					}
-				} else {
-					setFeedBack(FEEDBACK_NEGATIVE_TASK_NUM);
 				}
-			}
-
-			if (!isUndoOperation) {
-				// for undo functionality
-				OldCommand recentCommand = new OldCommand(COMMAND_TYPE.COMPLETE_TASK, taskList, taskIndex);
-				historyObject.addToUndoList(recentCommand);
+			} else {
+				setFeedBack(FEEDBACK_NEGATIVE_TASK_NUM);
 			}
 		}
+
+		if (!isUndoOperation) {
+			// for undo functionality
+			OldCommand recentCommand = new OldCommand(COMMAND_TYPE.COMPLETE_TASK, taskList, taskIndex);
+			historyObject.addToUndoList(recentCommand);
+		}
+	}
 
 	public Task markAsComplete(ArrayList<Task> incompleteList, ArrayList<Task> completeList, int taskNum) {
 		Task completeTask = incompleteList.remove(taskNum);
@@ -825,9 +811,22 @@ private boolean compareWithScheduledTasks(Task taskForAdd, ArrayList<Task> relev
 			}
 		}
 	}
+	
+	public void markTaskComplete(Task task) {
+		task.setAsComplete();
+		if (task.isFloatingTask()) {
+			floatingTasksToDo.remove(task);
+			floatingTasksComplete.add(task);
+		} else if (task.isScheduledTask()) {
+			scheduledTasksOverDue.remove(task);
+			scheduledTasksToDo.remove(task);
+			scheduledTasksComplete.add(task);
+		}
+	}
 
 	public void markTaskIncomplete(Task task) {
 		task.setAsIncomplete();
+		//System.out.println(task.getDescription());
 		if (task.isFloatingTask()) {
 			floatingTasksComplete.remove(task);
 			addTask(task, true);
@@ -879,10 +878,10 @@ private boolean compareWithScheduledTasks(Task taskForAdd, ArrayList<Task> relev
 				deleteTask(toUndo.getIndexList(), true);
 				break;
 			case COMPLETE_TASK:
-				completeTask(toUndo.getIndexList(), true);
+				markAsCompleteListUndoOp(toUndo.getTaskList(), toUndo.getIndexList());
 				break;
 			case INCOMPLETE_TASK:
-				markAsIncompleteList(toUndo.getTaskList(), toUndo.getIndexList());
+				markAsIncompleteListUndoOp(toUndo.getTaskList(), toUndo.getIndexList());
 				break;
 			case MODIFY_TASK:
 				/*
@@ -916,10 +915,10 @@ private boolean compareWithScheduledTasks(Task taskForAdd, ArrayList<Task> relev
 				deleteTask(toRedo.getIndexList(), true);
 				break;
 			case COMPLETE_TASK:
-				completeTask(toRedo.getIndexList(), true);
+				markAsCompleteListUndoOp(toRedo.getTaskList(), toRedo.getIndexList());
 				break;
 			case INCOMPLETE_TASK:
-				markAsIncompleteList(toRedo.getTaskList(), toRedo.getIndexList());
+				markAsIncompleteListUndoOp(toRedo.getTaskList(), toRedo.getIndexList());
 				break;
 			case MODIFY_TASK:
 				/*
@@ -945,8 +944,14 @@ private boolean compareWithScheduledTasks(Task taskForAdd, ArrayList<Task> relev
 			addTask(newTask, true);
 		}
 	}
+	
+	public void markAsCompleteListUndoOp(ArrayList<Task> taskList, ArrayList<Integer> indexList) {
+		for (Task task : taskList) {
+			markTaskComplete(task);
+		}
+	}
 
-	public void markAsIncompleteList(ArrayList<Task> taskList, ArrayList<Integer> indexList) {
+	public void markAsIncompleteListUndoOp(ArrayList<Task> taskList, ArrayList<Integer> indexList) {
 		for (Task task : taskList) {
 			markTaskIncomplete(task);
 		}
@@ -966,7 +971,6 @@ private boolean compareWithScheduledTasks(Task taskForAdd, ArrayList<Task> relev
 		}
 		setFeedBack(FEEDBACK_TASK_DELETED);
 	}
-
 
 	private void searchTask(Task taskToFind) {
 		if ((taskToFind.getDescription() != null) && !(taskToFind.getDescription().isEmpty())) {

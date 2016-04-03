@@ -78,12 +78,6 @@ public class CommandParser {
 				case SET_DIRECTORY:
 					newTask = setDirectory(taskStatement);
 					break;
-				case BLOCK_SLOT:
-					newTask = blockSlot(taskStatement);
-					break;
-				case UNBLOCK_SLOT:
-					newTask = blockSlot(taskStatement);
-					break;
 				default:
 					// do nothing
 					break;
@@ -503,28 +497,7 @@ public class CommandParser {
 
 		return newTask;
 	}
-
-	private static Task blockSlot(String taskStatement) {
-		Task newTask = new Task();
-
-		DateParser dateParser = new DateParser(taskStatement);
-		dateParser.findDates();
-		ArrayList<LocalDate> dateList = dateParser.getDateList();
-
-		TimeParser timeParser = new TimeParser(dateParser.getTaskDetails());
-		timeParser.findTimes();
-		ArrayList<LocalTime> timeList = timeParser.getTimeList();
-
-		DateTimeParser objDateTime = new DateTimeParser(dateList, timeList);
-		objDateTime.arrangeDateTimeList();
-
-		newTask.setDescription(ParserConstants.STRING_EMPTY);
-		setDates(objDateTime.getDateList(), newTask);
-		setTimes(objDateTime.getTimeList(), newTask);
-
-		return newTask;
-	}
-
+	
 	/**
 	 * This method helps convert a floating task to a scheduled/upcoming task
 	 * 
