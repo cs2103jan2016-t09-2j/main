@@ -1,5 +1,6 @@
 package GUI;
 
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.Toolkit;
@@ -10,6 +11,8 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextPane;
 import javax.swing.text.BadLocationException;
+import javax.swing.text.DefaultHighlighter;
+import javax.swing.text.DefaultHighlighter.DefaultHighlightPainter;
 import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
@@ -35,11 +38,14 @@ public class TopRightPanel extends JPanel {
 	private static SimpleAttributeSet header = new SimpleAttributeSet();
 	private static SimpleAttributeSet taskInfo = new SimpleAttributeSet();
 
+	private static DefaultHighlighter highlighter = new DefaultHighlighter();
+	private static DefaultHighlightPainter painter = new DefaultHighlightPainter(Color.YELLOW);
+
 	public TopRightPanel() {
 		Dimension size = getPreferredSize();
 		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 		double height = screenSize.getHeight();
-		size.height = (int)(height/2.2);
+		size.height = (int) (height / 2.2);
 		setPreferredSize(size);
 		setBorder(BorderFactory.createTitledBorder(""));
 
@@ -49,15 +55,16 @@ public class TopRightPanel extends JPanel {
 		// textArea.setLineWrap(true);
 		// textArea.setWrapStyleWord(true);
 		textArea.setEditable(false);
-	
+		textArea.setHighlighter(highlighter);
+
 		StyleConstants.setFontFamily(header, "Comic Sans");
 		StyleConstants.setAlignment(header, StyleConstants.ALIGN_CENTER);
 		StyleConstants.setBold(header, true);
-		
+
 		StyleConstants.setFontFamily(taskInfo, "Comic Sans");
 		StyleConstants.setFontSize(taskInfo, 13);
 		StyleConstants.setLineSpacing(taskInfo, (float) 0.4);
-		
+
 		add(scrollPane);
 		logicObj.firstRun();
 	}
@@ -90,6 +97,7 @@ public class TopRightPanel extends JPanel {
 
 	public static void printSearchQuery(ArrayList<Task> List, ArrayList<Integer> indexList) {
 		try {
+			int count = 0;
 			document = textArea.getStyledDocument();
 			document.insertString(document.getLength(), "Search Results (" + indexList.size() + " results)\n\n",
 					header);
@@ -100,7 +108,7 @@ public class TopRightPanel extends JPanel {
 				document.insertString(document.getLength(), indexList.get(count) + ". " + string + "\n", taskInfo);
 				count++;
 			}
-			document.setParagraphAttributes(end, document.getLength(), taskInfo,true);
+			document.setParagraphAttributes(end, document.getLength(), taskInfo, true);
 			textArea.setStyledDocument(document);
 		} catch (BadLocationException e) {
 			// do nothing
@@ -109,21 +117,31 @@ public class TopRightPanel extends JPanel {
 
 	public static void printOut(ArrayList<Task> List, ArrayList<Integer> indexList) {
 		try {
-			int count = 0;
+			highlighter.removeAllHighlights();
+			int indexToHighlight = logicObj.getRecentIndexOfTask();
+			int count = 0, positionToScroll = -1;
 			document = textArea.getStyledDocument();
 			document.insertString(document.getLength(), FLOATING_HEADER + "\n\n", header);
-			document.setParagraphAttributes(0, document.getLength(), header, false);
+			document.setParagraphAttributes(0, document.getLength(), header, true);
 			int end = document.getLength();
 			if (List != null) {
 				for (Task task : List) {
+					int startPos = document.getLength();
 					String string = task.getDescription();
-					document.insertString(document.getLength(), indexList.get(count) + ".",taskInfo);
+					document.insertString(document.getLength(), indexList.get(count) + ".", taskInfo);
 					document.insertString(document.getLength(), " " + string + "\n", taskInfo);
+					if (logicObj.isHighlightOperation() && indexList.get(count) == indexToHighlight) {
+						highlighter.addHighlight(startPos, document.getLength(), painter);
+						positionToScroll = document.getLength();
+					}
 					count++;
 				}
 			}
-			document.setParagraphAttributes(end, document.getLength(), taskInfo,true);
+			document.setParagraphAttributes(end, document.getLength(), taskInfo, true);
 			textArea.setStyledDocument(document);
+			if (positionToScroll >= 0) {
+				textArea.setCaretPosition(positionToScroll);
+			}
 		} catch (BadLocationException e) {
 			// do nothing
 		}
@@ -138,13 +156,13 @@ public class TopRightPanel extends JPanel {
 		count = 0;
 		document = textArea.getStyledDocument();
 		try {
-			document.insertString(document.getLength(),FLOATING_HEADER + "\n\n", header);
+			document.insertString(document.getLength(), FLOATING_HEADER + "\n\n", header);
 			document.setParagraphAttributes(0, document.getLength(), header, false);
 			int end = document.getLength();
 			if (firstList != null) {
 				for (Task task : firstList) {
 					String string = task.getDescription();
-					document.insertString(document.getLength(),indexList.get(count) + ". " + string + "\n", taskInfo);
+					document.insertString(document.getLength(), indexList.get(count) + ". " + string + "\n", taskInfo);
 					count++;
 				}
 			}

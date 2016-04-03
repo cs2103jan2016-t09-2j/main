@@ -137,17 +137,13 @@ public class HelpGuide {
 	}
 
 	public void completeGuide() {
-		completeAndIncompleteList.add("**********COMPLETE**********");
-		completeAndIncompleteList.add("\n");
-		completeAndIncompleteList.add("      complete <index>");
+		completeAndIncompleteList.add("**********MARK COMPLETE**********");
 		completeAndIncompleteList.add("\n");
 		completeAndIncompleteList.add("      done <index>, <index>, <index> ");
 		completeAndIncompleteList.add("\n");
 		completeAndIncompleteList.add("      finish <index range>");
 		completeAndIncompleteList.add("\n");
-		completeAndIncompleteList.add("**********INCOMPLETE**********");
-		completeAndIncompleteList.add("\n");
-		completeAndIncompleteList.add("      incomplete <index>");
+		completeAndIncompleteList.add("**********MARK INCOMPLETE**********");
 		completeAndIncompleteList.add("\n");
 		completeAndIncompleteList.add("      undone <index>, <index>, <index> ");
 		completeAndIncompleteList.add("\n");

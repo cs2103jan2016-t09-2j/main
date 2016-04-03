@@ -8,6 +8,8 @@ import java.time.LocalDate;
 
 public class Search {
 
+	private static final String STRING_WHITESPACE = " ";
+
 	static int count = 1;
 	private ArrayList<Task> matchedTaskList = new ArrayList<Task>();
 	private ArrayList<Integer> indexList = new ArrayList<Integer>();
@@ -21,7 +23,7 @@ public class Search {
 	}
 
 	public void searchTask(Task taskToFind) {
-		count = 1;
+		count = 0;
 		Logic obj = Logic.getInstance();
 
 		findMatches(obj.getScheduledTasksOverDue(), taskToFind);
@@ -32,56 +34,55 @@ public class Search {
 	}
 
 	public void findMatches(ArrayList<Task> sourceList, Task taskToFind) {
-
-		/*
-		 * if (taskToFind.isComplete()) { matchComplete(sourceList,
-		 * destinationList); }
-		 */
-
 		if (sourceList != null && !sourceList.isEmpty()) {
 			for (Task task : sourceList) {
-
-				// matching description
-				if (taskToFind.getDescription() != null && !taskToFind.getDescription().isEmpty()) {
-					matchDescription(taskToFind, task);
-				}
-
+				count++;
 				// matching complete
 				if (taskToFind.isComplete() && task.isComplete()) {
 					indexList.add(count);
 					matchedTaskList.add(task);
+					continue;
 				}
-
+				// matching description
+				if (taskToFind.getDescription() != null && !taskToFind.getDescription().isEmpty()) {
+					if (hasMatchDescription(taskToFind, task)) {
+						continue;
+					}
+				}
 				// matching only end date
 				if (taskToFind.getEndDate() != null && taskToFind.getStartDate() == null) {
-					matchSingleDate(taskToFind, task);
+					if (hasMatchSingleDate(taskToFind, task)) {
+						continue;
+					}
 				}
-
 				// matching date range
 				if (taskToFind.getEndDate() != null && taskToFind.getStartDate() != null) {
-					matchDateRange(taskToFind, task);
+					if (hasMatchDateRange(taskToFind, task)) {
+						continue;
+					}
 				}
-
-				count++;
 			}
 		}
 	}
 
-	public void matchSingleDate(Task taskToFind, Task taskToCheck) {
+	public boolean hasMatchSingleDate(Task taskToFind, Task taskToCheck) {
 		LocalDate dateToFind = taskToFind.getEndDate();
 		if (taskToCheck.isScheduledTask()) {
 			if (taskToCheck.getStartDate() != null && taskToCheck.getStartDate().isEqual(dateToFind)) {
 				indexList.add(count);
 				matchedTaskList.add(taskToCheck);
+				return true;
 			}
 			if (taskToCheck.getEndDate().isEqual(dateToFind)) {
 				indexList.add(count);
 				matchedTaskList.add(taskToCheck);
+				return true;
 			}
 		}
+		return false;
 	}
 
-	public void matchDateRange(Task taskToFind, Task taskToCheck) {
+	public boolean hasMatchDateRange(Task taskToFind, Task taskToCheck) {
 		LocalDate startDate = taskToFind.getStartDate();
 		LocalDate endDate = taskToFind.getEndDate();
 
@@ -92,37 +93,57 @@ public class Search {
 				if (dateLiesInRange(taskStartDate, startDate, endDate)) {
 					indexList.add(count);
 					matchedTaskList.add(taskToCheck);
-					return;
+					return true;
 				} else if (taskStartDate.isBefore(startDate) && taskEndDate.isAfter(endDate)) {
 					indexList.add(count);
 					matchedTaskList.add(taskToCheck);
-					return;
+					return true;
 				}
 			}
 			if (dateLiesInRange(taskEndDate, startDate, endDate)) {
 				indexList.add(count);
 				matchedTaskList.add(taskToCheck);
+				return true;
 			}
 		}
+		return false;
 	}
 
-	public void matchDescription(Task taskToFind, Task taskToCheck) {
+	public boolean hasMatchDescription(Task taskToFind, Task taskToCheck) {
 		String descToFind = taskToFind.getDescription().toLowerCase();
 		if (descToFind.length() == 1) {
 			if (taskToCheck.getDescription().toLowerCase().startsWith(descToFind)) {
 				indexList.add(count);
 				matchedTaskList.add(taskToCheck);
+				return true;
 			}
 		} else {
-			if (taskToCheck.getDescription().toLowerCase().contains(descToFind)) {
+			String[] wordList = descToFind.split(STRING_WHITESPACE);
+			if (areWordsPresent(wordList, taskToCheck.getDescription().toLowerCase())) {
 				indexList.add(count);
 				matchedTaskList.add(taskToCheck);
+				return true;
 			}
 		}
+		return false;
 	}
 
 	public boolean dateLiesInRange(LocalDate dateToCheck, LocalDate startDate, LocalDate endDate) {
 		return dateToCheck.isEqual(startDate) || dateToCheck.isEqual(endDate)
 				|| (dateToCheck.isAfter(startDate) && dateToCheck.isBefore(endDate));
+	}
+
+	public boolean areWordsPresent(String[] wordList, String text) {
+		if (wordList.length == 0) {
+			return false;
+		}
+		for (String word : wordList) {
+			if (word.length() > 1) {
+				if (!text.contains(word)) {
+					return false;
+				}
+			}
+		}
+		return true;
 	}
 }

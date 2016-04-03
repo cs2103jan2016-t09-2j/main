@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 
-import Parser.Command.COMMAND_TYPE;
 
 public class IndexParser {
 

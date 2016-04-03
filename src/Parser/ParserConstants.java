@@ -6,7 +6,7 @@ public class ParserConstants {
 	static final String[] COMMAND_ADD = { "add", "+", "a" };
 	static final String[] COMMAND_DELETE = { "delete", "d", "del", "-", "remove", "rm" };
 	static final String[] COMMAND_MODIFY = { "edit", "update", "change", "e" };
-	static final String[] COMMAND_COMPLETE = { "complete", "done", "completed", "finished", "archive" };
+	static final String[] COMMAND_COMPLETE = {"done", "completed", "archive" };
 	static final String[] COMMAND_INCOMPLETE = {"undone"};
 	static final String[] COMMAND_VIEW = { "view", "v", "show", "display" };
 	static final String[] COMMAND_SEARCH = { "search", "find" };
@@ -133,9 +133,12 @@ public class ParserConstants {
 	static final String TIME_FORMAT_12HOUR_MIN_AMPM_WITH_COLON_WITH_SPACE = "h:mm a";
 	static final String TIME_FORMAT_12HOUR_AMPM_WITHOUT_SPACE = "ha";
 	static final String TIME_FORMAT_12HOUR_AMPM_WITH_SPACE = "h a";
-	static final String TIME_FORMAT_24HOUR = "Hmm";
 	static final String TIME_FORMAT_24HOUR_COLON = "H:mm";
 	static final String TIME_FORMAT_24HOUR_PERIOD = "H.mm";
+	static final String TIME_FORMAT_24HOUR_MIN = "Hmm";
+	
+	static final String TIME_FORMAT_12HOUR_MIN = "hmm";
+	static final String TIME_FORMAT_12HOUR = "h";
 
 	static final String[] TIME_DURATION = { "mins", "min", "minutes", "minute", "hr", "hrs", "hours", "hour" };
 	static final int LAST_INDEX_OF_MIN = 3;
