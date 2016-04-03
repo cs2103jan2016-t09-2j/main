@@ -50,7 +50,6 @@ public class BottomLeft extends JPanel{
 	}
 
 	public String getText(){
-		System.out.println(text);
 		return text;
 	}
 

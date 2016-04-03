@@ -31,8 +31,6 @@ public class History {
 
 	public void addToUndoList(OldCommand cmd) {
 		OldCommand tempCmd = new OldCommand(cmd.getCommandType(), cmd.getTaskList(), cmd.getIndexList());
-		//System.out.println(cmd.getCommandType());
-		//System.out.println(cmd.getIndexList());
 		undoDeque.addFirst(execute(tempCmd));
 	}
 
@@ -46,7 +44,6 @@ public class History {
 			throw new Exception("Empty Undo Stack");
 		}
 		OldCommand getUndo = undoDeque.removeFirst();
-		//System.out.println("##"+getUndo.getCommandType()+"^^"+getUndo.getIndexList());
 		addToRedoList(getUndo);
 		return getUndo;
 	}
