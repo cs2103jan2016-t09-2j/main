@@ -119,7 +119,8 @@ public class Search {
 			}
 		} else {
 			String[] wordList = descToFind.split(STRING_WHITESPACE);
-			if (areWordsPresent(wordList, taskToCheck.getDescription().toLowerCase())) {
+			if (areWordsPresent(wordList, taskToCheck.getDescription().toLowerCase())
+					|| descToFind.equalsIgnoreCase(taskToCheck.getDescription())) {
 				indexList.add(count);
 				matchedTaskList.add(taskToCheck);
 				return true;
@@ -147,7 +148,7 @@ public class Search {
 				countOneLetterWords++;
 			}
 		}
-		if(countOneLetterWords == wordList.length) {
+		if (countOneLetterWords == wordList.length) {
 			return false;
 		}
 		return true;

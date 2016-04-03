@@ -234,7 +234,7 @@ public class Logic {
 			storage.storeToFiles(getFloatingTasksToDo(), getFloatingTasksComplete(), getScheduledTasksToDo(),
 					getScheduledTasksComplete(), getScheduledTasksOverDue());
 		} catch (Exception e) {
-			//e.printStackTrace();
+			// e.printStackTrace();
 			setFeedBack(FEEDBACK_INVALID_COMMAND);
 		}
 	}
@@ -585,8 +585,10 @@ public class Logic {
 		Task removedTask = null;
 		int lastAddedIndex = -1;
 
-		if (taskDigit == null) {
+		if (taskDigit == null || taskDigit.isEmpty()) {
+			taskDigit= new ArrayList<Integer>();
 			lastAddedIndex = getRecentIndexOfTask();
+			taskDigit.add(lastAddedIndex);
 			deleteSingleTask(lastAddedIndex, true);
 		} else {
 			for (int i = taskDigit.size() - 1; i >= 0; i--) {
@@ -646,14 +648,12 @@ public class Logic {
 
 		if (indexList == null || indexList.isEmpty()) {
 			indexToEdit = getRecentIndexOfTask();
-			
+
 			indexList = new ArrayList<Integer>();
 			indexList.add(indexToEdit);
 		} else {
 			indexToEdit = indexList.get(0);
 		}
-		
-		
 
 		if (indexToEdit > 0) {
 			if (indexToEdit <= scheduledTasksOverDue.size()) {
@@ -726,7 +726,8 @@ public class Logic {
 		ArrayList<Task> taskList = new ArrayList<Task>();
 		int indexToComplete = -1;
 
-		if (taskIndex.isEmpty()) {
+		if (taskIndex == null || taskIndex.isEmpty()) {
+			taskIndex = new ArrayList<Integer>();
 			indexToComplete = getRecentIndexOfTask();
 			taskIndex.add(indexToComplete);
 		}
@@ -810,9 +811,22 @@ public class Logic {
 			}
 		}
 	}
+	
+	public void markTaskComplete(Task task) {
+		task.setAsComplete();
+		if (task.isFloatingTask()) {
+			floatingTasksToDo.remove(task);
+			floatingTasksComplete.add(task);
+		} else if (task.isScheduledTask()) {
+			scheduledTasksOverDue.remove(task);
+			scheduledTasksToDo.remove(task);
+			scheduledTasksComplete.add(task);
+		}
+	}
 
 	public void markTaskIncomplete(Task task) {
 		task.setAsIncomplete();
+		//System.out.println(task.getDescription());
 		if (task.isFloatingTask()) {
 			floatingTasksComplete.remove(task);
 			addTask(task, true);
@@ -864,10 +878,10 @@ public class Logic {
 				deleteTask(toUndo.getIndexList(), true);
 				break;
 			case COMPLETE_TASK:
-				completeTask(toUndo.getIndexList(), true);
+				markAsCompleteListUndoOp(toUndo.getTaskList(), toUndo.getIndexList());
 				break;
 			case INCOMPLETE_TASK:
-				markAsIncompleteList(toUndo.getTaskList(), toUndo.getIndexList());
+				markAsIncompleteListUndoOp(toUndo.getTaskList(), toUndo.getIndexList());
 				break;
 			case MODIFY_TASK:
 				/*
@@ -901,10 +915,10 @@ public class Logic {
 				deleteTask(toRedo.getIndexList(), true);
 				break;
 			case COMPLETE_TASK:
-				completeTask(toRedo.getIndexList(), true);
+				markAsCompleteListUndoOp(toRedo.getTaskList(), toRedo.getIndexList());
 				break;
 			case INCOMPLETE_TASK:
-				markAsIncompleteList(toRedo.getTaskList(), toRedo.getIndexList());
+				markAsIncompleteListUndoOp(toRedo.getTaskList(), toRedo.getIndexList());
 				break;
 			case MODIFY_TASK:
 				/*
@@ -930,8 +944,14 @@ public class Logic {
 			addTask(newTask, true);
 		}
 	}
+	
+	public void markAsCompleteListUndoOp(ArrayList<Task> taskList, ArrayList<Integer> indexList) {
+		for (Task task : taskList) {
+			markTaskComplete(task);
+		}
+	}
 
-	public void markAsIncompleteList(ArrayList<Task> taskList, ArrayList<Integer> indexList) {
+	public void markAsIncompleteListUndoOp(ArrayList<Task> taskList, ArrayList<Integer> indexList) {
 		for (Task task : taskList) {
 			markTaskIncomplete(task);
 		}
