@@ -5,6 +5,7 @@ import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.Toolkit;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -32,16 +33,21 @@ public class TopLeftPanel extends JPanel {
 	private static DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("dd-MM-uuuu");
 	private static JTextPane textArea;
 	private JScrollPane scrollPane;
-	private static String SCHEDULE_HEADER = "UPCOMING TASKS";
-	private static String OVERDUE_HEADER = "OVERDUE TASKS";
+	private static final String SCHEDULE_HEADER = "UPCOMING TASKS";
+	private static final String OVERDUE_HEADER = "OVERDUE TASKS";
 
 	private static StyledDocument document;
 
 	private static SimpleAttributeSet header = new SimpleAttributeSet();
 	private static SimpleAttributeSet taskInfo = new SimpleAttributeSet();
+	private static SimpleAttributeSet checkMark = new SimpleAttributeSet();
+	private static SimpleAttributeSet exclaimMark = new SimpleAttributeSet();
 
 	private static DefaultHighlighter highlighter = new DefaultHighlighter();
 	private static DefaultHighlightPainter painter = new DefaultHighlightPainter(Color.YELLOW);
+
+	private static final String CHECK_MARK = "\u2714 ";
+	private static final String EXCLAMATION_MARK = "\u25cf  ";
 
 	private static Logic logicObj = Logic.getInstance();
 
@@ -59,8 +65,6 @@ public class TopLeftPanel extends JPanel {
 		textArea.setEditable(false);
 		textArea.setHighlighter(highlighter);
 		scrollPane = new JScrollPane(textArea);
-		// textArea.setLineWrap(true);
-		// textArea.setWrapStyleWord(true);
 
 		StyleConstants.setFontFamily(header, "Comic Sans");
 		StyleConstants.setAlignment(header, StyleConstants.ALIGN_CENTER);
@@ -69,6 +73,16 @@ public class TopLeftPanel extends JPanel {
 		StyleConstants.setFontFamily(taskInfo, "Comic Sans");
 		StyleConstants.setFontSize(taskInfo, 13);
 		StyleConstants.setLineSpacing(taskInfo, (float) 0.4);
+
+		StyleConstants.setFontFamily(checkMark, "Comic Sans");
+		StyleConstants.setFontSize(checkMark, 16);
+		StyleConstants.setBold(checkMark, true);
+		StyleConstants.setForeground(checkMark, new Color(0, 153, 0));
+		
+		StyleConstants.setFontFamily(exclaimMark, "Comic Sans");
+		StyleConstants.setFontSize(exclaimMark, 10);
+		//StyleConstants.setBold(exclaimMark, true);
+		StyleConstants.setForeground(exclaimMark, new Color(255, 0, 0));
 
 		add(scrollPane);
 	}
@@ -116,7 +130,15 @@ public class TopLeftPanel extends JPanel {
 			for (Task task : List) {
 				// System.out.println(task.getDescription());
 				String string = task.getDescription();
-				document.insertString(document.getLength(), indexList.get(count) + ". " + string + "\n", taskInfo);
+				document.insertString(document.getLength(), indexList.get(count) + ". ", taskInfo);
+				if (task.isComplete()) {
+					document.insertString(document.getLength(), CHECK_MARK, checkMark);
+				} else {
+					if(LocalDateTime.of(task.getEndDate(), task.getEndTime()).isBefore(LocalDateTime.now())) {
+						document.insertString(document.getLength(), EXCLAMATION_MARK, exclaimMark);
+					}
+				}
+				document.insertString(document.getLength(), string + "\n", taskInfo);
 				if (task.getStartDate() != null && task.getStartTime() != null) {
 					document.insertString(document.getLength(), "\t From ", taskInfo);
 					if (!task.getStartTime().equals(LocalTime.MAX)) {
@@ -143,7 +165,8 @@ public class TopLeftPanel extends JPanel {
 
 	public static void printOutSO(ArrayList<Task> List, String type, ArrayList<Integer> indexList) {
 		int indexToHighlight = logicObj.getRecentIndexOfTask();
-		//System.out.println(indexToHighlight+ "*" + logicObj.isHighlightOperation());
+		// System.out.println(indexToHighlight+ "*" +
+		// logicObj.isHighlightOperation());
 		int count = 0;
 		int end, positionToScroll = -1;
 		try {
@@ -159,7 +182,15 @@ public class TopLeftPanel extends JPanel {
 			for (Task task : List) {
 				String string = task.getDescription();
 				int startPos = document.getLength();
-				document.insertString(document.getLength(), indexList.get(count) + ". " + string + "\n", taskInfo);
+				document.insertString(document.getLength(), indexList.get(count) + ". ", taskInfo);
+				if (task.isComplete()) {
+					document.insertString(document.getLength(), CHECK_MARK, checkMark);
+				} else {
+					if(type.equalsIgnoreCase("overdue")) {
+						document.insertString(document.getLength(), EXCLAMATION_MARK, exclaimMark);
+					}
+				}
+				document.insertString(document.getLength(), string + "\n", taskInfo);
 				if (task.getStartDate() != null && task.getStartTime() != null) {
 					document.insertString(document.getLength(), "\t From ", taskInfo);
 					if (!task.getStartTime().equals(LocalTime.MAX)) {
@@ -180,7 +211,7 @@ public class TopLeftPanel extends JPanel {
 				document.insertString(document.getLength(), "\n", taskInfo);
 				if (logicObj.isHighlightOperation() && indexList.get(count) == indexToHighlight) {
 					highlighter.addHighlight(startPos, endPos, painter);
-					positionToScroll = (int)(startPos + endPos)/2;
+					positionToScroll = (int) (startPos + endPos) / 2;
 				}
 				count++;
 			}
@@ -210,8 +241,8 @@ public class TopLeftPanel extends JPanel {
 				for (Task task : firstList) {
 					if (!task.getEndDate().isAfter(today)) {
 						String string = task.getDescription();
-						document.insertString(document.getLength(), indexList.get(count) + ". " + string + "\n",
-								taskInfo);
+						document.insertString(document.getLength(), indexList.get(count) + ". ", taskInfo);
+						document.insertString(document.getLength(), string + "\n", taskInfo);
 						if (task.getStartDate() != null && task.getStartTime() != null) {
 							document.insertString(document.getLength(), "\t From ", taskInfo);
 							if (!task.getStartTime().equals(LocalTime.MAX)) {
@@ -220,8 +251,7 @@ public class TopLeftPanel extends JPanel {
 							}
 							document.insertString(document.getLength(), task.getStartDate().format(dateFormat),
 									taskInfo);
-							document.insertString(document.getLength(),"\n",
-									taskInfo);
+							document.insertString(document.getLength(), "\n", taskInfo);
 							document.insertString(document.getLength(), "\t To ", taskInfo);
 						} else {
 							document.insertString(document.getLength(), "\t By ", taskInfo);
@@ -249,14 +279,21 @@ public class TopLeftPanel extends JPanel {
 				for (int index = count; index < firstList.size(); index++) {
 					Task task = firstList.get(index);
 					String string = task.getDescription();
-					document.insertString(document.getLength(), indexList.get(count) + ". " + string + "\n", taskInfo);
+					document.insertString(document.getLength(), indexList.get(count) + ". ", taskInfo);
+					if (task.isComplete()) {
+						document.insertString(document.getLength(), CHECK_MARK, checkMark);
+					}
+					document.insertString(document.getLength(), string + "\n", taskInfo);
+					// document.insertString(document.getLength(),
+					// indexList.get(count) + ". " + string + "\n", taskInfo);
 					if (task.getStartDate() != null && task.getStartTime() != null) {
 						document.insertString(document.getLength(), "\t From ", taskInfo);
 						if (!task.getStartTime().equals(LocalTime.MAX)) {
 							document.insertString(document.getLength(), task.getStartTime().toString() + ", ",
 									taskInfo);
 						}
-						document.insertString(document.getLength(), task.getStartDate().format(dateFormat)+"\n", taskInfo);
+						document.insertString(document.getLength(), task.getStartDate().format(dateFormat) + "\n",
+								taskInfo);
 						document.insertString(document.getLength(), "\t To ", taskInfo);
 					} else {
 						document.insertString(document.getLength(), "\t By ", taskInfo);

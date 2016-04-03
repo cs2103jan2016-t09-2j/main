@@ -31,12 +31,15 @@ public class TopRightPanel extends JPanel {
 	private static JTextPane textArea;
 	private JScrollPane scrollPane;
 	private static int count;
-	private static String FLOATING_HEADER = "TRIVIAL TASKS";
+	private static final String FLOATING_HEADER = "TRIVIAL TASKS";
 
 	private static StyledDocument document;
 
+	private static final String CHECK_MARK = "\u2714 ";
+
 	private static SimpleAttributeSet header = new SimpleAttributeSet();
 	private static SimpleAttributeSet taskInfo = new SimpleAttributeSet();
+	private static SimpleAttributeSet checkMark = new SimpleAttributeSet();
 
 	private static DefaultHighlighter highlighter = new DefaultHighlighter();
 	private static DefaultHighlightPainter painter = new DefaultHighlightPainter(Color.YELLOW);
@@ -65,6 +68,11 @@ public class TopRightPanel extends JPanel {
 		StyleConstants.setFontSize(taskInfo, 13);
 		StyleConstants.setLineSpacing(taskInfo, (float) 0.4);
 
+		StyleConstants.setFontFamily(checkMark, "Comic Sans");
+		StyleConstants.setFontSize(checkMark, 16);
+		StyleConstants.setBold(checkMark, true);
+		StyleConstants.setForeground(checkMark, new Color(0, 153, 0));
+		
 		add(scrollPane);
 		logicObj.firstRun();
 	}
@@ -105,7 +113,11 @@ public class TopRightPanel extends JPanel {
 			int end = document.getLength();
 			for (Task task : List) {
 				String string = task.getDescription();
-				document.insertString(document.getLength(), indexList.get(count) + ". " + string + "\n", taskInfo);
+				document.insertString(document.getLength(), indexList.get(count) + ". ", taskInfo);
+				if (task.isComplete()) {
+					document.insertString(document.getLength(), CHECK_MARK, checkMark);
+				}
+				document.insertString(document.getLength(), string + "\n", taskInfo);
 				count++;
 			}
 			document.setParagraphAttributes(end, document.getLength(), taskInfo, true);
@@ -128,8 +140,11 @@ public class TopRightPanel extends JPanel {
 				for (Task task : List) {
 					int startPos = document.getLength();
 					String string = task.getDescription();
-					document.insertString(document.getLength(), indexList.get(count) + ".", taskInfo);
-					document.insertString(document.getLength(), " " + string + "\n", taskInfo);
+					document.insertString(document.getLength(), indexList.get(count) + ". ", taskInfo);
+					if (task.isComplete()) {
+						document.insertString(document.getLength(), CHECK_MARK, checkMark);
+					}
+					document.insertString(document.getLength(), string + "\n", taskInfo);
 					if (logicObj.isHighlightOperation() && indexList.get(count) == indexToHighlight) {
 						highlighter.addHighlight(startPos, document.getLength(), painter);
 						positionToScroll = document.getLength();
@@ -162,7 +177,8 @@ public class TopRightPanel extends JPanel {
 			if (firstList != null) {
 				for (Task task : firstList) {
 					String string = task.getDescription();
-					document.insertString(document.getLength(), indexList.get(count) + ". " + string + "\n", taskInfo);
+					document.insertString(document.getLength(), indexList.get(count) + ". ", taskInfo);
+					document.insertString(document.getLength(), string + "\n", taskInfo);
 					count++;
 				}
 			}
