@@ -137,12 +137,18 @@ public class Search {
 		if (wordList.length == 0) {
 			return false;
 		}
+		int countOneLetterWords = 0;
 		for (String word : wordList) {
 			if (word.length() > 1) {
 				if (!text.contains(word)) {
 					return false;
 				}
+			} else {
+				countOneLetterWords++;
 			}
+		}
+		if(countOneLetterWords == wordList.length) {
+			return false;
 		}
 		return true;
 	}
