@@ -5,7 +5,7 @@ public class ParserConstants {
 	// Command Class, primarily
 	static final String[] COMMAND_ADD = { "add", "+", "a" };
 	static final String[] COMMAND_DELETE = { "delete", "d", "del", "-", "remove", "rm" };
-	static final String[] COMMAND_MODIFY = { "edit", "update", "change", "e" };
+	static final String[] COMMAND_MODIFY = { "edit", "update", "e" };
 	static final String[] COMMAND_COMPLETE = {"done", "completed", "archive" };
 	static final String[] COMMAND_INCOMPLETE = {"undone"};
 	static final String[] COMMAND_VIEW = { "view", "v", "show", "display" };
@@ -15,8 +15,6 @@ public class ParserConstants {
 	static final String[] COMMAND_REDO = { "redo" };
 	static final String[] COMMAND_SET_DIRECTORY = { "set" };
 	static final String[] COMMAND_HOME = { "home"};
-	static final String[] COMMAND_BLOCK_SLOT = { "block" };
-	static final String[] COMMAND_UNBLOCK_SLOT = { "unblock" };
 	static final String[] COMMAND_HELP = { "help" };
 	static final String COMMAND_INVALID = null;
 	static final String COMMAND_EMPTY = "";
