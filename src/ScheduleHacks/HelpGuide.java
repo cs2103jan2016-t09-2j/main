@@ -24,7 +24,6 @@ public class HelpGuide {
 	ArrayList<String> undoAndRedoList = new ArrayList<String>();
 	ArrayList<String> completeAndIncompleteList = new ArrayList<String>();
 	ArrayList<String> exitList = new ArrayList<String>();
-	ArrayList<String> blockList = new ArrayList<String>();
 	ArrayList<String> collatedHelpList = new ArrayList<String>();
 
 	public ArrayList<String> getCollatedList() {
@@ -38,16 +37,14 @@ public class HelpGuide {
 		searchGuide();
 		undoAndRedoGuide();
 		completeGuide();
-		blockGuide();
 		exitGuide();
 
 		collatedHelpList.addAll(addList);
 		collatedHelpList.addAll(deleteList);
 		collatedHelpList.addAll(editList);
-		collatedHelpList.addAll(searchList);
 		collatedHelpList.addAll(undoAndRedoList);
+		collatedHelpList.addAll(searchList);
 		collatedHelpList.addAll(completeAndIncompleteList);
-		collatedHelpList.addAll(blockList);
 		collatedHelpList.addAll(exitList);
 	}
 
@@ -101,6 +98,7 @@ public class HelpGuide {
 	}
 
 	public void searchGuide() {
+		searchList.add("\n");
 		searchList.add("**********SEARCH**********");
 		searchList.add("\n");
 		searchList.add("      search <category>");
@@ -156,22 +154,6 @@ public class HelpGuide {
 	
 	}
 
-	public void blockGuide() {
-		searchList.add("**********BLOCK**********");
-		searchList.add("\n");
-		searchList.add("      block <date> ");
-		searchList.add("\n");
-		searchList.add("      block <date>, <time>");
-		searchList.add("\n");
-		searchList.add("**********UNBLOCK**********");
-		searchList.add("\n");
-		searchList.add("      unblock <date> ");
-		searchList.add("\n");
-		searchList.add("      unblock <date>, <time>");
-		searchList.add("\n");
-	
-	}
-
 	public void exitGuide() {
 		exitList.add("**********EXIT**********");
 		exitList.add("\n");
@@ -180,8 +162,6 @@ public class HelpGuide {
 		exitList.add("      quit");
 		exitList.add("\n");
 		exitList.add("      q");
-		exitList.add("\n");
-		exitList.add("        END OF GUIDE");
 	}
 
 }
