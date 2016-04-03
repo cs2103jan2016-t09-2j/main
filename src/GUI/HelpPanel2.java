@@ -6,6 +6,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.util.ArrayList;
 
+import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JTextPane;
 import javax.swing.text.BadLocationException;
@@ -26,8 +27,10 @@ public class HelpPanel2 extends JPanel implements KeyListener{
 	ArrayList<String> collatedHelpList;
 	private static StyledDocument document;
 	private static SimpleAttributeSet helpInfo = new SimpleAttributeSet();
+	JFrame helpFrame;
 	
-	public HelpPanel2(){
+	public HelpPanel2(JFrame HelpFrame){
+		helpFrame = HelpFrame;
 		setLayout(new GridLayout());
 		textArea = new JTextPane();
 		textArea.setEditable(false);
@@ -72,7 +75,7 @@ public class HelpPanel2 extends JPanel implements KeyListener{
 	public void keyPressed(KeyEvent e) {
 		int keyCode = e.getKeyCode();
 		if (keyCode == KeyEvent.VK_ESCAPE) {
-			setVisible(false);
+			helpFrame.dispose();
 		}
 	}
 }

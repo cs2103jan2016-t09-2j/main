@@ -1,9 +1,5 @@
-/GUI/
 /Logic/
-<<<<<<< HEAD
 /Parser/
 /ScheduleHacks/
 /Storage/
-=======
-/ScheduleHacks/
->>>>>>> 7a8a12037f752d005d2a82de3f6cecd6f2d37a19
+/GUI/
