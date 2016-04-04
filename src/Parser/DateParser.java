@@ -1,3 +1,5 @@
+//@@author A0132778W
+
 package Parser;
 
 import java.util.ArrayList;
@@ -18,8 +20,6 @@ public class DateParser {
 	// Instance Variables
 	private String taskDetails;
 	private ArrayList<LocalDate> dateList = new ArrayList<LocalDate>();
-
-	// private String tempProspectiveDate = ParserConstants.STRING_EMPTY;
 
 	/****************** CONSTRUCTORS **********************/
 	DateParser() {

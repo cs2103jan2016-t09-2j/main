@@ -187,7 +187,7 @@ public class Logic {
 			for (Task task : scheduledTasksOverDue) {
 				if (task.getEndDate().isEqual(LocalDate.now())) {
 					firstList.add(task);
-					indexList.add(scheduledTasksOverDue.indexOf(task)+1);
+					indexList.add(scheduledTasksOverDue.indexOf(task) + 1);
 				}
 			}
 		}
@@ -282,9 +282,9 @@ public class Logic {
 
 		switch (executeCommand) {
 		case ADD_TASK:
+			isHighlightOperation = true;
 			addTask(executeTask, false);
 			historyObject.clearRedoStack();
-			isHighlightOperation = true;
 			break;
 		case DELETE_TASK:
 			deleteTask(retrievedCommand.getIndexList(), false);
@@ -293,7 +293,6 @@ public class Logic {
 		case MODIFY_TASK:
 			editTask(retrievedCommand.getIndexList(), executeTask.getDescription(), false);
 			historyObject.clearRedoStack();
-			isHighlightOperation = true;
 			break;
 		case COMPLETE_TASK:
 			completeTask(retrievedCommand.getIndexList(), false);
@@ -353,9 +352,6 @@ public class Logic {
 
 	public void setHelpInstructions() {
 		BottomBottom.setHelp();
-		// ArrayList<String> helpInstruction = (new
-		// HelpGuide()).getCollatedList();
-		// display help guide
 	}
 
 	/*
@@ -366,7 +362,17 @@ public class Logic {
 	private int addTask(Task executeTask, boolean isUndoOperation) {
 		int indexOfTask = -1;
 
+		if (executeTask.isComplete()) {
+			if (executeTask.isFloatingTask()) {
+				floatingTasksComplete.add(executeTask);
+			} else {
+				scheduledTasksComplete.add(executeTask);
+			}
+			return indexOfTask;
+		}
+
 		if (executeTask.getDescription() == null || executeTask.getDescription().isEmpty()) {
+			isHighlightOperation = false;
 			setFeedBack(FEEDBACK_EMPTY_TASK_DESCRIPTION);
 			return indexOfTask;
 		}
@@ -438,10 +444,12 @@ public class Logic {
 					if (duplicate.get(0) == false) {
 						currentIndexOfTask = addTaskInOrder(currentTask);
 					} else if (duplicate.get(0)) {
+						isHighlightOperation = false;
 						setFeedBack(FEEDBACK_DUPLICATE_TASK_FOUND_WHEN_ADDING);
 					}
 				} else {
 					if (duplicate.get(i)) {
+						isHighlightOperation = false;
 						setFeedBack(FEEDBACK_DUPLICATE_TASK_FOUND_WHEN_ADDING);
 						break;
 					} else if (duplicate.get(i) == false) {
@@ -456,6 +464,7 @@ public class Logic {
 						+ floatingTasksToDo.size();
 				setFeedBack(FEEDBACK_TASK_ADDED);
 			} else if (duplicate.get(0)) {
+				isHighlightOperation = false;
 				setFeedBack(FEEDBACK_DUPLICATE_TASK_FOUND_WHEN_ADDING);
 			}
 		}
@@ -590,62 +599,69 @@ public class Logic {
 	private void deleteTask(ArrayList<Integer> taskDigit, boolean isUndoOperation) {
 		// Creating undo parameter
 		ArrayList<Task> taskList = new ArrayList<Task>();
-
 		Task removedTask = null;
 		int lastAddedIndex = -1;
+		boolean isAborted = false;
 
 		if (taskDigit == null || taskDigit.isEmpty()) {
+			System.out.println(0);
 			taskDigit = new ArrayList<Integer>();
 			lastAddedIndex = getRecentIndexOfTask();
 			taskDigit.add(lastAddedIndex);
-			deleteSingleTask(lastAddedIndex, true);
-		} else {
-			for (int i = taskDigit.size() - 1; i >= 0; i--) {
-				if (taskDigit.get(i) > 0) {
-					if (taskDigit.get(i) <= scheduledTasksOverDue.size()) {
-						removedTask = scheduledTasksOverDue.remove(taskDigit.get(i) - 1);
-						taskList.add(0, removedTask);
-						setFeedBack(FEEDBACK_TASK_DELETED);
-					} else if (taskDigit.get(i) <= scheduledTasksOverDue.size() + scheduledTasksToDo.size()) {
-						removedTask = scheduledTasksToDo.remove(taskDigit.get(i) - 1 - scheduledTasksOverDue.size());
-						taskList.add(0, removedTask);
-						setFeedBack(FEEDBACK_TASK_DELETED);
+		}
+		for (int i = taskDigit.size() - 1; i >= 0; i--) {
+			if (taskDigit.get(i) > 0) {
+				if (taskDigit.get(i) <= scheduledTasksOverDue.size()) {
+					removedTask = scheduledTasksOverDue.remove(taskDigit.get(i) - 1);
+					taskList.add(0, removedTask);
+					setFeedBack(FEEDBACK_TASK_DELETED);
+				} else if (taskDigit.get(i) <= (scheduledTasksOverDue.size() + scheduledTasksToDo.size())) {
+					removedTask = scheduledTasksToDo.remove(taskDigit.get(i) - 1 - scheduledTasksOverDue.size());
+					taskList.add(0, removedTask);
+					setFeedBack(FEEDBACK_TASK_DELETED);
 
-					} else if (taskDigit.get(i) <= scheduledTasksToDo.size() + floatingTasksToDo.size()
-							+ scheduledTasksOverDue.size()) {
-						removedTask = floatingTasksToDo.remove(
-								taskDigit.get(i) - 1 - scheduledTasksToDo.size() - scheduledTasksOverDue.size());
-						taskList.add(0, removedTask);
-						setFeedBack(FEEDBACK_TASK_DELETED);
+				} else if (taskDigit.get(
+						i) <= (scheduledTasksToDo.size() + floatingTasksToDo.size() + scheduledTasksOverDue.size())) {
+					removedTask = floatingTasksToDo
+							.remove(taskDigit.get(i) - 1 - scheduledTasksToDo.size() - scheduledTasksOverDue.size());
+					taskList.add(0, removedTask);
+					setFeedBack(FEEDBACK_TASK_DELETED);
 
-					} else if (taskDigit.get(i) <= scheduledTasksToDo.size() + floatingTasksToDo.size()
-							+ scheduledTasksOverDue.size() + scheduledTasksComplete.size()) {
-						removedTask = scheduledTasksComplete.remove(taskDigit.get(i) - 1 - scheduledTasksToDo.size()
-								- scheduledTasksOverDue.size() - floatingTasksToDo.size());
-						taskList.add(0, removedTask);
-						setFeedBack(FEEDBACK_TASK_DELETED);
-					} else if (taskDigit.get(i) <= scheduledTasksToDo.size() + floatingTasksToDo.size()
-							+ scheduledTasksOverDue.size() + scheduledTasksComplete.size()
-							+ floatingTasksComplete.size()) {
-						removedTask = floatingTasksComplete
-								.remove(taskDigit.get(i) - 1 - scheduledTasksToDo.size() - scheduledTasksOverDue.size()
-										- floatingTasksToDo.size() - scheduledTasksComplete.size());
-						taskList.add(0, removedTask);
-						setFeedBack(FEEDBACK_TASK_DELETED);
-					} else {
-						setFeedBack(FEEDBACK_NON_EXISTENT_TASK_NUM);
-					}
+				} else if (taskDigit.get(i) <= (scheduledTasksToDo.size() + floatingTasksToDo.size()
+						+ scheduledTasksOverDue.size() + scheduledTasksComplete.size())) {
+
+					removedTask = scheduledTasksComplete.remove(taskDigit.get(i) - 1 - scheduledTasksToDo.size()
+							- scheduledTasksOverDue.size() - floatingTasksToDo.size());
+
+					taskList.add(0, removedTask);
+					setFeedBack(FEEDBACK_TASK_DELETED);
+				} else if (taskDigit
+						.get(i) <= (scheduledTasksToDo.size() + floatingTasksToDo.size() + scheduledTasksOverDue.size()
+								+ scheduledTasksComplete.size() + floatingTasksComplete.size())) {
+					removedTask = floatingTasksComplete.remove(taskDigit.get(i) - 1 - scheduledTasksToDo.size()
+							- scheduledTasksOverDue.size() - floatingTasksToDo.size() - scheduledTasksComplete.size());
+					taskList.add(0, removedTask);
+					setFeedBack(FEEDBACK_TASK_DELETED);
 				} else {
-					setFeedBack(FEEDBACK_NEGATIVE_TASK_NUM);
+					isAborted = true;
+					setFeedBack(FEEDBACK_NON_EXISTENT_TASK_NUM);
+					break;
 				}
+			} else {
+				isAborted = true;
+				setFeedBack(FEEDBACK_NEGATIVE_TASK_NUM);
+				break;
 			}
+		}
+		// for undo functionality
+		if (!isUndoOperation) {
+			OldCommand recentCommand = new OldCommand(COMMAND_TYPE.DELETE_TASK, taskList, taskDigit);
+			historyObject.addToUndoList(recentCommand);
+		}
 
-			// for undo functionality
-
-			if (!isUndoOperation) {
-				OldCommand recentCommand = new OldCommand(COMMAND_TYPE.DELETE_TASK, taskList, taskDigit);
-				historyObject.addToUndoList(recentCommand);
-			}
+		if (isAborted && !isUndoOperation) {
+			undoTask();
+			setFeedBack(FEEDBACK_NON_EXISTENT_TASK_NUM);
 		}
 	}
 
@@ -654,6 +670,8 @@ public class Logic {
 		Task taskOriginal = null;
 		int indexToEdit = -1;
 		boolean duplicatedScheduledOverDue = false, duplicated = false;
+		
+		isHighlightOperation = true;
 
 		if (indexList == null || indexList.isEmpty()) {
 			indexToEdit = getRecentIndexOfTask();
@@ -678,6 +696,7 @@ public class Logic {
 				taskToEdit = floatingTasksToDo
 						.remove(indexToEdit - 1 - scheduledTasksToDo.size() - scheduledTasksOverDue.size());
 			} else {
+				isHighlightOperation = false;
 				setFeedBack(FEEDBACK_NON_EXISTENT_TASK_NUM + "\n");
 			}
 		}
@@ -691,6 +710,7 @@ public class Logic {
 				duplicated = checkForScheduledDuplication(editedTask, scheduledTasksToDo);
 				if ((duplicatedScheduledOverDue) || (duplicated)) {
 					editedTask = taskOriginal;
+					isHighlightOperation = false;
 					setFeedBack(FEEDBACK_DUPLICATE_TASK_FOUND_WHEN_EDITING);
 				}
 			} else if (editedTask.isFloatingTask()) {
@@ -698,6 +718,7 @@ public class Logic {
 
 				if (duplicated) {
 					editedTask = taskOriginal;
+					isHighlightOperation = false;
 					setFeedBack(FEEDBACK_DUPLICATE_TASK_FOUND_WHEN_EDITING);
 				}
 			}
@@ -734,6 +755,7 @@ public class Logic {
 		// undo parameter
 		ArrayList<Task> taskList = new ArrayList<Task>();
 		int indexToComplete = -1;
+		boolean isAborted = false;
 
 		if (taskIndex == null || taskIndex.isEmpty()) {
 			taskIndex = new ArrayList<Integer>();
@@ -746,20 +768,24 @@ public class Logic {
 				if (taskToComplete < scheduledTasksOverDue.size()) {
 					Task completedTask = markAsComplete(scheduledTasksOverDue, scheduledTasksComplete, taskToComplete);
 					taskList.add(0, completedTask);
-				} else if (taskToComplete < scheduledTasksToDo.size() + scheduledTasksOverDue.size()) {
-					taskToComplete -= (scheduledTasksOverDue.size());
+				} else if (taskToComplete < (scheduledTasksToDo.size() + scheduledTasksOverDue.size())) {
+					taskToComplete = taskToComplete - (scheduledTasksOverDue.size());
 					Task completedTask = markAsComplete(scheduledTasksToDo, scheduledTasksComplete, taskToComplete);
 					taskList.add(0, completedTask);
-				} else if (taskToComplete < scheduledTasksOverDue.size() + scheduledTasksToDo.size()
-						+ floatingTasksToDo.size()) {
-					taskToComplete -= (scheduledTasksToDo.size() + scheduledTasksOverDue.size());
+				} else if (taskToComplete < (scheduledTasksOverDue.size() + scheduledTasksToDo.size()
+						+ floatingTasksToDo.size())) {
+					taskToComplete = taskToComplete - (scheduledTasksToDo.size() + scheduledTasksOverDue.size());
 					Task completedTask = markAsComplete(floatingTasksToDo, floatingTasksComplete, taskToComplete);
 					taskList.add(0, completedTask);
 				} else {
+					isAborted = true;
 					setFeedBack(FEEDBACK_NON_EXISTENT_TASK_NUM);
+					break;
 				}
 			} else {
-				setFeedBack(FEEDBACK_NEGATIVE_TASK_NUM);
+				isAborted = true;
+				setFeedBack(FEEDBACK_NON_EXISTENT_TASK_NUM);
+				break;
 			}
 		}
 
@@ -767,6 +793,11 @@ public class Logic {
 			// for undo functionality
 			OldCommand recentCommand = new OldCommand(COMMAND_TYPE.COMPLETE_TASK, taskList, taskIndex);
 			historyObject.addToUndoList(recentCommand);
+		}
+
+		if (isAborted) {
+			undoTask();
+			setFeedBack(FEEDBACK_NON_EXISTENT_TASK_NUM);
 		}
 	}
 
@@ -787,25 +818,26 @@ public class Logic {
 		int minIndex = scheduledTasksOverDue.size() + scheduledTasksToDo.size() + floatingTasksToDo.size() + 1;
 		int maxIndex = minIndex + scheduledTasksComplete.size() + floatingTasksComplete.size() - 1;
 
-		// System.out.println(minIndex+"*"+maxIndex);
-
 		if (indexList != null && !indexList.isEmpty()) {
 			for (int index = indexList.size() - 1; index >= 0; index--) {
 				if ((indexList.get(index) >= minIndex) && (indexList.get(index) <= maxIndex)) {
-					if (indexList.get(index) < minIndex + scheduledTasksComplete.size()) {
-						Task taskToMark = scheduledTasksComplete.get(indexList.get(index) - minIndex);
-						markTaskIncomplete(taskToMark);
-						taskList.add(taskToMark);
+					if (indexList.get(index) < (minIndex + scheduledTasksComplete.size())) {
+						Task taskToMark = scheduledTasksComplete.remove(indexList.get(index) - minIndex);
+						taskToMark.setAsIncomplete();
+						addTask(taskToMark, true);
+						taskList.add(0, taskToMark);
 					} else {
 						Task taskToMark = floatingTasksComplete
-								.get(indexList.get(index) - minIndex - scheduledTasksComplete.size());
-						markTaskIncomplete(taskToMark);
-						taskList.add(taskToMark);
+								.remove(indexList.get(index) - minIndex - scheduledTasksComplete.size());
+						taskToMark.setAsIncomplete();
+						addTask(taskToMark, true);
+						taskList.add(0, taskToMark);
 					}
 					setFeedBack(FEEDBACK_TASK_INCOMPLETED);
 				} else {
 					isAborted = true;
 					setFeedBack(FEEDBACK_TASK_INCOMPLETED_INVALID);
+					break;
 				}
 			}
 			if (!isUndoOperation) {
@@ -814,7 +846,7 @@ public class Logic {
 				historyObject.addToUndoList(recentCommand);
 			}
 
-			if (isAborted && !taskList.isEmpty()) {
+			if (isAborted) {
 				undoTask();
 				setFeedBack(FEEDBACK_TASK_INCOMPLETED_INVALID);
 			}
@@ -874,6 +906,7 @@ public class Logic {
 		 */
 	}
 
+	// @@author A0132778W
 	public void undoTask() {
 		try {
 			OldCommand toUndo = historyObject.getFromUndoList();
@@ -898,7 +931,7 @@ public class Logic {
 				 * the oldTask and the second one is the newTask. Delete new,
 				 * add old.
 				 */
-				deleteSingleTask(toUndo.getIndexList().get(1), true);
+				deleteSingleTask(toUndo.getIndexList().get(1));
 				addTask(toUndo.getTaskList().get(0), true);
 				break;
 			default:
@@ -935,7 +968,7 @@ public class Logic {
 				 * the oldTask and the second one is the newTask. Delete old,
 				 * add new.
 				 */
-				deleteSingleTask(toRedo.getIndexList().get(0), true);
+				deleteSingleTask(toRedo.getIndexList().get(0));
 				addTask(toRedo.getTaskList().get(1), true);
 				break;
 			default:
@@ -966,7 +999,7 @@ public class Logic {
 		}
 	}
 
-	public void deleteSingleTask(int index, boolean isUndoOperation) {
+	public void deleteSingleTask(int index) {
 		if (index > 0) {
 			if (index <= scheduledTasksOverDue.size()) {
 				scheduledTasksOverDue.remove(index - 1);

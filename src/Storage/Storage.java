@@ -7,7 +7,6 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Scanner;
 import java.io.FileReader;
 import java.io.FileWriter;
 
@@ -214,13 +213,13 @@ public class Storage {
 
 		try {
 			myLogger.log(Level.INFO, LOG_READING_ARCHIVE_FILE);
-			readFromArchiveFile(floatingTasksComplete, scheduledTasksComplete);
+			readFromArchiveFile();
 		} catch (Exception e) {
 			myLogger.log(Level.INFO, LOG_ARCHIVE_FILE_NOT_FOUND);
 		}
 		try {
 			myLogger.log(Level.INFO, LOG_READING_CURRENT_FILE);
-			readFromCurrentFile(scheduledTasksToDo, floatingTasksToDo, scheduledTasksOverDue);
+			readFromCurrentFile();
 		} catch (Exception e) {
 			myLogger.log(Level.INFO, LOG_CURRENT_FILE_NOT_FOUND);
 		}
@@ -292,7 +291,7 @@ public class Storage {
 		}
 	}
 	
-	public void readFromArchiveFile(ArrayList<Task> scheduledTasksComplete, ArrayList<Task> floatingTasksComplete) {
+	public void readFromArchiveFile() {
 		try {
 
 			File file = new File(currentPathName, archiveFile);
@@ -323,8 +322,7 @@ public class Storage {
 
 	}
 
-	public void readFromCurrentFile(ArrayList<Task> scheduledTasksToDo, ArrayList<Task> floatingTasksToDo,
-			ArrayList<Task> scheduledTasksOverDue) {
+	public void readFromCurrentFile() {
 		try {
 			File file = new File(currentPathName, currentFile);
 
