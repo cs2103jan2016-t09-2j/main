@@ -1,3 +1,5 @@
+//@@author A0132778W
+
 package ScheduleHacks;
 
 import java.time.LocalDate;
@@ -10,6 +12,7 @@ public class Task {
 	private LocalDate startDate, endDate;
 	private LocalTime startTime, endTime;
 
+	/****************** CONSTRUCTORS **********************/
 	public Task() {
 		setDescription(null);
 		isFloatingType = false;
@@ -46,7 +49,8 @@ public class Task {
 		setStartTime(oldTask.getStartTime());
 		setEndTime(oldTask.getEndTime());
 	}
-
+	
+	/****************** OTHER METHODS ***********************/
 	public void setDescription(String description) {
 		this.description = description;
 	}
@@ -116,19 +120,5 @@ public class Task {
 	public LocalTime getEndTime() {
 		return this.endTime;
 	}
-
-	/*//@Override
-	public String toString() {
-		String taskDetails = "";
-		taskDetails += "Description: " + this.getDescription();
-		if (this.getEndDate() != null) {
-			if (this.getStartDate() != null) {
-				taskDetails += " " + this.getStartTime().toString() + ", " + this.getStartDate().toString();
-			}
-			taskDetails += " " + this.getEndTime().toString() + ", " + this.getEndDate().toString();
-		}
-		taskDetails += " Complete?" + isComplete();
-		return taskDetails;
-	}*/
 }
 

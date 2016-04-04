@@ -1,3 +1,9 @@
+/*
+ * This method is a part of the backend Logic.
+ * Assists in performing search and view operation 
+ */
+
+//@@author A0132778W
 package Logic;
 
 import java.util.ArrayList;
