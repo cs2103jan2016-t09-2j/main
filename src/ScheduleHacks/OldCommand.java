@@ -31,8 +31,7 @@ public class OldCommand {
 		setIndexList(newIndexList);
 	}
 
-	/****************** SETTER METHODS ***********************/
-	
+	//Setter Methods
 	public void setCommandType(COMMAND_TYPE command) {
 		this.commandType = command;
 	}
@@ -45,7 +44,7 @@ public class OldCommand {
 		this.indexList = newIndexList;
 	}
 
-	/****************** GETTER METHODS ***********************/
+	// Getter Methods
 	public COMMAND_TYPE getCommandType(){
 		return this.commandType;
 	}
@@ -58,5 +57,4 @@ public class OldCommand {
 		return this.indexList;
 	}
 
-	/****************** OTHER METHODS ***********************/
 }

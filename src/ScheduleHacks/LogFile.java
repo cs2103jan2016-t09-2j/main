@@ -7,8 +7,6 @@ import java.io.IOException;
 import java.util.logging.FileHandler;
 import java.util.logging.Level;
 
-//import Storage.Storage;
-
 public class LogFile {
 	
 	private static final String DEFAULT_PATH = "C:\\LogFile\\";
@@ -27,19 +25,19 @@ public class LogFile {
 		}
 		
 		try{
-			//logger.setUseParentHandlers(false);
+		
 			fh = new FileHandler(DEFAULT_LOG_FILE);
 			logger.addHandler(fh);
 			SimpleFormatter formatter = new SimpleFormatter();  
 	        fh.setFormatter(formatter);  
 	        
 		}catch(IOException e){
-			logger.log(Level.SEVERE, "Can't log");
+			logger.log(Level.SEVERE, "Unable to log");
 		}
 	}
 		
-	public void log(Level level, String msg) {
-		logger.log(level,msg);
+	public void log(Level level, String message) {
+		logger.log(level,message);
 		
 	}
 
