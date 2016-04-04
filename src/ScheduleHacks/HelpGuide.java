@@ -3,13 +3,18 @@ package ScheduleHacks;
 import java.util.ArrayList;
 
 public class HelpGuide {
-
+	/* Singleton */
 	private static HelpGuide object;
 
 	public HelpGuide() {
 		collateGuide();
 	}
-
+	
+	/*
+     * This method is the getInstance method for the singleton pattern of
+     * HelpGuide. It initializes a new HelpGuide if HelpGuide is null, else returns the
+     * current instance of HelpGuide.
+     */
 	public static HelpGuide getInstance() {
 		if (object == null) {
 			object = new HelpGuide();

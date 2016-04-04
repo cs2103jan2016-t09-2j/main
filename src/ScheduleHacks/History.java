@@ -7,21 +7,26 @@ import java.util.Deque;
 import ScheduleHacks.OldCommand.COMMAND_TYPE;
 
 public class History {
-
-	private static History object = null;
+	/* Singleton */
+	private static History object;
 
 	Deque<OldCommand> undoDeque;
 	Deque<OldCommand> redoDeque;
 
 	ArrayList<String> commandHistory;
 	private static int indexOfCommand;
-
+	
 	private History() {
 		undoDeque = new ArrayDeque<OldCommand>();
 		redoDeque = new ArrayDeque<OldCommand>();
 		commandHistory = new ArrayList<String>();
 	}
-
+	
+	/*
+     * This method is the getInstance method for the singleton pattern of
+     * History. It initializes a new History if History is null, else returns the
+     * current instance of History.
+     */
 	public static History getInstance() {
 		if (object == null) {
 			object = new History();

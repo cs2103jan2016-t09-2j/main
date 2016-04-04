@@ -7,13 +7,13 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+
 import java.io.FileReader;
 import java.io.FileWriter;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 
-import java.util.logging.Logger;
 import java.util.logging.Level;
 
 import ScheduleHacks.Task;
@@ -37,10 +37,11 @@ public class Storage {
 	private static final String storageLocFile = "DataLocation.txt";
 	private static final String currentFile = "currentFile.json";
 	private static final String archiveFile = "archiveFile.json";
-
+	
+	/* Singleton */
 	private static Storage object;
 
-	/*Logger messages*/
+	/* Logger messages */
 	private static final String LOG_IO_EXCEPTION = "Encountered Input Output Exception";
 	private static final String LOG_ARCHIVE_FILE_NOT_FOUND = "Archive file not found";
 	private static final String LOG_CURRENT_FILE_NOT_FOUND = "Current file not found";
@@ -54,43 +55,44 @@ public class Storage {
 	private static final String LOG_READING_ARCHIVE_FILE = "Reading archive file";
 	private static final String LOG_READING_CURRENT_FILE = "Reading current file";
 
-	/*Assertion message*/
+	/* Assertion message */
 	private static final String ASSERTION_NULL_PARAMETER = "Error. Null input passed.";
-	
-	
-	/*Constructor*/
+
+	/* Constructor */
 	private Storage() {
-		
+
 		initStorage();
-		
+
 	}
 
-	/*Inititates storage directory*/
+	/* Initiates storage directory */
 	private void initStorage() {
-		if(currentPathName == null || currentPathName.isEmpty()){
+		if (currentPathName == null || currentPathName.isEmpty()) {
 			try {
 				File file = new File(storageLocFile);
-				
-				if(!file.exists()||file.length()==0){
+
+				if (!file.exists() || file.length() == 0) {
 					currentPathName = defaultPathName;
-				
-				}
-				else{
+
+				} else {
 					BufferedReader br = new BufferedReader(new FileReader(file));
-					currentPathName =br.readLine();
+					currentPathName = br.readLine();
 					br.close();
 				}
-			
+
 			} catch (Exception e) {
-			
-				e.printStackTrace();
-			}		
-			fileDirectory.createMainDirectory(currentPathName);					
+
+				myLogger.log(Level.INFO, LOG_IO_EXCEPTION);
+			}
+			fileDirectory.createMainDirectory(currentPathName);
 		}
 	}
 
-
-	/*Apply singleton pattern*/
+	/*
+     * This method is the getInstance method for the singleton pattern of
+     * Storage. It initializes a new Storage if Storage is null, else returns the
+     * current instance of Storage.
+     */
 	public static Storage getInstance() {
 		if (object == null) {
 			object = new Storage();
@@ -98,38 +100,34 @@ public class Storage {
 		return object;
 	}
 
-	/*This method decides sets the latest directory name*/
-	public void setCurrentPathName(String inputDirectory) {	
-		if(inputDirectory != null && !inputDirectory.isEmpty()){
-			if(inputDirectory.equalsIgnoreCase("default")){
+	/* This method decides sets the latest directory name */
+	public void setCurrentPathName(String inputDirectory) {
+		if (inputDirectory != null && !inputDirectory.isEmpty()) {
+			if (inputDirectory.equalsIgnoreCase("default")) {
 				inputDirectory = defaultPathName;
 			}
-	
+
 			String oldDirectoryName = currentPathName;
 			currentPathName = inputDirectory;
-			
+
 			try {
-				BufferedWriter bw = new BufferedWriter(new FileWriter(new File(storageLocFile )));
+				BufferedWriter bw = new BufferedWriter(new FileWriter(new File(storageLocFile)));
 				bw.write(currentPathName);
 				bw.close();
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				myLogger.log(Level.INFO, LOG_IO_EXCEPTION);
 			}
-			fileDirectory.changeDirectory(oldDirectoryName, currentPathName);	
-				
+			fileDirectory.changeDirectory(oldDirectoryName, currentPathName);
+
 		}
-		
+
 	}
-	
-	public static String getCurrentPathName(){
+
+	public static String getCurrentPathName() {
 		return currentPathName;
 	}
-	
-	
-	
-	/*Setter Methods*/
-	 
+
+	/* Setter Methods */
 	private void setScheduledTasksToDo(ArrayList<Task> currentTaskList) {
 		scheduledTasksToDo.clear();
 		scheduledTasksToDo = currentTaskList;
@@ -155,9 +153,7 @@ public class Storage {
 		floatingTasksComplete = currentTaskList;
 	}
 
-	
-	/*Getter Methods*/
-	 
+	/* Getter Methods */
 	public ArrayList<Task> getScheduledTasksToDo() {
 		return scheduledTasksToDo;
 	}
@@ -178,11 +174,7 @@ public class Storage {
 		return floatingTasksComplete;
 	}
 
-	/***** Storage Methods ********/
-	
-	
-	
-	/*Stores data from ArrayList of different tasks into relevant Json files*/
+	/* Stores data from ArrayList of different tasks into relevant Json files */
 	public void storeToFiles(ArrayList<Task> floatingTasksToDo, ArrayList<Task> floatingTasksComplete,
 			ArrayList<Task> scheduledTasksToDo, ArrayList<Task> scheduledTasksComplete,
 			ArrayList<Task> scheduledTasksOverDue) {
@@ -201,8 +193,11 @@ public class Storage {
 			myLogger.log(Level.WARNING, LOG_ERROR_WRITE_CURRENT_FILE);
 		}
 	}
-	
-	/*Loads data from json files into Arraylist for Logic to retrieve*/
+
+	/*
+	 * This method reads the current and archive json files and returns an array list of
+	 * sorted tasks
+	 */
 	public void loadToList() {
 
 		setFloatingTasksComplete(new ArrayList<Task>());
@@ -224,45 +219,46 @@ public class Storage {
 			myLogger.log(Level.INFO, LOG_CURRENT_FILE_NOT_FOUND);
 		}
 	}
-
+	
+	/* Stores data from ArrayList of different tasks into the archive Json file */
 	public void writeToArchiveFile(ArrayList<Task> floatingTasksComplete, ArrayList<Task> scheduledTasksComplete) {
-		
+
 		assert scheduledTasksComplete != null : ASSERTION_NULL_PARAMETER;
 		assert floatingTasksComplete != null : ASSERTION_NULL_PARAMETER;
-		
+
 		File f1 = new File(currentPathName, archiveFile);
 		try {
 			BufferedWriter bw = new BufferedWriter(new FileWriter(f1));
 
-			for (Task newTask1 : floatingTasksComplete) {
-				String json1 = gson.toJson(newTask1);
-				bw.write(json1);
+			for (Task newTask : floatingTasksComplete) {
+				String json = gson.toJson(newTask);
+				bw.write(json);
 				bw.newLine();
 			}
 
-			for (Task newTask2 : scheduledTasksComplete) {
-				String json1 = gson.toJson(newTask2);
-				bw.write(json1);
+			for (Task newTask : scheduledTasksComplete) {
+				String json = gson.toJson(newTask);
+				bw.write(json);
 				bw.newLine();
 			}
 			bw.close();
 			myLogger.log(Level.INFO, LOG_WROTE_ARCHIVE_FILE);
-			
+
 		} catch (Exception e) {
 			myLogger.log(Level.WARNING, LOG_ERROR_WRITE_ARCHIVE_FILE);
 		}
 	}
-
+	/* Stores data from ArrayList of different tasks into the current Json file */
 	public void writeToCurrentFile(ArrayList<Task> scheduledTasksToDo, ArrayList<Task> floatingTasksToDo,
 			ArrayList<Task> scheduledTasksOverDue) {
-		
+
 		assert scheduledTasksToDo != null : ASSERTION_NULL_PARAMETER;
-		assert floatingTasksToDo!= null : ASSERTION_NULL_PARAMETER;
+		assert floatingTasksToDo != null : ASSERTION_NULL_PARAMETER;
 		assert scheduledTasksOverDue != null : ASSERTION_NULL_PARAMETER;
-		
+
 		File f = new File(currentPathName, currentFile);
 		try {
-			//File f = new File(currentPathName, currentFile);
+
 			BufferedWriter bw = new BufferedWriter(new FileWriter(f));
 
 			for (Task newTask : scheduledTasksToDo) {
@@ -291,6 +287,10 @@ public class Storage {
 		}
 	}
 	
+	/*
+	 * This method reads the current json files and returns an array list of
+	 * sorted tasks
+	 */
 	public void readFromArchiveFile() {
 		try {
 
@@ -321,7 +321,11 @@ public class Storage {
 		}
 
 	}
-
+	
+	/*
+	 * This method reads the archive json files and returns an array list of
+	 * sorted tasks
+	 */
 	public void readFromCurrentFile() {
 		try {
 			File file = new File(currentPathName, currentFile);
