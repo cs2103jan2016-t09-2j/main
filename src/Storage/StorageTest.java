@@ -58,48 +58,41 @@ public class StorageTest {
 		return floatingTasksComplete;
 	}
 
-	@Test
-	public void testStorageInit() {
-		curFile.delete();
-		arcFile.delete();
-		dataFile.delete();
-		
-		Storage testStorage = Storage.getInstance();
-		testStorage.initStorage();
-
-		assertEquals(false, curFile.exists());
-		assertEquals(false, arcFile.exists());
-		assertEquals(true, dataFile.exists());
-
-	}
-
 //	@Test
-//	public void execute_NonBoundary_FloatingTask() {
+//	public void testStorageInit() {
+//		curFile.delete();
+//		arcFile.delete();
+//		dataFile.delete();
+//		
 //		Storage testStorage = Storage.getInstance();
+//		testStorage.initStorage();
 //
-//		Task task1 = new Task("attend soccer practice", null, null, null, null);
+//		assertEquals(false, curFile.exists());
+//		assertEquals(false, arcFile.exists());
+//		assertEquals(true, dataFile.exists());
 //
-//		assertEquals(testStorage.storeToFiles(floatingTasksToDo, floatingTasksComplete, scheduledTasksToDo,
-//				scheduledTasksComplete, scheduledTasksOverDue), true);
-//
-//		ArrayList<Task> testFloatingList;
-//		testFloatingList = floatingTasksToDo.getFloating(false);
-//		assertEquals(testFloatingList.get(0), testTask);
 //	}
 
-	// @Before
-	// public void setup() throws IOException{
-	//
-	//
-	// settingsStr = TaskReader.getFileString(NAME_SETTINGS).trim();
-	// File testFile = new File(NAME_DEFAULT);
-	// if(!testFile.exists()){
-	// testFile.createNewFile();
-	// }
-	// reader.read(NAME_DEFAULT);
-	// str.path(NAME_DEFAULT);
-	// str.clear();
-	// }
+	@SuppressWarnings("null")
+	@Test
+	public void testFloatingTask() {
+		Storage testStorage = Storage.getInstance();
+		
+
+		Task task1 = new Task("attend soccer practice", null, null, null, null);
+		
+		ArrayList<Task> testFloatingTasksToDo = new ArrayList<Task>();;
+		testFloatingTasksToDo.add(task1);
+		
+		testStorage.writeToCurrentFile(scheduledTasksToDo, testFloatingTasksToDo,
+				scheduledTasksOverDue);
+		testStorage.readFromCurrentFile();
+		
+		assertEquals(testFloatingTasksToDo,true);
+		
+		
+	}
+
 
 	@Test
 	public void testSetDirectory() {
