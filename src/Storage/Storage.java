@@ -66,7 +66,7 @@ public class Storage {
 	}
 
 	/* Initiates storage directory */
-	private void initStorage() {
+	public void initStorage() {
 		if (currentPathName == null || currentPathName.isEmpty()) {
 			try {
 				File file = new File(storageLocFile);
