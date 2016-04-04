@@ -19,6 +19,7 @@ public class BottomPanel extends JPanel{
 	private static BottomRight bottomRight;
 
 	public BottomPanel(){
+		
 		Dimension size = getPreferredSize();
 		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 		double height = screenSize.getHeight();
