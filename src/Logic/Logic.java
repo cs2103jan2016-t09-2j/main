@@ -532,7 +532,7 @@ public class Logic {
 				relevantTaskStartDateTime = LocalDateTime.of(relevantTaskList.get(i).getStartDate(),
 						relevantTaskList.get(i).getStartTime());
 			}
-			System.out.print(relevantTaskList.get(i).getDescription());
+			
 			if (relevantTaskStartDateTime != null) {
 				if ((taskStartDateTime != null) && (taskEndDateTime.isAfter(relevantTaskStartDateTime))
 						&& (taskStartDateTime.isBefore(relevantTaskEndDateTime))) {
