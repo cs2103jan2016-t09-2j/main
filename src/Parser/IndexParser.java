@@ -8,7 +8,18 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 
-
+/**
+ * IndexParser is used to parse the given String taskDetails and retrieve all
+ * the indexes contained in it.
+ * 
+ * Indexes are specified only after delete, done, undone and edit commands.
+ * 
+ * In addition, edit allows for only one index number, whereas done, undone and
+ * delete support multiple indexes.
+ * 
+ * Multiple indexes can be separated by either a comma, or a whitespace. A range
+ * of digits, separated by a hyphen to keyword "to" can also be used.
+ */
 public class IndexParser {
 
 	// Instance Variables
@@ -91,8 +102,10 @@ public class IndexParser {
 	}
 
 	/**
-	 * For delete and complete commands, multiple delete is possible.
+	 * Delete, Done and Undone support multiple indexes. This method helps parse
+	 * the given input String and generate the index list.
 	 * 
+	 * @throws Exception
 	 */
 	public void detectMultipleIndexes() throws Exception {
 		if (taskDetails == null || taskDetails.isEmpty()) {
@@ -105,6 +118,11 @@ public class IndexParser {
 		sortIndexList();
 	}
 
+	/**
+	 * The Edit command provided by the user can contain only a single index
+	 * number. This method is used to retrieve that single index, which should
+	 * be at the start of the String taskDetails.
+	 */
 	public void detectSingleIndex() {
 		Pattern indexPattern = Pattern.compile(ParserConstants.REGEX_DIGITS_AT_START);
 		Matcher indexMatcher = indexPattern.matcher(taskDetails);
@@ -137,6 +155,13 @@ public class IndexParser {
 		Collections.sort(indexList);
 	}
 
+	/**
+	 * This method helps in generating the entire array of indexes out of the
+	 * indexes specified as a range.
+	 * 
+	 * @param item
+	 * @throws Exception
+	 */
 	private void addRangeToIndexList(String item) throws Exception {
 		String[] range = new String[2];
 		if (item.contains(ParserConstants.STRING_HYPHEN)) {
@@ -176,10 +201,26 @@ public class IndexParser {
 		setTaskDetails(taskStatement);
 	}
 
+	/**
+	 * A specific string contains an index range only if contains the "to"
+	 * keyword or a hyphen. This method is used to check if item contains an
+	 * index range or not.
+	 * 
+	 * @param item
+	 * @return true, if item contains an index range; false otherwise.
+	 */
 	public boolean containsIndexRange(String item) {
 		return item.contains(ParserConstants.STRING_HYPHEN) || item.contains(ParserConstants.STRING_TO);
 	}
 
+	/**
+	 * This method is used to format the delimiters used to parse indexes. It
+	 * replaces all the whitespace and comma combinations to a single comma
+	 * without a whitespace and all range delimiters to a hyphen.
+	 * 
+	 * @param textToFormat
+	 * @return textToFormat; after it has been correctly formatted.
+	 */
 	public String formatDelimiters(String textToFormat) {
 		textToFormat = textToFormat.replaceAll(ParserConstants.REGEX_COMMA_WITH_SPACES, ParserConstants.STRING_COMMA)
 				.replaceAll(ParserConstants.REGEX_RANGE_DELIMITER, ParserConstants.STRING_HYPHEN);

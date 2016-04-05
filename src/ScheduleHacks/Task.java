@@ -5,6 +5,10 @@ package ScheduleHacks;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
+/**
+ * This is essentially an object class. It comprises of constructors, getter and
+ * setter methods only. No significant computation is performed in this class.
+ */
 public class Task {
 
 	private String description;
@@ -23,7 +27,7 @@ public class Task {
 		setStartTime(null);
 		setEndTime(null);
 	}
-	
+
 	public Task(String desc, LocalDate startDate, LocalDate endDate, LocalTime startTime, LocalTime endTime) {
 		setDescription(desc);
 		isFloatingType = false;
@@ -34,13 +38,13 @@ public class Task {
 		setStartTime(startTime);
 		setEndTime(endTime);
 	}
-	
+
 	public Task(Task oldTask) {
 		setDescription(oldTask.getDescription());
-		if(oldTask.isFloatingTask()) {
+		if (oldTask.isFloatingTask()) {
 			setFloatingTask();
-		} 
-		if(oldTask.isScheduledTask()) {
+		}
+		if (oldTask.isScheduledTask()) {
 			setScheduledTask();
 		}
 		isComplete = oldTask.isComplete();
@@ -49,7 +53,7 @@ public class Task {
 		setStartTime(oldTask.getStartTime());
 		setEndTime(oldTask.getEndTime());
 	}
-	
+
 	/****************** OTHER METHODS ***********************/
 	public void setDescription(String description) {
 		this.description = description;
@@ -121,4 +125,3 @@ public class Task {
 		return this.endTime;
 	}
 }
-
