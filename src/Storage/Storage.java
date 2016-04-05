@@ -128,27 +128,27 @@ public class Storage {
 	}
 
 	/* Setter Methods */
-	private void setScheduledTasksToDo(ArrayList<Task> currentTaskList) {
+	public void setScheduledTasksToDo(ArrayList<Task> currentTaskList) {
 		scheduledTasksToDo.clear();
 		scheduledTasksToDo = currentTaskList;
 	}
 
-	private void setScheduledTasksOverDue(ArrayList<Task> currentTaskList) {
+	public void setScheduledTasksOverDue(ArrayList<Task> currentTaskList) {
 		scheduledTasksOverDue.clear();
 		scheduledTasksOverDue = currentTaskList;
 	}
 
-	private void setScheduledTasksComplete(ArrayList<Task> currentTaskList) {
+	public void setScheduledTasksComplete(ArrayList<Task> currentTaskList) {
 		scheduledTasksComplete.clear();
 		scheduledTasksComplete = currentTaskList;
 	}
 
-	private void setFloatingTasksToDo(ArrayList<Task> currentTaskList) {
+	public void setFloatingTasksToDo(ArrayList<Task> currentTaskList) {
 		floatingTasksToDo.clear();
 		floatingTasksToDo = currentTaskList;
 	}
 
-	private void setFloatingTasksComplete(ArrayList<Task> currentTaskList) {
+	public void setFloatingTasksComplete(ArrayList<Task> currentTaskList) {
 		floatingTasksComplete.clear();
 		floatingTasksComplete = currentTaskList;
 	}
@@ -184,7 +184,6 @@ public class Storage {
 			writeToArchiveFile(floatingTasksComplete, scheduledTasksComplete);
 		} catch (Exception e1) {
 			myLogger.log(Level.WARNING, LOG_ERROR_WRITE_ARCHIVE_FILE);
-			e1.printStackTrace();
 		}
 		try {
 			myLogger.log(Level.INFO, LOG_WRITING_CURRENT_FILE);
