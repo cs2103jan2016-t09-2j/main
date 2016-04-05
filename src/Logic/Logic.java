@@ -264,7 +264,7 @@ public class Logic {
 	}
 
 	/* this method retrieves all relevant task details from task class */
-	private Task getTaskDescription(Command existingCommand) {
+	public Task getTaskDescription(Command existingCommand) {
 		Task executeTask = existingCommand.getTaskDetails();
 		return executeTask;
 	}
@@ -274,7 +274,7 @@ public class Logic {
 	 * command types
 	 */
 
-	private void execute(Command.COMMAND_TYPE executeCommand, Command retrievedCommand, Task executeTask) {
+	public void execute(Command.COMMAND_TYPE executeCommand, Command retrievedCommand, Task executeTask) {
 
 		isSearchCommand = false;
 		isHomeScreen = false;
@@ -527,11 +527,12 @@ public class Logic {
 		for (int i = 0; i < relevantTaskList.size(); i++) {
 			relevantTaskEndDateTime = LocalDateTime.of(relevantTaskList.get(i).getEndDate(),
 					relevantTaskList.get(i).getEndTime());
+			relevantTaskStartDateTime = null;
 			if (relevantTaskList.get(i).getStartDate() != null) {
 				relevantTaskStartDateTime = LocalDateTime.of(relevantTaskList.get(i).getStartDate(),
 						relevantTaskList.get(i).getStartTime());
 			}
-
+			System.out.print(relevantTaskList.get(i).getDescription());
 			if (relevantTaskStartDateTime != null) {
 				if ((taskStartDateTime != null) && (taskEndDateTime.isAfter(relevantTaskStartDateTime))
 						&& (taskStartDateTime.isBefore(relevantTaskEndDateTime))) {
@@ -564,7 +565,6 @@ public class Logic {
 
 	private int sortTaskList(ArrayList<Task> taskList, Task task) {
 		LocalDateTime taskStartDateTime = null;
-		LocalDateTime taskEndDateTime = LocalDateTime.of(task.getEndDate(), task.getEndTime());
 		if (task.getStartDate() != null) {
 			taskStartDateTime = LocalDateTime.of(task.getStartDate(), task.getStartTime());
 		}
@@ -576,17 +576,19 @@ public class Logic {
 				selectedTaskStartDateTime = LocalDateTime.of(taskList.get(i).getStartDate(),
 						taskList.get(i).getStartTime());
 			}
-			LocalDateTime selectedTaskEndDateTime = LocalDateTime.of(taskList.get(i).getEndDate(),
-					taskList.get(i).getEndTime());
 
-			if (taskEndDateTime.isBefore(selectedTaskEndDateTime)) {
+			if (task.getEndDate().isBefore(taskList.get(i).getEndDate())) {
 				return i;
-			} else if (taskEndDateTime.isEqual(selectedTaskEndDateTime)) {
+			} else if (task.getEndDate().equals(taskList.get(i).getEndDate())) {
 				if ((selectedTaskStartDateTime != null) && (taskStartDateTime != null)) {
 					if (taskStartDateTime.isBefore(selectedTaskStartDateTime)) {
 						return i;
 					}
-				}
+				} else if ((selectedTaskStartDateTime == null) && (taskStartDateTime != null)) {
+					return i;
+				} else if (task.getEndTime().isBefore(taskList.get(i).getEndTime())) {
+					return i;
+				} 
 			}
 		}
 		return taskPosition;
@@ -722,19 +724,21 @@ public class Logic {
 					setFeedBack(FEEDBACK_DUPLICATE_TASK_FOUND_WHEN_EDITING);
 				}
 			}
-			if ((duplicated == false) && (duplicatedScheduledOverDue == false)) {
-				setFeedBack(FEEDBACK_TASK_MODIFIED);
-			}
 			int newIndex = addTask(editedTask, true);
 
-			if (getFeedBack().equals(FEEDBACK_TASK_ADDED)) {
-				setFeedBack(FEEDBACK_TASK_MODIFIED);
-			} else if (trackConflictingTasks.size() == 1) {
-				setFeedBack(FEEDBACK_TASK_MODIFIED + " but new task is conflicting with "
-						+ trackConflictingTasks.get(0).getDescription());
-			} else {
-				setFeedBack(FEEDBACK_TASK_MODIFIED_BUT_ENCOUNTERED_CONFLICTS);
+			if ((duplicated) || (duplicatedScheduledOverDue)) {
+				setFeedBack(FEEDBACK_DUPLICATE_TASK_FOUND_WHEN_EDITING);
+			} else if ((!duplicated) && (!duplicatedScheduledOverDue)) {
+				if (getFeedBack().equals(FEEDBACK_TASK_ADDED)) {
+					setFeedBack(FEEDBACK_TASK_MODIFIED);
+				} else if (trackConflictingTasks.size() == 1) {
+					setFeedBack(FEEDBACK_TASK_MODIFIED + " but new task is conflicting with "
+							+ trackConflictingTasks.get(0).getDescription());
+				} else {
+					setFeedBack(FEEDBACK_TASK_MODIFIED_BUT_ENCOUNTERED_CONFLICTS);
+				}
 			}
+
 			if (!isUndoOperation) {
 				ArrayList<Task> taskList = new ArrayList<Task>();
 				taskList.add(taskToEdit);
@@ -1062,8 +1066,6 @@ public class Logic {
 	 * tasks before exiting
 	 */
 	private void exit() {
-		// Temporary CLI Exit. Need to change later.
 		TempCLI.exitScheduleHacks();
-		// System.exit(0);//how to save everything and exit?
 	}
 }
