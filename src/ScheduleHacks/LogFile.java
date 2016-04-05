@@ -19,8 +19,10 @@ public class LogFile {
 		logger.setUseParentHandlers(false);
 		File file = new File(DEFAULT_PATH);
 		if(file.exists()){
-			return;
-		}else{
+			file.delete();
+			file.mkdir();
+		}
+		else{
 			file.mkdir();
 		}
 		
@@ -35,6 +37,7 @@ public class LogFile {
 			logger.log(Level.SEVERE, "Unable to log");
 		}
 	}
+	
 		
 	public void log(Level level, String message) {
 		logger.log(level,message);
