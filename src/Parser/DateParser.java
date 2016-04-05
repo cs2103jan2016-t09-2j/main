@@ -1,11 +1,3 @@
-/*
- * DateParser is used to detect all possible dates in a String, 
- * add it to the dateList, 
- * and remove it from the taskDetails.
- * 
- * Thus aiding in parsing the given String input.
- */
-
 //@@author A0132778W
 
 package Parser;
@@ -23,6 +15,13 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
 import java.time.format.DateTimeParseException;
 
+/*
+ * DateParser is used to detect all possible dates in a String, 
+ * add it to the dateList, 
+ * and remove it from the taskDetails.
+ * 
+ * Thus aiding in parsing the given String input.
+ */
 public class DateParser {
 
 	// Instance Variables
@@ -146,7 +145,7 @@ public class DateParser {
 	 * 
 	 * @param statement
 	 * @param keyword
-	 * @return
+	 * @return true, if the immediate String is a valid date; otherwise false.
 	 */
 	public boolean addToListIfValidDate(String statement, String keyword) {
 		String tempStatement = statement;
@@ -571,7 +570,7 @@ public class DateParser {
 	}
 
 	/**
-	 * "to" and hypen "-" are the range keywords. This method checks if keyword
+	 * "to" and hyphen "-" are the range keywords. This method checks if keyword
 	 * is a valid range keyword.
 	 * 
 	 * @param keyword

@@ -60,7 +60,7 @@ public class DateTimeParser {
 	public void arrangeDateTimeList() {
 		ArrayList<LocalDateTime> alist;
 		int aListSize = getDateTimeListSize(getDateList(), getTimeList());
-		//System.out.println(aListSize);
+		// System.out.println(aListSize);
 		if (aListSize > INVALID_SIZE) {
 			alist = createDateTimeList(aListSize);
 			Collections.sort(alist);
@@ -79,6 +79,14 @@ public class DateTimeParser {
 		setTimeList(newTimeList);
 	}
 
+	/**
+	 * This method is invoked to ensure that both date and time lists are of
+	 * equal sizes. If unequal, the empty spaces are filled up with appropriate
+	 * values.
+	 * 
+	 * @param size
+	 * @return a list of date and time combined.
+	 */
 	public ArrayList<LocalDateTime> createDateTimeList(int size) {
 		ArrayList<LocalDateTime> alist = new ArrayList<LocalDateTime>();
 		if (dateList.isEmpty()) {
@@ -93,10 +101,18 @@ public class DateTimeParser {
 		for (int index = FIRST_INDEX; index < size; index++) {
 			alist.add(LocalDateTime.of(dateList.get(index), timeList.get(index)));
 		}
-		// Collections.sort(alist);
 		return alist;
 	}
 
+	/**
+	 * This method is invoked in the condition that there are more times than
+	 * dates in the lists. As a result, the blank spaces in the date list are
+	 * filled with either the same dates as the previous ones or the next day,
+	 * as per the times provided.
+	 * 
+	 * @param size
+	 *            is the size of the larger time list.
+	 */
 	public void generateDateList(int size) {
 		for (int index = dateList.size(); index < size; index++) {
 			LocalDate tempDate;
@@ -116,12 +132,29 @@ public class DateTimeParser {
 		}
 	}
 
+	/**
+	 * This method is invoked in the condition that there are more dates than
+	 * times in the lists. As a result, the blank spaces in the time list are
+	 * filled with MAX time.
+	 * 
+	 * @param size
+	 *            is the size of the larger date list.
+	 */
 	public void generateTimeList(int size) {
 		for (int index = timeList.size(); index < size; index++) {
 			timeList.add(LocalTime.MAX);
 		}
 	}
 
+	/**
+	 * This method is used to determine the final size of the date and time
+	 * lists.
+	 * 
+	 * @param dateList
+	 * @param timeList
+	 * @return the greater of the dateList and timeList size if valid; otherwise
+	 *         -1.
+	 */
 	public int getDateTimeListSize(ArrayList<LocalDate> dateList, ArrayList<LocalTime> timeList) {
 		if (dateList == null || timeList == null) {
 			return INVALID_SIZE;

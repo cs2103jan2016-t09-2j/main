@@ -121,6 +121,10 @@ public class TimeParser {
 	/**
 	 * This method checks if the immediate String contains a time. If it is a
 	 * Valid Time, it adds it to the timeList.
+	 * 
+	 * @param statement
+	 * @param keyword
+	 * @return true, if the immediate String is a valid time; otherwise false.
 	 */
 	public boolean addToListIfValidTime(String statement, String keyword) {
 		String end = ParserConstants.STRING_EMPTY;
@@ -156,6 +160,11 @@ public class TimeParser {
 		return false;
 	}
 
+	/**
+	 * This method removes the particular textToRemove from taskDetails.
+	 * 
+	 * @param textToRemove
+	 */
 	public void removeTimeFromTaskDetails(String textToRemove) {
 
 		if (taskDetails.startsWith(textToRemove)) {
@@ -193,6 +202,12 @@ public class TimeParser {
 		return null;
 	}
 
+	/**
+	 * This method extracts the time duration word from the given textToSearch.
+	 * 
+	 * @param textToSearch
+	 * @return time duration word from textToSearch.
+	 */
 	public String getTimeDurationWord(String textToSearch) {
 		String firstWord = getStartString(getFirstXWords(textToSearch, ParserConstants.ONE_WORD));
 
@@ -215,6 +230,14 @@ public class TimeParser {
 		return parsedTime;
 	}
 
+	/**
+	 * Time duration refers to a number followed by either hours or minutes. The
+	 * digit and the String may or may not have a whitespace in between.
+	 * 
+	 * @param tempString
+	 * @return true if tempString starts with a time duration word; false
+	 *         otherwise.
+	 */
 	public boolean hasTimeDuration(String tempString) {
 		try {
 			return isFirstWordTimeDuration(tempString) || isFirstTwoWordsTimeDuration(tempString);
@@ -228,6 +251,16 @@ public class TimeParser {
 		return false;
 	}
 
+	/**
+	 * This method is used to check the first word of inputString for occurrence
+	 * of time duration.
+	 * 
+	 * @param inputString
+	 * @return
+	 * @throws NullPointerException
+	 * @throws NumberFormatException
+	 * @throws IndexOutOfBoundsException
+	 */
 	public boolean isFirstWordTimeDuration(String inputString)
 			throws NullPointerException, NumberFormatException, IndexOutOfBoundsException {
 		String firstWord = getFirstXWords(inputString, ParserConstants.ONE_WORD);
@@ -252,6 +285,15 @@ public class TimeParser {
 		return false;
 	}
 
+	/**
+	 * This method is used to check the first two words of inputString for
+	 * occurrence of time duration.
+	 * 
+	 * @param inputString
+	 * @return
+	 * @throws NullPointerException
+	 * @throws NumberFormatException
+	 */
 	public boolean isFirstTwoWordsTimeDuration(String inputString) throws NullPointerException, NumberFormatException {
 		String firstWord = getFirstXWords(inputString, ParserConstants.ONE_WORD);
 		String first2Words = getFirstXWords(inputString, ParserConstants.TWO_WORDS);
@@ -277,12 +319,27 @@ public class TimeParser {
 		return hasInDictionary(ParserConstants.TIME_KEYWORD, keyword.trim());
 	}
 
+	/**
+	 * "to" and hyphen "-" are the range keywords. This method checks if keyword
+	 * is a valid range keyword.
+	 * 
+	 * @param keyword
+	 * @return return true if keyword equals "to" or "-"; false otherwise.
+	 */
 	public boolean isValidRangeKeyWord(String keyword) {
 		keyword = keyword.trim();
 		return (keyword.equalsIgnoreCase(ParserConstants.STRING_HYPHEN)
 				|| keyword.equalsIgnoreCase(ParserConstants.STRING_TO)) && (timeList.size() > ParserConstants.MIN_SIZE);
 	}
 
+	/**
+	 * A valid end is denoted by a String that ends with a period, comma,
+	 * whitespace or is the end of the String.
+	 * 
+	 * @param endText
+	 *            to check if its end is valid.
+	 * @return true if endText has valid end; false otherwise.
+	 */
 	private boolean isValidEnd(String endText) {
 		if (endText.isEmpty()) {
 			return true;
@@ -291,6 +348,15 @@ public class TimeParser {
 		return hasInDictionary(ParserConstants.VALID_END, firstCharacter);
 	}
 
+	/**
+	 * This method is used to find the end of the String text from the first
+	 * occurrence of a non-word character.
+	 * 
+	 * @param text
+	 * @return substring of text, starting from first non-word character until
+	 *         the end of text. If no non-word character present, returns an
+	 *         empty String.
+	 */
 	private String getEnd(String text) {
 		int indexOfNonWord = getIndexOfNonWordChar(text);
 		if (indexOfNonWord > ParserConstants.DEFAULT_INDEX_NUMBER) {
@@ -299,6 +365,14 @@ public class TimeParser {
 		return ParserConstants.STRING_EMPTY;
 	}
 
+	/**
+	 * This method substring text, until the first occurrence of a non-word
+	 * character.
+	 * 
+	 * @param text
+	 * @return substring of text from index 0 until the first occurrence of
+	 *         non-word character.
+	 */
 	private String getStartString(String text) {
 		int indexOfNonWord = getIndexOfNonWordChar(text);
 		if (indexOfNonWord > ParserConstants.DEFAULT_INDEX_NUMBER) {
@@ -307,6 +381,14 @@ public class TimeParser {
 		return text;
 	}
 
+	/**
+	 * This method returns the first 'x' words from the given wordToSplit.
+	 * 
+	 * @param wordToSplit
+	 * @param x,
+	 *            number of words to return
+	 * @return first x words from wordToSplit, if present; otherwise null.
+	 */
 	public String getFirstXWords(String wordToSplit, int x) {
 
 		if (wordToSplit != null && !wordToSplit.isEmpty() && x > 0) {
@@ -324,6 +406,15 @@ public class TimeParser {
 		return null;
 	}
 
+	/**
+	 * This method is used to determine the last word in text between 0 and
+	 * endIndex.
+	 * 
+	 * @param text
+	 * @param endIndex
+	 * @return last word of text in the range [0, endIndex] if present;
+	 *         otherwise empty String.
+	 */
 	public String getLastWordInRange(String text, int endIndex) {
 
 		if (text != null && !text.isEmpty() && endIndex > 0) {
@@ -334,6 +425,14 @@ public class TimeParser {
 		return ParserConstants.STRING_EMPTY;
 	}
 
+	/**
+	 * This method returns the first occurrence of word in array[].
+	 * 
+	 * @param word
+	 * @param array
+	 * @return return the first index of word if it is present in array[];
+	 *         otherwise -1.
+	 */
 	public int indexOf(String word, String[] array) {
 		if (hasInDictionary(array, word)) {
 			for (int index = ParserConstants.FIRST_INDEX; index < array.length; index++) {
@@ -345,6 +444,15 @@ public class TimeParser {
 		return ParserConstants.DEFAULT_INDEX_NUMBER; // if absent
 	}
 
+	/**
+	 * This method detects the index of a non-word character in the String word.
+	 * A non-word character includes everything other than an English letter, a
+	 * digit and a whitespace.
+	 * 
+	 * @param word
+	 *            is checked for any non-word character.
+	 * @return index, of first non-word character in word.
+	 */
 	public int getIndexOfNonWordChar(String word) {
 		int index = ParserConstants.DEFAULT_INDEX_NUMBER;
 
@@ -372,6 +480,14 @@ public class TimeParser {
 		return false;
 	}
 
+	/**
+	 * This method checks if any index of dictionary[] equals the wordsToFind
+	 * (case insensitive).
+	 * 
+	 * @param dictionary
+	 * @param wordsToFind
+	 * @return true if dictionary contains wordToFind; false otherwise.
+	 */
 	private boolean hasInDictionary(String[] dictionary, String wordToFind) {
 		if (wordToFind != null && !wordToFind.isEmpty()) {
 			for (String dictionaryWords : dictionary) {
@@ -421,13 +537,6 @@ public class TimeParser {
 		dateFormatList.add(DateTimeFormatter.ofPattern(ParserConstants.TIME_FORMAT_24HOUR_MIN));
 		dateFormatList.add(DateTimeFormatter.ofPattern(ParserConstants.TIME_FORMAT_24HOUR_COLON));
 		dateFormatList.add(DateTimeFormatter.ofPattern(ParserConstants.TIME_FORMAT_24HOUR_PERIOD));
-		return dateFormatList;
-	}
-
-	public static ArrayList<DateTimeFormatter> generate12HrTimeSansAMPM() {
-		ArrayList<DateTimeFormatter> dateFormatList = new ArrayList<DateTimeFormatter>();
-		dateFormatList.add(DateTimeFormatter.ofPattern(ParserConstants.TIME_FORMAT_12HOUR));
-		dateFormatList.add(DateTimeFormatter.ofPattern(ParserConstants.TIME_FORMAT_12HOUR_MIN));
 		return dateFormatList;
 	}
 }
