@@ -12,10 +12,9 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
-import com.google.gson.Gson;
-import com.google.gson.JsonSyntaxException;
 
 import ScheduleHacks.Task;
 
@@ -24,78 +23,25 @@ public class StorageTest {
 	private static final String currentFile = "currentFile.json";
 	private static final String archiveFile = "archiveFile.json";
 
-
 	File curFile = new File(currentFile);
 	File arcFile = new File(archiveFile);
 	File testFile = new File("test.json");
 	File dataFile = new File("DataLocation.txt");
 
-	private ArrayList<Task> floatingTasksToDo = new ArrayList<Task>();
-	private ArrayList<Task> floatingTasksComplete = new ArrayList<Task>();
-	private ArrayList<Task> scheduledTasksToDo = new ArrayList<Task>();
-	private ArrayList<Task> scheduledTasksComplete = new ArrayList<Task>();
-	private ArrayList<Task> scheduledTasksOverDue = new ArrayList<Task>();
-
-	String settingsStr;
-
-	public ArrayList<Task> getScheduledTasksToDo() {
-		return scheduledTasksToDo;
-	}
-
-	public ArrayList<Task> getScheduledTasksOverDue() {
-		return scheduledTasksOverDue;
-	}
-
-	public ArrayList<Task> getScheduledTasksComplete() {
-		return scheduledTasksComplete;
-	}
-
-	public ArrayList<Task> getFloatingTasksToDo() {
-		return floatingTasksToDo;
-	}
-
-	public ArrayList<Task> getFloatingTasksComplete() {
-		return floatingTasksComplete;
-	}
-
-//	@Test
-//	public void testStorageInit() {
-//		curFile.delete();
-//		arcFile.delete();
-//		dataFile.delete();
-//		
-//		Storage testStorage = Storage.getInstance();
-//		testStorage.initStorage();
-//
-//		assertEquals(false, curFile.exists());
-//		assertEquals(false, arcFile.exists());
-//		assertEquals(true, dataFile.exists());
-//
-//	}
-
-	@SuppressWarnings("null")
-	@Test
-	public void testFloatingTask() {
-		Storage testStorage = Storage.getInstance();
-		
-		Task task1 = new Task("attend soccer practice", null, null, null, null);
-		task1.setFloatingTask();
-		
-		ArrayList<Task> testFloatingTasksToDo = new ArrayList<Task>();
-		testFloatingTasksToDo.add(task1);
-		
-		testStorage.setFloatingTasksToDo(testFloatingTasksToDo);
-		
-		testStorage.writeToCurrentFile(new ArrayList<Task>(), testFloatingTasksToDo,
-				new ArrayList<Task>());
-		testStorage.readFromCurrentFile();
-		ArrayList<Task> reetrieve = testStorage.getFloatingTasksToDo();
-		
-		
-		assertEquals(reetrieve.equals(testFloatingTasksToDo),true);
-		
-	}
-
+	// @Test
+	// public void testStorageInit() {
+	// curFile.delete();
+	// arcFile.delete();
+	// dataFile.delete();
+	//
+	// Storage testStorage = Storage.getInstance();
+	// testStorage.initStorage();
+	//
+	// assertEquals(false, curFile.exists());
+	// assertEquals(false, arcFile.exists());
+	// assertEquals(true, dataFile.exists());
+	//
+	// }
 
 	@Test
 	public void testSetDirectory() {
@@ -167,106 +113,195 @@ public class StorageTest {
 		assertNotSame("C:\\SH2", Storage.getCurrentPathName());
 
 	}
+	
+	@Test
+	public void testToDoScheduledTask() throws IOException {
+		Storage testStorage = Storage.getInstance();
+
+		Task task1 = new Task("attend piano concert", LocalDate.parse("2016-06-08"), LocalDate.parse("2016-08-08"), LocalTime.parse("12:00"), LocalTime.parse("16:00"));
+		task1.setScheduledTask();
+		task1.setAsIncomplete();
+		task1.isScheduledTask();
+
+		ArrayList<Task> testScheduledTasksToDo = new ArrayList<Task>();
+		testScheduledTasksToDo.add(task1);
+
+		testStorage.setScheduledTasksToDo(testScheduledTasksToDo);
+
+		testStorage.writeToCurrentFile(testScheduledTasksToDo,new ArrayList<Task>(), new ArrayList<Task>());
+		testStorage.readFromCurrentFile();
+		ArrayList<Task> retrieveList = testStorage.getScheduledTasksToDo();
+
+		assertEquals(retrieveList.equals(testScheduledTasksToDo), true);
+		testScheduledTasksToDo.clear();
+	}
 
 	@Test
-	public void testReadToDoFloatingTask() throws Exception {
+	public void testToDoFloatingTask() throws IOException{
+		Storage testStorage = Storage.getInstance();
 
-		Gson gson = new Gson();
 		Task task1 = new Task("attend soccer practice", null, null, null, null);
 		task1.setFloatingTask();
-		String newTask = gson.toJson(task1);
+		task1.setAsIncomplete();
+		task1.isFloatingTask();
 
-		Task t1 = gson.fromJson(newTask, Task.class);
+		ArrayList<Task> testFloatingTasksToDo = new ArrayList<Task>();
+		testFloatingTasksToDo.add(task1);
 
-		assertEquals("attend soccer practice", t1.getDescription());
-		assertEquals(null, t1.getStartDate());
-		assertEquals(null, t1.getEndDate());
-		assertEquals(null, t1.getStartTime());
-		assertEquals(null, t1.getEndTime());
-		assertEquals(false, t1.isComplete());
-		assertEquals(true, t1.isFloatingTask());
-		assertEquals(false, t1.isScheduledTask());
+		testStorage.setFloatingTasksToDo(testFloatingTasksToDo);
 
+		testStorage.writeToCurrentFile(new ArrayList<Task>(), testFloatingTasksToDo, new ArrayList<Task>());
+		testStorage.readFromCurrentFile();
+		ArrayList<Task> retrieveList = testStorage.getFloatingTasksToDo();
+
+		assertEquals(retrieveList.equals(testFloatingTasksToDo), true);
+		testFloatingTasksToDo.clear();
 	}
 
+	
+	
 	@Test
-	public void testReadToDoScheduledTask() throws Exception {
+	public void testOverduedTask()throws IOException{
+		Storage testStorage = Storage.getInstance();
 
-		Gson gson = new Gson();
 		Task task1 = new Task("attend piano concert", null, LocalDate.parse("2016-03-03"), null, LocalTime.MAX);
 		task1.setScheduledTask();
-		String newTask = gson.toJson(task1);
+		task1.setAsIncomplete();
+		task1.isScheduledTask();
 
-		Task t1 = gson.fromJson(newTask, Task.class);
+		ArrayList<Task> testOverduedTasks = new ArrayList<Task>();
+		testOverduedTasks.add(task1);
 
-		assertEquals("attend piano concert", t1.getDescription());
-		assertEquals(null, t1.getStartDate());
-		assertEquals("2016-03-03", t1.getEndDate().toString());
-		assertEquals(null, t1.getStartTime());
-		assertEquals(LocalTime.MAX, t1.getEndTime());
-		assertEquals(false, t1.isComplete());
-		assertEquals(false, t1.isFloatingTask());
-		assertEquals(true, t1.isScheduledTask());
+		testStorage.setScheduledTasksOverDue(testOverduedTasks);
+		LocalDateTime present = LocalDateTime.now();
+		LocalDateTime endDateTime = LocalDateTime.of(task1.getEndDate(), task1.getEndTime());
+
+		testStorage.writeToCurrentFile(new ArrayList<Task>(), new ArrayList<Task>(),testOverduedTasks);
+		testStorage.readFromCurrentFile();
+		ArrayList<Task> retrieveList = testStorage.getScheduledTasksOverDue();
+
+		assertEquals(retrieveList.equals(testOverduedTasks), true);
+		assertEquals(endDateTime.isBefore(present), true);
 
 	}
-
+	
+	
 	@Test
-	public void testReadCompletedScheduleTask() throws Exception {
+	public void testCompleteFloatingTask()throws Exception {
+		Storage testStorage = Storage.getInstance();
 
-		Gson gson = new Gson();
-		Task task1 = new Task("attend piano concert", null, LocalDate.parse("2016-03-03"), null, LocalTime.MAX);
+		Task task1 = new Task("attend soccer practice", null, null, null, null);
+		task1.setFloatingTask();
 		task1.setAsComplete();
-		task1.setScheduledTask();
-		String newTask = gson.toJson(task1);
+		task1.isComplete();
+		task1.isFloatingTask();
 
-		Task t1 = gson.fromJson(newTask, Task.class);
+		ArrayList<Task> testFloatingTaskComplete = new ArrayList<Task>();
+		testFloatingTaskComplete.add(task1);
 
-		assertEquals("attend piano concert", t1.getDescription());
-		assertEquals(null, t1.getStartDate());
-		assertEquals("2016-03-03", t1.getEndDate().toString());
-		assertEquals(null, t1.getStartTime());
-		assertEquals(LocalTime.MAX, t1.getEndTime());
-		assertEquals(true, t1.isComplete());
-		assertEquals(false, t1.isFloatingTask());
-		assertEquals(true, t1.isScheduledTask());
+		testStorage.setFloatingTasksComplete(testFloatingTaskComplete);
 
+		testStorage.writeToArchiveFile(testFloatingTaskComplete, new ArrayList<Task>());
+		testStorage.readFromArchiveFile();
+		ArrayList<Task> retrieveList = testStorage.getFloatingTasksComplete();
+
+		assertEquals(retrieveList.equals(testFloatingTaskComplete), true);
+		 testFloatingTaskComplete.clear();
 	}
 
 	@Test
-	public void testWriteCurrentFile() throws Exception {
+	public void testCompletedScheduleTask()throws Exception{
+		Storage testStorage = Storage.getInstance();
 
-		File f = new File("currentFile");
-		BufferedWriter bw = new BufferedWriter(new FileWriter(f));
-		Gson gson = new Gson();
-		Task task1 = new Task("attend soccer practice", null, null, null, null);
-		task1.setFloatingTask();
-		String newTask = gson.toJson(task1);
-		bw.write(newTask);
-		bw.close();
-
-		assertEquals(true, f.exists());
-		assertEquals("currentFile", f.getName());
-		assertNotNull(f);
-		assertNotSame(0, f.length());
-
-	}
-
-	@Test
-	public void testWriteCurrentFile2() throws Exception {
-
-		File f = new File("currentFile");
-		BufferedWriter bw = new BufferedWriter(new FileWriter(f));
-		Gson gson = new Gson();
 		Task task1 = new Task("attend piano concert", null, LocalDate.parse("2016-03-03"), null, LocalTime.MAX);
 		task1.setScheduledTask();
-		String newTask = gson.toJson(task1);
-		bw.write(newTask);
-		bw.close();
+		task1.setAsComplete();
+		task1.isComplete();
+		task1.isScheduledTask();
 
-		assertEquals(true, f.exists());
-		assertEquals("currentFile", f.getName());
-		assertNotNull(f);
-		assertNotSame(0, f.length());
+		ArrayList<Task> testScheduledTaskComplete = new ArrayList<Task>();
+		testScheduledTaskComplete .add(task1);
+
+		testStorage.setScheduledTasksComplete(testScheduledTaskComplete);
+
+		testStorage.writeToArchiveFile(new ArrayList<Task>(),testScheduledTaskComplete );
+		testStorage.readFromArchiveFile();
+		ArrayList<Task> retrieveList = testStorage.getScheduledTasksComplete();
+
+		assertEquals(retrieveList.equals(testScheduledTaskComplete ), true);
+
+
+	}
+	
+	@Test
+	public void testStoreAndLoad()throws Exception {
+		Storage testStorage = Storage.getInstance();
+
+		Task task1 = new Task("attend soccer practice", null, null, null, null);
+		Task task2 = new Task("attend piano lessons", null, null, null, null);
+		Task task3 = new Task("watch movie", LocalDate.parse("2016-04-03"), LocalDate.parse("2016-04-03"), null, LocalTime.MAX);
+		Task task4 = new Task("read book", null, LocalDate.parse("2016-03-03"), null, LocalTime.MAX);
+		Task task5 = new Task("attend piano concert", null, LocalDate.parse("2016-03-03"), null, LocalTime.MAX);
+		
+		task1.setFloatingTask();
+		task1.setAsIncomplete();
+		task1.isComplete();
+		task1.isFloatingTask();
+		
+		task2.setFloatingTask();
+		task2.setAsComplete();
+		task2.isFloatingTask();
+
+		task3.setScheduledTask();
+		task3.setAsIncomplete();
+		task3.isScheduledTask();
+
+		task4.setScheduledTask();
+		task4.setAsComplete();
+		task4.isComplete();
+		task4.isScheduledTask();
+		
+		task5.setScheduledTask();
+		task5.setAsIncomplete();
+		task5.isScheduledTask();
+		
+		LocalDateTime present = LocalDateTime.now();
+		LocalDateTime endDateTime = LocalDateTime.of(task5.getEndDate(), task5.getEndTime());
+
+		ArrayList<Task> testFloatingTasksToDo = new ArrayList<Task>();
+		ArrayList<Task> testFloatingTasksComplete = new ArrayList<Task>();
+		ArrayList<Task> testScheduledTasksToDo = new ArrayList<Task>();
+		ArrayList<Task> testScheduledTasksComplete = new ArrayList<Task>();
+		ArrayList<Task> testScheduledTasksOverDue = new ArrayList<Task>();
+		
+		testFloatingTasksToDo.add(task1);
+		testFloatingTasksComplete.add(task2);
+		testScheduledTasksToDo.add(task3);
+		testScheduledTasksComplete.add(task4);
+		testScheduledTasksOverDue.add(task5);
+		
+		testStorage.setFloatingTasksToDo(testFloatingTasksToDo);
+		testStorage.setFloatingTasksComplete(testFloatingTasksComplete);
+		testStorage.setScheduledTasksToDo( testScheduledTasksToDo);
+		testStorage.setFloatingTasksComplete(testScheduledTasksComplete);
+		testStorage.setScheduledTasksOverDue(testScheduledTasksOverDue);
+		
+
+		testStorage.storeToFiles( testFloatingTasksToDo,testFloatingTasksComplete, testScheduledTasksToDo,testScheduledTasksComplete,testScheduledTasksOverDue);
+		testStorage.loadToList();
+		ArrayList<Task> retrieveList1 = testStorage.getFloatingTasksToDo();
+		ArrayList<Task> retrieveList2 = testStorage.getFloatingTasksComplete();
+		ArrayList<Task> retrieveList3 = testStorage.getScheduledTasksToDo();
+		ArrayList<Task> retrieveList4 = testStorage.getFloatingTasksComplete();
+		ArrayList<Task> retrieveList5 = testStorage.getScheduledTasksOverDue();
+
+		assertEquals(retrieveList1.equals(testFloatingTasksToDo), true);
+		assertEquals(retrieveList2.equals(testFloatingTasksComplete), true);
+		assertEquals(retrieveList3.equals( testScheduledTasksToDo), true);
+		assertEquals(retrieveList4.equals(testScheduledTasksComplete), true);
+		assertEquals(retrieveList5.equals(testScheduledTasksOverDue), true);
+		assertEquals(endDateTime.isBefore(present), true);
+
 	}
 
 }
