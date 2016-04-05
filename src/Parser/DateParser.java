@@ -1,3 +1,11 @@
+/*
+ * DateParser is used to detect all possible dates in a String, 
+ * add it to the dateList, 
+ * and remove it from the taskDetails.
+ * 
+ * Thus aiding in parsing the given String input.
+ */
+
 //@@author A0132778W
 
 package Parser;
@@ -116,6 +124,11 @@ public class DateParser {
 		}
 	}
 
+	/**
+	 * This method removes the particular textToRemove from taskDetails.
+	 * 
+	 * @param textToRemove
+	 */
 	public void removeDateFromTaskDetails(String textToRemove) {
 		textToRemove = cleanupExtraWhitespace(textToRemove);
 		if (taskDetails.startsWith(textToRemove)) {
@@ -128,8 +141,12 @@ public class DateParser {
 	}
 
 	/**
-	 * This method checks if the immediate String contains a date If it is a
-	 * Valid Date, it adds it to the List
+	 * This method checks if the immediate String contains a date. If it is a
+	 * Valid Date, it adds it to the List.
+	 * 
+	 * @param statement
+	 * @param keyword
+	 * @return
 	 */
 	public boolean addToListIfValidDate(String statement, String keyword) {
 		String tempStatement = statement;
@@ -170,6 +187,16 @@ public class DateParser {
 		return false;
 	}
 
+	/**
+	 * This method is used to check if statement starts with a possible date
+	 * format, without a year. That is, only month and day are specified.
+	 * 
+	 * @param statement
+	 *            to check if starts with a possible date
+	 * @param keyword
+	 *            to check if it is a date keyword, and remove it in the case.
+	 * @return true, if statement starts with a word, otherwise false.
+	 */
 	public boolean addToListIfValidDateWithoutYear(String statement, String keyword) {
 		String end = ParserConstants.STRING_EMPTY;
 		statement = cleanupExtraWhitespace(statement);
@@ -189,6 +216,11 @@ public class DateParser {
 
 				statement = statement.substring(ParserConstants.FIRST_INDEX, index.getIndex());
 
+				// if the date located is contained in taskDetails(to ensure
+				// that random dates are not detected)
+				// and if the date string detected ends with either a
+				// fullstop(.) or a comma (,) or a space or marks the end of the
+				// sentence.
 				if (taskDetailsContains(statement) && isValidEnd(end)) {
 					addDateToList(parsedDate);
 					if (isValidKeyWord(keyword) || isValidRangeKeyWord(keyword)) {
@@ -209,14 +241,14 @@ public class DateParser {
 		return false;
 	}
 
-	/*
-	 * public boolean isAcceptableDate(String statement, ParsePosition pos) {
-	 * String firstWord =
-	 * CommandParser.cleanupExtraWhitespace(getFirstWord(statement)); return
-	 * isValidDate(statement, pos) || isUpcomingDayWord(firstWord) ||
-	 * isDayOfWeek(firstWord); }
+	/**
+	 * This method is used to determine the date of the upcoming day of the
+	 * week.
+	 * 
+	 * @param dayOfWeek
+	 *            of which date is supposed to be determined.
+	 * @return date of the given dayOfWeek.
 	 */
-
 	public LocalDate getDayOfWeekDate(String dayOfWeek) {
 
 		dayOfWeek = getStartString(dayOfWeek);
@@ -299,6 +331,14 @@ public class DateParser {
 		return null;
 	}
 
+	/**
+	 * Today, tomorrow, day after tomorrow and the like account for upcoming
+	 * days. This method checks if textToFind starts with an upcoming day word.
+	 * 
+	 * @param textToFind
+	 * @return true, if textToFind starts with an upcoming day word; false
+	 *         otherwise.
+	 */
 	public boolean isUpcomingDayString(String textToFind) {
 		if (textToFind != null && !textToFind.isEmpty()) {
 			String firstWord = getFirstXWords(textToFind, ParserConstants.ONE_WORD);
@@ -312,6 +352,13 @@ public class DateParser {
 		return false;
 	}
 
+	/**
+	 * This method extracts the upcoming day word from the given String
+	 * textToFind.
+	 * 
+	 * @param textToFind
+	 * @return the upcoming day word from textToFind.
+	 */
 	public String getUpComingDayWord(String textToFind) {
 		String firstWord = getStartString(getFirstXWords(textToFind, ParserConstants.ONE_WORD));
 		String firstThreeWords = getStartString(getFirstXWords(textToFind, ParserConstants.THREE_WORDS));
@@ -378,6 +425,15 @@ public class DateParser {
 		return parsedDate;
 	}
 
+	/**
+	 * Day duration refers to a number followed by either days, weeks, months or
+	 * years. The digit and the String may or may not have a whitespace in
+	 * between.
+	 * 
+	 * @param tempString
+	 * @return true if tempString starts with a day duration word; false
+	 *         otherwise.
+	 */
 	public boolean hasDayDuration(String tempString) {
 		try {
 			return isFirstWordDayDuration(tempString) || isFirstTwoWordsDayDuration(tempString);
@@ -391,6 +447,16 @@ public class DateParser {
 		return false;
 	}
 
+	/**
+	 * This method is used to check if the first word of inputString is a day
+	 * duration word.
+	 * 
+	 * @param inputString
+	 * @return true if inputString first word is day duration; false otherwise.
+	 * @throws NullPointerException
+	 * @throws NumberFormatException
+	 * @throws IndexOutOfBoundsException
+	 */
 	public boolean isFirstWordDayDuration(String inputString)
 			throws NullPointerException, NumberFormatException, IndexOutOfBoundsException {
 		String firstWord = getFirstXWords(inputString, ParserConstants.ONE_WORD);
@@ -415,6 +481,15 @@ public class DateParser {
 		return false;
 	}
 
+	/**
+	 * This method is used to check the first two words of inputString for
+	 * occurrence of day duration.
+	 * 
+	 * @param inputString
+	 * @return true if first two words mark day duration; false otherwise.
+	 * @throws NullPointerException
+	 * @throws NumberFormatException
+	 */
 	public boolean isFirstTwoWordsDayDuration(String inputString) throws NullPointerException, NumberFormatException {
 		String firstWord = getFirstXWords(inputString, ParserConstants.ONE_WORD);
 		String first2Words = getFirstXWords(inputString, ParserConstants.TWO_WORDS);
@@ -454,6 +529,14 @@ public class DateParser {
 		return LocalDate.now();
 	}
 
+	/**
+	 * This method returns the first occurrence of word in array[].
+	 * 
+	 * @param word
+	 * @param array
+	 * @return return the first index of word if it is present in array[];
+	 *         otherwise -1.
+	 */
 	public int indexOf(String word, String[] array) {
 		if (hasInDictionary(array, word)) {
 			for (int index = ParserConstants.FIRST_INDEX; index < array.length; index++) {
@@ -469,15 +552,25 @@ public class DateParser {
 		dateList.add(parsedDate);
 	}
 
-	/*
-	 * public ArrayList<LocalDate> sortDateList(ArrayList<LocalDate> dates) {
-	 * Collections.sort(dates); return dates; }
+	/**
+	 * Dates can have a comprehensive list of keywords from { "by", "on", "in",
+	 * "before", "from", "frm" } preceding them. This method checks if "keyword"
+	 * contains any of these date keywords.
+	 * 
+	 * @param keyword
+	 * @return true if it is a valid date keyword; false otherwise.
 	 */
-
 	public boolean isValidKeyWord(String keyword) {
 		return hasInDictionary(ParserConstants.DATE_KEYWORD, keyword.trim());
 	}
 
+	/**
+	 * "to" and hypen "-" are the range keywords. This method checks if keyword
+	 * is a valid range keyword.
+	 * 
+	 * @param keyword
+	 * @return return true if keyword equals "to" or "-"; false otherwise.
+	 */
 	public boolean isValidRangeKeyWord(String keyword) {
 		if (keyword == null || keyword.isEmpty()) {
 			return false;
@@ -489,6 +582,14 @@ public class DateParser {
 		}
 	}
 
+	/**
+	 * A valid end is denoted by a String that ends with a period, comma,
+	 * whitespace or is the end of the String.
+	 * 
+	 * @param endText
+	 *            to check if its end is valid.
+	 * @return true if endText has valid end; false otherwise.
+	 */
 	private boolean isValidEnd(String endText) {
 		if (endText.isEmpty()) {
 			return true;
@@ -497,6 +598,15 @@ public class DateParser {
 		return hasInDictionary(ParserConstants.VALID_END, firstCharacter);
 	}
 
+	/**
+	 * This method is used to find the end of the String text from the first
+	 * occurrence of a non-word character.
+	 * 
+	 * @param text
+	 * @return substring of text, starting from first non-word character until
+	 *         the end of text. If no non-word character present, returns an
+	 *         empty String.
+	 */
 	private String getEnd(String text) {
 		int indexOfNonWord = getIndexOfNonWordChar(text);
 		if (indexOfNonWord > ParserConstants.DEFAULT_INDEX_NUMBER) {
@@ -505,6 +615,14 @@ public class DateParser {
 		return ParserConstants.STRING_EMPTY;
 	}
 
+	/**
+	 * This method substring text, until the first occurrence of a non-word
+	 * character.
+	 * 
+	 * @param text
+	 * @return substring of text from index 0 until the first occurrence of
+	 *         non-word character.
+	 */
 	private String getStartString(String text) {
 		int indexOfNonWord = getIndexOfNonWordChar(text);
 		if (indexOfNonWord > ParserConstants.DEFAULT_INDEX_NUMBER) {
@@ -513,6 +631,14 @@ public class DateParser {
 		return text;
 	}
 
+	/**
+	 * This method checks if any index of dictionary[] equals the wordsToFind
+	 * (case insensitive).
+	 * 
+	 * @param dictionary
+	 * @param wordsToFind
+	 * @return true if dictionary contains wordToFind; false otherwise.
+	 */
 	private boolean hasInDictionary(String[] dictionary, String wordsToFind) {
 		if (wordsToFind != null && !wordsToFind.isEmpty()) {
 			for (String dictionaryWords : dictionary) {
@@ -532,6 +658,14 @@ public class DateParser {
 		return false;
 	}
 
+	/**
+	 * This method returns the first 'x' words from the given wordToSplit.
+	 * 
+	 * @param wordToSplit
+	 * @param x,
+	 *            number of words to return
+	 * @return first x words from wordToSplit, if present; otherwise null.
+	 */
 	public String getFirstXWords(String wordToSplit, int x) {
 
 		if (wordToSplit != null && !wordToSplit.isEmpty() && x > 0) {
@@ -549,6 +683,15 @@ public class DateParser {
 		return null;
 	}
 
+	/**
+	 * This method detects the index of a non-word character in the String word.
+	 * A non-word character includes everything other than an english letter, a
+	 * digit and a whitespace.
+	 * 
+	 * @param word
+	 *            is checked for any non-word character.
+	 * @return index, of first non-word character in word.
+	 */
 	public int getIndexOfNonWordChar(String word) {
 		int index = ParserConstants.DEFAULT_INDEX_NUMBER;
 
@@ -582,11 +725,10 @@ public class DateParser {
 	}
 
 	/**
-	 * This method returns an array list of possible date formats
+	 * This method returns an array list of possible date formats with year.
 	 * 
 	 * @return dateFormatList, contains all acceptable date formats in
-	 *         DateTimeFormatter type ArrayList
-	 * 
+	 *         DateTimeFormatter type ArrayList.
 	 */
 	ArrayList<DateTimeFormatter> generateDateFormatList() {
 		ArrayList<DateTimeFormatter> dateFormatList = new ArrayList<DateTimeFormatter>();
@@ -614,22 +756,29 @@ public class DateParser {
 				.add(DateTimeFormatter.ofPattern(ParserConstants.DATE_FORMAT_DAY_SPACE_MONTH_SHORT_SPACE_YEAR_LONG));
 		dateFormatList
 				.add(DateTimeFormatter.ofPattern(ParserConstants.DATE_FORMAT_DAY_SPACE_MONTH_SHORT_SPACE_YEAR_SHORT));
- 
+
 		dateFormatList.add(DateTimeFormatter.ofPattern(ParserConstants.DATE_FORMAT_MONTH_LONG_DAY_SPACE_YEAR_LONG));
 		dateFormatList.add(DateTimeFormatter.ofPattern(ParserConstants.DATE_FORMAT_MONTH_LONG_DAY_SPACE_YEAR_SHORT));
 		dateFormatList.add(DateTimeFormatter.ofPattern(ParserConstants.DATE_FORMAT_MONTH_LONG_SPACE_DAY_YEAR_LONG));
 		dateFormatList.add(DateTimeFormatter.ofPattern(ParserConstants.DATE_FORMAT_MONTH_LONG_SPACE_DAY_YEAR_SHORT));
-		
+
 		dateFormatList.add(DateTimeFormatter.ofPattern(ParserConstants.DATE_FORMAT_MONTH_SHORT_DAY_SPACE_YEAR_LONG));
 		dateFormatList.add(DateTimeFormatter.ofPattern(ParserConstants.DATE_FORMAT_MONTH_SHORT_DAY_SPACE_YEAR_SHORT));
-		dateFormatList.add(DateTimeFormatter.ofPattern(ParserConstants.DATE_FORMAT_MONTH_SHORT_SPACE_DAY_SPACE_YEAR_LONG));
-		dateFormatList.add(DateTimeFormatter.ofPattern(ParserConstants.DATE_FORMAT_MONTH_SHORT_SPACE_DAY_SPACE_YEAR_SHORT));
-		
-		
-		
+		dateFormatList
+				.add(DateTimeFormatter.ofPattern(ParserConstants.DATE_FORMAT_MONTH_SHORT_SPACE_DAY_SPACE_YEAR_LONG));
+		dateFormatList
+				.add(DateTimeFormatter.ofPattern(ParserConstants.DATE_FORMAT_MONTH_SHORT_SPACE_DAY_SPACE_YEAR_SHORT));
+
 		return dateFormatList;
 	}
 
+	/**
+	 * This method returns an array list of possible date formats without the
+	 * year.
+	 * 
+	 * @return dateFormatList, contains all acceptable date formats without year
+	 *         in DateTimeFormatter type ArrayList.
+	 */
 	ArrayList<DateTimeFormatter> generateDateFormatListWithoutYear() {
 		ArrayList<DateTimeFormatter> dateFormatList = new ArrayList<DateTimeFormatter>();
 		dateFormatList.add(DateTimeFormatter.ofPattern(ParserConstants.DATE_FORMAT_DAY_MONTH_LONG_NOSPACE));
