@@ -115,9 +115,11 @@ public class StorageTest {
 	}
 	
 	@Test
-	public void testToDoScheduledTask() throws IOException {
+	public void testToDoScheduledTask() throws IOException{
+		
 		Storage testStorage = Storage.getInstance();
 
+		testStorage.initStorage();
 		Task task1 = new Task("attend piano concert", LocalDate.parse("2016-06-08"), LocalDate.parse("2016-08-08"), LocalTime.parse("12:00"), LocalTime.parse("16:00"));
 		task1.setScheduledTask();
 		task1.setAsIncomplete();
@@ -139,7 +141,9 @@ public class StorageTest {
 	@Test
 	public void testToDoFloatingTask() throws IOException{
 		Storage testStorage = Storage.getInstance();
-
+		
+		testStorage.initStorage();
+		
 		Task task1 = new Task("attend soccer practice", null, null, null, null);
 		task1.setFloatingTask();
 		task1.setAsIncomplete();
@@ -153,7 +157,8 @@ public class StorageTest {
 		testStorage.writeToCurrentFile(new ArrayList<Task>(), testFloatingTasksToDo, new ArrayList<Task>());
 		testStorage.readFromCurrentFile();
 		ArrayList<Task> retrieveList = testStorage.getFloatingTasksToDo();
-
+		
+		
 		assertEquals(retrieveList.equals(testFloatingTasksToDo), true);
 		testFloatingTasksToDo.clear();
 	}
@@ -179,7 +184,7 @@ public class StorageTest {
 		testStorage.writeToCurrentFile(new ArrayList<Task>(), new ArrayList<Task>(),testOverduedTasks);
 		testStorage.readFromCurrentFile();
 		ArrayList<Task> retrieveList = testStorage.getScheduledTasksOverDue();
-
+		
 		assertEquals(retrieveList.equals(testOverduedTasks), true);
 		assertEquals(endDateTime.isBefore(present), true);
 
