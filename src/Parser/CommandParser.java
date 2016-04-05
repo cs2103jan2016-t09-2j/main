@@ -158,6 +158,7 @@ public class CommandParser {
 	public static Task getCriteria(String taskStatement) throws Exception {
 		Task newTask = new Task();
 		taskStatement = cleanupExtraWhitespace(taskStatement);
+		String storeTaskStatement = taskStatement;
 		String firstWord = getFirstWord(taskStatement);
 
 		if (hasInDictionary(ParserConstants.UPCOMING_PERIOD_KEYWORD, firstWord)) {
@@ -172,10 +173,11 @@ public class CommandParser {
 		try {
 			if (taskStatement != null && !taskStatement.isEmpty()) {
 				taskStatement = cleanupExtraWhitespace(taskStatement);
-				newTask.setDescription(taskStatement);
+			} else {
+				taskStatement = storeTaskStatement;
 			}
+			newTask.setDescription(taskStatement);
 		} catch (Exception e) {
-			// taskStatement is null
 			// do nothing
 		}
 		return newTask;
