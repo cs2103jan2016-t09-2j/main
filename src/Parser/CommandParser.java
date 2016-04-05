@@ -13,10 +13,14 @@ import java.util.regex.Matcher;
 import Parser.Command.COMMAND_TYPE;
 import ScheduleHacks.Task;
 
-/*
- * Can Perform basic CRUD functionalities.
- * Can Perform search and view.
+/**
+ * This class is invoked whenever a String input by the user needs to be parsed
+ * to retrieve the required details.
  * 
+ * This is mostly a facade class which in highly dependant on the DateParser,
+ * TimeParser and IndexParser.
+ * 
+ * @author Snigdha Singhania
  */
 
 public class CommandParser {
@@ -90,6 +94,13 @@ public class CommandParser {
 		throw new Exception("Empty Task Description");
 	}
 
+	/**
+	 * This method is invoked when the user wants to change directory of his
+	 * task list. It parses taskStatement to obtain directory details.
+	 * 
+	 * @param taskStatement
+	 * @return newTask, set with all parameters to specify new directory route.
+	 */
 	public static Task setDirectory(String taskStatement) {
 		Task newTask = new Task();
 		taskStatement = cleanupExtraWhitespace(taskStatement);
@@ -98,6 +109,8 @@ public class CommandParser {
 				|| taskStatement.equalsIgnoreCase("default")) {
 			newTask.setDescription(taskStatement);
 		} else {
+			// if parameter provided is not of a directory, it is considered to
+			// be an add command.
 			newTask = addNewTask("set " + taskStatement);
 		}
 
@@ -183,6 +196,13 @@ public class CommandParser {
 		return newTask;
 	}
 
+	/**
+	 * This method is invoked when the user wants to search for overdue tasks.
+	 * It sets parameters so as to include every task before the present instant
+	 * of time.
+	 * 
+	 * @param newTask
+	 */
 	public static void setOverdueCriteria(Task newTask) {
 		newTask.setStartDate(LocalDate.MIN);
 		newTask.setEndDate(getCurrentDate());
@@ -306,6 +326,16 @@ public class CommandParser {
 		return oldTask;
 	}
 
+	/**
+	 * This method is used to edit parameters of initial Scheduled tasks
+	 * oldTask.
+	 * 
+	 * @param taskStatement
+	 * @param oldTask
+	 * @param dateList
+	 * @param timeList
+	 * @return
+	 */
 	public static Task editScheduledTask(String taskStatement, Task oldTask, ArrayList<LocalDate> dateList,
 			ArrayList<LocalTime> timeList) {
 
@@ -362,7 +392,7 @@ public class CommandParser {
 				}
 			}
 		}
-		
+
 		if (dateList != null) {
 			oldTask.setEndDate(null);
 			oldTask.setStartDate(null);
@@ -501,7 +531,7 @@ public class CommandParser {
 
 		return newTask;
 	}
-	
+
 	/**
 	 * This method helps convert a floating task to a scheduled/upcoming task
 	 * 
@@ -548,6 +578,14 @@ public class CommandParser {
 		return null;
 	}
 
+	/**
+	 * This method is used to check if any delete keywords are present in an
+	 * edit statement.
+	 * 
+	 * @param taskStatement
+	 * @return returns true if delete keywords are present in taskStatement;
+	 *         false otherwise.
+	 */
 	public static boolean requiresDeletingParameters(String taskStatement) {
 		taskStatement = cleanupExtraWhitespace(taskStatement);
 		try {
@@ -576,6 +614,14 @@ public class CommandParser {
 		return new ArrayList<String>(Arrays.asList(parameters));
 	}
 
+	/**
+	 * This method sets the first date of dateList as StartDate and last date of
+	 * the list as endDate of the given newTask object. If only one date is
+	 * present in the dateList, it is assigned as the endDate.
+	 * 
+	 * @param dateList
+	 * @param newTask
+	 */
 	public static void setDates(ArrayList<LocalDate> dateList, Task newTask) {
 		if (dateList != null) {
 			newTask.setEndDate(dateList.get(dateList.size() - 1));
@@ -585,6 +631,14 @@ public class CommandParser {
 		}
 	}
 
+	/**
+	 * This method sets the first time of timeList as StartTime and last time of
+	 * the list as endTime of the given newTask object. If only one time is
+	 * present in the timeList, it is assigned as the endTime.
+	 * 
+	 * @param timeList
+	 * @param newTask
+	 */
 	public static void setTimes(ArrayList<LocalTime> timeList, Task newTask) {
 		if (timeList != null) {
 			newTask.setEndTime(timeList.get(timeList.size() - 1));

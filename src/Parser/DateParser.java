@@ -398,6 +398,12 @@ public class DateParser {
 		return null;
 	}
 
+	/**
+	 * This method extracts the day duration word from the given textToSearch.
+	 * 
+	 * @param textToSearch
+	 * @return day duration word from textToSearch.
+	 */
 	public String getDayDurationWord(String textToSearch) {
 		String firstWord = getStartString(getFirstXWords(textToSearch, ParserConstants.ONE_WORD));
 

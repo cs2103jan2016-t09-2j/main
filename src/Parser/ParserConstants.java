@@ -1,3 +1,7 @@
+/**
+ * A Simple Class of Constants used throughout Package Parser.
+ */
+
 //@@author A0132778W
 
 package Parser;
@@ -8,15 +12,15 @@ public class ParserConstants {
 	static final String[] COMMAND_ADD = { "add", "+", "a" };
 	static final String[] COMMAND_DELETE = { "delete", "d", "del", "-", "remove", "rm" };
 	static final String[] COMMAND_MODIFY = { "edit", "update", "e" };
-	static final String[] COMMAND_COMPLETE = {"done", "completed", "archive" };
-	static final String[] COMMAND_INCOMPLETE = {"undone"};
+	static final String[] COMMAND_COMPLETE = { "done", "completed", "archive" };
+	static final String[] COMMAND_INCOMPLETE = { "undone" };
 	static final String[] COMMAND_VIEW = { "view", "v", "show", "display" };
 	static final String[] COMMAND_SEARCH = { "search", "find" };
 	static final String[] COMMAND_EXIT = { "exit", "quit", "q" };
 	static final String[] COMMAND_UNDO = { "undo", "u", "z" };
 	static final String[] COMMAND_REDO = { "redo" };
 	static final String[] COMMAND_SET_DIRECTORY = { "set" };
-	static final String[] COMMAND_HOME = { "home"};
+	static final String[] COMMAND_HOME = { "home" };
 	static final String[] COMMAND_HELP = { "help" };
 	static final String COMMAND_INVALID = null;
 	static final String COMMAND_EMPTY = "";
@@ -82,20 +86,20 @@ public class ParserConstants {
 	static final String DATE_FORMAT_DAY_SPACE_MONTH_LONG_SPACE_YEAR_SHORT = "d MMMM uu";
 	static final String DATE_FORMAT_DAY_SPACE_MONTH_SHORT_SPACE_YEAR_LONG = "d MMM uuuu";
 	static final String DATE_FORMAT_DAY_SPACE_MONTH_SHORT_SPACE_YEAR_SHORT = "d MMM uu";
-	
+
 	static final String DATE_FORMAT_MONTH_LONG_DAY_SPACE_YEAR_LONG = "MMMMd uuuu";
 	static final String DATE_FORMAT_MONTH_LONG_DAY_SPACE_YEAR_SHORT = "MMMMd uu";
-	static final String DATE_FORMAT_MONTH_LONG_SPACE_DAY_YEAR_LONG  = "MMMM d uuuu";
-	static final String DATE_FORMAT_MONTH_LONG_SPACE_DAY_YEAR_SHORT  = "MMMM d uu";
+	static final String DATE_FORMAT_MONTH_LONG_SPACE_DAY_YEAR_LONG = "MMMM d uuuu";
+	static final String DATE_FORMAT_MONTH_LONG_SPACE_DAY_YEAR_SHORT = "MMMM d uu";
 	static final String DATE_FORMAT_MONTH_SHORT_DAY_SPACE_YEAR_LONG = "MMMd uuuu";
 	static final String DATE_FORMAT_MONTH_SHORT_DAY_SPACE_YEAR_SHORT = "MMMd uu";
 	static final String DATE_FORMAT_MONTH_SHORT_SPACE_DAY_SPACE_YEAR_LONG = "MMM d uuuu";
 	static final String DATE_FORMAT_MONTH_SHORT_SPACE_DAY_SPACE_YEAR_SHORT = "MMM d uu";
-	
+
 	static final String DATE_FORMAT_DAY_MONTH_LONG_NOSPACE = "dMMMM";
 	static final String DATE_FORMAT_DAY_MONTH_SHORT_NOSPACE = "dMMM";
 	static final String DATE_FORMAT_DAY_MONTH_SHORT = "d MMM";
-	static final String DATE_FORMAT_DAY_MONTH_LONG = "d MMMM";	
+	static final String DATE_FORMAT_DAY_MONTH_LONG = "d MMMM";
 	static final String DATE_FORMAT_MONTH_LONG_DAY_NOSPACE = "MMMMd";
 	static final String DATE_FORMAT_MONTH_LONG_DAY = "MMMM d";
 	static final String DATE_FORMAT_MONTH_SHORT_DAY_NOSPACE = "MMMd";
@@ -136,7 +140,7 @@ public class ParserConstants {
 	static final String TIME_FORMAT_24HOUR_COLON = "H:mm";
 	static final String TIME_FORMAT_24HOUR_PERIOD = "H.mm";
 	static final String TIME_FORMAT_24HOUR_MIN = "Hmm";
-	
+
 	static final String TIME_FORMAT_12HOUR_MIN = "hmm";
 	static final String TIME_FORMAT_12HOUR = "h";
 
