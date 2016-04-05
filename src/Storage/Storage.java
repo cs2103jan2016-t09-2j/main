@@ -128,27 +128,27 @@ public class Storage {
 	}
 
 	/* Setter Methods */
-	private void setScheduledTasksToDo(ArrayList<Task> currentTaskList) {
+	public void setScheduledTasksToDo(ArrayList<Task> currentTaskList) {
 		scheduledTasksToDo.clear();
 		scheduledTasksToDo = currentTaskList;
 	}
 
-	private void setScheduledTasksOverDue(ArrayList<Task> currentTaskList) {
+	public void setScheduledTasksOverDue(ArrayList<Task> currentTaskList) {
 		scheduledTasksOverDue.clear();
 		scheduledTasksOverDue = currentTaskList;
 	}
 
-	private void setScheduledTasksComplete(ArrayList<Task> currentTaskList) {
+	public void setScheduledTasksComplete(ArrayList<Task> currentTaskList) {
 		scheduledTasksComplete.clear();
 		scheduledTasksComplete = currentTaskList;
 	}
 
-	private void setFloatingTasksToDo(ArrayList<Task> currentTaskList) {
+	public void setFloatingTasksToDo(ArrayList<Task> currentTaskList) {
 		floatingTasksToDo.clear();
 		floatingTasksToDo = currentTaskList;
 	}
 
-	private void setFloatingTasksComplete(ArrayList<Task> currentTaskList) {
+	public void setFloatingTasksComplete(ArrayList<Task> currentTaskList) {
 		floatingTasksComplete.clear();
 		floatingTasksComplete = currentTaskList;
 	}

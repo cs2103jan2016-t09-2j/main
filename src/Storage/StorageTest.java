@@ -78,18 +78,21 @@ public class StorageTest {
 	public void testFloatingTask() {
 		Storage testStorage = Storage.getInstance();
 		
-
 		Task task1 = new Task("attend soccer practice", null, null, null, null);
+		task1.setFloatingTask();
 		
-		ArrayList<Task> testFloatingTasksToDo = new ArrayList<Task>();;
+		ArrayList<Task> testFloatingTasksToDo = new ArrayList<Task>();
 		testFloatingTasksToDo.add(task1);
 		
-		testStorage.writeToCurrentFile(scheduledTasksToDo, testFloatingTasksToDo,
-				scheduledTasksOverDue);
+		testStorage.setFloatingTasksToDo(testFloatingTasksToDo);
+		
+		testStorage.writeToCurrentFile(new ArrayList<Task>(), testFloatingTasksToDo,
+				new ArrayList<Task>());
 		testStorage.readFromCurrentFile();
+		ArrayList<Task> reetrieve = testStorage.getFloatingTasksToDo();
 		
-		assertEquals(testFloatingTasksToDo,true);
 		
+		assertEquals(reetrieve.equals(testFloatingTasksToDo),true);
 		
 	}
 
