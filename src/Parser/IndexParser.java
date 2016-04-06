@@ -226,6 +226,7 @@ public class IndexParser {
 	 * @return true, if item contains an index range; false otherwise.
 	 */
 	public boolean containsIndexRange(String item) {
+		item = item.toLowerCase();
 		return item.contains(ParserConstants.STRING_HYPHEN) || item.contains(ParserConstants.STRING_TO);
 	}
 
@@ -238,6 +239,7 @@ public class IndexParser {
 	 * @return textToFormat; after it has been correctly formatted.
 	 */
 	public String formatDelimiters(String textToFormat) {
+		textToFormat = textToFormat.toLowerCase();
 		textToFormat = textToFormat.replaceAll(ParserConstants.REGEX_COMMA_WITH_SPACES, ParserConstants.STRING_COMMA)
 				.replaceAll(ParserConstants.REGEX_RANGE_DELIMITER, ParserConstants.STRING_HYPHEN);
 		return textToFormat;
