@@ -127,6 +127,7 @@ public class Storage {
 	public static String getCurrentPathName() {
 		return currentPathName;
 	}
+	
 		
 	/********************* Setter Methods **************************/
 	public void setScheduledTasksToDo(ArrayList<Task> currentTaskList) {

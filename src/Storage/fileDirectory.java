@@ -59,4 +59,7 @@ public class fileDirectory {
 			myLogger.log(Level.INFO, LOG_DIRECTORY_ERROR);
 		}
 	}
+	
+
+	
 }

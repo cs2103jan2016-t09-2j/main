@@ -278,7 +278,7 @@ public class StorageTest {
 		assertEquals(retrieveList4.equals(testScheduledTasksComplete), true);
 		assertEquals(retrieveList5.equals(testScheduledTasksOverDue), true);
 		assertEquals(endDateTime.isBefore(present), true);
-
+		
 	}
 
 }
