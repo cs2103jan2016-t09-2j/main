@@ -8,6 +8,7 @@ import java.util.Deque;
 import ScheduleHacks.OldCommand.COMMAND_TYPE;
 
 public class History {
+	
 	/* Singleton */
 	private static History object;
 
@@ -97,15 +98,14 @@ public class History {
 
 		return executeCommand;
 	}
-	
-	/*
-	 * The subsequent methods contains the history of commands that the user type into the user interface textbox
-	 */
-	
+
+	/*This method stores the history of commands that users type into the user interface*/
 	public void addToCommandHistory(String command) {
 		commandHistory.add(new String(command));
 	}
-
+	
+	/*Subsequent methods retrieves the index of the tasks
+	  contained in the command history ArrayList*/
 	public String moveUpCommandHistory() {
 		if (indexOfCommand <= 0) {
 			indexOfCommand = -1;

@@ -18,7 +18,7 @@ public class fileDirectory {
 	
 	
 	/**
-	 * Sets the current directory being tracked in the data structure.
+	 * Sets the current directory where the Json files which contains the data are stored.
 	 * 
 	 * @param The current directory in which the Json files are saved.
 	 * @return	void

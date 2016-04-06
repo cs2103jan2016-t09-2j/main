@@ -34,7 +34,7 @@ public class Storage {
 	private static String currentPathName;
 
 	LogFile myLogger = new LogFile();
-
+	
 	private static final String storageLocFile = "DataLocation.txt";
 	private static final String currentFile = "currentFile.json";
 	private static final String archiveFile = "archiveFile.json";
@@ -128,7 +128,7 @@ public class Storage {
 		return currentPathName;
 	}
 		
-	/* Setter Methods */
+	/********************* Setter Methods **************************/
 	public void setScheduledTasksToDo(ArrayList<Task> currentTaskList) {
 		scheduledTasksToDo.clear();
 		scheduledTasksToDo = currentTaskList;
@@ -154,7 +154,7 @@ public class Storage {
 		floatingTasksComplete = currentTaskList;
 	}
 
-	/* Getter Methods */
+	/********************* Getter Methods **************************/
 	public ArrayList<Task> getScheduledTasksToDo() {
 		return scheduledTasksToDo;
 	}
@@ -195,8 +195,8 @@ public class Storage {
 	}
 
 	/*
-	 * This method reads the current and archive json files and returns an array list of
-	 * sorted tasks
+	 * This method reads the current and archive json files and returns 5 array list of
+	 * specifically sorted tasks
 	 */
 	public void loadToList() {
 
@@ -220,7 +220,7 @@ public class Storage {
 		}
 	}
 	
-	/* Stores data from ArrayList of different tasks into the archive Json file */
+	/* Stores data from ArrayList of completed floating and scheduled tasks into the archive Json file */
 	public void writeToArchiveFile(ArrayList<Task> floatingTasksComplete, ArrayList<Task> scheduledTasksComplete) {
 
 		
@@ -249,7 +249,7 @@ public class Storage {
 			myLogger.log(Level.WARNING, LOG_ERROR_WRITE_ARCHIVE_FILE);
 		}
 	}
-	/* Stores data from ArrayList of different tasks into the current Json file */
+	/* Stores data from ArrayList of ToDO scheduled tasks,floating tasks and overdue tasks into the current Json file */
 	public void writeToCurrentFile(ArrayList<Task> scheduledTasksToDo, ArrayList<Task> floatingTasksToDo,
 			ArrayList<Task> scheduledTasksOverDue) {
 
@@ -289,8 +289,8 @@ public class Storage {
 	}
 	
 	/*
-	 * This method reads the current json files and returns an array list of
-	 * sorted tasks
+	 * This method reads the archive json file and returns 2 array list of
+	 * specifically sorted tasks
 	 */
 	public void readFromArchiveFile() {
 		try {
@@ -324,7 +324,7 @@ public class Storage {
 	}
 	
 	/*
-	 * This method reads the archive json files and returns an array list of
+	 * This method reads the current json files and returns an 3 array list of specifically
 	 * sorted tasks
 	 */
 	public void readFromCurrentFile() {
