@@ -1,3 +1,4 @@
+//@@author A0125258E
 package ScheduleHacks;
 
 import java.util.ArrayDeque;
@@ -96,7 +97,11 @@ public class History {
 
 		return executeCommand;
 	}
-
+	
+	/*
+	 * The subsequent methods contains the history of commands that the user type into the user interface textbox
+	 */
+	
 	public void addToCommandHistory(String command) {
 		commandHistory.add(new String(command));
 	}

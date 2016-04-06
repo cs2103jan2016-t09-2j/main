@@ -1,3 +1,4 @@
+//@@author A0125258E
 package Storage;
 
 import java.io.BufferedReader;
@@ -126,7 +127,7 @@ public class Storage {
 	public static String getCurrentPathName() {
 		return currentPathName;
 	}
-
+		
 	/* Setter Methods */
 	public void setScheduledTasksToDo(ArrayList<Task> currentTaskList) {
 		scheduledTasksToDo.clear();
@@ -222,12 +223,13 @@ public class Storage {
 	/* Stores data from ArrayList of different tasks into the archive Json file */
 	public void writeToArchiveFile(ArrayList<Task> floatingTasksComplete, ArrayList<Task> scheduledTasksComplete) {
 
-		assert scheduledTasksComplete != null : ASSERTION_NULL_PARAMETER;
+		
 		assert floatingTasksComplete != null : ASSERTION_NULL_PARAMETER;
+		assert scheduledTasksComplete != null : ASSERTION_NULL_PARAMETER;
 
-		File f1 = new File(currentPathName, archiveFile);
+		File f = new File(currentPathName, archiveFile);
 		try {
-			BufferedWriter bw = new BufferedWriter(new FileWriter(f1));
+			BufferedWriter bw = new BufferedWriter(new FileWriter(f));
 
 			for (Task newTask : floatingTasksComplete) {
 				String json = gson.toJson(newTask);

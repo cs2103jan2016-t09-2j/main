@@ -1,8 +1,10 @@
+//@@author A0125258E
 package ScheduleHacks;
 
 import java.util.ArrayList;
 
 public class HelpGuide {
+	
 	/* Singleton */
 	private static HelpGuide object;
 
