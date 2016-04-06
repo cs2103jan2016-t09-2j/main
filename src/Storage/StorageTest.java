@@ -3,14 +3,10 @@ package Storage;
 
 import static org.junit.Assert.*;
 
-import org.junit.Before;
+
 import org.junit.Test;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -21,27 +17,6 @@ import ScheduleHacks.Task;
 
 public class StorageTest {
 
-//	private static final String currentFile = "currentFile.json";
-//	private static final String archiveFile = "archiveFile.json";
-//
-//	File curFile = new File(currentFile);
-//	File arcFile = new File(archiveFile);
-//	File testFile = new File("test.json");
-//	File dataFile = new File("DataLocation.txt");
-
-//	 @Test
-//	 public void testStorageInit() {
-//
-//	
-//	 Storage testStorage = Storage.getInstance();
-//	 testStorage.initStorage();
-//	
-//	 assertEquals("currentFile.json", testStorage.getCurrentFileName());
-//	 assertEquals("archiveFile.json", testStorage.getArchiveFileName());
-//	 assertEquals(true, dataFile.exists());
-//	
-//	 }
-//	
 	@Test
 	public void testSetDirectory() {
 
@@ -122,7 +97,6 @@ public class StorageTest {
 		Task task1 = new Task("attend piano concert", LocalDate.parse("2016-06-08"), LocalDate.parse("2016-08-08"), LocalTime.parse("12:00"), LocalTime.parse("16:00"));
 		task1.setScheduledTask();
 		task1.setAsIncomplete();
-		task1.isScheduledTask();
 
 		ArrayList<Task> testScheduledTasksToDo = new ArrayList<Task>();
 		testScheduledTasksToDo.add(task1);
