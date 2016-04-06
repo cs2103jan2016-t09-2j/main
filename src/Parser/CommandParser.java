@@ -66,32 +66,40 @@ public class CommandParser {
 		if (!CommandParser.hasTaskDetails(commandType)) {
 			return null;
 		} else {
-			if (!taskStatement.isEmpty()) {
-				Task newTask = new Task();
-				switch (commandType) {
-				case ADD_TASK:
-					newTask = addNewTask(taskStatement);
-					break;
-				case MODIFY_TASK:
-					newTask = sendEditTaskInfoToLogic(taskStatement);
-					break;
-				case SEARCH_TASK:
-					newTask = getCriteria(taskStatement);
-					break;
-				case VIEW_LIST:
-					newTask = getCriteria(taskStatement);
-					break;
-				case SET_DIRECTORY:
-					newTask = setDirectory(taskStatement);
-					break;
-				default:
-					// do nothing
-					break;
-				}
-				return newTask;
+			// if (taskStatement != null && !taskStatement.isEmpty()) {
+			Task newTask = new Task();
+			switch (commandType) {
+			case ADD_TASK:
+				newTask = addNewTask(taskStatement);
+				break;
+			case MODIFY_TASK:
+				newTask = sendEditTaskInfoToLogic(taskStatement);
+				break;
+			case SEARCH_TASK:
+				newTask = getCriteria(taskStatement);
+				break;
+			case VIEW_LIST:
+				newTask = getCriteria(taskStatement);
+				break;
+			case SET_DIRECTORY:
+				newTask = setDirectory(command, taskStatement);
+				break;
+			case HELP:
+				newTask = setHelpParameters(command, taskStatement);
+				break;
+			default:
+				// do nothing
+				break;
 			}
+			if (command.getCommandType().equals(COMMAND_TYPE.HELP)
+					|| (newTask.getDescription() != null && !newTask.getDescription().isEmpty())) {
+				return newTask;
+			} else {
+				throw new Exception("Empty Task Description");
+			}
+			// }
 		}
-		throw new Exception("Empty Task Description");
+		//throw new Exception("Empty Task Description");
 	}
 
 	/**
@@ -101,7 +109,7 @@ public class CommandParser {
 	 * @param taskStatement
 	 * @return newTask, set with all parameters to specify new directory route.
 	 */
-	public static Task setDirectory(String taskStatement) {
+	public static Task setDirectory(Command cmd, String taskStatement) {
 		Task newTask = new Task();
 		taskStatement = cleanupExtraWhitespace(taskStatement);
 
@@ -111,9 +119,28 @@ public class CommandParser {
 		} else {
 			// if parameter provided is not of a directory, it is considered to
 			// be an add command.
+			try {
+				cmd.setCommandType(COMMAND_TYPE.ADD_TASK);
+			} catch (Exception e) {
+				// do nothing
+			}
 			newTask = addNewTask("set " + taskStatement);
 		}
 
+		return newTask;
+	}
+
+	public static Task setHelpParameters(Command cmd, String taskStatement) {
+		if (taskStatement == null || taskStatement.isEmpty()) {
+			return null;
+		}
+		Task newTask = new Task();
+		try {
+			cmd.setCommandType(COMMAND_TYPE.ADD_TASK);
+		} catch (Exception e) {
+			// do nothing
+		}
+		newTask = addNewTask("Help " + taskStatement);
 		return newTask;
 	}
 
@@ -206,7 +233,7 @@ public class CommandParser {
 	public static void setOverdueCriteria(Task newTask) {
 		newTask.setStartDate(LocalDate.MIN);
 		newTask.setEndDate(getCurrentDate());
-		newTask.setEndTime(LocalTime.now());
+		newTask.setEndTime(LocalTime.now().plusSeconds(5));
 		newTask.setAsIncomplete();
 	}
 
@@ -478,8 +505,9 @@ public class CommandParser {
 			return false;
 		case HOME:
 			return false;
-		case HELP:
-			return false;
+		/*
+		 * case HELP: return false;
+		 */
 		case EXIT:
 			return false;
 		default:
@@ -530,52 +558,6 @@ public class CommandParser {
 		setTimes(objDateTime.getTimeList(), newTask);
 
 		return newTask;
-	}
-
-	/**
-	 * This method helps convert a floating task to a scheduled/upcoming task
-	 * 
-	 * @param newTask
-	 * @return newTask with all adjusted Parameters
-	 */
-	public static Task convertFloatingToScheduled(Task newTask) {
-		ArrayList<LocalDate> dateList = new ArrayList<LocalDate>();
-		ArrayList<LocalTime> timeList = new ArrayList<LocalTime>();
-
-		if (newTask.getEndDate() != null) {
-			if (newTask.getStartDate() != null) {
-				dateList.add(newTask.getStartDate());
-			}
-			dateList.add(newTask.getEndDate());
-		}
-
-		if (newTask.getEndTime() != null) {
-			if (newTask.getStartTime() != null) {
-				timeList.add(newTask.getStartTime());
-			}
-			timeList.add(newTask.getEndTime());
-		}
-
-		if (!timeList.isEmpty() || !dateList.isEmpty()) {
-			DateTimeParser objDateTime = new DateTimeParser(dateList, timeList);
-			objDateTime.arrangeDateTimeList();
-			newTask.setScheduledTask();
-			setDates(objDateTime.getDateList(), newTask);
-			setTimes(objDateTime.getTimeList(), newTask);
-		}
-
-		return newTask;
-	}
-
-	/**
-	 * This method helps convert a scheduled/upcoming task to a floating task.
-	 * 
-	 * @param newTask
-	 * @return newTask with all adjusted Parameters
-	 */
-	public static Task convertScheduledToFloating(Task newTask) {
-
-		return null;
 	}
 
 	/**
