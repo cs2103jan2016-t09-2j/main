@@ -7,6 +7,7 @@ import static org.junit.Assert.assertEquals;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.temporal.ChronoUnit;
 
 import Parser.Command.COMMAND_TYPE;
 
@@ -229,11 +230,129 @@ public class CommandParserTest {
 		String testString = "undone 11, 13, 12-17";
 		String output = "";
 		Command cmd = CommandParser.getParsedCommand(testString);
+		assertEquals(COMMAND_TYPE.INCOMPLETE_TASK, cmd.getCommandType());
 		for (int x : cmd.getIndexList()) {
 			output += x;
 		}
 		assertEquals("11121314151617", output);
 		assertEquals(null, cmd.getTaskDetails());
+	}
+
+	@Test
+	public void checkGetParsedCommand12() throws Exception {
+		String testString = "set timetable";
+		Command cmd = CommandParser.getParsedCommand(testString);
+		assertEquals(COMMAND_TYPE.ADD_TASK, cmd.getCommandType());
+		assertEquals(null, cmd.getIndexList());
+		Task newTask = cmd.getTaskDetails();
+		assertEquals("set timetable", newTask.getDescription());
+		assertEquals(true, newTask.isFloatingTask());
+		assertEquals(null, newTask.getStartDate());
+		assertEquals(null, newTask.getEndDate());
+		assertEquals(null, newTask.getStartTime());
+		assertEquals(null, newTask.getEndTime());
+	}
+
+	/**
+	 * Boundary testing for undo. In spite of additional string, detects it as
+	 * undo command.
+	 * 
+	 * @throws Exception
+	 */
+	@Test
+	public void checkGetParsedCommand13() throws Exception {
+		String testString = "undo extra stuff";
+		Command cmd = CommandParser.getParsedCommand(testString);
+		assertEquals(COMMAND_TYPE.UNDO_TASK, cmd.getCommandType());
+		assertEquals(null, cmd.getIndexList());
+		assertEquals(null, cmd.getTaskDetails());
+	}
+
+	/**
+	 * Boundary testing for redo. In spite of additional string, detects it as
+	 * undo command.
+	 * 
+	 * @throws Exception
+	 */
+	@Test
+	public void checkGetParsedCommand14() throws Exception {
+		String testString = "redo    12   121  extra stuff";
+		Command cmd = CommandParser.getParsedCommand(testString);
+		assertEquals(COMMAND_TYPE.REDO_TASK, cmd.getCommandType());
+		assertEquals(null, cmd.getIndexList());
+		assertEquals(null, cmd.getTaskDetails());
+	}
+
+	/**
+	 * Boundary testing for home view. In spite of additional string, detects it
+	 * as undo command.
+	 * 
+	 * @throws Exception
+	 */
+	@Test
+	public void checkGetParsedCommand15() throws Exception {
+		String testString = "home  12   121  extra stuff";
+		Command cmd = CommandParser.getParsedCommand(testString);
+		assertEquals(COMMAND_TYPE.HOME, cmd.getCommandType());
+		assertEquals(null, cmd.getIndexList());
+		assertEquals(null, cmd.getTaskDetails());
+	}
+
+	/**
+	 * Viewing overdue tasks
+	 * 
+	 * @throws Exception
+	 */
+	@Test
+	public void checkGetParsedCommand16() throws Exception {
+		String testString = "view  overdue  ";
+		Command cmd = CommandParser.getParsedCommand(testString);
+		assertEquals(COMMAND_TYPE.VIEW_LIST, cmd.getCommandType());
+		assertEquals(null, cmd.getIndexList());
+		Task newTask = cmd.getTaskDetails();
+		assertEquals(LocalDate.MIN, newTask.getStartDate());
+		assertEquals(LocalDate.now(), newTask.getEndDate());
+		assertEquals(LocalTime.now().truncatedTo(ChronoUnit.MINUTES),
+				newTask.getEndTime().truncatedTo(ChronoUnit.MINUTES));
+		assertEquals(false, newTask.isComplete());
+	}
+
+	@Test
+	public void checkGetParsedCommand17() throws Exception {
+		String testString = "help    ";
+		Command cmd = CommandParser.getParsedCommand(testString);
+		assertEquals(COMMAND_TYPE.HELP, cmd.getCommandType());
+		assertEquals(null, cmd.getIndexList());
+		assertEquals(null, cmd.getTaskDetails());
+	}
+
+	@Test
+	public void checkGetParsedCommand18() throws Exception {
+		String testString = "help  Jim with German  ";
+		Command cmd = CommandParser.getParsedCommand(testString);
+		assertEquals(COMMAND_TYPE.ADD_TASK, cmd.getCommandType());
+		assertEquals(null, cmd.getIndexList());
+		Task newTask = cmd.getTaskDetails();
+		assertEquals("Help Jim with German", newTask.getDescription());
+		assertEquals(true, newTask.isFloatingTask());
+		assertEquals(false, newTask.isComplete());
+	}
+
+	/**
+	 * Boundary test case to check if add throws an exception with blank
+	 * description.
+	 */
+	@Test
+	public void checkGetParsedCommand19() {
+		String testString = "add  ";
+		boolean isException = true;
+		try {
+			CommandParser.getParsedCommand(testString);
+			isException = false;
+		} catch (Exception e) {
+			assertEquals(true, isException);
+		}
+		assertEquals(true, isException);
 	}
 
 	@Test
@@ -416,7 +535,7 @@ public class CommandParserTest {
 		assertEquals(false, newTask.isComplete());
 	}
 
-	// Convert Scheduled to Floating
+	// Convert Scheduled to Floating; remove date from task
 	@Test
 	public void checkEditExistingTask1() throws Exception {
 		Task oldTask = new Task("buy dog", null, LocalDate.parse("2016-08-08"), null, LocalTime.MAX);
@@ -520,14 +639,31 @@ public class CommandParserTest {
 	public void checkEditExistingTask7() throws Exception {
 		Task oldTask = new Task("buy dog", LocalDate.parse("2016-06-08"), LocalDate.parse("2016-08-08"),
 				LocalTime.parse("12:00"), LocalTime.parse("16:00"));
-		oldTask.setFloatingTask();
+		oldTask.setScheduledTask();
 		String testString = "3pm 5pm";
 		Task newTask = CommandParser.editExistingTask(oldTask, testString);
 		assertEquals("buy dog", newTask.getDescription());
-		// assertEquals("2016-06-08", newTask.getStartDate().toString());
-		// assertEquals("2016-08-08", newTask.getEndDate().toString());
+		assertEquals("2016-06-08", newTask.getStartDate().toString());
+		assertEquals("2016-08-08", newTask.getEndDate().toString());
 		assertEquals("15:00", newTask.getStartTime().toString());
 		assertEquals("17:00", newTask.getEndTime().toString());
+		assertEquals(false, newTask.isComplete());
+		assertEquals(false, newTask.isFloatingTask());
+		assertEquals(true, newTask.isScheduledTask());
+	}
+
+	@Test
+	public void checkEditExistingTask8() throws Exception {
+		Task oldTask = new Task("buy dog", LocalDate.parse("2016-06-08"), LocalDate.parse("2016-08-08"),
+				LocalTime.parse("12:00"), LocalTime.parse("16:00"));
+		oldTask.setScheduledTask();
+		String testString = "d times";
+		Task newTask = CommandParser.editExistingTask(oldTask, testString);
+		assertEquals("buy dog", newTask.getDescription());
+		assertEquals("2016-06-08", newTask.getStartDate().toString());
+		assertEquals("2016-08-08", newTask.getEndDate().toString());
+		assertEquals(LocalTime.MAX, newTask.getStartTime());
+		assertEquals(LocalTime.MAX, newTask.getEndTime());
 		assertEquals(false, newTask.isComplete());
 		assertEquals(false, newTask.isFloatingTask());
 		assertEquals(true, newTask.isScheduledTask());
@@ -537,7 +673,7 @@ public class CommandParserTest {
 	public void checkSetDir() {
 		Task task = new Task();
 		String testString = "C:\\\\SH";
-		task = CommandParser.setDirectory(testString);
+		task = CommandParser.setDirectory(new Command(), testString);
 		assertEquals("C:\\\\SH", task.getDescription());
 	}
 }
