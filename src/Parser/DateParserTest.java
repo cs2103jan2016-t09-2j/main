@@ -247,7 +247,7 @@ public class DateParserTest {
 			}
 		}
 		assertEquals("See day aftr $tomorrow .", dateObj.getTaskDetails());
-		assertEquals("2016-03-30", output);
+		assertEquals(LocalDate.now().plusDays(2).toString(), output);
 	}
 
 	@Test
@@ -259,7 +259,7 @@ public class DateParserTest {
 			output = output + date.toString();
 		}
 		assertEquals("work to be done", dateObj.getTaskDetails());
-		assertEquals("2016-03-302016-03-31", output);
+		assertEquals(LocalDate.now().plusDays(2).toString() + LocalDate.now().plusDays(3).toString(), output);
 	}
 
 	@Test
@@ -365,7 +365,7 @@ public class DateParserTest {
 		for (LocalDate s : outList) {
 			output = output + s.toString();
 		}
-		String expected = "2016-03-30";
+		String expected = "2016-04-13";
 		assertEquals(expected, output.trim());
 		assertEquals("Meet ABCD at the hotel", dateObj.getTaskDetails());
 	}

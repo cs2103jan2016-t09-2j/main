@@ -37,7 +37,7 @@ public class IndexParserTest {
 	
 	@Test
 	public void testFindIndex3() throws Exception {
-		Command cmd = new Command("complete", null);
+		Command cmd = new Command("done", null);
 		String testString = "1, 3 , 5";
 		String output = "";
 		indexObj = new IndexParser(cmd, testString);

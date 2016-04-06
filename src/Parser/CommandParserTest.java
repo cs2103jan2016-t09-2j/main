@@ -155,7 +155,7 @@ public class CommandParserTest {
 
 	@Test
 	public void checkGetParsedCommand7() throws Exception {
-		String testString = "change  16  600 1800";
+		String testString = "edit 16  600 1800";
 		Command cmd = CommandParser.getParsedCommand(testString);
 		assertEquals(COMMAND_TYPE.MODIFY_TASK, cmd.getCommandType());
 		String output = "";
@@ -229,8 +229,8 @@ public class CommandParserTest {
 		String testString = "this week";
 		Task newTask = CommandParser.getCriteria(testString);
 		assertEquals("", newTask.getDescription());
-		assertEquals("2016-03-27", newTask.getStartDate().toString());
-		assertEquals("2016-04-03", newTask.getEndDate().toString());
+		assertEquals("2016-04-03", newTask.getStartDate().toString());
+		assertEquals("2016-04-10", newTask.getEndDate().toString());
 		assertEquals(null, newTask.getStartTime());
 		assertEquals(null, newTask.getEndTime());
 		assertEquals(false, newTask.isComplete());
@@ -241,8 +241,8 @@ public class CommandParserTest {
 		String testString = "next week";
 		Task newTask = CommandParser.getCriteria(testString);
 		assertEquals("", newTask.getDescription());
-		assertEquals("2016-04-03", newTask.getStartDate().toString());
-		assertEquals("2016-04-10", newTask.getEndDate().toString());
+		assertEquals("2016-04-10", newTask.getStartDate().toString());
+		assertEquals("2016-04-17", newTask.getEndDate().toString());
 		assertEquals(null, newTask.getStartTime());
 		assertEquals(null, newTask.getEndTime());
 		assertEquals(false, newTask.isComplete());
@@ -253,8 +253,8 @@ public class CommandParserTest {
 		String testString = "this  month  ";
 		Task newTask = CommandParser.getCriteria(testString);
 		assertEquals("", newTask.getDescription());
-		assertEquals("2016-03-01", newTask.getStartDate().toString());
-		assertEquals("2016-03-31", newTask.getEndDate().toString());
+		assertEquals("2016-04-01", newTask.getStartDate().toString());
+		assertEquals("2016-04-30", newTask.getEndDate().toString());
 		assertEquals(null, newTask.getStartTime());
 		assertEquals(null, newTask.getEndTime());
 		assertEquals(false, newTask.isComplete());
@@ -265,8 +265,8 @@ public class CommandParserTest {
 		String testString = "next month";
 		Task newTask = CommandParser.getCriteria(testString);
 		assertEquals("", newTask.getDescription());
-		assertEquals("2016-04-01", newTask.getStartDate().toString());
-		assertEquals("2016-04-30", newTask.getEndDate().toString());
+		assertEquals("2016-05-01", newTask.getStartDate().toString());
+		assertEquals("2016-05-31", newTask.getEndDate().toString());
 		assertEquals(null, newTask.getStartTime());
 		assertEquals(null, newTask.getEndTime());
 		assertEquals(false, newTask.isComplete());
@@ -300,7 +300,7 @@ public class CommandParserTest {
 	public void checkGetCriteria7() throws Exception {
 		String testString = "today";
 		Task newTask = CommandParser.getCriteria(testString);
-		assertEquals(null, newTask.getDescription());
+		assertEquals("today", newTask.getDescription());
 		assertEquals(null, newTask.getStartDate());
 		assertEquals(LocalDate.now(), newTask.getEndDate());
 		assertEquals(null, newTask.getStartTime());
@@ -312,7 +312,7 @@ public class CommandParserTest {
 	public void checkGetCriteria8() throws Exception {
 		String testString = "tomorrow";
 		Task newTask = CommandParser.getCriteria(testString);
-		assertEquals(null, newTask.getDescription());
+		assertEquals("tomorrow", newTask.getDescription());
 		assertEquals(null, newTask.getStartDate());
 		assertEquals(LocalDate.now().plusDays(1), newTask.getEndDate());
 		assertEquals(null, newTask.getStartTime());
@@ -324,12 +324,12 @@ public class CommandParserTest {
 	public void checkGetCriteria9() throws Exception {
 		String testString = "complete";
 		Task newTask = CommandParser.getCriteria(testString);
-		assertEquals("", newTask.getDescription());
+		assertEquals("complete", newTask.getDescription());
 		assertEquals(null, newTask.getStartDate());
 		assertEquals(null, newTask.getEndDate());
 		assertEquals(null, newTask.getStartTime());
 		assertEquals(null, newTask.getEndTime());
-		assertEquals(true, newTask.isComplete());
+		assertEquals(false, newTask.isComplete());
 	}
 
 	@Test
@@ -372,7 +372,7 @@ public class CommandParserTest {
 	public void checkGetCriteria13() throws Exception {
 		String testString = "21/12/12";
 		Task newTask = CommandParser.getCriteria(testString);
-		assertEquals(null, newTask.getDescription());
+		assertEquals("21/12/12", newTask.getDescription());
 		assertEquals(null, newTask.getStartDate());
 		assertEquals("2012-12-21", newTask.getEndDate().toString());
 		assertEquals(null, newTask.getStartTime());
@@ -384,7 +384,7 @@ public class CommandParserTest {
 	public void checkGetCriteria14() throws Exception {
 		String testString = "21aug";
 		Task newTask = CommandParser.getCriteria(testString);
-		assertEquals(null, newTask.getDescription());
+		assertEquals("21aug", newTask.getDescription());
 		assertEquals(null, newTask.getStartDate());
 		assertEquals("2016-08-21", newTask.getEndDate().toString());
 		assertEquals(null, newTask.getStartTime());
