@@ -85,12 +85,15 @@ public class IndexParser {
 		switch (commandType) {
 		case DELETE_TASK:
 			detectMultipleIndexes();
+			removeDuplicates();
 			break;
 		case COMPLETE_TASK:
 			detectMultipleIndexes();
+			removeDuplicates();
 			break;
 		case INCOMPLETE_TASK:
 			detectMultipleIndexes();
+			removeDuplicates();
 			break;
 		case MODIFY_TASK:
 			detectSingleIndex();
@@ -199,6 +202,19 @@ public class IndexParser {
 				ParserConstants.STRING_WHITESPACE);
 		taskStatement = CommandParser.cleanupExtraWhitespace(taskStatement);
 		setTaskDetails(taskStatement);
+	}
+
+	/**
+	 * This method makes sure that there are no duplicate copies of any index;
+	 * so as to avoid unfavorable results.
+	 */
+	public void removeDuplicates() {
+		for (int index = 0; index < indexList.size() - 1; index++) {
+			if (indexList.get(index) == indexList.get(index + 1)) {
+				indexList.remove(index);
+				index--;
+			}
+		}
 	}
 
 	/**

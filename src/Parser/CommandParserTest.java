@@ -12,7 +12,7 @@ import Parser.Command.COMMAND_TYPE;
 
 import ScheduleHacks.Task;
 
-public class CommandParserTest { 
+public class CommandParserTest {
 
 	@Test
 	public void testGetFirstWord1() throws Exception {
@@ -225,6 +225,18 @@ public class CommandParserTest {
 	}
 
 	@Test
+	public void checkGetParsedCommand11() throws Exception {
+		String testString = "undone 11, 13, 12-17";
+		String output = "";
+		Command cmd = CommandParser.getParsedCommand(testString);
+		for (int x : cmd.getIndexList()) {
+			output += x;
+		}
+		assertEquals("11121314151617", output);
+		assertEquals(null, cmd.getTaskDetails());
+	}
+
+	@Test
 	public void checkGetCriteria1() throws Exception {
 		String testString = "this week";
 		Task newTask = CommandParser.getCriteria(testString);
@@ -367,7 +379,7 @@ public class CommandParserTest {
 		assertEquals(null, newTask.getEndTime());
 		assertEquals(false, newTask.isComplete());
 	}
-	
+
 	@Test
 	public void checkGetCriteria13() throws Exception {
 		String testString = "21/12/12";
@@ -379,7 +391,7 @@ public class CommandParserTest {
 		assertEquals(null, newTask.getEndTime());
 		assertEquals(false, newTask.isComplete());
 	}
-	
+
 	@Test
 	public void checkGetCriteria14() throws Exception {
 		String testString = "21aug";
@@ -391,19 +403,18 @@ public class CommandParserTest {
 		assertEquals(null, newTask.getEndTime());
 		assertEquals(false, newTask.isComplete());
 	}
-	
+
 	@Test
 	public void checkGetCriteria15() throws Exception {
 		String testString = " next  3days";
 		Task newTask = CommandParser.getCriteria(testString);
-		//assertEquals("", newTask.getDescription());
+		// assertEquals("", newTask.getDescription());
 		assertEquals(LocalDate.now(), newTask.getStartDate());
 		assertEquals(LocalDate.now().plusDays(3), newTask.getEndDate());
 		assertEquals(null, newTask.getStartTime());
 		assertEquals(null, newTask.getEndTime());
 		assertEquals(false, newTask.isComplete());
 	}
-	
 
 	// Convert Scheduled to Floating
 	@Test
@@ -504,23 +515,24 @@ public class CommandParserTest {
 		assertEquals(false, newTask.isFloatingTask());
 		assertEquals(true, newTask.isScheduledTask());
 	}
-	
+
 	@Test
 	public void checkEditExistingTask7() throws Exception {
-		Task oldTask = new Task("buy dog", LocalDate.parse("2016-06-08"), LocalDate.parse("2016-08-08"), LocalTime.parse("12:00"), LocalTime.parse("16:00"));
+		Task oldTask = new Task("buy dog", LocalDate.parse("2016-06-08"), LocalDate.parse("2016-08-08"),
+				LocalTime.parse("12:00"), LocalTime.parse("16:00"));
 		oldTask.setFloatingTask();
 		String testString = "3pm 5pm";
 		Task newTask = CommandParser.editExistingTask(oldTask, testString);
 		assertEquals("buy dog", newTask.getDescription());
-		//assertEquals("2016-06-08", newTask.getStartDate().toString());
-		//assertEquals("2016-08-08", newTask.getEndDate().toString());
+		// assertEquals("2016-06-08", newTask.getStartDate().toString());
+		// assertEquals("2016-08-08", newTask.getEndDate().toString());
 		assertEquals("15:00", newTask.getStartTime().toString());
 		assertEquals("17:00", newTask.getEndTime().toString());
 		assertEquals(false, newTask.isComplete());
 		assertEquals(false, newTask.isFloatingTask());
 		assertEquals(true, newTask.isScheduledTask());
 	}
-	
+
 	@Test
 	public void checkSetDir() {
 		Task task = new Task();
