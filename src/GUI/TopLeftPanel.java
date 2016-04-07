@@ -35,7 +35,7 @@ public class TopLeftPanel extends JPanel {
 
 	private static final long serialVersionUID = 1L;
 	private static int count = 1;
-	private static DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("dd-MM-uuuu");
+	private static DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("EEE, dd MMM uuuu");
 	private static JTextPane textArea;
 	private JScrollPane scrollPane;
 	private static final String SCHEDULE_HEADER = "UPCOMING TASKS";

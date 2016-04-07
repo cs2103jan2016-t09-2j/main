@@ -4,7 +4,6 @@ package Logic;
 import java.util.ArrayList;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 
 import ScheduleHacks.Task;
 import ScheduleHacks.OldCommand;
@@ -13,7 +12,6 @@ import ScheduleHacks.History;
 import Parser.CommandParser;
 import Parser.Command;
 import GUI.BottomBottom;
-import GUI.TempCLI;
 import GUI.TopLeftPanel;
 import GUI.TopRightPanel;
 import Storage.Storage;
@@ -39,6 +37,7 @@ public class Logic {
 	private Integer recentIndex = -1, recentLocation = -1;
 	private Task recentTask = new Task();
 
+	private static final String FEEDBACK_YOUR_COMMAND = "\n\nYour Command: ";
 	private static final String FEEDBACK_INVALID_COMMAND = "Invalid Command!";
 	private static final String FEEDBACK_INVALID_COMMAND_TYPE = "Invalid command type entered!";
 	private static final String FEEDBACK_TASK_ADDED = "Task added successfully";
@@ -79,6 +78,10 @@ public class Logic {
 	/****************** SETTER METHODS ***********************/
 	private void setFeedBack(String feedBack) {
 		this.feedBack = feedBack;
+	}
+
+	private void appendFeedBack(String textToAppend) {
+		this.feedBack = this.feedBack.concat(textToAppend);
 	}
 
 	private void setScheduledTasksToDo(ArrayList<Task> currentTaskList) {
@@ -253,6 +256,7 @@ public class Logic {
 			typeCommand = getCommand(existingCommand);
 			Task getTaskToExecute = getTaskDescription(existingCommand);
 			execute(typeCommand, existingCommand, getTaskToExecute);
+			appendFeedBack(FEEDBACK_YOUR_COMMAND + originalDescription);
 			trackConflictingTasks.clear();
 			autoChangeTaskStatus();
 			storage.storeToFiles(getFloatingTasksToDo(), getFloatingTasksComplete(), getScheduledTasksToDo(),
@@ -1051,7 +1055,7 @@ public class Logic {
 		scheduledTasksToDo.remove(i);
 	}
 
-	//@@author A0132778W
+	// @@author A0132778W
 	/**
 	 * Reverts back the previous action performed by the user.
 	 */

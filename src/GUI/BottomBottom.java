@@ -6,10 +6,8 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.Toolkit;
-import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.TimerTask;
 import java.util.Timer;
@@ -140,6 +138,11 @@ public class BottomBottom extends JPanel implements KeyListener {
 		if (keyCode == KeyEvent.VK_Y && ((e.getModifiers() & KeyEvent.CTRL_MASK) != 0)) {
 			logicObj.executeCommand("redo");
 			BottomLeft.setFeedback(logicObj.getFeedBack());
+			isUpdateCall = true;
+		}
+		
+		if (keyCode == KeyEvent.VK_R && ((e.getModifiers() & KeyEvent.CTRL_MASK) != 0)) {
+			logicObj.refresh();
 			isUpdateCall = true;
 		}
 
