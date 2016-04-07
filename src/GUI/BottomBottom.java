@@ -86,6 +86,7 @@ public class BottomBottom extends JPanel implements KeyListener {
 	 * Find what key is behind pressed and do the necessary actions
 	 */
 	public void keyPressed(KeyEvent e) {
+		boolean isUpdateCall = false;
 		int keyCode = e.getKeyCode();
 
 		/*
@@ -97,16 +98,7 @@ public class BottomBottom extends JPanel implements KeyListener {
 
 			logicObj.executeCommand(input);
 			BottomLeft.setFeedback(logicObj.getFeedBack());
-
-			if (!logicObj.hasSearchList() && !logicObj.isHomeScreen()) { // print the normal display
-				OList = new ArrayList<Task>(logicObj.getScheduledTasksOverDue());
-				SList = new ArrayList<Task>(logicObj.getScheduledTasksToDo());
-				FList = new ArrayList<Task>(logicObj.getFloatingTasksToDo());
-				TopLeftPanel.clearText();
-				TopLeftPanel.setText(OList, SList, null);
-				TopRightPanel.clearText();
-				TopRightPanel.setText(FList, null, OList.size() + SList.size());
-			}
+			isUpdateCall = true;
 		}
 
 		/*
@@ -128,6 +120,31 @@ public class BottomBottom extends JPanel implements KeyListener {
 		if (keyCode == KeyEvent.VK_ESCAPE) {
 			System.exit(0);
 		}
+
+		if (keyCode == KeyEvent.VK_Z && ((e.getModifiers() & KeyEvent.CTRL_MASK) != 0)) {
+			logicObj.executeCommand("undo");
+			BottomLeft.setFeedback(logicObj.getFeedBack());
+			isUpdateCall = true;
+		}
+
+		if (keyCode == KeyEvent.VK_Y && ((e.getModifiers() & KeyEvent.CTRL_MASK) != 0)) {
+			logicObj.executeCommand("redo");
+			BottomLeft.setFeedback(logicObj.getFeedBack());
+			isUpdateCall = true;
+		}
+
+		if (isUpdateCall) {
+			if (!logicObj.hasSearchList() && !logicObj.isHomeScreen()) {
+				// normal display
+				OList = new ArrayList<Task>(logicObj.getScheduledTasksOverDue());
+				SList = new ArrayList<Task>(logicObj.getScheduledTasksToDo());
+				FList = new ArrayList<Task>(logicObj.getFloatingTasksToDo());
+				TopLeftPanel.clearText();
+				TopLeftPanel.setText(OList, SList, null);
+				TopRightPanel.clearText();
+				TopRightPanel.setText(FList, null, OList.size() + SList.size());
+			}
+		}
 	}
 
 	/*
@@ -138,7 +155,7 @@ public class BottomBottom extends JPanel implements KeyListener {
 	}
 
 	/*
-	 * Classified the search results based on their categories 
+	 * Classified the search results based on their categories
 	 */
 	public static void setSearchResult(ArrayList<Task> searchTaskList, ArrayList<Integer> searchIndexList) {
 		clearArrayList();
@@ -151,16 +168,15 @@ public class BottomBottom extends JPanel implements KeyListener {
 		}
 		setSearchPanel(searchFList, searchSList, searchIndexList);
 	}
-	
+
 	/*
 	 * Set the display screen with all the possible search results
 	 */
 	public static void setSearchPanel(ArrayList<Task> timedList, ArrayList<Task> trivialList,
 			ArrayList<Integer> searchIndexList) {
 
-		clearPanel();	
-		ArrayList<Integer> UpcomingTaskIndex = new ArrayList<Integer>(
-				searchIndexList.subList(0, searchSList.size()));
+		clearPanel();
+		ArrayList<Integer> UpcomingTaskIndex = new ArrayList<Integer>(searchIndexList.subList(0, searchSList.size()));
 		ArrayList<Integer> FloatingTaskIndex = new ArrayList<Integer>(
 				searchIndexList.subList(searchSList.size(), searchIndexList.size()));
 

@@ -262,8 +262,6 @@ public class Storage {
 		try {
 
 			BufferedWriter bw = new BufferedWriter(new FileWriter(f));
-			
-			System.out.println(scheduledTasksToDo.size());
 					
 			for (Task newTask : scheduledTasksToDo) {
 				String json = gson.toJson(newTask);

@@ -9,7 +9,7 @@ import Parser.Command.COMMAND_TYPE;
 import Parser.CommandParser;
 import ScheduleHacks.Task;
 
-public class TestLogic {
+public class LogicTest {
 	
 	Logic obj = Logic.getInstance();
 
