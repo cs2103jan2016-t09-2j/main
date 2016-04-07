@@ -28,14 +28,15 @@ public class Logic {
 
 	private Storage storage = Storage.getInstance();
 	private History historyObject = History.getInstance();
-
+	
 	private ArrayList<Task> floatingTasksToDo = new ArrayList<Task>();
 	private ArrayList<Task> floatingTasksComplete = new ArrayList<Task>();
 	private ArrayList<Task> scheduledTasksToDo = new ArrayList<Task>();
 	private ArrayList<Task> scheduledTasksComplete = new ArrayList<Task>();
 	private ArrayList<Task> scheduledTasksOverDue = new ArrayList<Task>();
 	private ArrayList<Task> trackConflictingTasks = new ArrayList<Task>();
-	private Integer recentIndex = -1;
+	private Integer recentIndex = -1, recentLocation =-1;
+	private Task recentTask = new Task();
 
 	private static final String FEEDBACK_INVALID_COMMAND = "Invalid Command!";
 	private static final String FEEDBACK_INVALID_COMMAND_TYPE = "Invalid command type entered!";
@@ -43,7 +44,7 @@ public class Logic {
 	private static final String FEEDBACK_DUPLICATE_TASK_FOUND_WHEN_ADDING = "Task entered by user already exists! Task not added!";
 	private static final String FEEDBACK_TASK_ADDED_BUT_ENCOUNTERED_CONFLICTS = "Task added successfully but task is conflicting with several existing tasks!";
 	private static final String FEEDBACK_TASK_DELETED = "Task Deleted Successfully";
-	private static final String FEEDBACK_NON_EXISTENT_TASK_NUM = "Task number entered was not found!";
+	private static final String FEEDBACK_NON_EXISTENT_TASK_NUM = "Task number was not found!";
 	private static final String FEEDBACK_NEGATIVE_TASK_NUM = "Task number entered cannot be 0 or negative!";
 	private static final String FEEDBACK_TASK_MODIFIED = "Task Edited Successfully";
 	private static final String FEEDBACK_TASK_NOT_MODIFIED = "Task was not modified";
@@ -107,6 +108,14 @@ public class Logic {
 	private void setRecentIndexOfTask(Integer recentIndex) {
 		this.recentIndex = recentIndex;
 	}
+	
+	private void setRecentTaskDetails(Task recentTask) {
+		this.recentTask = recentTask;
+	}
+	
+	private void setRecentLocation(int location) {
+		recentLocation = location;
+	}
 
 	/****************** GETTER METHODS ***********************/
 	public String getFeedBack() {
@@ -136,6 +145,14 @@ public class Logic {
 	public Integer getRecentIndexOfTask() {
 		return recentIndex;
 	}
+	
+	public Task getRecentTaskDetails() {
+		return recentTask;
+	}
+	
+	public int getRecentLocation() {
+		return recentLocation;
+	}
 
 	public boolean isHomeScreen() {
 		return isHomeScreen;
@@ -150,11 +167,6 @@ public class Logic {
 	 * this method is called in CLI by logic obj, hence transmitting string
 	 * userInput from UI to Logic
 	 */
-	/*
-	 * calls retrieveParsedCommand, from which private methods are called in
-	 * Logic class
-	 */
-
 	public void startExecution() {
 		try {
 			storage.loadToList();
@@ -164,9 +176,8 @@ public class Logic {
 			setScheduledTasksToDo(storage.getScheduledTasksToDo());
 			setScheduledTasksOverDue(storage.getScheduledTasksOverDue());
 			for (int i = 0; i < scheduledTasksOverDue.size(); i++) {
-				addTask(scheduledTasksOverDue.remove(i), true);
+				addTask(scheduledTasksOverDue.remove(i), true, 0);
 			}
-			setRecentIndexOfTask(-1);
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
 		}
@@ -216,6 +227,10 @@ public class Logic {
 		return index;
 	}
 
+	/*
+	 * calls retrieveParsedCommand, from which private methods are called in
+	 * Logic class
+	 */
 	public void executeCommand(String userInput) {
 		try {
 			historyObject.addToCommandHistory(userInput);
@@ -230,7 +245,6 @@ public class Logic {
 	 * this method gets back the parsed Command class from parser. Proceeds to
 	 * execute function aft obtaining COMMAND_TYPE and Task classes
 	 */
-
 	public void retrieveParsedCommand(String originalDescription) {
 		try {
 			Command.COMMAND_TYPE typeCommand = null;
@@ -252,7 +266,7 @@ public class Logic {
 	 * this method gets the specific command type to be executed such as add,
 	 * delete, modify etc
 	 */
-	private Command.COMMAND_TYPE getCommand(Command existingCommand) {
+	public Command.COMMAND_TYPE getCommand(Command existingCommand) {
 		Command.COMMAND_TYPE executeCommand = null;
 		try {
 			executeCommand = existingCommand.getCommandType();
@@ -273,7 +287,6 @@ public class Logic {
 	 * this method calls the respective execution methods for the respective
 	 * command types
 	 */
-
 	public void execute(Command.COMMAND_TYPE executeCommand, Command retrievedCommand, Task executeTask) {
 
 		isSearchCommand = false;
@@ -283,7 +296,7 @@ public class Logic {
 		switch (executeCommand) {
 		case ADD_TASK:
 			isHighlightOperation = true;
-			addTask(executeTask, false);
+			addTask(executeTask, false, 1);
 			historyObject.clearRedoStack();
 			break;
 		case DELETE_TASK:
@@ -359,7 +372,7 @@ public class Logic {
 	 * scheduled tasks into either scheduledtodo or scheduledoverdue arraylist
 	 * while floating tasks are auto added into floatingtodo arraylist
 	 */
-	private int addTask(Task executeTask, boolean isUndoOperation) {
+	private int addTask(Task executeTask, boolean isUndoOperation, int setRecentTask) {
 		int indexOfTask = -1;
 
 		if (executeTask.isComplete()) {
@@ -376,9 +389,16 @@ public class Logic {
 			setFeedBack(FEEDBACK_EMPTY_TASK_DESCRIPTION);
 			return indexOfTask;
 		}
-		indexOfTask = duplicationCheckProcedures(executeTask);
-		setRecentIndexOfTask(indexOfTask);
-
+		if (setRecentTask == 1) {
+			indexOfTask = duplicationCheckProcedures(executeTask);
+			setRecentTaskDetails(executeTask);
+			setRecentIndexOfTask(indexOfTask);
+		} else if (setRecentTask ==0) {
+			indexOfTask = duplicationCheckProcedures(executeTask);
+			updateRecentIndexOfTask();
+		}
+		
+		
 		if (!isUndoOperation) {
 			ArrayList<Task> taskList = new ArrayList<Task>();
 			ArrayList<Integer> indexList = new ArrayList<Integer>();
@@ -389,7 +409,62 @@ public class Logic {
 		}
 		return indexOfTask;
 	}
+	
+	/*checks whether new task being added already exists in scheduledtodo, scheduledoverdue and
+	 * floatingtodo methods. If task exists in one of these 3 arraylists, task is not added. If
+	 * duplicate is not found, invokes addTaskInOrder method to get the position to add the new task
+	 * in its respective arraylist
+	 */
+	private int duplicationCheckProcedures(Task currentTask) {
+		ArrayList<Boolean> duplicate = new ArrayList<Boolean>();
+		boolean checkForDuplication = true;
+		// boolean isDuplicate;
+		int currentIndexOfTask = -1;
 
+		if (currentTask.isScheduledTask()) {
+			LocalDateTime currentTaskEndDateTime = LocalDateTime.of(currentTask.getEndDate(), currentTask.getEndTime());
+			
+			if (currentTaskEndDateTime.isBefore(LocalDateTime.now())) {
+				checkForDuplication = checkForScheduledDuplication(currentTask, scheduledTasksOverDue);
+				duplicate.add(checkForDuplication);
+			} else {
+				checkForDuplication = checkForScheduledDuplication(currentTask, scheduledTasksToDo);
+				duplicate.add(checkForDuplication);
+			}
+		} else if (currentTask.isFloatingTask()) {
+			checkForDuplication = checkForFloatingDuplication(currentTask, floatingTasksToDo);
+			duplicate.add(checkForDuplication);
+		}
+
+		if (currentTask.isScheduledTask()) {
+				if (duplicate.size() == 1) {
+					if (duplicate.get(0) == false) {
+						currentIndexOfTask = addTaskInOrder(currentTask);
+					} else if (duplicate.get(0)) {
+						isHighlightOperation = false;
+						setFeedBack(FEEDBACK_DUPLICATE_TASK_FOUND_WHEN_ADDING);
+					}
+				}
+		}
+		else if (currentTask.isFloatingTask()) {
+			if (duplicate.get(0) == false) {
+				floatingTasksToDo.add(currentTask);
+				currentIndexOfTask = scheduledTasksOverDue.size() + scheduledTasksToDo.size()
+						+ floatingTasksToDo.size();
+				setFeedBack(FEEDBACK_TASK_ADDED);
+			} else if (duplicate.get(0)) {
+				isHighlightOperation = false;
+				setFeedBack(FEEDBACK_DUPLICATE_TASK_FOUND_WHEN_ADDING);
+			}
+		}
+		duplicate.clear();
+		return currentIndexOfTask;
+
+	}
+	
+	/*it calls standardAddScheduledTaskProcedures method to determine which position should the 
+	 * scheduledTask be added to. Returns this position to duplicationCheckProcedures method
+	 */
 	private int addTaskInOrder(Task executeTask) {
 		int position = -1;
 
@@ -402,7 +477,12 @@ public class Logic {
 		}
 		return position + 1;
 	}
-
+	
+	/*gets position to add for scheduled task from sortTaskList method
+	 * checks whether scheduled task is overlapping with any other scheduled task in same scheduled
+	 * arraylist. if overlapping occurs, appropriate feedback is set. position for new task to be
+	 * added passed to addTaskInOrder method 
+	 */
 	private int standardAddScheduledTaskProcedures(ArrayList<Task> scheduledTaskList, Task taskAdd, int positionToAdd) {
 		boolean overLapWithTask = true;
 
@@ -421,57 +501,10 @@ public class Logic {
 		}
 		return positionToAdd;
 	}
-
-	private int duplicationCheckProcedures(Task currentTask) {
-		ArrayList<Boolean> duplicate = new ArrayList<Boolean>();
-		boolean checkForDuplication = true;
-		// boolean isDuplicate;
-		int currentIndexOfTask = -1;
-
-		if (currentTask.isScheduledTask()) {
-			checkForDuplication = checkForScheduledDuplication(currentTask, scheduledTasksOverDue);
-			duplicate.add(checkForDuplication);
-			checkForDuplication = checkForScheduledDuplication(currentTask, scheduledTasksToDo);
-			duplicate.add(checkForDuplication);
-		} else if (currentTask.isFloatingTask()) {
-			checkForDuplication = checkForFloatingDuplication(currentTask, floatingTasksToDo);
-			duplicate.add(checkForDuplication);
-		}
-
-		if (currentTask.isScheduledTask()) {
-			for (int i = 0; i < 2; i++) {
-				if (duplicate.size() == 1) {
-					if (duplicate.get(0) == false) {
-						currentIndexOfTask = addTaskInOrder(currentTask);
-					} else if (duplicate.get(0)) {
-						isHighlightOperation = false;
-						setFeedBack(FEEDBACK_DUPLICATE_TASK_FOUND_WHEN_ADDING);
-					}
-				} else {
-					if (duplicate.get(i)) {
-						isHighlightOperation = false;
-						setFeedBack(FEEDBACK_DUPLICATE_TASK_FOUND_WHEN_ADDING);
-						break;
-					} else if (duplicate.get(i) == false) {
-						duplicate.remove(i);
-					}
-				}
-			}
-		} else if (currentTask.isFloatingTask()) {
-			if (duplicate.get(0) == false) {
-				floatingTasksToDo.add(currentTask);
-				currentIndexOfTask = scheduledTasksOverDue.size() + scheduledTasksToDo.size()
-						+ floatingTasksToDo.size();
-				setFeedBack(FEEDBACK_TASK_ADDED);
-			} else if (duplicate.get(0)) {
-				isHighlightOperation = false;
-				setFeedBack(FEEDBACK_DUPLICATE_TASK_FOUND_WHEN_ADDING);
-			}
-		}
-		duplicate.clear();
-		return currentIndexOfTask;
-	}
-
+	
+	/*checks whether new task slated for adding is already existing in either scheduledtodo
+	 *or scheduledoverdue arraylists. Returns true if duplicate is found and false if no copy is found. 
+	 */
 	private boolean checkForScheduledDuplication(Task relevantTask, ArrayList<Task> scheduledTasks) {
 		for (int i = 0; i < scheduledTasks.size(); i++) {
 			int tracker = 0;
@@ -497,21 +530,31 @@ public class Logic {
 				tracker++;
 			}
 			if (tracker == 5) {
+				setRecentLocation(i);
 				return true;
 			}
 		}
 		return false;
 	}
-
+	
+	/*checks whether new task slated for adding is already existing in floatingTasksToDo
+	 *arraylist. Returns true if duplicate is found and false if no copy is found. 
+	 */
 	private boolean checkForFloatingDuplication(Task relevantTask, ArrayList<Task> floatingTasks) {
 		for (int i = 0; i < floatingTasks.size(); i++) {
 			if (relevantTask.getDescription().equalsIgnoreCase(floatingTasks.get(i).getDescription())) {
+				setRecentLocation(i);
 				return true;
 			}
 		}
 		return false;
 	}
-
+	
+	/*checks if new task is conflicting with all the existing tasks in that particular arraylist in
+	 * which the new task is going to be added. returns true if new task is conflicting with any of
+	 * the existing tasks and false otherwise and this outcome is passed to standardAddScheduledTask
+	 * Procedures method. Invokes noteConflictingTask method to take note of conflicting tasks' indexes
+	 */
 	private boolean compareWithScheduledTasks(Task taskForAdd, ArrayList<Task> relevantTaskList) {
 		LocalDateTime taskEndDateTime = null, taskStartDateTime = null;
 		LocalDateTime relevantTaskEndDateTime = null, relevantTaskStartDateTime = null;
@@ -558,11 +601,13 @@ public class Logic {
 			return true;
 		}
 	}
-
+	
+	/*takes note of the indexes for conflicting tasks*/
 	private void noteConflictingTask(Task conflict) {
 		trackConflictingTasks.add(conflict);
 	}
-
+	
+	/*sorts scheduled tasks to be added based on end date, followed by startdatetime instance*/
 	private int sortTaskList(ArrayList<Task> taskList, Task task) {
 		LocalDateTime taskStartDateTime = null;
 		if (task.getStartDate() != null) {
@@ -586,7 +631,11 @@ public class Logic {
 					}
 				} else if ((selectedTaskStartDateTime == null) && (taskStartDateTime != null)) {
 					return i;
-				} else if (task.getEndTime().isBefore(taskList.get(i).getEndTime())) {
+				} else if ((task.getEndTime().isBefore(taskList.get(i).getEndTime())) && 
+				(selectedTaskStartDateTime == null)) {
+					return i;
+				} else if ((task.getEndTime().isBefore(taskList.get(i).getEndTime())) && 
+				(selectedTaskStartDateTime == null) && (taskStartDateTime == null)) {
 					return i;
 				} 
 			}
@@ -596,7 +645,7 @@ public class Logic {
 
 	/*
 	 * deleteTask from scheduledTasksToDo or floatingTasksToDo based on task
-	 * number
+	 * number. Multiple tasks can be deleted
 	 */
 	private void deleteTask(ArrayList<Integer> taskDigit, boolean isUndoOperation) {
 		// Creating undo parameter
@@ -606,7 +655,6 @@ public class Logic {
 		boolean isAborted = false;
 
 		if (taskDigit == null || taskDigit.isEmpty()) {
-			System.out.println(0);
 			taskDigit = new ArrayList<Integer>();
 			lastAddedIndex = getRecentIndexOfTask();
 			taskDigit.add(lastAddedIndex);
@@ -655,6 +703,7 @@ public class Logic {
 				break;
 			}
 		}
+		
 		// for undo functionality
 		if (!isUndoOperation) {
 			OldCommand recentCommand = new OldCommand(COMMAND_TYPE.DELETE_TASK, taskList, taskDigit);
@@ -665,8 +714,64 @@ public class Logic {
 			undoTask();
 			setFeedBack(FEEDBACK_NON_EXISTENT_TASK_NUM);
 		}
+		updateRecentIndexOfTask();
 	}
-
+	
+	/*this method is invoked by addTask, deleteTask, editTask methods to sort out the new index of
+	 *most recent task dealt with by the user. checks all 5 arraylists and updates index accordingly 
+	 */
+	private void updateRecentIndexOfTask() {
+		Task mostRecentTask = getRecentTaskDetails();
+		boolean outcome = false;
+		
+		if (mostRecentTask.isScheduledTask()) {
+			LocalDateTime mostRecentTaskEndDateTime = LocalDateTime.of(mostRecentTask.getEndDate(), mostRecentTask.getEndTime());
+			
+			if (mostRecentTaskEndDateTime.isBefore(LocalDateTime.now())) {
+				outcome = checkForScheduledDuplication(mostRecentTask, scheduledTasksOverDue);
+				if (outcome) {
+					setRecentIndexOfTask(getRecentLocation()+1);
+					setRecentTaskDetails(scheduledTasksOverDue.get(getRecentLocation()));
+				}
+			} else {
+				outcome = checkForScheduledDuplication(mostRecentTask, scheduledTasksToDo);
+				if (outcome) {
+					setRecentIndexOfTask(getRecentLocation()+1+scheduledTasksOverDue.size());
+					setRecentTaskDetails(scheduledTasksToDo.get(getRecentLocation()));
+				}
+			}
+		} else if (mostRecentTask.isFloatingTask()) {
+			outcome = checkForFloatingDuplication(mostRecentTask, floatingTasksToDo);
+			if (outcome) {
+				setRecentIndexOfTask(getRecentLocation()+1+scheduledTasksOverDue.size());
+				setRecentTaskDetails(floatingTasksToDo.get(getRecentLocation()));
+			}
+		}
+		if (!outcome) {
+			 if (mostRecentTask.isScheduledTask()) {
+				 outcome = checkForScheduledDuplication(mostRecentTask, scheduledTasksComplete);
+				if (outcome) {
+					setRecentIndexOfTask(getRecentLocation()+1+scheduledTasksOverDue.size()+scheduledTasksToDo.size()
+					+floatingTasksToDo.size());
+					setRecentTaskDetails(scheduledTasksComplete.get(getRecentLocation()));
+				}
+			 } else if (mostRecentTask.isFloatingTask()) {
+				 outcome = checkForFloatingDuplication(mostRecentTask, floatingTasksComplete);
+				if (outcome) {
+					setRecentIndexOfTask(getRecentLocation()+1+scheduledTasksOverDue.size()+scheduledTasksToDo.size()
+					+floatingTasksToDo.size()+scheduledTasksComplete.size());
+					setRecentTaskDetails(floatingTasksComplete.get(getRecentLocation()));
+				}
+			}	
+		}
+		if (!outcome) {
+			setRecentIndexOfTask(-1);
+		}
+	}
+	
+	/*modifies tasks based on description, startdate, starttime, enddate, endtime. Tasks to be edited
+	 *are removed, modified are checked for duplication before being 
+	 */
 	public void editTask(ArrayList<Integer> indexList, String editInfo, boolean isUndoOperation) {
 		Task taskToEdit = null;
 		Task taskOriginal = null;
@@ -677,7 +782,6 @@ public class Logic {
 
 		if (indexList == null || indexList.isEmpty()) {
 			indexToEdit = getRecentIndexOfTask();
-
 			indexList = new ArrayList<Integer>();
 			indexList.add(indexToEdit);
 		} else {
@@ -708,8 +812,13 @@ public class Logic {
 		} else {
 			Task editedTask = CommandParser.editExistingTask(taskToEdit, editInfo);
 			if (editedTask.isScheduledTask()) {
-				duplicatedScheduledOverDue = checkForScheduledDuplication(editedTask, scheduledTasksOverDue);
-				duplicated = checkForScheduledDuplication(editedTask, scheduledTasksToDo);
+				LocalDateTime editedTaskEndDateTime = LocalDateTime.of(editedTask.getEndDate(), editedTask.getEndTime());
+				
+				if (editedTaskEndDateTime.isBefore(LocalDateTime.now())) {
+					duplicatedScheduledOverDue = checkForScheduledDuplication(editedTask, scheduledTasksOverDue);
+				} else {
+					duplicated = checkForScheduledDuplication(editedTask, scheduledTasksToDo);
+				}
 				if ((duplicatedScheduledOverDue) || (duplicated)) {
 					editedTask = taskOriginal;
 					isHighlightOperation = false;
@@ -724,7 +833,7 @@ public class Logic {
 					setFeedBack(FEEDBACK_DUPLICATE_TASK_FOUND_WHEN_EDITING);
 				}
 			}
-			int newIndex = addTask(editedTask, true);
+			int newIndex = addTask(editedTask, true, 1);
 
 			if ((duplicated) || (duplicatedScheduledOverDue)) {
 				setFeedBack(FEEDBACK_DUPLICATE_TASK_FOUND_WHEN_EDITING);
@@ -753,7 +862,7 @@ public class Logic {
 	/*
 	 * adds task into the respective completeArrayList and removes that same
 	 * task from the ArrayList that it is currently residing in based on task
-	 * number entered by user
+	 * number entered by user. Multiple tasks can be completed at once
 	 */
 	private void completeTask(ArrayList<Integer> taskIndex, boolean isUndoOperation) {
 		// undo parameter
@@ -768,7 +877,7 @@ public class Logic {
 		}
 		for (int i = taskIndex.size() - 1; i >= 0; i--) {
 			int taskToComplete = taskIndex.get(i) - 1;
-			if (taskToComplete >= 0) {
+			if (taskToComplete >=0) {
 				if (taskToComplete < scheduledTasksOverDue.size()) {
 					Task completedTask = markAsComplete(scheduledTasksOverDue, scheduledTasksComplete, taskToComplete);
 					taskList.add(0, completedTask);
@@ -803,6 +912,7 @@ public class Logic {
 			undoTask();
 			setFeedBack(FEEDBACK_NON_EXISTENT_TASK_NUM);
 		}
+		updateRecentIndexOfTask();
 	}
 
 	public Task markAsComplete(ArrayList<Task> incompleteList, ArrayList<Task> completeList, int taskNum) {
@@ -812,7 +922,10 @@ public class Logic {
 		setFeedBack(FEEDBACK_TASK_COMPLETED);
 		return completeTask;
 	}
-
+	
+	/*Tasks to incomplete are moved from their counterpart completed arraylists to the relevant
+	 *incomplete arraylists. Multiple tasks can be incompleted at once
+	 */
 	public void incompleteTask(ArrayList<Integer> indexList, boolean isUndoOperation) {
 		// undo parameter
 		ArrayList<Task> taskList = new ArrayList<Task>();
@@ -821,20 +934,28 @@ public class Logic {
 
 		int minIndex = scheduledTasksOverDue.size() + scheduledTasksToDo.size() + floatingTasksToDo.size() + 1;
 		int maxIndex = minIndex + scheduledTasksComplete.size() + floatingTasksComplete.size() - 1;
-
+		
+		if (indexList == null || indexList.isEmpty()) {
+			indexList = new ArrayList<Integer>();
+			int indexToIncomplete = getRecentIndexOfTask();
+			indexList.add(indexToIncomplete);
+		}
 		if (indexList != null && !indexList.isEmpty()) {
 			for (int index = indexList.size() - 1; index >= 0; index--) {
+				if (indexList.get(index) == getRecentIndexOfTask()) {
+					setRecentIndexOfTask(-1);
+				}
 				if ((indexList.get(index) >= minIndex) && (indexList.get(index) <= maxIndex)) {
 					if (indexList.get(index) < (minIndex + scheduledTasksComplete.size())) {
 						Task taskToMark = scheduledTasksComplete.remove(indexList.get(index) - minIndex);
 						taskToMark.setAsIncomplete();
-						addTask(taskToMark, true);
+						addTask(taskToMark, true, 0);
 						taskList.add(0, taskToMark);
 					} else {
 						Task taskToMark = floatingTasksComplete
 								.remove(indexList.get(index) - minIndex - scheduledTasksComplete.size());
 						taskToMark.setAsIncomplete();
-						addTask(taskToMark, true);
+						addTask(taskToMark, true, 0);
 						taskList.add(0, taskToMark);
 					}
 					setFeedBack(FEEDBACK_TASK_INCOMPLETED);
@@ -856,7 +977,8 @@ public class Logic {
 			}
 		}
 	}
-
+	
+	/*set task as complete*/
 	public void markTaskComplete(Task task) {
 		task.setAsComplete();
 		if (task.isFloatingTask()) {
@@ -869,21 +991,21 @@ public class Logic {
 		}
 	}
 
+	/*set task as incomplete*/
 	public void markTaskIncomplete(Task task) {
 		task.setAsIncomplete();
 		// System.out.println(task.getDescription());
 		if (task.isFloatingTask()) {
 			floatingTasksComplete.remove(task);
-			addTask(task, true);
+			addTask(task, true, 0);
 		} else if (task.isScheduledTask()) {
 			scheduledTasksComplete.remove(task);
-			addTask(task, true);
+			addTask(task, true, 0);
 		}
 	}
 
 	/*
-	 * this method shd be called in main at the start of the prog and shd run
-	 * all the way till system exits. This method automatically shifts
+	 * This method automatically shifts
 	 * scheduledtaskstodo to scheduledtasksoverdue when date and time has
 	 * exceeded due date and due time specified for scheduled task
 	 */
@@ -899,18 +1021,18 @@ public class Logic {
 			}
 		}
 	}
-
+	
+	/*moves overdue task from scheduledtodo to scheduledoverdue*/
 	private void changeStatusToOverdue(int i) {
 		scheduledTasksOverDue.add(scheduledTasksToDo.get(i));
 		setFeedBack("Task " + scheduledTasksToDo.get(i).getDescription() + " has exceeded deadline");
 		scheduledTasksToDo.remove(i);
-		/*
-		 * setScheduledTasksToDo(scheduledTasksToDo);
-		 * setScheduledTasksOverDue(scheduledTasksOverDue);
-		 */
 	}
 
-	// @@author A0132778W
+	/* @@author A0132778W
+	 * reverts back to an earlier version of the program to go back on the last performed command 
+	 * by the user
+	 */
 	public void undoTask() {
 		try {
 			OldCommand toUndo = historyObject.getFromUndoList();
@@ -936,7 +1058,7 @@ public class Logic {
 				 * add old.
 				 */
 				deleteSingleTask(toUndo.getIndexList().get(1));
-				addTask(toUndo.getTaskList().get(0), true);
+				addTask(toUndo.getTaskList().get(0), true, 1);
 				break;
 			default:
 				// go back to original home screen
@@ -947,7 +1069,10 @@ public class Logic {
 			setFeedBack(FEEDBACK_UNDO_INVALID);
 		}
 	}
-
+	
+   /*opposite of undo. restores an action that was previously made undo by the user. Only works if
+    * there is/are prior undo(s) before the redo(s)
+    */
 	public void redoTask() {
 		try {
 			OldCommand toRedo = historyObject.getFromRedoList();
@@ -973,7 +1098,7 @@ public class Logic {
 				 * add new.
 				 */
 				deleteSingleTask(toRedo.getIndexList().get(0));
-				addTask(toRedo.getTaskList().get(1), true);
+				addTask(toRedo.getTaskList().get(1), true, 1);
 				break;
 			default:
 				// go back to original home screen
@@ -987,7 +1112,7 @@ public class Logic {
 
 	public void addTaskList(ArrayList<Task> taskList) {
 		for (Task newTask : taskList) {
-			addTask(newTask, true);
+			addTask(newTask, true, 0);
 		}
 	}
 
@@ -1017,8 +1142,10 @@ public class Logic {
 		}
 		setFeedBack(FEEDBACK_TASK_DELETED);
 	}
-
-	//@@author A0116470M
+	
+	/*search tasks based on parameters indicated by user. Parameters can include dates or task
+	 * descriptions or letters with which task names start
+	 */
 	private void searchTask(Task taskToFind) {
 		if ((taskToFind.getDescription() != null) && !(taskToFind.getDescription().isEmpty())) {
 			if (taskToFind.getDescription().equalsIgnoreCase("all")) {
@@ -1059,8 +1186,7 @@ public class Logic {
 	}
 
 	/*
-	 * exiting of program. Shd save all arraylists and updated info abt the
-	 * tasks before exiting
+	 * exiting of program. exits once all data is saved into json files in storage
 	 */
 	private void exit() {
 		TempCLI.exitScheduleHacks();
