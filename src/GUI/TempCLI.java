@@ -1,4 +1,4 @@
-/*********************** DO NOT DELETE *************************/
+//@@author A0124635J
 
 /*
  * This is a temporary User Interface while the GUI prepares the final.
