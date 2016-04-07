@@ -92,14 +92,14 @@ public class CommandParser {
 				break;
 			}
 			if (command.getCommandType().equals(COMMAND_TYPE.HELP)
-					|| (newTask.getDescription() != null && !newTask.getDescription().isEmpty())) {
+					|| (taskStatement != null && !taskStatement.isEmpty())) {
 				return newTask;
 			} else {
 				throw new Exception("Empty Task Description");
 			}
 			// }
 		}
-		//throw new Exception("Empty Task Description");
+		// throw new Exception("Empty Task Description");
 	}
 
 	/**
@@ -211,9 +211,10 @@ public class CommandParser {
 		}
 
 		try {
-			if (taskStatement != null && !taskStatement.isEmpty()) {
+			if (taskStatement != null) {
 				taskStatement = cleanupExtraWhitespace(taskStatement);
-			} else {
+			}
+			if (taskStatement == null || taskStatement.isEmpty()) {
 				taskStatement = storeTaskStatement;
 			}
 			newTask.setDescription(taskStatement);
