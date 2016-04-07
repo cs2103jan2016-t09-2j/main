@@ -235,6 +235,12 @@ public class BottomBottom extends JPanel implements KeyListener {
 
 }
 
+// @@author A0132778W
+
+/**
+ * This class runs every minute to ensure that tasks are always transferred to
+ * Overdue List as and when needed.
+ */
 class Refresh extends TimerTask {
 	public void run() {
 		Logic logicObj = Logic.getInstance();
