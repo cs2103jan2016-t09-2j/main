@@ -1,5 +1,8 @@
-/*********************** DO NOT DELETE *************************/
+//@@author A0132778W-unused
 
+/**
+ * Not included in the final because GUI was used.
+ */
 /*
  * This is a temporary User Interface while the GUI prepares the final.
  * DO NOT DELETE THIS FILE.

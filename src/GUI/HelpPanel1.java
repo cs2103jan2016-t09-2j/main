@@ -1,3 +1,4 @@
+//@@author A0124635J
 package GUI;
 
 import java.awt.Color;
@@ -18,9 +19,6 @@ import ScheduleHacks.HelpGuide;
 
 public class HelpPanel1 extends JPanel implements KeyListener{
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 
 	JTextPane textArea;

@@ -1,3 +1,4 @@
+//@@author A0124635J
 package GUI;
 
 import java.awt.Color;
@@ -11,9 +12,13 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
 import javax.swing.BorderFactory;
+import javax.swing.InputMap;
+import javax.swing.JComponent;
 import javax.swing.JPanel;
+import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
 import javax.swing.JTextPane;
+import javax.swing.KeyStroke;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.DefaultHighlighter;
 import javax.swing.text.SimpleAttributeSet;
@@ -52,14 +57,20 @@ public class TopLeftPanel extends JPanel {
 	private static Logic logicObj = Logic.getInstance();
 
 	public TopLeftPanel() {
+		
+		/*
+		 * Set the size of the panel that contains the display of Overdue and Schedule Task
+		 */
 		Dimension size = getPreferredSize();
 		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 		double height = screenSize.getHeight();
 		size.height = (int) (height / 2.2);
-		// size.height = 268;
 		setPreferredSize(size);
 		setBorder(BorderFactory.createTitledBorder(""));
 
+		/*
+		 * Set the layout for the component in this panel
+		 */
 		setLayout(new GridLayout());
 		textArea = new JTextPane();
 		textArea.setEditable(false);
@@ -85,12 +96,26 @@ public class TopLeftPanel extends JPanel {
 		StyleConstants.setForeground(exclaimMark, new Color(255, 0, 0));
 
 		add(scrollPane);
+		
+		/*
+		 * implement scroll bar (not done yet)
+		 */
+		JScrollBar vertical = scrollPane.getVerticalScrollBar();
+		InputMap im = vertical.getInputMap(JComponent.WHEN_FOCUSED);
+		im.put(KeyStroke.getKeyStroke("DOWN"), "positiveUnitIncrement");
+		im.put(KeyStroke.getKeyStroke("UP"), "negativeUnitIncrement");
 	}
 
+	/*
+	 * Clear all the content in display screen
+	 */
 	public static void clearText() {
 		textArea.setText(null);
 	}
 
+	/*
+	 * Set normal display screen
+	 */
 	public static void setText(ArrayList<Task> OList, ArrayList<Task> SList, ArrayList<Integer> indexList) {
 		// TopRightPanel.setCount(count);
 		int index;
@@ -105,6 +130,9 @@ public class TopLeftPanel extends JPanel {
 		printOutSO(SList, "schedule", new ArrayList<Integer>(indexList.subList(OList.size(), indexList.size())));
 	}
 
+	/*
+	 * Set search display screen
+	 */
 	public static void setSearchText(ArrayList<Task> SList, ArrayList<Integer> indexList) {
 		int index;
 		if (SList == null) {
@@ -226,6 +254,9 @@ public class TopLeftPanel extends JPanel {
 		}
 	}
 
+	/*
+	 * Set first display screen when the program start
+	 */
 	public static void firstSet(ArrayList<Task> firstList, ArrayList<Integer> indexList) {
 		try {
 			clearText();

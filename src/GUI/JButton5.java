@@ -1,3 +1,4 @@
+//@@author A0124635J
 package GUI;
 
 import java.awt.event.KeyEvent;
@@ -8,9 +9,7 @@ import javax.swing.JButton;
 import Logic.Logic;
 
 public class JButton5 extends JButton implements KeyListener{
-	/**
-	 * 
-	 */
+	
 	private static final long serialVersionUID = 1L;
 	private static Logic logicObj = Logic.getInstance();
 
@@ -18,6 +17,7 @@ public class JButton5 extends JButton implements KeyListener{
 		setText("HELP");
 		addKeyListener(this);
 	}
+	
 	public void keyPressed(KeyEvent e) {
 		int keyCode = e.getKeyCode();
 		if(keyCode == KeyEvent.VK_ENTER){
@@ -26,15 +26,16 @@ public class JButton5 extends JButton implements KeyListener{
 
 	}
 
-	@Override
 	public void keyReleased(KeyEvent e) {
-		// TODO Auto-generated method stub
-
+		/*
+		 * Not being used
+		 */
 	}
 
-	@Override
 	public void keyTyped(KeyEvent e) {
-		// TODO Auto-generated method stub
+		/* 
+		 * Not being used
+		 */
 
 	}
 }

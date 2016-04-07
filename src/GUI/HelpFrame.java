@@ -1,3 +1,4 @@
+//@@author A0124635J
 package GUI;
 
 import java.awt.GridBagConstraints;
@@ -6,9 +7,6 @@ import javax.swing.JFrame;
 
 public class HelpFrame extends JFrame{
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 
 	HelpPanel1 help1;

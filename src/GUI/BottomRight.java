@@ -1,31 +1,19 @@
+//@@author A0124635J
 package GUI;
 
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Toolkit;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
-
-import javax.swing.JButton;
 import javax.swing.JPanel;
-import Logic.Logic;
 
-public class BottomRight extends JPanel implements KeyListener{
+public class BottomRight extends JPanel{
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	private static Logic logicObj = Logic.getInstance();
-	
 	int count = 0;
-
-	JButton button1 = new JButton("TRIVIAL TASKS");
-	JButton button2 = new JButton("UPCOMING TASKS");
-	JButton button3 = new JButton("ARCHIVE");
-	JButton button4 = new JButton("HOME");
-	JButton button5 = new JButton("HELP");
 	
 	JButton1 b1;
 	JButton2 b2;
@@ -34,12 +22,20 @@ public class BottomRight extends JPanel implements KeyListener{
 	JButton5 b5;
 	
 	public BottomRight(){
+		
+		/*
+		 * Set the size of the panel that contains all the buttons
+		 */
 		Dimension size = getPreferredSize();
 		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 		double height = screenSize.getHeight();
 		size.height = (int)(height/7.2);
 		setPreferredSize(size);
 		setBorder(null);
+		
+		/*
+		 * Set the layout for the all the buttons to be added into this panel
+		 */
 		setLayout(new GridBagLayout());
 		
 		GridBagConstraints gc = new GridBagConstraints();
@@ -65,45 +61,6 @@ public class BottomRight extends JPanel implements KeyListener{
 		add(b4,gc);
 		gc.gridy = 4;
 		add(b5,gc);
-
-/*		gc.weightx = 1;
-		gc.weighty = 1;
-		gc.gridx = 0;
-
-		gc.gridy = 0;
-		add(button1,gc);
-		button1.addKeyListener(this);
-		gc.gridy = 1;
-		add(button2,gc);
-		button2.addKeyListener(this);
-		gc.gridy = 2;
-		add(button3,gc);
-		button3.addKeyListener(this);
-		gc.gridy = 3;
-		add(button4,gc);
-		button4.addKeyListener(this);
-		gc.gridy = 4;
-		add(button5,gc);
-		button5.addKeyListener(this); */
 	}
 
-	public void keyPressed(KeyEvent e) {
-		int keyCode = e.getKeyCode();
-		if(keyCode == KeyEvent.VK_TAB){
-			count++;
-			System.out.println("count is" + count);
-		}
-		if(keyCode == KeyEvent.VK_ENTER){
-			logicObj.executeCommand("help");
-		}
-		
-	}
-
-	public void keyReleased(KeyEvent e) {
-		
-	}
-
-	public void keyTyped(KeyEvent e) {
-		
-	}
 }
