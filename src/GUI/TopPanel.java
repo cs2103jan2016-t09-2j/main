@@ -12,19 +12,22 @@ import javax.swing.JPanel;
 
 public class TopPanel extends JPanel{
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 
 	public TopPanel(){
+		/*
+		 * Set the size of the panel that contains display screen
+		 */
 		Dimension size = getPreferredSize();
 		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 		double height = screenSize.getHeight();
 		size.height = (int)(height/2.16);
 		setPreferredSize(size);
 		setBorder(BorderFactory.createTitledBorder(""));
-
+		
+		/*
+		 * Set the layout for the 2 display screens to be added into this panel
+		 */
 		setLayout(new GridBagLayout());
 		GridBagConstraints gbc = new GridBagConstraints();
 		

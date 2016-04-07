@@ -7,19 +7,14 @@ import java.awt.event.KeyListener;
 import javax.swing.JButton;
 
 public class JButton1 extends JButton implements KeyListener{
-	/**
-	 * 
-	 */
+
 	private static final long serialVersionUID = 1L;
 
 	public JButton1(){
-		setText("TRIVAL TASKS");
+		setText("TRIVIAL TASKS");
 		addKeyListener(this);
-		
-		
 	}
 
-	@Override
 	public void keyPressed(KeyEvent e) {
 		int keyCode = e.getKeyCode();
 		if(keyCode == KeyEvent.VK_ENTER){
@@ -28,15 +23,16 @@ public class JButton1 extends JButton implements KeyListener{
 		
 	}
 
-	@Override
 	public void keyReleased(KeyEvent e) {
-		// TODO Auto-generated method stub
+		/*
+		 * Not being used
+		 */
 		
 	}
 
-	@Override
 	public void keyTyped(KeyEvent e) {
-		// TODO Auto-generated method stub
-		
+		/*
+		 * Not being used
+		 */		
 	}
 }

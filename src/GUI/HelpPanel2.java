@@ -19,9 +19,6 @@ import ScheduleHacks.HelpGuide;
 
 public class HelpPanel2 extends JPanel implements KeyListener{
 	
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 	
 	JTextPane textArea;
