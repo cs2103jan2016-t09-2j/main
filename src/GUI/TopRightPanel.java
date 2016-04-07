@@ -22,9 +22,6 @@ import ScheduleHacks.Task;
 
 public class TopRightPanel extends JPanel {
 
-	/**
-	 * 
-	 */
 	private static Logic logicObj = Logic.getInstance();
 
 	private static final long serialVersionUID = 1L;
@@ -45,6 +42,10 @@ public class TopRightPanel extends JPanel {
 	private static DefaultHighlightPainter painter = new DefaultHighlightPainter(Color.YELLOW);
 
 	public TopRightPanel() {
+		
+		/*
+		 * Set the size of the panel that contains the display of Trivial Task
+		 */
 		Dimension size = getPreferredSize();
 		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 		double height = screenSize.getHeight();
@@ -52,6 +53,9 @@ public class TopRightPanel extends JPanel {
 		setPreferredSize(size);
 		setBorder(BorderFactory.createTitledBorder(""));
 
+		/*
+		 * Set the layout for the component in this panel
+		 */
 		setLayout(new GridLayout());
 		textArea = new JTextPane();
 		scrollPane = new JScrollPane(textArea);
@@ -77,6 +81,9 @@ public class TopRightPanel extends JPanel {
 		logicObj.firstRun();
 	}
 
+	/*
+	 * Set normal display screen
+	 */
 	public static void setText(ArrayList<Task> FList, ArrayList<Integer> indexList, int UpcomingTaskSize) {
 		if (FList == null) {
 			FList = new ArrayList<Task>();
@@ -90,6 +97,9 @@ public class TopRightPanel extends JPanel {
 		printOut(FList, indexList);
 	}
 
+	/*
+	 * Set search display screen
+	 */
 	public static void setSearchText(ArrayList<Task> FList, ArrayList<Integer> indexList, int UpcomingTaskSize) {
 		if (FList == null) {
 			FList = new ArrayList<Task>();
@@ -162,10 +172,16 @@ public class TopRightPanel extends JPanel {
 		}
 	}
 
+	/*
+	 * Clear all the content in display screen
+	 */
 	public static void clearText() {
 		textArea.setText(null);
 	}
 
+	/*
+	 * Set first display screen when the program start
+	 */
 	public static void firstSet(ArrayList<Task> firstList, ArrayList<Integer> indexList) {
 		clearText();
 		count = 0;

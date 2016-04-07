@@ -16,9 +16,7 @@ import ScheduleHacks.History;
 import ScheduleHacks.Task;
 
 public class BottomBottom extends JPanel implements KeyListener {
-	/**
-	 * 
-	 */
+
 	private static final long serialVersionUID = 1L;
 
 	private static JTextField commandField = new JTextField();
@@ -29,27 +27,35 @@ public class BottomBottom extends JPanel implements KeyListener {
 	private static ArrayList<Task> searchSList = new ArrayList<Task>();
 	private static ArrayList<Task> searchFList = new ArrayList<Task>();
 	History history = History.getInstance();
-
 	private static final Font INPUT_FONT = new Font("Courier New", Font.BOLD, 16);
-
 	private static Logic logicObj = Logic.getInstance();
-	//String startInput = "view 2 days";
-	
+
 	public BottomBottom() {
-		//setLayout(new BorderLayout());
+		/*
+		 * Set the layout for the component in user input field
+		 */
 		setLayout(new GridLayout(1, 1));
 		commandField.setFont(INPUT_FONT);
 		add(commandField);
 		commandField.addKeyListener(this);
+
+		/*
+		 * To load the stored data for the first display to user
+		 */
 		logicObj.startExecution();
-		//logicObj.executeCommand(startInput);
 	}
 
 	public static JTextField getCommandField() {
 		return commandField;
 	}
 
+	/*
+	 * Create the Help window when it is called
+	 */
 	public static void HelpPopUp() {
+		/*
+		 * Set the size and the name of the window
+		 */
 		JFrame Help = new HelpFrame("HELP GUIDE");
 		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 		double width = screenSize.getWidth();
@@ -63,16 +69,26 @@ public class BottomBottom extends JPanel implements KeyListener {
 	}
 
 	public void keyReleased(KeyEvent arg0) {
-		// not used
+		/*
+		 * Not being used
+		 */
 	}
 
 	public void keyTyped(KeyEvent arg0) {
-		// not used
+		/*
+		 * Not being used
+		 */
 	}
 
+	/*
+	 * Find what key is behind pressed and do the necessary actions
+	 */
 	public void keyPressed(KeyEvent e) {
 		int keyCode = e.getKeyCode();
 
+		/*
+		 * When ENTER key is pressed, input will be read and start execution
+		 */
 		if (keyCode == KeyEvent.VK_ENTER) {
 			String input = commandField.getText();
 			commandField.setText("");
@@ -91,6 +107,9 @@ public class BottomBottom extends JPanel implements KeyListener {
 			}
 		}
 
+		/*
+		 * UP and DOWN key will display command history for the user
+		 */
 		if (keyCode == KeyEvent.VK_UP) {
 			BottomLeft.setFeedback("Previous Command");
 			commandField.setText(history.moveUpCommandHistory());
@@ -101,16 +120,25 @@ public class BottomBottom extends JPanel implements KeyListener {
 			commandField.setText(history.moveDownCommandHistory());
 		}
 
+		/*
+		 * ESCAPE key will close the window
+		 */
 		if (keyCode == KeyEvent.VK_ESCAPE) {
 			System.exit(0);
 		}
 	}
 
+	/*
+	 * Create the Help window to show to user
+	 */
 	public static void setHelp() {
 		HelpPopUp();
 	}
 
-		public static void setSearchResult(ArrayList<Task> searchTaskList, ArrayList<Integer> searchIndexList) {
+	/*
+	 * Classified the search results based on their categories 
+	 */
+	public static void setSearchResult(ArrayList<Task> searchTaskList, ArrayList<Integer> searchIndexList) {
 		clearArrayList();
 		for (Task task : searchTaskList) {
 			if (task.isFloatingTask()) {
@@ -121,31 +149,40 @@ public class BottomBottom extends JPanel implements KeyListener {
 		}
 		setSearchPanel(searchFList, searchSList, searchIndexList);
 	}
-
+	
+	/*
+	 * Set the display screen with all the possible search results
+	 */
 	public static void setSearchPanel(ArrayList<Task> timedList, ArrayList<Task> trivialList,
 			ArrayList<Integer> searchIndexList) {
-		
+
 		clearPanel();	
 		ArrayList<Integer> UpcomingTaskIndex = new ArrayList<Integer>(
 				searchIndexList.subList(0, searchSList.size()));
 		ArrayList<Integer> FloatingTaskIndex = new ArrayList<Integer>(
 				searchIndexList.subList(searchSList.size(), searchIndexList.size()));
-		
+
 		TopLeftPanel.setSearchText(searchSList, UpcomingTaskIndex);
 		TopRightPanel.setSearchText(searchFList, FloatingTaskIndex, UpcomingTaskIndex.size());
 	}
-	
+
 	public static void failedSearch() {
 		clearPanel();
 		TopLeftPanel.setSearchText(new ArrayList<Task>(), null);
 		TopRightPanel.setSearchText(new ArrayList<Task>(), null, 0);
 	}
 
+	/*
+	 * Clear off all the contents in the display screen
+	 */
 	public static void clearPanel() {
 		TopLeftPanel.clearText();
 		TopRightPanel.clearText();
 	}
 
+	/*
+	 * Set the display panel with the correct elements within the ArrayList
+	 */
 	public static void setPanel(ArrayList<Task> searchFList, ArrayList<Task> searchSList, ArrayList<Task> searchOList,
 			ArrayList<Integer> searchIndexList) {
 
@@ -159,10 +196,13 @@ public class BottomBottom extends JPanel implements KeyListener {
 		TopRightPanel.setText(searchFList, FloatingTaskIndex, UpcomingTaskIndex.size());
 	}
 
+	/*
+	 * Clear off all the elements within the ArrayList
+	 */
 	public static void clearArrayList() {
 		searchFList = new ArrayList<Task>();
 		searchOList = new ArrayList<Task>();
 		searchSList = new ArrayList<Task>();
 	}
-	
+
 }

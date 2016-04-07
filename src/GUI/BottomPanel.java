@@ -10,9 +10,6 @@ import javax.swing.JPanel;
 
 public class BottomPanel extends JPanel{
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 
 	private BottomLeft bottomLeft;
@@ -20,12 +17,19 @@ public class BottomPanel extends JPanel{
 
 	public BottomPanel(){
 		
+		/*
+		 * Set the size of the panel that contains BottomLeft panel and BottomRight panel
+		 */
 		Dimension size = getPreferredSize();
 		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 		double height = screenSize.getHeight();
 		size.height = (int)(height/7.2);
 		setPreferredSize(size);
 		setBorder(BorderFactory.createTitledBorder(""));
+		
+		/*
+		 * Set the layout for the two panels to be added into this panel
+		 */
 		setLayout(new GridBagLayout());
 		GridBagConstraints gc = new GridBagConstraints();
 
