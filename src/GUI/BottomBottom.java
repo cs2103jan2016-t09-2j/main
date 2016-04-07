@@ -6,13 +6,18 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.Toolkit;
+import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.TimerTask;
+import java.util.Timer;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+
 import Logic.Logic;
 import ScheduleHacks.History;
 import ScheduleHacks.Task;
@@ -45,6 +50,11 @@ public class BottomBottom extends JPanel implements KeyListener {
 		 * To load the stored data for the first display to user
 		 */
 		logicObj.startExecution();
+
+		long period = 1000 * 60;
+		// And From your main() method or any other method
+		Timer timer = new Timer();
+		timer.schedule(new Refresh(), 0, period);
 	}
 
 	public static JTextField getCommandField() {
@@ -223,4 +233,21 @@ public class BottomBottom extends JPanel implements KeyListener {
 		searchSList = new ArrayList<Task>();
 	}
 
+}
+
+class Refresh extends TimerTask {
+	public void run() {
+		Logic logicObj = Logic.getInstance();
+		logicObj.refresh();
+		if (!logicObj.isHomeScreen()) {
+			// normal display
+			ArrayList<Task> OList = new ArrayList<Task>(logicObj.getScheduledTasksOverDue());
+			ArrayList<Task> SList = new ArrayList<Task>(logicObj.getScheduledTasksToDo());
+			ArrayList<Task> FList = new ArrayList<Task>(logicObj.getFloatingTasksToDo());
+			TopLeftPanel.clearText();
+			TopLeftPanel.setText(OList, SList, null);
+			TopRightPanel.clearText();
+			TopRightPanel.setText(FList, null, OList.size() + SList.size());
+		}
+	}
 }

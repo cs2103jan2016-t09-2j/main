@@ -16,7 +16,7 @@ public class Main_UI {
 
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
-				
+
 				/*
 				 * Create the main window of the User Interface
 				 */
@@ -35,7 +35,7 @@ public class Main_UI {
 				newFrame.getContentPane().setBackground(new Color(107, 179, 166));
 
 				/*
-				 *  Make textField get the focus whenever frame is activated
+				 * Make textField get the focus whenever frame is activated
 				 */
 				newFrame.addWindowFocusListener(new WindowAdapter() {
 					public void windowGainedFocus(WindowEvent e) {

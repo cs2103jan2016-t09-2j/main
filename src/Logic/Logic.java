@@ -4,6 +4,7 @@ package Logic;
 import java.util.ArrayList;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 import ScheduleHacks.Task;
 import ScheduleHacks.OldCommand;
@@ -1183,6 +1184,17 @@ public class Logic {
 
 	public boolean hasSearchList() {
 		return isSearchCommand;
+	}
+	
+	/**
+	 * Refreshing screen every minute
+	 */
+	public void refresh() {
+		if(isHomeScreen) {
+			executeCommand("home");
+		} else {
+			executeCommand("view all");
+		}
 	}
 
 	/*
