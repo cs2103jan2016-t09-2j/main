@@ -15,11 +15,13 @@ import java.util.ArrayList;
 import ScheduleHacks.Task;
 
 public class StorageTest {
+	
+	Storage testStorage = Storage.getInstance();
 
 	@Test
 	public void testSetDirectory() {
 
-		Storage testStorage = Storage.getInstance();
+		//Storage testStorage = Storage.getInstance();
 
 		File testDirectory = new File("C:\\SH");
 		testDirectory.mkdir();
@@ -33,7 +35,7 @@ public class StorageTest {
 	@Test
 	public void testChangeDirectory() {
 
-		Storage testStorage = Storage.getInstance();
+		//Storage testStorage = Storage.getInstance();
 
 		testStorage.setCurrentPathName("C:\\SH1");
 		testStorage.setCurrentPathName("C:\\SH2");
@@ -45,7 +47,7 @@ public class StorageTest {
 	@Test
 	public void testSameDirectory() {
 
-		Storage testStorage = Storage.getInstance();
+		//Storage testStorage = Storage.getInstance();
 
 		testStorage.setCurrentPathName("C:\\sameName");
 		testStorage.setCurrentPathName("C:\\sameName");
@@ -57,7 +59,7 @@ public class StorageTest {
 	@Test
 	public void testDirectoryAddBranches() {
 
-		Storage testStorage = Storage.getInstance();
+		//Storage testStorage = Storage.getInstance();
 
 		testStorage.setCurrentPathName("C:\\test\\testtest");
 
@@ -68,7 +70,7 @@ public class StorageTest {
 	@Test
 	public void testDirectoryMoreBranches() {
 
-		Storage testStorage = Storage.getInstance();
+		//Storage testStorage = Storage.getInstance();
 
 		testStorage.setCurrentPathName("C:\\test\\testtest\\testtesttest");
 
@@ -79,7 +81,7 @@ public class StorageTest {
 	@Test
 	public void testNotDirectory() {
 
-		Storage testStorage = Storage.getInstance();
+		//Storage testStorage = Storage.getInstance();
 
 		testStorage.setCurrentPathName("C:SH1");
 
@@ -89,8 +91,6 @@ public class StorageTest {
 
 	@Test
 	public void testToDoScheduledTask() throws IOException {
-
-		Storage testStorage = Storage.getInstance();
 
 		Task task1 = new Task("attend piano concert", LocalDate.parse("2016-06-08"), LocalDate.parse("2016-08-08"),
 				LocalTime.parse("12:00"), LocalTime.parse("16:00"));
@@ -107,15 +107,14 @@ public class StorageTest {
 		ArrayList<Task> retrieveList = testStorage.getScheduledTasksToDo();
 
 		assertEquals(retrieveList.equals(testScheduledTasksToDo), true);
+		
+		System.out.println(testScheduledTasksToDo.size());
 
 	}
 
 	@Test
 	public void testToDoFloatingTask() throws IOException {
-		Storage testStorage = Storage.getInstance();
-
-		testStorage.initStorage();
-
+		
 		Task task1 = new Task("attend soccer practice", null, null, null, null);
 		task1.setFloatingTask();
 		task1.setAsIncomplete();
@@ -135,7 +134,7 @@ public class StorageTest {
 
 	@Test
 	public void testOverduedTask() throws IOException {
-		Storage testStorage = Storage.getInstance();
+		//Storage testStorage = Storage.getInstance();
 
 		Task task1 = new Task("attend piano concert", null, LocalDate.parse("2016-03-03"), null, LocalTime.MAX);
 		task1.setScheduledTask();
@@ -159,7 +158,7 @@ public class StorageTest {
 
 	@Test
 	public void testCompleteFloatingTask() throws Exception {
-		Storage testStorage = Storage.getInstance();
+		//Storage testStorage = Storage.getInstance();
 
 		Task task1 = new Task("attend soccer practice", null, null, null, null);
 		task1.setFloatingTask();
@@ -180,7 +179,7 @@ public class StorageTest {
 
 	@Test
 	public void testCompletedScheduleTask() throws Exception {
-		Storage testStorage = Storage.getInstance();
+		//Storage testStorage = Storage.getInstance();
 
 		Task task1 = new Task("attend piano concert", null, LocalDate.parse("2016-03-03"), null, LocalTime.MAX);
 		task1.setScheduledTask();
@@ -201,7 +200,7 @@ public class StorageTest {
 
 	@Test
 	public void testStoreAndLoad() throws Exception {
-		Storage testStorage = Storage.getInstance();
+		//Storage testStorage = Storage.getInstance();
 
 		Task task1 = new Task("attend soccer practice", null, null, null, null);
 		Task task2 = new Task("attend piano lessons", null, null, null, null);

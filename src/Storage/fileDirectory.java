@@ -15,8 +15,6 @@ public class fileDirectory {
 	private static final String LOG_DIRECTORY_EXISTS = "File directory already exists";
 	private static final String LOG_DIRECTORY_ERROR = "File directory can't be created";
 	
-	
-	
 	/**
 	 * Sets the current directory where the Json files which contains the data are stored.
 	 * 
@@ -52,7 +50,6 @@ public class fileDirectory {
 			File newFolder = new File(destDir);
 
 			FileUtils.moveDirectory(oldFolder, newFolder);
-
 		}
 
 		catch (Exception e) {
@@ -60,6 +57,5 @@ public class fileDirectory {
 		}
 	}
 	
-
-	
+		
 }

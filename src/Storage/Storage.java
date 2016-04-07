@@ -61,9 +61,9 @@ public class Storage {
 
 	/* Constructor */
 	private Storage() {
-
+		
 		initStorage();
-
+	
 	}
 
 	/* Initiates storage directory */
@@ -74,7 +74,7 @@ public class Storage {
 
 				if (!file.exists() || file.length() == 0) {
 					currentPathName = defaultPathName;
-
+					
 				} else {
 					BufferedReader br = new BufferedReader(new FileReader(file));
 					currentPathName = br.readLine();
@@ -262,7 +262,9 @@ public class Storage {
 		try {
 
 			BufferedWriter bw = new BufferedWriter(new FileWriter(f));
-
+			
+			System.out.println(scheduledTasksToDo.size());
+					
 			for (Task newTask : scheduledTasksToDo) {
 				String json = gson.toJson(newTask);
 				bw.write(json);
@@ -273,6 +275,7 @@ public class Storage {
 				String json = gson.toJson(newTask);
 				bw.write(json);
 				bw.newLine();
+				
 			}
 
 			for (Task newTask : scheduledTasksOverDue) {
