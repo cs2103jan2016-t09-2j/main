@@ -1,3 +1,4 @@
+//@@author A0124635J
 package GUI;
 
 import java.awt.Dimension;
@@ -32,7 +33,10 @@ public class BottomTop extends JPanel{
 		setLayout(new GridLayout());
         feedbackField = new JTextArea();
         feedbackField.setEditable(false);
+        feedbackField.setLineWrap(true);
+        feedbackField.setWrapStyleWord(true);
         scrollPane = new JScrollPane(feedbackField);
+        
         add(scrollPane);
 	}
 	
