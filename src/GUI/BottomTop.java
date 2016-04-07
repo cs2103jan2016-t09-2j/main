@@ -33,7 +33,10 @@ public class BottomTop extends JPanel{
 		setLayout(new GridLayout());
         feedbackField = new JTextArea();
         feedbackField.setEditable(false);
+        feedbackField.setLineWrap(true);
+        feedbackField.setWrapStyleWord(true);
         scrollPane = new JScrollPane(feedbackField);
+        
         add(scrollPane);
 	}
 	
