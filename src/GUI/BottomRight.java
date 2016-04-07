@@ -5,7 +5,6 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Toolkit;
 import javax.swing.JPanel;
-import Logic.Logic;
 
 public class BottomRight extends JPanel{
 

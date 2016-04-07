@@ -1062,6 +1062,6 @@ public class Logic {
 	 * tasks before exiting
 	 */
 	private void exit() {
-		TempCLI.exitScheduleHacks();
+		System.exit(0);
 	}
 }
