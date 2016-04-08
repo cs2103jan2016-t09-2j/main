@@ -6,11 +6,15 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.Toolkit;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.util.ArrayList;
 import java.util.TimerTask;
-import java.util.Timer;
+//import java.util.Timer;
+
+import javax.swing.Timer;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -20,9 +24,11 @@ import Logic.Logic;
 import ScheduleHacks.History;
 import ScheduleHacks.Task;
 
-public class BottomBottom extends JPanel implements KeyListener{
+public class BottomBottom extends JPanel implements KeyListener {
 
 	private static final long serialVersionUID = 1L;
+
+	private static final int ONE_MINUTE = 60000;
 
 	private static JTextField commandField = new JTextField();
 	private ArrayList<Task> OList = new ArrayList<Task>();
@@ -34,7 +40,8 @@ public class BottomBottom extends JPanel implements KeyListener{
 	History history = History.getInstance();
 	private static final Font INPUT_FONT = new Font("Courier New", Font.BOLD, 16);
 	private static Logic logicObj = Logic.getInstance();
-	
+	static Timer timer;
+
 	public BottomBottom() {
 		/*
 		 * Set the layout for the component in user input field
@@ -43,16 +50,21 @@ public class BottomBottom extends JPanel implements KeyListener{
 		commandField.setFont(INPUT_FONT);
 		add(commandField);
 		commandField.addKeyListener(this);
-		
+
 		/*
 		 * To load the stored data for the first display to user
 		 */
 		logicObj.startExecution();
 
-		long period = 1000 * 60;
 		// And From your main() method or any other method
-		Timer timer = new Timer();
-		timer.schedule(new Refresh(), 0, period);
+		timer = new Timer(ONE_MINUTE, new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent ae) {
+				new Refresh();
+			}
+		});
+		timer.setInitialDelay(0);
+		timer.start();
 	}
 
 	public static JTextField getCommandField() {
@@ -75,7 +87,7 @@ public class BottomBottom extends JPanel implements KeyListener{
 		Help.setSize(width1, height1);
 		Help.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
 		Help.setVisible(true);
-		Help.setResizable(false); 
+		Help.setResizable(false);
 	}
 
 	public void keyReleased(KeyEvent arg0) {
@@ -133,14 +145,16 @@ public class BottomBottom extends JPanel implements KeyListener{
 			logicObj.executeCommand("undo");
 			BottomLeft.setFeedback(logicObj.getFeedBack());
 			isUpdateCall = true;
+			history.removeLastCommandFromHistory();
 		}
 
 		if (keyCode == KeyEvent.VK_Y && ((e.getModifiers() & KeyEvent.CTRL_MASK) != 0)) {
 			logicObj.executeCommand("redo");
 			BottomLeft.setFeedback(logicObj.getFeedBack());
 			isUpdateCall = true;
+			history.removeLastCommandFromHistory();
 		}
-		
+
 		if (keyCode == KeyEvent.VK_R && ((e.getModifiers() & KeyEvent.CTRL_MASK) != 0)) {
 			logicObj.refresh();
 			isUpdateCall = true;
@@ -158,8 +172,11 @@ public class BottomBottom extends JPanel implements KeyListener{
 				TopRightPanel.setText(FList, null, OList.size() + SList.size());
 			}
 		}
+
+		timer.setInitialDelay(ONE_MINUTE);
+		timer.restart();
 	}
-	
+
 	/*
 	 * Create the Help window to show to user
 	 */
@@ -235,7 +252,6 @@ public class BottomBottom extends JPanel implements KeyListener{
 		searchOList = new ArrayList<Task>();
 		searchSList = new ArrayList<Task>();
 	}
-
 }
 
 // @@author A0132778W
@@ -244,11 +260,11 @@ public class BottomBottom extends JPanel implements KeyListener{
  * This class runs every minute to ensure that tasks are always transferred to
  * Overdue List as and when needed.
  */
-class Refresh extends TimerTask {
-	public void run() {
+class Refresh {
+	Refresh() {
 		Logic logicObj = Logic.getInstance();
 		logicObj.refresh();
-		if (!logicObj.isHomeScreen()) {
+		if (!logicObj.isHomeScreen() && !logicObj.hasSearchList()) {
 			// normal display
 			ArrayList<Task> OList = new ArrayList<Task>(logicObj.getScheduledTasksOverDue());
 			ArrayList<Task> SList = new ArrayList<Task>(logicObj.getScheduledTasksToDo());

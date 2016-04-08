@@ -104,6 +104,10 @@ public class History {
 		commandHistory.add(new String(command));
 	}
 	
+	public void removeLastCommandFromHistory() {
+		commandHistory.remove(indexOfCommand-1);
+	}
+	
 	/*Subsequent methods retrieves the index of the tasks
 	  contained in the command history ArrayList*/
 	public String moveUpCommandHistory() {

@@ -7,11 +7,13 @@ import java.awt.event.KeyListener;
 import javax.swing.JButton;
 
 import Logic.Logic;
+import ScheduleHacks.History;
 
 public class JButton1 extends JButton implements KeyListener {
 
 	private static final long serialVersionUID = 1L;
 	private static Logic logicObj = Logic.getInstance();
+	History history = History.getInstance();
 
 	public JButton1() {
 		setText("HOME");
@@ -22,6 +24,7 @@ public class JButton1 extends JButton implements KeyListener {
 		int keyCode = e.getKeyCode();
 		if (keyCode == KeyEvent.VK_ENTER) {
 			logicObj.executeCommand("home");
+			history.removeLastCommandFromHistory();
 		}
 		if (keyCode == KeyEvent.VK_ESCAPE) {
 			System.exit(0);

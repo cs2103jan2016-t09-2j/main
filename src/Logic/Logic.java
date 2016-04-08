@@ -4,7 +4,6 @@ package Logic;
 import java.util.ArrayList;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 
 import ScheduleHacks.Task;
 import ScheduleHacks.OldCommand;
@@ -1220,10 +1219,13 @@ public class Logic {
 	 * minute.
 	 */
 	public void refresh() {
-		if (isHomeScreen) {
-			executeCommand("home");
-		} else {
-			executeCommand("view all");
+		if (!isSearchCommand) {
+			if (isHomeScreen) {
+				executeCommand("home");
+			} else {
+				executeCommand("view all");
+			}
+			historyObject.removeLastCommandFromHistory();
 		}
 	}
 

@@ -83,6 +83,7 @@ public class TopLeftPanel extends JPanel implements KeyListener {
 		textArea.addKeyListener(this);
 		textArea.setHighlighter(highlighter);
 		scrollPane = new JScrollPane(textArea);
+		//scrollPane.getVerticalScrollBar().setUnitIncrement(40);
 
 		StyleConstants.setFontFamily(header, "Comic Sans");
 		StyleConstants.setAlignment(header, StyleConstants.ALIGN_CENTER);
@@ -102,15 +103,6 @@ public class TopLeftPanel extends JPanel implements KeyListener {
 		// StyleConstants.setBold(exclaimMark, true);
 		StyleConstants.setForeground(exclaimMark, new Color(255, 0, 0));
 		add(scrollPane);
-		/*
-		 * implement scroll bar (not done yet)
-		 */
-		/*
-		 * JScrollBar vertical = scrollPane.getVerticalScrollBar(); InputMap im
-		 * = vertical.getInputMap(JComponent.WHEN_FOCUSED);
-		 * im.put(KeyStroke.getKeyStroke("DOWN"), "positiveUnitIncrement");
-		 * im.put(KeyStroke.getKeyStroke("UP"), "negativeUnitIncrement");
-		 */
 	}
 
 	/*
@@ -361,28 +353,13 @@ public class TopLeftPanel extends JPanel implements KeyListener {
 		if (keyCode == KeyEvent.VK_ESCAPE) {
 			System.exit(0);
 		}
-		try {
-			if (keyCode == KeyEvent.VK_DOWN) {
-				int pos = textArea.getCaretPosition();
-				textArea.setCaretPosition(pos + 20000);
-			}
-			if (keyCode == KeyEvent.VK_UP) {
-				int pos = textArea.getCaretPosition();
-				pos = pos - 20000;
-				if (pos >= 0) {
-					textArea.setCaretPosition(pos);
-				} else {
-					textArea.setCaretPosition(0);
-				}
-			}
-		} catch (Exception ff) {
-			// do nothing
-		}
 	}
 
 	@Override
 	public void keyReleased(KeyEvent e) {
-		// do nothing
+		if (e.getKeyCode() == KeyEvent.VK_UP) {
+
+		}
 	}
 
 	@Override

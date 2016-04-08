@@ -6,6 +6,7 @@ import java.awt.event.KeyListener;
 
 import javax.swing.JButton;
 import Logic.Logic;
+import ScheduleHacks.History;
 
 public class JButton3 extends JButton implements KeyListener {
 
@@ -21,6 +22,7 @@ public class JButton3 extends JButton implements KeyListener {
 		int keyCode = e.getKeyCode();
 		if (keyCode == KeyEvent.VK_ENTER) {
 			logicObj.executeCommand("help");
+			History.getInstance().removeLastCommandFromHistory();
 		}
 		if (keyCode == KeyEvent.VK_ESCAPE) {
 			System.exit(0);
