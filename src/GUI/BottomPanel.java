@@ -17,7 +17,7 @@ public class BottomPanel extends JPanel{
 	private static BottomRight bottomRight;
 
 	public BottomPanel(){
-		
+		 
 		/*
 		 * Set the size of the panel that contains BottomLeft panel and BottomRight panel
 		 */

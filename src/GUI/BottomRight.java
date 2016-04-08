@@ -30,7 +30,9 @@ public class BottomRight extends JPanel {
 		Dimension size = getPreferredSize();
 		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 		double height = screenSize.getHeight();
+		// double width = screenSize.getWidth();
 		size.height = (int) (height / 7.2);
+		// size.width = (int)(width/8);
 		setPreferredSize(size);
 		setBorder(null);
 
@@ -43,7 +45,7 @@ public class BottomRight extends JPanel {
 		gc.fill = GridBagConstraints.BOTH;
 
 		b1 = new JButton1();
-		 b2 = new JButton2();
+		b2 = new JButton2();
 		b3 = new JButton3();
 		b4 = new JButton4();
 
@@ -54,7 +56,7 @@ public class BottomRight extends JPanel {
 		gc.gridy = 0;
 		add(b1, gc);
 		gc.gridy = 1;
-		add(b2,gc);
+		add(b2, gc);
 		gc.gridy = 2;
 		add(b3, gc);
 		gc.gridy = 3;
@@ -64,15 +66,15 @@ public class BottomRight extends JPanel {
 	public static JButton getButton1() {
 		return b1;
 	}
-	
+
 	public static JButton getButton2() {
 		return b2;
 	}
-	
+
 	public static JButton getButton3() {
 		return b3;
 	}
-	
+
 	public static JButton getButton4() {
 		return b4;
 	}

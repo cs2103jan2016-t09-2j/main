@@ -66,8 +66,14 @@ public class Main_UI {
 	}
 }
 
+// @@author A0132778W
+
+/**
+ * This class regularly checks which component of the JFrame has the focus and
+ * places a border around it.
+ */
 class TabFlow extends TimerTask {
-	Border prevBorder = null;
+	Color prevColor = null;
 	JComponent prevFocus = null;
 	JComponent thisFocus = null;
 
@@ -76,11 +82,12 @@ class TabFlow extends TimerTask {
 		if (thisFocus != null) {
 			if (prevFocus == null || !thisFocus.equals(prevFocus)) {
 				if (prevFocus != null) {
-					prevFocus.setBorder(prevBorder);
+					prevFocus.setBackground(prevColor);
 				}
-				prevBorder = thisFocus.getBorder();
+				// keeps track of the previous component.
+				prevColor = thisFocus.getBackground();
 				prevFocus = thisFocus;
-				thisFocus.setBorder(BorderFactory.createLineBorder(Color.black));
+				thisFocus.setBackground(new Color(255, 255, 224));
 			}
 		}
 	}
