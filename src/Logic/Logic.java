@@ -873,7 +873,7 @@ public class Logic {
 				}
 			}
 
-			if (!isUndoOperation && newIndex >= 0) {
+			if (!isUndoOperation && newIndex >= 0 && !duplicated) {
 				ArrayList<Task> taskList = new ArrayList<Task>();
 				taskList.add(taskToEdit);
 				taskList.add(editedTask);
