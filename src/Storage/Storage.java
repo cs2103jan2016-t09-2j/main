@@ -184,7 +184,7 @@ public class Storage {
 		try {
 			myLogger.log(Level.INFO, LOG_WRITING_ARCHIVE_FILE);
 			writeToArchiveFile(floatingTasksComplete, scheduledTasksComplete);
-		} catch (Exception e1) {
+		} catch (Exception e) {
 			myLogger.log(Level.WARNING, LOG_ERROR_WRITE_ARCHIVE_FILE);
 		}
 		try {
