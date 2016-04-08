@@ -8,9 +8,9 @@ import org.apache.commons.io.FileUtils;
 import ScheduleHacks.LogFile;
 
 public class fileDirectory {
-
+	
 	static LogFile myLogger = new LogFile();
-
+	
 	private static final String LOG_SET_FILE_DIRECTORY = "File directory created";
 	private static final String LOG_DIRECTORY_EXISTS = "File directory already exists";
 	private static final String LOG_DIRECTORY_ERROR = "File directory can't be created";

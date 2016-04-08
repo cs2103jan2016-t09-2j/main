@@ -36,7 +36,7 @@ public class HelpGuide {
 	public ArrayList<String> getCollatedList() {
 		return collatedHelpList;
 	}
-
+	
 	public void collateGuide() {
 		addGuide();
 		deleteGuide();
