@@ -2,36 +2,25 @@
 
 package GUI;
 
-import java.awt.Color;
-import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Font;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
 import java.awt.GridLayout;
-import java.awt.Insets;
 import java.awt.Toolkit;
-import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.util.ArrayList;
 import java.util.TimerTask;
 import java.util.Timer;
 
-import javax.swing.AbstractAction;
-import javax.swing.BorderFactory;
-import javax.swing.JButton;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
-import javax.swing.UIManager;
 
 import Logic.Logic;
 import ScheduleHacks.History;
 import ScheduleHacks.Task;
 
-public class BottomBottom extends JPanel implements KeyListener {
+public class BottomBottom extends JPanel implements KeyListener{
 
 	private static final long serialVersionUID = 1L;
 
@@ -45,7 +34,7 @@ public class BottomBottom extends JPanel implements KeyListener {
 	History history = History.getInstance();
 	private static final Font INPUT_FONT = new Font("Courier New", Font.BOLD, 16);
 	private static Logic logicObj = Logic.getInstance();
-
+	
 	public BottomBottom() {
 		/*
 		 * Set the layout for the component in user input field
@@ -54,7 +43,7 @@ public class BottomBottom extends JPanel implements KeyListener {
 		commandField.setFont(INPUT_FONT);
 		add(commandField);
 		commandField.addKeyListener(this);
-
+		
 		/*
 		 * To load the stored data for the first display to user
 		 */
@@ -170,7 +159,7 @@ public class BottomBottom extends JPanel implements KeyListener {
 			}
 		}
 	}
-
+	
 	/*
 	 * Create the Help window to show to user
 	 */

@@ -12,7 +12,8 @@ public class JButton2 extends JButton implements KeyListener {
 
 	private static final long serialVersionUID = 1L;
 	private static Logic logicObj = Logic.getInstance();
-	{
+
+	JButton2() {
 		setText("ARCHIVE");
 		addKeyListener(this);
 	}

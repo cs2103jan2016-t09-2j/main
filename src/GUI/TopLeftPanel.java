@@ -5,6 +5,8 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.Toolkit;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.time.LocalDate;
@@ -78,6 +80,7 @@ public class TopLeftPanel extends JPanel implements KeyListener {
 		setLayout(new GridLayout());
 		textArea = new JTextPane();
 		textArea.setEditable(false);
+		textArea.addKeyListener(this);
 		textArea.setHighlighter(highlighter);
 		scrollPane = new JScrollPane(textArea);
 
@@ -353,8 +356,28 @@ public class TopLeftPanel extends JPanel implements KeyListener {
 	}
 
 	@Override
-	public void keyPressed(KeyEvent arg0) {
-		
+	public void keyPressed(KeyEvent e) {
+		int keyCode = e.getKeyCode();
+		if (keyCode == KeyEvent.VK_ESCAPE) {
+			System.exit(0);
+		}
+		try {
+			if (keyCode == KeyEvent.VK_DOWN) {
+				int pos = textArea.getCaretPosition();
+				textArea.setCaretPosition(pos + 20000);
+			}
+			if (keyCode == KeyEvent.VK_UP) {
+				int pos = textArea.getCaretPosition();
+				pos = pos - 20000;
+				if (pos >= 0) {
+					textArea.setCaretPosition(pos);
+				} else {
+					textArea.setCaretPosition(0);
+				}
+			}
+		} catch (Exception ff) {
+			// do nothing
+		}
 	}
 
 	@Override

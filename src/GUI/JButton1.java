@@ -3,7 +3,9 @@ package GUI;
 
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+
 import javax.swing.JButton;
+
 import Logic.Logic;
 
 public class JButton1 extends JButton implements KeyListener {
