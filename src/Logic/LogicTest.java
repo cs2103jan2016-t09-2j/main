@@ -2,6 +2,8 @@ package Logic;
 
 import static org.junit.Assert.*;
 
+import java.time.LocalDate;
+
 import org.junit.Test;
 
 import Parser.Command;
@@ -39,7 +41,7 @@ public class LogicTest {
 			assertEquals(null, executeTask2.getStartTime());
 			assertEquals("23:00", executeTask2.getEndTime().toString());
 			assertEquals(null, executeTask2.getStartDate());
-			assertEquals("2016-04-07", executeTask2.getEndDate().toString());
+			assertEquals(LocalDate.now(), executeTask2.getEndDate());
 			
 			String testString3 = "harry potter tmr 1600 1800";
 			Command existingCommand3 = CommandParser.getParsedCommand(testString3);
@@ -51,8 +53,8 @@ public class LogicTest {
 			assertEquals("harry potter", executeTask3.getDescription());
 			assertEquals("16:00", executeTask3.getStartTime().toString());
 			assertEquals("18:00", executeTask3.getEndTime().toString());
-			assertEquals("2016-04-08", executeTask3.getStartDate().toString());
-			assertEquals("2016-04-08", executeTask3.getEndDate().toString());
+			assertEquals(LocalDate.now().plusDays(1), executeTask3.getStartDate());
+			assertEquals(LocalDate.now().plusDays(1), executeTask3.getEndDate());
 			
 			String testString4 = "ron weasley tmr 1700 1830";
 			Command existingCommand4 = CommandParser.getParsedCommand(testString4);
@@ -64,8 +66,8 @@ public class LogicTest {
 			assertEquals("ron weasley", executeTask4.getDescription());
 			assertEquals("17:00", executeTask4.getStartTime().toString());
 			assertEquals("18:30", executeTask4.getEndTime().toString());
-			assertEquals("2016-04-08", executeTask4.getStartDate().toString());
-			assertEquals("2016-04-08", executeTask4.getEndDate().toString());
+			assertEquals(LocalDate.now().plusDays(1), executeTask4.getStartDate());
+			assertEquals(LocalDate.now().plusDays(1), executeTask4.getEndDate());
 			assertEquals("Task added successfully but new task is conflicting with harry potter", obj.getFeedBack());
 			
 			String testString5 = "harry potter tmr 1600 1800";
@@ -97,7 +99,7 @@ public class LogicTest {
 			Task executeTask8 = obj.getTaskDescription(existingCommand8);
 			obj.execute(typeCommand8,existingCommand8, executeTask8);
 			assertEquals("running", obj.getScheduledTasksToDo().get(0).getDescription());
-			assertEquals( "2016-04-07", obj.getScheduledTasksToDo().get(0).getEndDate().toString());
+			assertEquals(LocalDate.now(), obj.getScheduledTasksToDo().get(0).getEndDate());
 			assertEquals( "18:00", obj.getScheduledTasksToDo().get(0).getEndTime().toString());
 			
 			String testString9 = "e 10/04/2016 1900 2100";
