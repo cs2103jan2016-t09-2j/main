@@ -4,6 +4,7 @@ package Logic;
 import java.util.ArrayList;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 import ScheduleHacks.Task;
 import ScheduleHacks.OldCommand;
@@ -20,7 +21,7 @@ public class Logic {
 
 	private String feedBack;
 	private boolean isSearchCommand;
-	private boolean isHomeScreen;
+	private boolean isHomeScreen = true;
 	private boolean isHighlightOperation;
 
 	private static Logic logicObject = null;
@@ -179,6 +180,7 @@ public class Logic {
 			setScheduledTasksComplete(storage.getScheduledTasksComplete());
 			setScheduledTasksToDo(storage.getScheduledTasksToDo());
 			setScheduledTasksOverDue(storage.getScheduledTasksOverDue());
+			isHomeScreen = true;
 			for (int i = 0; i < scheduledTasksOverDue.size(); i++) {
 				addTask(scheduledTasksOverDue.remove(i), true, 0);
 			}

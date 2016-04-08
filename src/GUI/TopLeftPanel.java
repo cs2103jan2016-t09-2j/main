@@ -156,7 +156,6 @@ public class TopLeftPanel extends JPanel {
 			int end = document.getLength();
 			count = 0;
 			for (Task task : List) {
-				// System.out.println(task.getDescription());
 				String string = task.getDescription();
 				document.insertString(document.getLength(), indexList.get(count) + ". ", taskInfo);
 				if (task.isComplete()) {

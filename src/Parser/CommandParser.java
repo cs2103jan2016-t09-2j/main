@@ -91,6 +91,7 @@ public class CommandParser {
 				// do nothing
 				break;
 			}
+			newTask.setDescription(parseDescription(newTask.getDescription()));
 			if (command.getCommandType().equals(COMMAND_TYPE.HELP)
 					|| (taskStatement != null && !taskStatement.isEmpty())) {
 				return newTask;
@@ -559,6 +560,33 @@ public class CommandParser {
 		setTimes(objDateTime.getTimeList(), newTask);
 
 		return newTask;
+	}
+
+	public static String parseDescription(String description) {
+		if (description != null && !description.isEmpty()) {
+			String parsedDescription = ParserConstants.STRING_EMPTY;
+			String[] words = description.split(ParserConstants.STRING_WHITESPACE);
+			for (String word : words) {
+				if (Character.isLetterOrDigit(word.charAt(ParserConstants.FIRST_INDEX))) {
+					parsedDescription += ParserConstants.STRING_WHITESPACE + word;
+					continue;
+				}
+				parsedDescription += ParserConstants.STRING_WHITESPACE + getDescriptionSansSpecialChars(word);
+			}
+			return cleanupExtraWhitespace(parsedDescription);
+		}
+		return ParserConstants.STRING_EMPTY;
+	}
+
+	public static String getDescriptionSansSpecialChars(String description) {
+		String tempWordStore = description.substring(ParserConstants.FIRST_INDEX + 1);
+		DateParser dateObj = new DateParser(tempWordStore);
+		dateObj.findDates();
+		if (dateObj.getDateList() != null) {
+			return tempWordStore;
+		} else {
+			return description;
+		}
 	}
 
 	/**
