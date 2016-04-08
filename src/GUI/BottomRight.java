@@ -54,7 +54,7 @@ public class BottomRight extends JPanel {
 		gc.gridy = 0;
 		add(b1, gc);
 		gc.gridy = 1;
-		 add(b2,gc);
+		add(b2,gc);
 		gc.gridy = 2;
 		add(b3, gc);
 		gc.gridy = 3;

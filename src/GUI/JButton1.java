@@ -1,18 +1,10 @@
 //@@author A0124635J
-package GUI;
+package GUI; 
 
-import java.awt.Color;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.util.ArrayList;
-import java.util.TimerTask;
-
-import javax.swing.BorderFactory;
 import javax.swing.JButton;
-import javax.swing.border.Border;
-
 import Logic.Logic;
-import ScheduleHacks.Task;
 
 public class JButton1 extends JButton implements KeyListener {
 
