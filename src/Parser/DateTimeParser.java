@@ -64,7 +64,21 @@ public class DateTimeParser {
 		if (aListSize > INVALID_SIZE) {
 			alist = createDateTimeList(aListSize);
 			Collections.sort(alist);
+			removeDuplicates(alist);
 			separateDateAndTime(alist);
+		}
+	}
+
+	/**
+	 * This method makes sure that there are no duplicate copies of any date and
+	 * time; so as to avoid unfavorable results.
+	 */
+	public void removeDuplicates(ArrayList<LocalDateTime> aList) {
+		for (int index = 0; index < aList.size() - 1; index++) {
+			if (aList.get(index).isEqual(aList.get(index + 1))) {
+				aList.remove(index);
+				index--;
+			}
 		}
 	}
 

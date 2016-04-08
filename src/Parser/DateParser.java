@@ -135,7 +135,7 @@ public class DateParser {
 					.cleanupExtraWhitespace(taskDetails.replaceFirst(textToRemove, ParserConstants.STRING_WHITESPACE));
 		} else {
 			taskDetails = CommandParser.cleanupExtraWhitespace(taskDetails
-					.replace(ParserConstants.STRING_WHITESPACE + textToRemove, ParserConstants.STRING_WHITESPACE));
+					.replaceFirst(ParserConstants.STRING_WHITESPACE + textToRemove, ParserConstants.STRING_WHITESPACE));
 		}
 	}
 
