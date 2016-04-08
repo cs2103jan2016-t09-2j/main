@@ -167,6 +167,8 @@ public class TopRightPanel extends JPanel {
 			textArea.setStyledDocument(document);
 			if (positionToScroll >= 0) {
 				textArea.setCaretPosition(positionToScroll);
+			} else {
+				textArea.setCaretPosition(0);
 			}
 		} catch (BadLocationException e) {
 			// do nothing

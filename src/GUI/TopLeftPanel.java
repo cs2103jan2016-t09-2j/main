@@ -5,12 +5,15 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.Toolkit;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
+import javax.swing.ActionMap;
 import javax.swing.BorderFactory;
 import javax.swing.InputMap;
 import javax.swing.JComponent;
@@ -31,7 +34,7 @@ import javax.swing.text.DefaultHighlighter.DefaultHighlightPainter;
 
 import ScheduleHacks.Task;
 
-public class TopLeftPanel extends JPanel {
+public class TopLeftPanel extends JPanel implements KeyListener {
 
 	private static final long serialVersionUID = 1L;
 	private static int count = 1;
@@ -57,9 +60,10 @@ public class TopLeftPanel extends JPanel {
 	private static Logic logicObj = Logic.getInstance();
 
 	public TopLeftPanel() {
-		
+
 		/*
-		 * Set the size of the panel that contains the display of Overdue and Schedule Task
+		 * Set the size of the panel that contains the display of Overdue and
+		 * Schedule Task
 		 */
 		Dimension size = getPreferredSize();
 		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
@@ -94,16 +98,16 @@ public class TopLeftPanel extends JPanel {
 		StyleConstants.setFontSize(exclaimMark, 12);
 		// StyleConstants.setBold(exclaimMark, true);
 		StyleConstants.setForeground(exclaimMark, new Color(255, 0, 0));
-
 		add(scrollPane);
-		
 		/*
 		 * implement scroll bar (not done yet)
 		 */
-		JScrollBar vertical = scrollPane.getVerticalScrollBar();
-		InputMap im = vertical.getInputMap(JComponent.WHEN_FOCUSED);
-		im.put(KeyStroke.getKeyStroke("DOWN"), "positiveUnitIncrement");
-		im.put(KeyStroke.getKeyStroke("UP"), "negativeUnitIncrement");
+		/*
+		 * JScrollBar vertical = scrollPane.getVerticalScrollBar(); InputMap im
+		 * = vertical.getInputMap(JComponent.WHEN_FOCUSED);
+		 * im.put(KeyStroke.getKeyStroke("DOWN"), "positiveUnitIncrement");
+		 * im.put(KeyStroke.getKeyStroke("UP"), "negativeUnitIncrement");
+		 */
 	}
 
 	/*
@@ -247,6 +251,8 @@ public class TopLeftPanel extends JPanel {
 			textArea.setStyledDocument(document);
 			if (positionToScroll >= 0) {
 				textArea.setCaretPosition(positionToScroll);
+			} else {
+				textArea.setCaretPosition(0);
 			}
 		} catch (BadLocationException e) {
 			// do nothing
@@ -344,5 +350,20 @@ public class TopLeftPanel extends JPanel {
 		} catch (BadLocationException e) {
 			// do nothing
 		}
+	}
+
+	@Override
+	public void keyPressed(KeyEvent arg0) {
+		
+	}
+
+	@Override
+	public void keyReleased(KeyEvent e) {
+		// do nothing
+	}
+
+	@Override
+	public void keyTyped(KeyEvent e) {
+		// do nothing
 	}
 }

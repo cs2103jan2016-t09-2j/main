@@ -19,8 +19,6 @@ import ScheduleHacks.Task;
  * 
  * This is mostly a facade class which in highly dependant on the DateParser,
  * TimeParser and IndexParser.
- * 
- * @author Snigdha Singhania
  */
 
 public class CommandParser {
@@ -564,12 +562,22 @@ public class CommandParser {
 		return newTask;
 	}
 
+	/**
+	 * This method is used to get rid of unnecessary special characters in the
+	 * task description. Only currency symbols before dates and times are
+	 * allowed.
+	 * 
+	 * @param description
+	 * @return task description after removing all special characters.
+	 */
 	public static String parseDescription(String description) {
 		if (description != null && !description.isEmpty()) {
 			String parsedDescription = ParserConstants.STRING_EMPTY;
 			String[] words = description.split(ParserConstants.STRING_WHITESPACE);
 			for (String word : words) {
-				if (Character.isLetterOrDigit(word.charAt(ParserConstants.FIRST_INDEX))) {
+				char firstChar = word.charAt(ParserConstants.FIRST_INDEX);
+				if (Character.isLetterOrDigit(firstChar)
+						|| (Character.getType(firstChar) == Character.CURRENCY_SYMBOL)) {
 					parsedDescription += ParserConstants.STRING_WHITESPACE + word;
 					continue;
 				}
@@ -584,7 +592,9 @@ public class CommandParser {
 		String tempWordStore = description.substring(ParserConstants.FIRST_INDEX + 1);
 		DateParser dateObj = new DateParser(tempWordStore);
 		dateObj.findDates();
-		if (dateObj.getDateList() != null) {
+		TimeParser timeObj = new TimeParser(tempWordStore);
+		timeObj.findTimes();
+		if (dateObj.getDateList() != null || timeObj.getTimeList() != null) {
 			return tempWordStore;
 		} else {
 			return description;
