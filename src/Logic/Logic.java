@@ -404,7 +404,7 @@ public class Logic {
 			updateRecentIndexOfTask();
 		}
 
-		if (!isUndoOperation && isHighlightOperation) {
+		if (!isUndoOperation && indexOfTask >= 0) {
 			ArrayList<Task> taskList = new ArrayList<Task>();
 			ArrayList<Integer> indexList = new ArrayList<Integer>();
 			taskList.add(executeTask);
@@ -873,7 +873,7 @@ public class Logic {
 				}
 			}
 
-			if (!isUndoOperation && isHighlightOperation) {
+			if (!isUndoOperation && newIndex >= 0) {
 				ArrayList<Task> taskList = new ArrayList<Task>();
 				taskList.add(taskToEdit);
 				taskList.add(editedTask);
