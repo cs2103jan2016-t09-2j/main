@@ -12,27 +12,25 @@ public class JButton4 extends JButton implements KeyListener{
 	private static final long serialVersionUID = 1L;
 	private static Logic logicObj = Logic.getInstance();
 
-	public JButton4(){
-		setText("HOME");
+	private static final String EXIT_LABEL = "EXIT";
+
+	public JButton4() {
+		setText(EXIT_LABEL);
 		addKeyListener(this);
 	}
+
 	public void keyPressed(KeyEvent e) {
 		int keyCode = e.getKeyCode();
-		if(keyCode == KeyEvent.VK_ENTER){
-			logicObj.executeCommand("home");
+		if (keyCode == KeyEvent.VK_ENTER) {
+			logicObj.executeCommand(EXIT_LABEL);
 		}
-
 	}
 
 	public void keyReleased(KeyEvent e) {
-		/* 
-		 * Not being used
-		 */
+		// unused
 	}
 
 	public void keyTyped(KeyEvent e) {
-		/* 
-		 * Not being used
-		 */
+		// unused
 	}
 }

@@ -2,6 +2,7 @@
 
 package GUI;
 
+import java.awt.Color;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -18,6 +19,7 @@ import java.util.TimerTask;
 import java.util.Timer;
 
 import javax.swing.AbstractAction;
+import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -84,7 +86,7 @@ public class BottomBottom extends JPanel implements KeyListener {
 		Help.setSize(width1, height1);
 		Help.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
 		Help.setVisible(true);
-		Help.setResizable(false);
+		Help.setResizable(false); 
 	}
 
 	public void keyReleased(KeyEvent arg0) {

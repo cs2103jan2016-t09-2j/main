@@ -6,32 +6,29 @@ import java.awt.event.KeyListener;
 
 import javax.swing.JButton;
 
-public class JButton2 extends JButton implements KeyListener{
-	
-	private static final long serialVersionUID = 1L;
+import Logic.Logic;
 
-	public JButton2(){
-		setText("UPCOMING TASKS");
+public class JButton2 extends JButton implements KeyListener {
+
+	private static final long serialVersionUID = 1L;
+	private static Logic logicObj = Logic.getInstance();
+	{
+		setText("ARCHIVE");
 		addKeyListener(this);
 	}
 
 	public void keyPressed(KeyEvent e) {
 		int keyCode = e.getKeyCode();
-		if(keyCode == KeyEvent.VK_ENTER){
-			System.out.println("Enter there");
+		if (keyCode == KeyEvent.VK_ENTER) {
+			logicObj.executeCommand("view archive");
 		}
-		
 	}
 
 	public void keyReleased(KeyEvent e) {
-		/* 
-		 * Not being used
-		 */
+		// unused
 	}
 
 	public void keyTyped(KeyEvent e) {
-		/* 
-		 * Not being used
-		 */
+		// unused
 	}
 }

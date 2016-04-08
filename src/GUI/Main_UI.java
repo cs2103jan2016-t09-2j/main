@@ -4,13 +4,16 @@ package GUI;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Toolkit;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
+import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 
-public class Main_UI {
+public class Main_UI implements KeyListener {
 
 	public static void main(String[] args) {
 
@@ -41,8 +44,20 @@ public class Main_UI {
 					public void windowGainedFocus(WindowEvent e) {
 						BottomBottom.getCommandField().requestFocusInWindow();
 					}
-				});
+				}); 
 			}
 		});
+	}
+
+	public void keyPressed(KeyEvent e) {
+		int keyCode = e.getKeyCode();
+	}
+
+	public void keyReleased(KeyEvent e) {
+		// Unused
+	}
+
+	public void keyTyped(KeyEvent e) {
+		// Unused
 	}
 }
