@@ -1,5 +1,5 @@
 //@@author A0124635J
-package GUI; 
+package GUI;
 
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
@@ -20,6 +20,9 @@ public class JButton1 extends JButton implements KeyListener {
 		int keyCode = e.getKeyCode();
 		if (keyCode == KeyEvent.VK_ENTER) {
 			logicObj.executeCommand("home");
+		}
+		if (keyCode == KeyEvent.VK_ESCAPE) {
+			System.exit(0);
 		}
 	}
 

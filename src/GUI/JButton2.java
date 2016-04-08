@@ -22,6 +22,9 @@ public class JButton2 extends JButton implements KeyListener {
 		if (keyCode == KeyEvent.VK_ENTER) {
 			logicObj.executeCommand("view archive");
 		}
+		if (keyCode == KeyEvent.VK_ESCAPE) {
+			System.exit(0);
+		}
 	}
 
 	public void keyReleased(KeyEvent e) {

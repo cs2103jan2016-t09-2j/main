@@ -4,18 +4,31 @@ package GUI;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Toolkit;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.util.ArrayList;
+import java.util.Timer;
+import java.util.TimerTask;
 
+import javax.swing.BorderFactory;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
+import javax.swing.border.Border;
 
-public class Main_UI implements KeyListener {
+import Logic.Logic;
+import ScheduleHacks.Task;
+
+public class Main_UI {
+
+	static JFrame newFrame = new MainFrame("Schedule Hacks");
 
 	public static void main(String[] args) {
+
+		long period = 100;
+		// And From your main() method or any other method
+		Timer timer = new Timer();
+		timer.schedule(new TabFlow(), 0, period);
 
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
@@ -23,7 +36,6 @@ public class Main_UI implements KeyListener {
 				/*
 				 * Create the main window of the User Interface
 				 */
-				JFrame newFrame = new MainFrame("Schedule Hacks");
 				Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 				double width = screenSize.getWidth();
 				double height = screenSize.getHeight();
@@ -44,20 +56,32 @@ public class Main_UI implements KeyListener {
 					public void windowGainedFocus(WindowEvent e) {
 						BottomBottom.getCommandField().requestFocusInWindow();
 					}
-				}); 
+				});
 			}
 		});
 	}
 
-	public void keyPressed(KeyEvent e) {
-		int keyCode = e.getKeyCode();
+	public static JFrame getFrame() {
+		return newFrame;
 	}
+}
 
-	public void keyReleased(KeyEvent e) {
-		// Unused
-	}
+class TabFlow extends TimerTask {
+	Border prevBorder = null;
+	JComponent prevFocus = null;
+	JComponent thisFocus = null;
 
-	public void keyTyped(KeyEvent e) {
-		// Unused
+	public void run() {
+		thisFocus = (JComponent) Main_UI.getFrame().getFocusOwner();
+		if (thisFocus != null) {
+			if (prevFocus == null || !thisFocus.equals(prevFocus)) {
+				if (prevFocus != null) {
+					prevFocus.setBorder(prevBorder);
+				}
+				prevBorder = thisFocus.getBorder();
+				prevFocus = thisFocus;
+				thisFocus.setBorder(BorderFactory.createLineBorder(Color.black));
+			}
+		}
 	}
 }

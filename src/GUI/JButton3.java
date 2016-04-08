@@ -22,6 +22,9 @@ public class JButton3 extends JButton implements KeyListener {
 		if (keyCode == KeyEvent.VK_ENTER) {
 			logicObj.executeCommand("help");
 		}
+		if (keyCode == KeyEvent.VK_ESCAPE) {
+			System.exit(0);
+		}
 	}
 
 	public void keyReleased(KeyEvent e) {

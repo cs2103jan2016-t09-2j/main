@@ -7,8 +7,8 @@ import java.awt.event.KeyListener;
 import javax.swing.JButton;
 import Logic.Logic;
 
-public class JButton4 extends JButton implements KeyListener{
-	
+public class JButton4 extends JButton implements KeyListener {
+
 	private static final long serialVersionUID = 1L;
 	private static Logic logicObj = Logic.getInstance();
 
@@ -21,8 +21,13 @@ public class JButton4 extends JButton implements KeyListener{
 
 	public void keyPressed(KeyEvent e) {
 		int keyCode = e.getKeyCode();
+
 		if (keyCode == KeyEvent.VK_ENTER) {
 			logicObj.executeCommand(EXIT_LABEL);
+		}
+
+		if (keyCode == KeyEvent.VK_ESCAPE) {
+			System.exit(0);
 		}
 	}
 
