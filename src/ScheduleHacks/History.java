@@ -8,7 +8,7 @@ import java.util.Deque;
 import ScheduleHacks.OldCommand.COMMAND_TYPE;
 
 public class History {
-	
+
 	/* Singleton */
 	private static History object;
 
@@ -16,19 +16,19 @@ public class History {
 	Deque<OldCommand> redoDeque;
 
 	ArrayList<String> commandHistory;
-	private static int indexOfCommand;
-	
+	private static int indexOfCommand = 0;
+
 	private History() {
 		undoDeque = new ArrayDeque<OldCommand>();
 		redoDeque = new ArrayDeque<OldCommand>();
 		commandHistory = new ArrayList<String>();
 	}
-	
+
 	/*
-     * This method is the getInstance method for the singleton pattern of
-     * History. It initializes a new History if History is null, else returns the
-     * current instance of History.
-     */
+	 * This method is the getInstance method for the singleton pattern of
+	 * History. It initializes a new History if History is null, else returns
+	 * the current instance of History.
+	 */
 	public static History getInstance() {
 		if (object == null) {
 			object = new History();
@@ -99,22 +99,30 @@ public class History {
 		return executeCommand;
 	}
 
-	/*This method stores the history of commands that users type into the user interface*/
+	/*
+	 * This method stores the history of commands that users type into the user
+	 * interface
+	 */
 	public void addToCommandHistory(String command) {
 		commandHistory.add(new String(command));
 	}
-	
+
 	public void removeLastCommandFromHistory() {
-		commandHistory.remove(indexOfCommand-1);
+		if (indexOfCommand > 0) {
+			commandHistory.remove(indexOfCommand - 1);
+		}
 	}
-	
-	/*Subsequent methods retrieves the index of the tasks
-	  contained in the command history ArrayList*/
+
+	/*
+	 * Subsequent methods retrieves the index of the tasks contained in the
+	 * command history ArrayList
+	 */
 	public String moveUpCommandHistory() {
-		if (indexOfCommand <= 0) {
+		if (indexOfCommand <= 0 || commandHistory == null || commandHistory.isEmpty()) {
 			indexOfCommand = -1;
 			return null;
 		} else {
+			System.out.println(indexOfCommand);
 			indexOfCommand--;
 			return commandHistory.get(indexOfCommand);
 		}
