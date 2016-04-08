@@ -88,13 +88,9 @@ public class ParserConstants {
 	static final String DATE_FORMAT_DAY_SPACE_MONTH_SHORT_SPACE_YEAR_SHORT = "d MMM uu";
 
 	static final String DATE_FORMAT_MONTH_LONG_DAY_SPACE_YEAR_LONG = "MMMMd uuuu";
-	static final String DATE_FORMAT_MONTH_LONG_DAY_SPACE_YEAR_SHORT = "MMMMd uu";
 	static final String DATE_FORMAT_MONTH_LONG_SPACE_DAY_YEAR_LONG = "MMMM d uuuu";
-	static final String DATE_FORMAT_MONTH_LONG_SPACE_DAY_YEAR_SHORT = "MMMM d uu";
 	static final String DATE_FORMAT_MONTH_SHORT_DAY_SPACE_YEAR_LONG = "MMMd uuuu";
-	static final String DATE_FORMAT_MONTH_SHORT_DAY_SPACE_YEAR_SHORT = "MMMd uu";
 	static final String DATE_FORMAT_MONTH_SHORT_SPACE_DAY_SPACE_YEAR_LONG = "MMM d uuuu";
-	static final String DATE_FORMAT_MONTH_SHORT_SPACE_DAY_SPACE_YEAR_SHORT = "MMM d uu";
 
 	static final String DATE_FORMAT_DAY_MONTH_LONG_NOSPACE = "dMMMM";
 	static final String DATE_FORMAT_DAY_MONTH_SHORT_NOSPACE = "dMMM";
