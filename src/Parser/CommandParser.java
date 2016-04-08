@@ -152,7 +152,7 @@ public class CommandParser {
 		dateParser.findDates();
 		ArrayList<LocalDate> dateList = dateParser.getDateList();
 
-		TimeParser timeParser = new TimeParser(dateParser.getTaskDetails());
+		TimeParser timeParser = new TimeParser(dateParser.getTaskDetails(), dateList);
 		timeParser.findTimes();
 		ArrayList<LocalTime> timeList = timeParser.getTimeList();
 
@@ -341,7 +341,7 @@ public class CommandParser {
 		dateParser.findDates();
 		ArrayList<LocalDate> dateList = dateParser.getDateList();
 
-		TimeParser timeParser = new TimeParser(dateParser.getTaskDetails());
+		TimeParser timeParser = new TimeParser(dateParser.getTaskDetails(), dateList);
 		timeParser.findTimes();
 		ArrayList<LocalTime> timeList = timeParser.getTimeList();
 		taskStatement = timeParser.getTaskDetails();

@@ -23,8 +23,6 @@ import Parser.ParserConstants;
  * 
  * Accepted Time Formats -> HH:MM HH.MM HHMM
  * 
- * 
- * @author Snigdha Singhania
  */
 public class TimeParser {
 
@@ -32,6 +30,8 @@ public class TimeParser {
 	private String taskDetails;
 	private ArrayList<LocalTime> timeList;
 	private ArrayList<LocalDate> dateList;
+
+	private boolean hasRangeKeyword = false;
 
 	/**************** CONSTRUCTORS *********************/
 	// Default Constructor
@@ -42,6 +42,10 @@ public class TimeParser {
 	// Parameterized Constructor
 	TimeParser(String newTaskDetails) {
 		this(newTaskDetails, new ArrayList<LocalTime>(), new ArrayList<LocalDate>());
+	}
+
+	TimeParser(String newTaskDetails, ArrayList<LocalDate> newDateList) {
+		this(newTaskDetails, new ArrayList<LocalTime>(), newDateList);
 	}
 
 	TimeParser(String newTaskDetails, ArrayList<LocalTime> newTimeList, ArrayList<LocalDate> newDateList) {
@@ -69,7 +73,7 @@ public class TimeParser {
 	}
 
 	public ArrayList<LocalTime> getTimeList() {
-		if (timeList.isEmpty()) {
+		if (timeList == null || timeList.isEmpty()) {
 			return null;
 		}
 		return this.timeList;
@@ -116,6 +120,7 @@ public class TimeParser {
 				// do nothing
 			}
 		}
+		arrangeTimeList();
 	}
 
 	/**
@@ -307,6 +312,18 @@ public class TimeParser {
 		return false;
 	}
 
+	/**
+	 * 
+	 * @param parsedTime
+	 */
+	public void arrangeTimeList() {
+		if (timeList != null && !timeList.isEmpty() && dateList!= null) {
+			if (timeList.size() < dateList.size() && hasRangeKeyword) {
+				timeList.add(ParserConstants.FIRST_INDEX, LocalTime.MAX);
+			}
+		}
+	}
+
 	public void addValidTimeToList(LocalTime parsedTime) {
 		timeList.add(parsedTime);
 	}
@@ -320,16 +337,35 @@ public class TimeParser {
 	}
 
 	/**
+	 * This method checks if the given keyword is a range keyword and responds
+	 * to the second time in the list.
+	 * 
+	 * @param keyword
+	 * @return return true if keyword equals "to" or "-"; false otherwise.
+	 */
+	public boolean isValidRangeKeyWord(String keyword) {
+		if (isRangeKeyWord(keyword)) {
+			if (timeList.size() > ParserConstants.MIN_SIZE) {
+				return true;
+			}
+			hasRangeKeyword = true;
+		}
+		return false;
+		/*return (keyword.equalsIgnoreCase(ParserConstants.STRING_HYPHEN)
+				|| keyword.equalsIgnoreCase(ParserConstants.STRING_TO)) && (timeList.size() > ParserConstants.MIN_SIZE) ;*/
+	}
+
+	/**
 	 * "to" and hyphen "-" are the range keywords. This method checks if keyword
 	 * is a valid range keyword.
 	 * 
 	 * @param keyword
 	 * @return return true if keyword equals "to" or "-"; false otherwise.
 	 */
-	public boolean isValidRangeKeyWord(String keyword) {
+	public boolean isRangeKeyWord(String keyword) {
 		keyword = keyword.trim();
 		return (keyword.equalsIgnoreCase(ParserConstants.STRING_HYPHEN)
-				|| keyword.equalsIgnoreCase(ParserConstants.STRING_TO)) && (timeList.size() > ParserConstants.MIN_SIZE);
+				|| keyword.equalsIgnoreCase(ParserConstants.STRING_TO));
 	}
 
 	/**

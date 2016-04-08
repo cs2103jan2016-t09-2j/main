@@ -135,10 +135,7 @@ public class ParserConstants {
 	static final String TIME_FORMAT_12HOUR_AMPM_WITH_SPACE = "h a";
 	static final String TIME_FORMAT_24HOUR_COLON = "H:mm";
 	static final String TIME_FORMAT_24HOUR_PERIOD = "H.mm";
-	static final String TIME_FORMAT_24HOUR_MIN = "Hmm";
-
-	static final String TIME_FORMAT_12HOUR_MIN = "hmm";
-	static final String TIME_FORMAT_12HOUR = "h";
+	static final String TIME_FORMAT_24HOUR_MIN = "HHmm";
 
 	static final String[] TIME_DURATION = { "mins", "min", "minutes", "minute", "hr", "hrs", "hours", "hour" };
 	static final int LAST_INDEX_OF_MIN = 3;

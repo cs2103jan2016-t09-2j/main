@@ -122,7 +122,6 @@ public class History {
 			indexOfCommand = -1;
 			return null;
 		} else {
-			System.out.println(indexOfCommand);
 			indexOfCommand--;
 			return commandHistory.get(indexOfCommand);
 		}

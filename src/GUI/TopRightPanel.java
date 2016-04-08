@@ -43,7 +43,7 @@ public class TopRightPanel extends JPanel {
 	private static DefaultHighlightPainter painter = new DefaultHighlightPainter(Color.YELLOW);
 
 	public TopRightPanel() {
-		
+
 		/*
 		 * Set the size of the panel that contains the display of Trivial Task
 		 */
@@ -77,7 +77,7 @@ public class TopRightPanel extends JPanel {
 		StyleConstants.setFontSize(checkMark, 16);
 		StyleConstants.setBold(checkMark, true);
 		StyleConstants.setForeground(checkMark, new Color(0, 153, 0));
-		
+
 		add(scrollPane);
 		logicObj.firstRun();
 	}
@@ -179,32 +179,35 @@ public class TopRightPanel extends JPanel {
 	 * Clear all the content in display screen
 	 */
 	public static void clearText() {
-		textArea.setText(null);
+		if (textArea != null)
+			textArea.setText(null);
 	}
 
 	/*
 	 * Set first display screen when the program start
 	 */
 	public static void firstSet(ArrayList<Task> firstList, ArrayList<Integer> indexList) {
-		clearText();
-		count = 0;
-		document = textArea.getStyledDocument();
-		try {
-			document.insertString(document.getLength(), FLOATING_HEADER + "\n\n", header);
-			document.setParagraphAttributes(0, document.getLength(), header, false);
-			int end = document.getLength();
-			if (firstList != null) {
-				for (Task task : firstList) {
-					String string = task.getDescription();
-					document.insertString(document.getLength(), indexList.get(count) + ". ", taskInfo);
-					document.insertString(document.getLength(), string + "\n", taskInfo);
-					count++;
+		if (textArea != null) {
+			clearText();
+			count = 0;
+			document = textArea.getStyledDocument();
+			try {
+				document.insertString(document.getLength(), FLOATING_HEADER + "\n\n", header);
+				document.setParagraphAttributes(0, document.getLength(), header, false);
+				int end = document.getLength();
+				if (firstList != null) {
+					for (Task task : firstList) {
+						String string = task.getDescription();
+						document.insertString(document.getLength(), indexList.get(count) + ". ", taskInfo);
+						document.insertString(document.getLength(), string + "\n", taskInfo);
+						count++;
+					}
 				}
+				document.setParagraphAttributes(end, document.getLength(), taskInfo, true);
+				textArea.setStyledDocument(document);
+			} catch (BadLocationException e) {
+				// do nothing
 			}
-			document.setParagraphAttributes(end, document.getLength(), taskInfo, true);
-			textArea.setStyledDocument(document);
-		} catch (BadLocationException e) {
-			// do nothing
 		}
 	}
 }

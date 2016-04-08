@@ -83,7 +83,7 @@ public class TopLeftPanel extends JPanel implements KeyListener {
 		textArea.addKeyListener(this);
 		textArea.setHighlighter(highlighter);
 		scrollPane = new JScrollPane(textArea);
-		//scrollPane.getVerticalScrollBar().setUnitIncrement(40);
+		// scrollPane.getVerticalScrollBar().setUnitIncrement(40);
 
 		StyleConstants.setFontFamily(header, "Comic Sans");
 		StyleConstants.setAlignment(header, StyleConstants.ALIGN_CENTER);
@@ -258,34 +258,79 @@ public class TopLeftPanel extends JPanel implements KeyListener {
 	 * Set first display screen when the program start
 	 */
 	public static void firstSet(ArrayList<Task> firstList, ArrayList<Integer> indexList) {
-		try {
-			clearText();
-			document = textArea.getStyledDocument();
-			LocalDate today = LocalDate.now();
-			count = 0;
-			int end;
-			document.insertString(document.getLength(), "DUE TODAY \n", header);
-			document.insertString(document.getLength(), "\n", header);
-			document.setParagraphAttributes(0, document.getLength(), header, true);
-			end = document.getLength();
-			if (firstList != null) {
-				for (Task task : firstList) {
-					if (!task.getEndDate().isAfter(today)) {
+		if (textArea != null) {
+			try {
+				clearText();
+				document = textArea.getStyledDocument();
+				LocalDate today = LocalDate.now();
+				count = 0;
+				int end;
+				document.insertString(document.getLength(), "DUE TODAY \n", header);
+				document.insertString(document.getLength(), "\n", header);
+				document.setParagraphAttributes(0, document.getLength(), header, true);
+				end = document.getLength();
+				if (firstList != null) {
+					for (Task task : firstList) {
+						if (!task.getEndDate().isAfter(today)) {
+							String string = task.getDescription();
+							document.insertString(document.getLength(), indexList.get(count) + ". ", taskInfo);
+							if (LocalDateTime.of(task.getEndDate(), task.getEndTime()).isBefore(LocalDateTime.now())) {
+								document.insertString(document.getLength(), EXCLAMATION_MARK, exclaimMark);
+							}
+							document.insertString(document.getLength(), string + "\n", taskInfo);
+							if (task.getStartDate() != null && task.getStartTime() != null) {
+								document.insertString(document.getLength(), "\t From ", taskInfo);
+								if (!task.getStartTime().equals(LocalTime.MAX)) {
+									document.insertString(document.getLength(), task.getStartTime().toString() + ", ",
+											taskInfo);
+								}
+								document.insertString(document.getLength(), task.getStartDate().format(dateFormat),
+										taskInfo);
+								document.insertString(document.getLength(), "\n", taskInfo);
+								document.insertString(document.getLength(), "\t To ", taskInfo);
+							} else {
+								document.insertString(document.getLength(), "\t By ", taskInfo);
+							}
+							if (!task.getEndTime().equals(LocalTime.MAX)) {
+								document.insertString(document.getLength(), task.getEndTime().toString() + ", ",
+										taskInfo);
+							}
+							document.insertString(document.getLength(), task.getEndDate().format(dateFormat), taskInfo);
+							document.insertString(document.getLength(), "\n", taskInfo);
+							count++;
+						} else {
+							break;
+						}
+					}
+				}
+				document.setParagraphAttributes(end, document.getLength(), taskInfo, true);
+				document.insertString(document.getLength(), "\n", taskInfo);
+				end = document.getLength();
+
+				document.insertString(document.getLength(), "DUE TOMORROW" + "\n", header);
+				document.insertString(document.getLength(), "\n", header);
+				document.setParagraphAttributes(end, document.getLength(), header, true);
+				end = document.getLength();
+				if (firstList != null) {
+					for (int index = count; index < firstList.size(); index++) {
+						Task task = firstList.get(index);
 						String string = task.getDescription();
 						document.insertString(document.getLength(), indexList.get(count) + ". ", taskInfo);
-						if (LocalDateTime.of(task.getEndDate(), task.getEndTime()).isBefore(LocalDateTime.now())) {
-							document.insertString(document.getLength(), EXCLAMATION_MARK, exclaimMark);
+						if (task.isComplete()) {
+							document.insertString(document.getLength(), CHECK_MARK, checkMark);
 						}
 						document.insertString(document.getLength(), string + "\n", taskInfo);
+						// document.insertString(document.getLength(),
+						// indexList.get(count) + ". " + string + "\n",
+						// taskInfo);
 						if (task.getStartDate() != null && task.getStartTime() != null) {
 							document.insertString(document.getLength(), "\t From ", taskInfo);
 							if (!task.getStartTime().equals(LocalTime.MAX)) {
 								document.insertString(document.getLength(), task.getStartTime().toString() + ", ",
 										taskInfo);
 							}
-							document.insertString(document.getLength(), task.getStartDate().format(dateFormat),
+							document.insertString(document.getLength(), task.getStartDate().format(dateFormat) + "\n",
 									taskInfo);
-							document.insertString(document.getLength(), "\n", taskInfo);
 							document.insertString(document.getLength(), "\t To ", taskInfo);
 						} else {
 							document.insertString(document.getLength(), "\t By ", taskInfo);
@@ -296,54 +341,13 @@ public class TopLeftPanel extends JPanel implements KeyListener {
 						document.insertString(document.getLength(), task.getEndDate().format(dateFormat), taskInfo);
 						document.insertString(document.getLength(), "\n", taskInfo);
 						count++;
-					} else {
-						break;
 					}
 				}
+				document.setParagraphAttributes(end, document.getLength(), taskInfo, true);
+				textArea.setStyledDocument(document);
+			} catch (BadLocationException e) {
+				// do nothing
 			}
-			document.setParagraphAttributes(end, document.getLength(), taskInfo, true);
-			document.insertString(document.getLength(), "\n", taskInfo);
-			end = document.getLength();
-
-			document.insertString(document.getLength(), "DUE TOMORROW" + "\n", header);
-			document.insertString(document.getLength(), "\n", header);
-			document.setParagraphAttributes(end, document.getLength(), header, true);
-			end = document.getLength();
-			if (firstList != null) {
-				for (int index = count; index < firstList.size(); index++) {
-					Task task = firstList.get(index);
-					String string = task.getDescription();
-					document.insertString(document.getLength(), indexList.get(count) + ". ", taskInfo);
-					if (task.isComplete()) {
-						document.insertString(document.getLength(), CHECK_MARK, checkMark);
-					}
-					document.insertString(document.getLength(), string + "\n", taskInfo);
-					// document.insertString(document.getLength(),
-					// indexList.get(count) + ". " + string + "\n", taskInfo);
-					if (task.getStartDate() != null && task.getStartTime() != null) {
-						document.insertString(document.getLength(), "\t From ", taskInfo);
-						if (!task.getStartTime().equals(LocalTime.MAX)) {
-							document.insertString(document.getLength(), task.getStartTime().toString() + ", ",
-									taskInfo);
-						}
-						document.insertString(document.getLength(), task.getStartDate().format(dateFormat) + "\n",
-								taskInfo);
-						document.insertString(document.getLength(), "\t To ", taskInfo);
-					} else {
-						document.insertString(document.getLength(), "\t By ", taskInfo);
-					}
-					if (!task.getEndTime().equals(LocalTime.MAX)) {
-						document.insertString(document.getLength(), task.getEndTime().toString() + ", ", taskInfo);
-					}
-					document.insertString(document.getLength(), task.getEndDate().format(dateFormat), taskInfo);
-					document.insertString(document.getLength(), "\n", taskInfo);
-					count++;
-				}
-			}
-			document.setParagraphAttributes(end, document.getLength(), taskInfo, true);
-			textArea.setStyledDocument(document);
-		} catch (BadLocationException e) {
-			// do nothing
 		}
 	}
 
