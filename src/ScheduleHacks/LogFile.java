@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.util.logging.FileHandler;
 import java.util.logging.Level;
 
+/*This class creates a logFile for logging*/
 public class LogFile {
 	
 	private static final String DEFAULT_PATH = "C:\\LogFile\\";
