@@ -9,10 +9,11 @@ import org.junit.Test;
 import ScheduleHacks.OldCommand;
 
 public class HistoryTest {
+	
+	History testHistory = History.getInstance();
 
 	@Test
 	public void testUndoList() throws Exception {
-		History testHistory = History.getInstance();
 
 		ArrayList<Task> taskList = new ArrayList<Task>();
 		ArrayList<Integer> indexList = new ArrayList<Integer>();
@@ -40,12 +41,12 @@ public class HistoryTest {
 
 	@Test
 	public void testRedoList() throws Exception {
-		History testHistory = History.getInstance();
 
 		ArrayList<Task> taskList = new ArrayList<Task>();
 		ArrayList<Integer> indexList = new ArrayList<Integer>();
 
 		OldCommand testCmd = new OldCommand(OldCommand.COMMAND_TYPE.ADD_TASK, taskList, indexList);
+		OldCommand testCmd2 = new OldCommand(OldCommand.COMMAND_TYPE.MODIFY_TASK, taskList, indexList);
 
 		testHistory.addToRedoList(testCmd);
 
@@ -54,13 +55,17 @@ public class HistoryTest {
 		retrieveCmd = testHistory.getFromRedoList();
 
 		assertEquals(retrieveCmd.getCommandType(), OldCommand.COMMAND_TYPE.DELETE_TASK);
+		
+		testHistory.addToRedoList(testCmd2);
+		OldCommand retrieveCmd2;
+		retrieveCmd2 = testHistory.getFromRedoList();
+
+		assertEquals(retrieveCmd2.getCommandType(), OldCommand.COMMAND_TYPE.MODIFY_TASK);
 
 	}
-
+	
 	@Test
 	public void testCommandHistory() throws Exception {
-
-		History testHistory = History.getInstance();
 
 		testHistory.setIndexCommandHistory();
 		assertEquals(null, testHistory.moveUpCommandHistory());
