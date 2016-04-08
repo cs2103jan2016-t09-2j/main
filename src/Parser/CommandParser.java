@@ -91,7 +91,9 @@ public class CommandParser {
 				// do nothing
 				break;
 			}
-			newTask.setDescription(parseDescription(newTask.getDescription()));
+			if (newTask != null) {
+				newTask.setDescription(parseDescription(newTask.getDescription()));
+			}
 			if (command.getCommandType().equals(COMMAND_TYPE.HELP)
 					|| (taskStatement != null && !taskStatement.isEmpty())) {
 				return newTask;
