@@ -826,8 +826,14 @@ public class Logic {
 				taskToEdit = floatingTasksToDo
 						.remove(indexToEdit - 1 - scheduledTasksToDo.size() - scheduledTasksOverDue.size());
 			} else {
-				isHighlightOperation = false;
-				setFeedBack(FEEDBACK_NON_EXISTENT_TASK_NUM + "\n");
+				/*
+				 * isHighlightOperation = false;
+				 * setFeedBack(FEEDBACK_NON_EXISTENT_TASK_NUM + "\n");
+				 */
+				editInfo = indexToEdit + " " + editInfo;
+				indexToEdit = getRecentIndexOfTask();
+				indexList = new ArrayList<Integer>();
+				indexList.add(indexToEdit);
 			}
 		}
 

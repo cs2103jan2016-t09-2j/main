@@ -32,6 +32,8 @@ public class TimeParser {
 	private ArrayList<LocalDate> dateList;
 
 	private boolean hasRangeKeyword = false;
+	private int rangeKeywordStartPos = -1;
+	private int rangeKeywordEndPos = -1;
 
 	/**************** CONSTRUCTORS *********************/
 	// Default Constructor
@@ -101,13 +103,14 @@ public class TimeParser {
 				String previousWord = getLastWordInRange(taskDetails, timeMatcher.start());
 				String tempString = cleanupExtraWhitespace(taskDetails.substring(timeMatcher.start()));
 
-				if (addToListIfValidTime(tempString, previousWord)) {
+				if (addToListIfValidTime(tempString, previousWord, timeMatcher.start())) {
 				} else {
 					if (hasTimeDuration(tempString)) {
 						String timeDuration = getTimeDurationWord(tempString);
 						if (taskDetailsContains(timeDuration)) {
 							addValidTimeToList(getParsedTimeDuration(timeDuration));
-							if (isValidKeyWord(previousWord) || isValidRangeKeyWord(previousWord)) {
+							if (isValidKeyWord(previousWord)
+									|| isValidRangeKeyWord(previousWord, timeMatcher.start())) {
 								removeTimeFromTaskDetails(
 										previousWord + ParserConstants.STRING_WHITESPACE + timeDuration);
 							} else {
@@ -131,7 +134,7 @@ public class TimeParser {
 	 * @param keyword
 	 * @return true, if the immediate String is a valid time; otherwise false.
 	 */
-	public boolean addToListIfValidTime(String statement, String keyword) {
+	public boolean addToListIfValidTime(String statement, String keyword, int timeStartPos) {
 		String end = ParserConstants.STRING_EMPTY;
 		for (DateTimeFormatter format : generateTimeFormatList()) {
 			DateTimeFormatter myFormatter = new DateTimeFormatterBuilder().parseCaseInsensitive().append(format)
@@ -147,7 +150,7 @@ public class TimeParser {
 
 				if (taskDetailsContains(statement) && isValidEnd(end)) {
 					addValidTimeToList(parsedTime);
-					if (isValidKeyWord(keyword) || isValidRangeKeyWord(keyword)) {
+					if (isValidKeyWord(keyword) || isValidRangeKeyWord(keyword, timeStartPos)) {
 						removeTimeFromTaskDetails(keyword + ParserConstants.STRING_WHITESPACE + statement);
 					} else {
 						removeTimeFromTaskDetails(statement);
@@ -317,9 +320,12 @@ public class TimeParser {
 	 * @param parsedTime
 	 */
 	public void arrangeTimeList() {
-		if (timeList != null && !timeList.isEmpty() && dateList!= null) {
+		if (timeList != null && !timeList.isEmpty() && dateList != null) {
 			if (timeList.size() < dateList.size() && hasRangeKeyword) {
 				timeList.add(ParserConstants.FIRST_INDEX, LocalTime.MAX);
+				taskDetails = cleanupExtraWhitespace(
+						taskDetails.substring(ParserConstants.FIRST_INDEX, rangeKeywordStartPos)
+								+ taskDetails.substring(rangeKeywordEndPos));
 			}
 		}
 	}
@@ -343,16 +349,21 @@ public class TimeParser {
 	 * @param keyword
 	 * @return return true if keyword equals "to" or "-"; false otherwise.
 	 */
-	public boolean isValidRangeKeyWord(String keyword) {
+	public boolean isValidRangeKeyWord(String keyword, int keywordEndPos) {
 		if (isRangeKeyWord(keyword)) {
 			if (timeList.size() > ParserConstants.MIN_SIZE) {
 				return true;
 			}
 			hasRangeKeyword = true;
+			rangeKeywordStartPos = taskDetails.lastIndexOf(keyword, keywordEndPos);
+			rangeKeywordEndPos = rangeKeywordStartPos + keyword.length();
 		}
 		return false;
-		/*return (keyword.equalsIgnoreCase(ParserConstants.STRING_HYPHEN)
-				|| keyword.equalsIgnoreCase(ParserConstants.STRING_TO)) && (timeList.size() > ParserConstants.MIN_SIZE) ;*/
+		/*
+		 * return (keyword.equalsIgnoreCase(ParserConstants.STRING_HYPHEN) ||
+		 * keyword.equalsIgnoreCase(ParserConstants.STRING_TO)) &&
+		 * (timeList.size() > ParserConstants.MIN_SIZE) ;
+		 */
 	}
 
 	/**
