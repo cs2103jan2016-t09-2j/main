@@ -17,8 +17,8 @@ public class ParserConstants {
 	static final String[] COMMAND_VIEW = { "view", "v", "show", "display" };
 	static final String[] COMMAND_SEARCH = { "search", "find" };
 	static final String[] COMMAND_EXIT = { "exit", "quit", "q" };
-	static final String[] COMMAND_UNDO = { "undo", "u", "z" };
-	static final String[] COMMAND_REDO = { "redo" };
+	static final String[] COMMAND_UNDO = { "undo", "z" };
+	static final String[] COMMAND_REDO = { "redo" , "y"};
 	static final String[] COMMAND_SET_DIRECTORY = { "set" };
 	static final String[] COMMAND_HOME = { "home" };
 	static final String[] COMMAND_HELP = { "help" };

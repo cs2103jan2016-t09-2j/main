@@ -628,33 +628,27 @@ public class Logic {
 	 * startdatetime instance
 	 */
 	private int sortTaskList(ArrayList<Task> taskList, Task task) {
-		LocalDateTime taskStartDateTime = null;
+		LocalDateTime taskDateTime = null;
 		if (task.getStartDate() != null) {
-			taskStartDateTime = LocalDateTime.of(task.getStartDate(), task.getStartTime());
+			taskDateTime = LocalDateTime.of(task.getStartDate(), task.getStartTime());
+		} else {
+			taskDateTime = LocalDateTime.of(task.getEndDate(), task.getEndTime());
 		}
 		int taskPosition = taskList.size();
 
 		for (int i = 0; i < taskList.size(); i++) {
-			LocalDateTime selectedTaskStartDateTime = null;
+			LocalDateTime selectedTaskDateTime = null;
 			if (taskList.get(i).getStartDate() != null) {
-				selectedTaskStartDateTime = LocalDateTime.of(taskList.get(i).getStartDate(),
-						taskList.get(i).getStartTime());
+				selectedTaskDateTime = LocalDateTime.of(taskList.get(i).getStartDate(), taskList.get(i).getStartTime());
+			} else {
+				selectedTaskDateTime = LocalDateTime.of(taskList.get(i).getEndDate(), taskList.get(i).getEndTime());
 			}
 
-			if (task.getEndDate().isBefore(taskList.get(i).getEndDate())) {
+			if (taskDateTime.isBefore(selectedTaskDateTime)) {
 				return i;
-			} else if (task.getEndDate().equals(taskList.get(i).getEndDate())) {
-				if ((selectedTaskStartDateTime != null) && (taskStartDateTime != null)) {
-					if (taskStartDateTime.isBefore(selectedTaskStartDateTime)) {
-						return i;
-					}
-				} else if ((selectedTaskStartDateTime == null) && (taskStartDateTime != null)) {
-					return i;
-				} else if ((task.getEndTime().isBefore(taskList.get(i).getEndTime()))
-						&& (selectedTaskStartDateTime == null)) {
-					return i;
-				} else if ((task.getEndTime().isBefore(taskList.get(i).getEndTime()))
-						&& (selectedTaskStartDateTime == null) && (taskStartDateTime == null)) {
+			} else if (taskDateTime.isEqual(selectedTaskDateTime)) {
+				if (LocalDateTime.of(task.getEndDate(), task.getEndTime())
+						.isBefore(LocalDateTime.of(taskList.get(i).getEndDate(), taskList.get(i).getEndTime()))) {
 					return i;
 				}
 			}

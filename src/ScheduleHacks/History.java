@@ -118,7 +118,7 @@ public class History {
 	 * command history ArrayList
 	 */
 	public String moveUpCommandHistory() {
-		if (indexOfCommand <= 0 || commandHistory == null || commandHistory.isEmpty()) {
+		if (indexOfCommand <= 0 || commandHistory == null || commandHistory.size() < indexOfCommand) {
 			indexOfCommand = -1;
 			return null;
 		} else {
