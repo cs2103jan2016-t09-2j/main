@@ -107,9 +107,9 @@ public class LogicTest {
 			COMMAND_TYPE typeCommand9 = obj.getCommand(existingCommand9);
 			Task executeTask9 = obj.getTaskDescription(existingCommand9);
 			obj.execute(typeCommand9, existingCommand9, executeTask9);
-			assertEquals( "2016-04-10", obj.getScheduledTasksToDo().get(1).getEndDate().toString());
-			assertEquals("19:00", obj.getScheduledTasksToDo().get(1).getStartTime().toString());
-			assertEquals( "21:00", obj.getScheduledTasksToDo().get(1).getEndTime().toString());
+			assertEquals( "2016-04-10", obj.getScheduledTasksToDo().get(0).getEndDate().toString());
+			assertEquals("19:00", obj.getScheduledTasksToDo().get(0).getStartTime().toString());
+			assertEquals( "21:00", obj.getScheduledTasksToDo().get(0).getEndTime().toString());
 			
 			
 			String testString10 = "e delete date";
