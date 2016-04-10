@@ -402,7 +402,7 @@ public class IntegrationTest {
 		assertEquals(null, obj.getScheduledTasksToDo().get(0).getStartDate());
 		assertEquals(LocalDate.now().plusDays(2), obj.getScheduledTasksToDo().get(0).getEndDate());
 
-		obj.executeCommand("Class     tdy at   0830");
+		obj.executeCommand("Class     tdy at   0130");
 		assertEquals(1, obj.getScheduledTasksToDo().size());
 		assertEquals(1, obj.getScheduledTasksOverDue().size());
 		assertEquals(0, obj.getScheduledTasksComplete().size());
@@ -410,7 +410,7 @@ public class IntegrationTest {
 		assertEquals(0, obj.getFloatingTasksComplete().size());
 		assertEquals("Class", obj.getScheduledTasksOverDue().get(0).getDescription());
 		assertEquals(null, obj.getScheduledTasksOverDue().get(0).getStartTime());
-		assertEquals(LocalTime.of(8, 30), obj.getScheduledTasksOverDue().get(0).getEndTime());
+		assertEquals(LocalTime.of(1, 30), obj.getScheduledTasksOverDue().get(0).getEndTime());
 		assertEquals(null, obj.getScheduledTasksOverDue().get(0).getStartDate());
 		assertEquals(LocalDate.now(), obj.getScheduledTasksOverDue().get(0).getEndDate());
 

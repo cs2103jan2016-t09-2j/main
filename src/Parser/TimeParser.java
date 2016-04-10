@@ -20,9 +20,6 @@ import Parser.ParserConstants;
 /*
  * This class contains all possible combinations of time, that the user can
  * input as command into Schedule Hacks.
- * 
- * Accepted Time Formats -> HH:MM HH.MM HHMM
- * 
  */
 public class TimeParser {
 
@@ -110,7 +107,7 @@ public class TimeParser {
 						if (taskDetailsContains(timeDuration)) {
 							addValidTimeToList(getParsedTimeDuration(timeDuration));
 							if (isValidKeyWord(previousWord)
-									|| isValidRangeKeyWord(previousWord, timeMatcher.start())) {
+									|| isValidRangeKeyWord(previousWord, timeMatcher.start(), null)) {
 								removeTimeFromTaskDetails(
 										previousWord + ParserConstants.STRING_WHITESPACE + timeDuration);
 							} else {
@@ -150,7 +147,7 @@ public class TimeParser {
 
 				if (taskDetailsContains(statement) && isValidEnd(end)) {
 					addValidTimeToList(parsedTime);
-					if (isValidKeyWord(keyword) || isValidRangeKeyWord(keyword, timeStartPos)) {
+					if (isValidKeyWord(keyword) || isValidRangeKeyWord(keyword, timeStartPos, parsedTime)) {
 						removeTimeFromTaskDetails(keyword + ParserConstants.STRING_WHITESPACE + statement);
 					} else {
 						removeTimeFromTaskDetails(statement);
@@ -349,13 +346,16 @@ public class TimeParser {
 	 * @param keyword
 	 * @return return true if keyword equals "to" or "-"; false otherwise.
 	 */
-	public boolean isValidRangeKeyWord(String keyword, int keywordEndPos) {
+	public boolean isValidRangeKeyWord(String keyword, int keywordEndPos, LocalTime currentParsedTime) {
 		if (isRangeKeyWord(keyword)) {
 			if (timeList.size() > ParserConstants.MIN_SIZE) {
 				return true;
 			}
-			hasRangeKeyword = true;
 			rangeKeywordStartPos = taskDetails.lastIndexOf(keyword, keywordEndPos);
+			if (addToListIfMissedTime(rangeKeywordStartPos, currentParsedTime)) {
+				return true;
+			}
+			hasRangeKeyword = true;
 			rangeKeywordEndPos = rangeKeywordStartPos + keyword.length();
 		}
 		return false;
@@ -377,6 +377,71 @@ public class TimeParser {
 		keyword = keyword.trim();
 		return (keyword.equalsIgnoreCase(ParserConstants.STRING_HYPHEN)
 				|| keyword.equalsIgnoreCase(ParserConstants.STRING_TO));
+	}
+
+	/**
+	 * A missed time is a 12-hr time format without am pm specified to it
+	 * preceding a range keyword. This method finds out the missed time and add
+	 * it to the timeList.
+	 * 
+	 * @param endPos
+	 * @param currentParsedTime
+	 * @return true if missedTime detected; otherwise false.
+	 */
+	public boolean addToListIfMissedTime(int endPos, LocalTime currentParsedTime) {
+		String previousWord = getLastWordInRange(taskDetails, endPos);
+		try {
+			int missedTime = Integer.parseInt(previousWord);
+			LocalTime timeAM = getMissedTime(missedTime);
+			if (timeAM != null) {
+				timeList.add(ParserConstants.FIRST_INDEX, calculateMissed(timeAM, currentParsedTime));
+				removeTimeFromTaskDetails(previousWord);
+				return true;
+			}
+		} catch (NumberFormatException nfe) {
+			return false;
+		}
+		return false;
+	}
+
+	/**
+	 * A missed time is a 12-hr time format without am pm specified to it
+	 * preceding a range keyword. This method helps retrieve the missed time but
+	 * in AM format only.
+	 * 
+	 * @param time
+	 * @return the missed time in AM
+	 */
+	public LocalTime getMissedTime(int time) {
+		if (time > ParserConstants.FIRST_INDEX) {
+			int mins = ParserConstants.FIRST_INDEX;
+			int hrs = ParserConstants.FIRST_INDEX;
+			if (time <= ParserConstants.TWELVE_HOURS) {
+				return LocalTime.of(time, mins);
+			}
+			mins = time % 100;
+			hrs = time / 100;
+			if (hrs > ParserConstants.FIRST_INDEX && hrs <= ParserConstants.TWELVE_HOURS
+					&& mins <= ParserConstants.MAX_MINUTES) {
+				return LocalTime.of(hrs, mins);
+			}
+		}
+		return null;
+	}
+
+	/**
+	 * A missed time is a 12-hr time format without am pm specified to it. This
+	 * method helps determine if the missed time is am or pm.
+	 * 
+	 * @param missedTime
+	 * @param currentParsedTime
+	 * @return the 24hr converted format of the input 12 hr time input
+	 */
+	public LocalTime calculateMissed(LocalTime missedTime, LocalTime currentParsedTime) {
+		if (missedTime.plusHours(ParserConstants.TWELVE_HOURS).isBefore(currentParsedTime)) {
+			return missedTime.plusHours(ParserConstants.TWELVE_HOURS);
+		}
+		return missedTime;
 	}
 
 	/**

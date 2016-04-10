@@ -32,7 +32,7 @@ public class ParserConstants {
 
 	// Regular Expressions
 	static final String REGEX_EXTRA_WHITESPACE = "\\s{2,}";
-	static final String REGEX_POSSIBLE_DATE = "(^|\\s)\\w";
+	static final String REGEX_POSSIBLE_DATE = "(^|\\s)(\\w|-)";
 	static final String REGEX_POSSIBLE_DURATION = "^\\d+[A-Za-z]{2,}";
 	static final String REGEX_POSSIBLE_TIME = "(^|\\s)\\d";
 	// static final String REGEX_POSSIBLE_TIME = "(^|\\s|\\G)\\d";
@@ -124,6 +124,7 @@ public class ParserConstants {
 	// Time related constants
 	static final int MAX_MINUTES = 59;
 	static final int MAX_HOUR = 23;
+	static final int TWELVE_HOURS = 12;
 	// Acceptable Time formats
 	static final String TIME_FORMAT_12HOUR_MIN_AMPM_WITHOUT_SPACE = "hmma";
 	static final String TIME_FORMAT_12HOUR_MIN_AMPM_WITH_SPACE = "hmm a";
