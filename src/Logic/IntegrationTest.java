@@ -27,7 +27,6 @@ public class IntegrationTest {
 			FileUtils.deleteDirectory(new File(fileLocation));
 		} catch (Exception e) {
 			e.printStackTrace();
-			System.out.println("Incorrect Folder Operation");
 		}
 
 		obj.startExecution();
