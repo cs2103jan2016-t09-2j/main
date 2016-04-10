@@ -10,6 +10,7 @@ import Logic.*;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
+ 
   LogicTest.class,
   CommandParserTest.class,
   DateParserTest.class,
@@ -17,7 +18,9 @@ import Logic.*;
   IndexParserTest.class,
   DateTimeParserTest.class,
   HistoryTest.class,
-  StorageTest.class
+  StorageTest.class,
+  IntegrationTest.class
+  
 })
 public class SHTestSuite {   
 }  		
