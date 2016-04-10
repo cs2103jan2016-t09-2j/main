@@ -249,6 +249,8 @@ public class Logic {
 	/*
 	 * this method gets back the parsed Command class from parser. Proceeds to
 	 * execute function aft obtaining COMMAND_TYPE and Task classes
+	 * clears conflicting tasks index, shifts tasks, whose deadlines have exceeded current date and time
+	 * to scheduledOverDue tasks and stores updated arrayLists into storage class
 	 */
 	public void retrieveParsedCommand(String originalDescription) {
 		try {
@@ -363,7 +365,7 @@ public class Logic {
 	public void setNewDirectoryPath(Task executeTask) {
 		try {
 			storage.setCurrentPathName(executeTask.getDescription());
-			setFeedBack("Directory Path Sucessfully Changed!");
+			setFeedBack("Directory Path Successfully Changed!");
 		} catch (Exception e) {
 			setFeedBack("Invalid Directory Path!!");
 		}
@@ -1137,25 +1139,29 @@ public class Logic {
 			setFeedBack(FEEDBACK_REDO_INVALID);
 		}
 	}
-
+	
+	//add task when undo/redo is called
 	public void addTaskList(ArrayList<Task> taskList) {
 		for (Task newTask : taskList) {
 			addTask(newTask, true, 0);
 		}
 	}
 
+	//complete task when undo/redo is called
 	public void markAsCompleteListUndoOp(ArrayList<Task> taskList, ArrayList<Integer> indexList) {
 		for (Task task : taskList) {
 			markTaskComplete(task);
 		}
 	}
 
+	//mark task as incomplete when undo/redo is called
 	public void markAsIncompleteListUndoOp(ArrayList<Task> taskList, ArrayList<Integer> indexList) {
 		for (Task task : taskList) {
 			markTaskIncomplete(task);
 		}
 	}
 
+	//delete single task when undo/redo is called
 	public void deleteSingleTask(int index) {
 		if (index > 0) {
 			if (index <= scheduledTasksOverDue.size()) {
@@ -1237,3 +1243,4 @@ public class Logic {
 		System.exit(0);
 	}
 }
+
