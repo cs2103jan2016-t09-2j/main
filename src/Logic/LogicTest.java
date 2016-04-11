@@ -2,6 +2,7 @@ package Logic;
 
 import static org.junit.Assert.*;
 
+import java.io.File;
 import java.time.LocalDate;
 
 import org.junit.Test;
@@ -11,12 +12,26 @@ import Parser.Command.COMMAND_TYPE;
 import Parser.CommandParser;
 import ScheduleHacks.Task;
 
+import Storage.Storage;
+import org.apache.commons.io.FileUtils;
+
 public class LogicTest {
 
 	Logic obj = Logic.getInstance();
 
 	@Test
-	public void testAdd1() throws Exception {
+	public void testLogic() throws Exception {
+
+		try {
+			String testDir = "Test";
+			String fileLocation = Storage.getCurrentPathName();
+			FileUtils.copyDirectory(new File(fileLocation), new File(testDir));
+			// Storage.getInstance().setCurrentPathName(testDir);
+			FileUtils.deleteDirectory(new File(fileLocation));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
 		String testString = "add study for mid-term 1600 1700 04 apr 16";
 		Command existingCommand = CommandParser.getParsedCommand(testString);
 		COMMAND_TYPE typeCommand = obj.getCommand(existingCommand);
@@ -260,5 +275,13 @@ public class LogicTest {
 		assertEquals(1, obj.getScheduledTasksToDo().size());
 		assertEquals("go for XMen Apocalypse", obj.getScheduledTasksToDo().get(0).getDescription());
 		assertEquals("2016-05-01", obj.getScheduledTasksToDo().get(0).getEndDate().toString());
+
+		try {
+			String testDir = "Test";
+			String fileLocation = Storage.getCurrentPathName();
+			FileUtils.copyDirectory(new File(testDir), new File(fileLocation));
+			FileUtils.deleteDirectory(new File(testDir));
+		} catch (Exception e) {
+		}
 	}
 }

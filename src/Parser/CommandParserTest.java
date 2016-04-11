@@ -97,6 +97,7 @@ public class CommandParserTest {
 		for (int x : cmd.getIndexList()) {
 			output += x;
 		}
+		
 		assertEquals("16", output);
 		assertEquals(null, cmd.getTaskDetails());
 	}

@@ -55,15 +55,17 @@ public class CommandParser {
 	public static Task findTaskDetails(Command command, String taskStatement) throws Exception {
 		COMMAND_TYPE commandType = command.getCommandType();
 
-		if (CommandParser.hasIndexNumber(commandType)) {
+		if (hasIndexNumber(commandType)) {
 			IndexParser indexParser = new IndexParser(command, taskStatement);
 			indexParser.findIndexList();
 			command.setIndexList(indexParser.getIndexList());
 			taskStatement = indexParser.getTaskDetails();
 		}
-		if (!CommandParser.hasTaskDetails(commandType)) {
-			if (taskStatement != null && !taskStatement.isEmpty()) {
-				command.setIndexList(generateDefaultIntList());
+		if (!hasTaskDetails(commandType)) {
+			if (hasIndexNumber(commandType)) {
+				if (taskStatement != null && !taskStatement.isEmpty() && command.getIndexList() == null) {
+					command.setIndexList(generateDefaultIntList());
+				}
 			}
 			return null;
 		} else {
