@@ -349,7 +349,84 @@ public class CommandParser {
 		if (oldTask.isFloatingTask()) {
 			oldTask = editFloatingTask(taskStatement, oldTask, dateList, timeList);
 		} else if (oldTask.isScheduledTask()) {
-			oldTask = editScheduledTask(taskStatement, oldTask, dateList, timeList);
+			oldTask = editScheduledTask22(taskStatement, oldTask, dateList, timeList);
+		}
+
+		return oldTask;
+	}
+
+	// temporary edit
+	public static Task editScheduledTask22(String taskStatement, Task oldTask, ArrayList<LocalDate> dateList,
+			ArrayList<LocalTime> timeList) {
+
+		ArrayList<LocalDate> oldDateList = new ArrayList<LocalDate>();
+		ArrayList<LocalTime> oldTimeList = new ArrayList<LocalTime>();
+
+		if (oldTask.getStartDate() != null) {
+			oldDateList.add(oldTask.getStartDate());
+		}
+		oldDateList.add(oldTask.getEndDate());
+
+		if (oldTask.getStartTime() != null) {
+			oldTimeList.add(oldTask.getStartTime());
+		}
+		oldTimeList.add(oldTask.getEndTime());
+
+		if (dateList != null && timeList != null) { 
+			DateTimeParser objDateTime = new DateTimeParser(dateList, timeList);
+			objDateTime.arrangeDateTimeList();
+			dateList = objDateTime.getDateList();
+			timeList = objDateTime.getTimeList();
+		} else if (timeList != null || dateList != null) {
+			if (timeList != null) {
+				if (timeList.size() > oldTimeList.size()) {
+					dateList = new ArrayList<LocalDate>();
+					dateList.add(oldTask.getEndDate());
+					if (LocalDateTime.of(oldTask.getEndDate(), timeList.get(ParserConstants.FIRST_INDEX))
+							.isAfter(LocalDateTime.of(oldTask.getEndDate(), timeList.get(1)))) {
+						dateList.add(oldTask.getEndDate().plusDays(1));
+					} else {
+						dateList.add(oldTask.getEndDate());
+					}
+
+				} else if (timeList.size() < oldTimeList.size()) {
+					oldTask.setStartDate(null);
+				} else {
+					dateList = new ArrayList<LocalDate>(oldDateList);
+				}
+			} else {
+				if (dateList.size() > oldDateList.size()) {
+					timeList = new ArrayList<LocalTime>();
+					timeList.add(LocalTime.MAX);
+					timeList.add(oldTask.getEndTime());
+				} else if (dateList.size() < oldDateList.size()) {
+					oldTask.setStartDate(null);
+					oldTask.setStartTime(null);
+					oldTask.setEndTime(LocalTime.MAX);
+				} else {
+					timeList = new ArrayList<LocalTime>(oldTimeList);
+				}
+			}
+			DateTimeParser objDateTime = new DateTimeParser(dateList, timeList);
+			objDateTime.arrangeDateTimeList();
+			dateList = objDateTime.getDateList();
+			timeList = objDateTime.getTimeList();
+		}
+
+		/*if (dateList != null) {
+			oldTask.setEndDate(null);
+			oldTask.setStartDate(null);
+		}
+		if (timeList != null) {
+			oldTask.setEndTime(null);
+			oldTask.setStartTime(null);
+		}*/
+
+		setDates(dateList, oldTask);
+		setTimes(timeList, oldTask);
+
+		if (taskStatement != null && !taskStatement.isEmpty()) {
+			oldTask.setDescription(taskStatement);
 		}
 
 		return oldTask;
@@ -363,7 +440,7 @@ public class CommandParser {
 	 * @param oldTask
 	 * @param dateList
 	 * @param timeList
-	 * @return
+	 * @return the edited scheduled Task
 	 */
 	public static Task editScheduledTask(String taskStatement, Task oldTask, ArrayList<LocalDate> dateList,
 			ArrayList<LocalTime> timeList) {
