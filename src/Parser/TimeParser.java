@@ -177,8 +177,8 @@ public class TimeParser {
 			taskDetails = CommandParser
 					.cleanupExtraWhitespace(taskDetails.replaceFirst(textToRemove, ParserConstants.STRING_WHITESPACE));
 		} else {
-			taskDetails = CommandParser
-					.cleanupExtraWhitespace(taskDetails.replaceFirst(textToRemove, ParserConstants.STRING_WHITESPACE));
+			taskDetails = CommandParser.cleanupExtraWhitespace(taskDetails
+					.replaceFirst(ParserConstants.STRING_WHITESPACE + textToRemove, ParserConstants.STRING_WHITESPACE));
 		}
 	}
 
