@@ -113,25 +113,18 @@ public class BottomBottom extends JPanel implements KeyListener {
 		 * When ENTER key is pressed, input will be read and start execution
 		 */
 		if (keyCode == KeyEvent.VK_ENTER) {
-			String input = commandField.getText();
-			commandField.setText("");
-
-			logicObj.executeCommand(input);
-			BottomLeft.setFeedback(logicObj.getFeedBack());
-			isUpdateCall = true;
+			isUpdateCall = startExecution();
 		}
 
 		/*
 		 * UP and DOWN key will display command history for the user
 		 */
 		if (keyCode == KeyEvent.VK_UP) {
-			BottomLeft.setFeedback("Previous Command");
-			commandField.setText(history.moveUpCommandHistory());
+			setHistoryPreviousCommand();
 		}
 
 		if (keyCode == KeyEvent.VK_DOWN) {
-			BottomLeft.setFeedback("Next Command");
-			commandField.setText(history.moveDownCommandHistory());
+			setHistoryNextCommand();
 		}
 
 		/*
@@ -141,40 +134,92 @@ public class BottomBottom extends JPanel implements KeyListener {
 			System.exit(0);
 		}
 
+		/*
+		 * CTRL-Z will undo previous command
+		 */
 		if (keyCode == KeyEvent.VK_Z && ((e.getModifiers() & KeyEvent.CTRL_MASK) != 0)) {
-			logicObj.executeCommand("undo");
-			BottomLeft.setFeedback(logicObj.getFeedBack());
-			isUpdateCall = true;
-			history.removeLastCommandFromHistory();
+			isUpdateCall = undoPreviousCommand();
 		}
 
+		/*
+		 * CTRL-Y will re-do the previous command
+		 */
 		if (keyCode == KeyEvent.VK_Y && ((e.getModifiers() & KeyEvent.CTRL_MASK) != 0)) {
-			logicObj.executeCommand("redo");
-			BottomLeft.setFeedback(logicObj.getFeedBack());
-			isUpdateCall = true;
-			history.removeLastCommandFromHistory();
+			isUpdateCall = redoPreviousCommand();
 		}
 
+		/*
+		 * CTRL_R will refresh the display screen to show the latest display information
+		 */
 		if (keyCode == KeyEvent.VK_R && ((e.getModifiers() & KeyEvent.CTRL_MASK) != 0)) {
-			logicObj.refresh();
-			isUpdateCall = true;
+			isUpdateCall = refreshDisplay();
 		}
 
 		if (isUpdateCall) {
-			if (!logicObj.hasSearchList() && !logicObj.isHomeScreen()) {
-				// normal display
-				OList = new ArrayList<Task>(logicObj.getScheduledTasksOverDue());
-				SList = new ArrayList<Task>(logicObj.getScheduledTasksToDo());
-				FList = new ArrayList<Task>(logicObj.getFloatingTasksToDo());
-				TopLeftPanel.clearText();
-				TopLeftPanel.setText(OList, SList, null);
-				TopRightPanel.clearText();
-				TopRightPanel.setText(FList, null, OList.size() + SList.size());
-			}
+			updateDisplayScreen();
 		}
 
 		timer.setInitialDelay(ONE_MINUTE);
 		timer.restart();
+	}
+
+	private void updateDisplayScreen() {
+		if (!logicObj.hasSearchList() && !logicObj.isHomeScreen()) {
+			// normal display
+			OList = new ArrayList<Task>(logicObj.getScheduledTasksOverDue());
+			SList = new ArrayList<Task>(logicObj.getScheduledTasksToDo());
+			FList = new ArrayList<Task>(logicObj.getFloatingTasksToDo());
+			TopLeftPanel.clearText();
+			TopLeftPanel.setText(OList, SList, null);
+			TopRightPanel.clearText();
+			TopRightPanel.setText(FList, null, OList.size() + SList.size());
+		}
+	}
+
+	private boolean refreshDisplay() {
+		boolean isUpdateCall;
+		logicObj.refresh();
+		isUpdateCall = true;
+		return isUpdateCall;
+	}
+
+	private boolean redoPreviousCommand() {
+		boolean isUpdateCall;
+		logicObj.executeCommand("redo");
+		BottomLeft.setFeedback(logicObj.getFeedBack());
+		isUpdateCall = true;
+		history.removeLastCommandFromHistory();
+		return isUpdateCall;
+	}
+
+	private boolean undoPreviousCommand() {
+		boolean isUpdateCall;
+		logicObj.executeCommand("undo");
+		BottomLeft.setFeedback(logicObj.getFeedBack());
+		isUpdateCall = true;
+		history.removeLastCommandFromHistory();
+		return isUpdateCall;
+	}
+
+	private void setHistoryNextCommand() {
+		BottomLeft.setFeedback("Next Command");
+		commandField.setText(history.moveDownCommandHistory());
+	}
+
+	private void setHistoryPreviousCommand() {
+		BottomLeft.setFeedback("Previous Command");
+		commandField.setText(history.moveUpCommandHistory());
+	}
+
+	private boolean startExecution() {
+		boolean isUpdateCall;
+		String input = commandField.getText();
+		commandField.setText("");
+
+		logicObj.executeCommand(input);
+		BottomLeft.setFeedback(logicObj.getFeedBack());
+		isUpdateCall = true;
+		return isUpdateCall;
 	}
 
 	/*
