@@ -132,15 +132,6 @@ public class StorageTest {
 	@Test
 	public void testToDoScheduledTask() throws IOException {
 
-		try {
-			String testDir = "Test";
-			String fileLocation = Storage.getCurrentPathName();
-			FileUtils.copyDirectory(new File(fileLocation), new File(testDir));
-			// Storage.getInstance().setCurrentPathName(testDir);
-			FileUtils.deleteDirectory(new File(fileLocation));
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
 		Task task1 = new Task("attend piano concert", LocalDate.parse("2016-06-08"), LocalDate.parse("2016-08-08"),
 				LocalTime.parse("12:00"), LocalTime.parse("16:00"));
 		task1.setScheduledTask();
@@ -157,28 +148,11 @@ public class StorageTest {
 
 		assertEquals(retrieveList.equals(testScheduledTasksToDo), true);
 
-		try {
-			String testDir = "Test";
-			String fileLocation = Storage.getCurrentPathName();
-			FileUtils.copyDirectory(new File(testDir), new File(fileLocation));
-			FileUtils.deleteDirectory(new File(testDir));
-		} catch (Exception e) {
-		}
-
 	}
 
 	@Test
 	public void testToDoFloatingTask() throws IOException {
 
-		try {
-			String testDir = "Test";
-			String fileLocation = Storage.getCurrentPathName();
-			FileUtils.copyDirectory(new File(fileLocation), new File(testDir));
-			// Storage.getInstance().setCurrentPathName(testDir);
-			FileUtils.deleteDirectory(new File(fileLocation));
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
 
 		Task task1 = new Task("attend soccer practice", null, null, null, null);
 		task1.setFloatingTask();
@@ -194,29 +168,11 @@ public class StorageTest {
 		ArrayList<Task> retrieveList = testStorage.getFloatingTasksToDo();
 
 		assertEquals(retrieveList.equals(testFloatingTasksToDo), true);
-		testFloatingTasksToDo.clear();
 
-		try {
-			String testDir = "Test";
-			String fileLocation = Storage.getCurrentPathName();
-			FileUtils.copyDirectory(new File(testDir), new File(fileLocation));
-			FileUtils.deleteDirectory(new File(testDir));
-		} catch (Exception e) {
-		}
 	}
 
 	@Test
 	public void testOverduedTask() throws IOException {
-
-		try {
-			String testDir = "Test";
-			String fileLocation = Storage.getCurrentPathName();
-			FileUtils.copyDirectory(new File(fileLocation), new File(testDir));
-			// Storage.getInstance().setCurrentPathName(testDir);
-			FileUtils.deleteDirectory(new File(fileLocation));
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
 
 		Task task1 = new Task("attend piano concert", null, LocalDate.parse("2016-03-03"), null, LocalTime.MAX);
 		task1.setScheduledTask();
@@ -235,28 +191,12 @@ public class StorageTest {
 
 		assertEquals(retrieveList.equals(testOverduedTasks), true);
 		assertEquals(endDateTime.isBefore(present), true);
-		try {
-			String testDir = "Test";
-			String fileLocation = Storage.getCurrentPathName();
-			FileUtils.copyDirectory(new File(testDir), new File(fileLocation));
-			FileUtils.deleteDirectory(new File(testDir));
-		} catch (Exception e) {
-		}
-
+		
 	}
 
 	@Test
 	public void testCompleteFloatingTask() throws Exception {
 
-		try {
-			String testDir = "Test";
-			String fileLocation = Storage.getCurrentPathName();
-			FileUtils.copyDirectory(new File(fileLocation), new File(testDir));
-			// Storage.getInstance().setCurrentPathName(testDir);
-			FileUtils.deleteDirectory(new File(fileLocation));
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
 
 		Task task1 = new Task("attend soccer practice", null, null, null, null);
 		task1.setFloatingTask();
@@ -272,28 +212,12 @@ public class StorageTest {
 		ArrayList<Task> retrieveList = testStorage.getFloatingTasksComplete();
 
 		assertEquals(retrieveList.equals(testFloatingTaskComplete), true);
-		testFloatingTaskComplete.clear();
-		try {
-			String testDir = "Test";
-			String fileLocation = Storage.getCurrentPathName();
-			FileUtils.copyDirectory(new File(testDir), new File(fileLocation));
-			FileUtils.deleteDirectory(new File(testDir));
-		} catch (Exception e) {
-		}
+
+
 	}
 
 	@Test
 	public void testCompletedScheduleTask() throws Exception {
-
-		try {
-			String testDir = "Test";
-			String fileLocation = Storage.getCurrentPathName();
-			FileUtils.copyDirectory(new File(fileLocation), new File(testDir));
-			// Storage.getInstance().setCurrentPathName(testDir);
-			FileUtils.deleteDirectory(new File(fileLocation));
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
 
 		Task task1 = new Task("attend piano concert", null, LocalDate.parse("2016-03-03"), null, LocalTime.MAX);
 		task1.setScheduledTask();
@@ -309,14 +233,6 @@ public class StorageTest {
 		ArrayList<Task> retrieveList = testStorage.getScheduledTasksComplete();
 
 		assertEquals(retrieveList.equals(testScheduledTaskComplete), true);
-
-		try {
-			String testDir = "Test";
-			String fileLocation = Storage.getCurrentPathName();
-			FileUtils.copyDirectory(new File(testDir), new File(fileLocation));
-			FileUtils.deleteDirectory(new File(testDir));
-		} catch (Exception e) {
-		}
 
 	}
 
