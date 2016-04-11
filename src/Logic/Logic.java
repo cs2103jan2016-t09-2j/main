@@ -214,7 +214,12 @@ public class Logic {
 			LocalDate tmw = LocalDate.now().plusDays(1);
 			for (Task task : scheduledTasksToDo) {
 				if (task.getEndDate().isAfter(tmw)) {
-					break;
+					if (task.getStartDate() == null) {
+						break;
+					}
+					if (task.getStartDate().isAfter(tmw)) {
+						break;
+					}
 				}
 				firstList.add(task);
 				indexList.add(count++);
@@ -248,9 +253,10 @@ public class Logic {
 
 	/*
 	 * this method gets back the parsed Command class from parser. Proceeds to
-	 * execute function aft obtaining COMMAND_TYPE and Task classes
-	 * clears conflicting tasks index, shifts tasks, whose deadlines have exceeded current date and time
-	 * to scheduledOverDue tasks and stores updated arrayLists into storage class
+	 * execute function aft obtaining COMMAND_TYPE and Task classes clears
+	 * conflicting tasks index, shifts tasks, whose deadlines have exceeded
+	 * current date and time to scheduledOverDue tasks and stores updated
+	 * arrayLists into storage class
 	 */
 	public void retrieveParsedCommand(String originalDescription) {
 		try {
@@ -1139,29 +1145,29 @@ public class Logic {
 			setFeedBack(FEEDBACK_REDO_INVALID);
 		}
 	}
-	
-	//add task when undo/redo is called
+
+	// add task when undo/redo is called
 	public void addTaskList(ArrayList<Task> taskList) {
 		for (Task newTask : taskList) {
 			addTask(newTask, true, 0);
 		}
 	}
 
-	//complete task when undo/redo is called
+	// complete task when undo/redo is called
 	public void markAsCompleteListUndoOp(ArrayList<Task> taskList, ArrayList<Integer> indexList) {
 		for (Task task : taskList) {
 			markTaskComplete(task);
 		}
 	}
 
-	//mark task as incomplete when undo/redo is called
+	// mark task as incomplete when undo/redo is called
 	public void markAsIncompleteListUndoOp(ArrayList<Task> taskList, ArrayList<Integer> indexList) {
 		for (Task task : taskList) {
 			markTaskIncomplete(task);
 		}
 	}
 
-	//delete single task when undo/redo is called
+	// delete single task when undo/redo is called
 	public void deleteSingleTask(int index) {
 		if (index > 0) {
 			if (index <= scheduledTasksOverDue.size()) {
@@ -1243,4 +1249,3 @@ public class Logic {
 		System.exit(0);
 	}
 }
-
