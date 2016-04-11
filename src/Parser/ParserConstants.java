@@ -18,7 +18,7 @@ public class ParserConstants {
 	static final String[] COMMAND_SEARCH = { "search", "find" };
 	static final String[] COMMAND_EXIT = { "exit", "quit", "q" };
 	static final String[] COMMAND_UNDO = { "undo", "z" };
-	static final String[] COMMAND_REDO = { "redo" , "y"};
+	static final String[] COMMAND_REDO = { "redo", "y" };
 	static final String[] COMMAND_SET_DIRECTORY = { "set" };
 	static final String[] COMMAND_HOME = { "home" };
 	static final String[] COMMAND_HELP = { "help" };
@@ -44,6 +44,7 @@ public class ParserConstants {
 	static final String REGEX_ONLY_DIGITS = "\\b\\d+\\b";
 	static final String REGEX_ONLY_WORDS = "\\b\\w+\\b";
 	static final String REGEX_COMMA_WITH_SPACES = "\\s*,\\s*";
+	static final String REGEX_HYPHEN_WITH_DIGITS = "\\d+-\\d+";
 	static final String REGEX_POSSIBLE_DIRECTORY = "([A-Za-z]:\\\\\\\\\\w+)";
 
 	// Position/Index based integer constants
@@ -149,6 +150,7 @@ public class ParserConstants {
 	static final String STRING_WHITESPACE = " ";
 	static final String STRING_COMMA = ",";
 	static final String STRING_HYPHEN = "-";
+	static final String STRING_HYPHEN_WHITESPACE = " - ";
 	static final String STRING_TO = "to";
 	static final String STRING_OVERDUE = "overdue";
 

@@ -10,9 +10,8 @@ import Parser.Command;
 import Parser.Command.COMMAND_TYPE;
 import Parser.CommandParser;
 import ScheduleHacks.Task;
-import Logic.Search;
 
-public class LogicTest { 
+public class LogicTest {
 
 	Logic obj = Logic.getInstance();
 
@@ -81,7 +80,7 @@ public class LogicTest {
 		assertEquals(3, obj.getScheduledTasksToDo().size());
 		assertEquals("Task entered by user already exists! Task not added!", obj.getFeedBack());
 
-		String testString05 = "swim tmr 1630 1730";
+		String testString05 = "swim tmr 1630-1730";
 		Command existingCommand05 = CommandParser.getParsedCommand(testString05);
 		COMMAND_TYPE typeCommand05 = obj.getCommand(existingCommand05);
 		Task executeTask05 = obj.getTaskDescription(existingCommand05);
@@ -223,13 +222,13 @@ public class LogicTest {
 		assertEquals(0, obj.getFloatingTasksToDo().size());
 		assertEquals("Task Deleted Successfully", obj.getFeedBack());
 
-		String testString21 = "go for X-Men Apocalypse 01/05/2016";
+		String testString21 = "go for XMen Apocalypse 01/05/2016";
 		Command existingCommand21 = CommandParser.getParsedCommand(testString21);
 		COMMAND_TYPE typeCommand21 = obj.getCommand(existingCommand21);
 		Task executeTask21 = obj.getTaskDescription(existingCommand21);
 		obj.execute(typeCommand21, existingCommand21, executeTask21);
 		assertEquals(1, obj.getScheduledTasksToDo().size());
-		assertEquals("go for X-Men Apocalypse", obj.getScheduledTasksToDo().get(0).getDescription());
+		assertEquals("go for XMen Apocalypse", obj.getScheduledTasksToDo().get(0).getDescription());
 		assertEquals("2016-05-01", obj.getScheduledTasksToDo().get(0).getEndDate().toString());
 
 		String testString22 = "home";
@@ -239,7 +238,7 @@ public class LogicTest {
 		obj.execute(typeCommand22, existingCommand22, executeTask22);
 		assertEquals("Home Screen Display", obj.getFeedBack());
 		assertEquals(1, obj.getScheduledTasksToDo().size());
-		assertEquals("go for X-Men Apocalypse", obj.getScheduledTasksToDo().get(0).getDescription());
+		assertEquals("go for XMen Apocalypse", obj.getScheduledTasksToDo().get(0).getDescription());
 		assertEquals("2016-05-01", obj.getScheduledTasksToDo().get(0).getEndDate().toString());
 
 		String testString23 = "view all";
@@ -249,7 +248,7 @@ public class LogicTest {
 		obj.execute(typeCommand23, existingCommand23, executeTask23);
 		assertEquals("", obj.getFeedBack());
 		assertEquals(1, obj.getScheduledTasksToDo().size());
-		assertEquals("go for X-Men Apocalypse", obj.getScheduledTasksToDo().get(0).getDescription());
+		assertEquals("go for XMen Apocalypse", obj.getScheduledTasksToDo().get(0).getDescription());
 		assertEquals("2016-05-01", obj.getScheduledTasksToDo().get(0).getEndDate().toString());
 
 		String testString24 = "help";
@@ -259,58 +258,7 @@ public class LogicTest {
 		obj.execute(typeCommand24, existingCommand24, executeTask24);
 		assertEquals("Help sheet activated", obj.getFeedBack());
 		assertEquals(1, obj.getScheduledTasksToDo().size());
-		assertEquals("go for X-Men Apocalypse", obj.getScheduledTasksToDo().get(0).getDescription());
+		assertEquals("go for XMen Apocalypse", obj.getScheduledTasksToDo().get(0).getDescription());
 		assertEquals("2016-05-01", obj.getScheduledTasksToDo().get(0).getEndDate().toString());
-
-		/*
-		 * String testString25 = "set C:\\SH"; Task executeTask25 =
-		 * obj.getTaskDescription(CommandParser.getParsedCommand(testString25));
-		 * obj.setNewDirectoryPath(executeTask25); assertEquals(true,
-		 * obj.getFeedBack().contains("Directory Path Successfully Changed!"));
-		 */
-
-		/*
-		 * String testString25 = "view X-Men"; Command existingCommand25 =
-		 * CommandParser.getParsedCommand(testString25); COMMAND_TYPE
-		 * typeCommand25 = obj.getCommand(existingCommand25); Task executeTask25
-		 * = obj.getTaskDescription(existingCommand25);
-		 * obj.execute(typeCommand25, existingCommand25, executeTask25);
-		 * assertEquals("Search Found", obj.getFeedBack()); assertEquals(1,
-		 * obj.getScheduledTasksToDo().size()); assertEquals(
-		 * "go for X-Men Apocalypse",
-		 * obj.getScheduledTasksToDo().get(0).getDescription());
-		 * assertEquals("2016-05-01",
-		 * obj.getScheduledTasksToDo().get(0).getEndDate().toString());
-		 * 
-		 * String testString26 = "view 1 May 16"; Command existingCommand26 =
-		 * CommandParser.getParsedCommand(testString26); COMMAND_TYPE
-		 * typeCommand26 = obj.getCommand(existingCommand26); Task executeTask26
-		 * = obj.getTaskDescription(existingCommand26);
-		 * obj.execute(typeCommand26, existingCommand26, executeTask26);
-		 * assertEquals("Search Found", obj.getFeedBack()); assertEquals(1,
-		 * obj.getScheduledTasksToDo().size()); assertEquals(
-		 * "go for X-Men Apocalypse",
-		 * obj.getScheduledTasksToDo().get(0).getDescription());
-		 * assertEquals("2016-05-01",
-		 * obj.getScheduledTasksToDo().get(0).getEndDate().toString());
-		 * 
-		 * String testString27 = "view April"; Command existingCommand27 =
-		 * CommandParser.getParsedCommand(testString27); COMMAND_TYPE
-		 * typeCommand27 = obj.getCommand(existingCommand27); Task executeTask27
-		 * = obj.getTaskDescription(existingCommand27);
-		 * obj.execute(typeCommand27, existingCommand27, executeTask27);
-		 * assertEquals("Search Not Found", obj.getFeedBack()); assertEquals(1,
-		 * obj.getScheduledTasksToDo().size()); assertEquals(
-		 * "go for X-Men Apocalypse",
-		 * obj.getScheduledTasksToDo().get(0).getDescription());
-		 * assertEquals("2016-05-01",
-		 * obj.getScheduledTasksToDo().get(0).getEndDate().toString());
-		 * 
-		 * 
-		 * String testString29 = "exit"; Command existingCommand29 =
-		 * CommandParser.getParsedCommand(testString29); COMMAND_TYPE
-		 * typeCommand29 = obj.getCommand(existingCommand29); Task executeTask29
-		 * = obj.getTaskDescription(existingCommand29);
-		 */
 	}
 }

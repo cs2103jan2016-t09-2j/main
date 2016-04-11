@@ -44,7 +44,7 @@ public class DateParser {
 
 	/****************** SETTER METHODS ***********************/
 	protected void setTaskDetails(String newTaskDetails) {
-		this.taskDetails = CommandParser.cleanupExtraWhitespace(newTaskDetails);
+		this.taskDetails = cleanupExtraWhitespace(newTaskDetails);
 	}
 
 	protected void setDateList(ArrayList<LocalDate> dateList) {

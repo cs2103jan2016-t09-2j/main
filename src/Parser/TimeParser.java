@@ -55,7 +55,7 @@ public class TimeParser {
 
 	/****************** SETTER METHODS ***********************/
 	protected void setTaskDetails(String newTaskDetails) {
-		this.taskDetails = newTaskDetails;
+		this.taskDetails = cleanupExtraWhitespace(newTaskDetails);
 	}
 
 	protected void setTimeList(ArrayList<LocalTime> timeList) {
@@ -91,6 +91,7 @@ public class TimeParser {
 	 * This method is used to extract all the times from taskDetails
 	 */
 	public void findTimes() {
+		formatHyphenDelimiter();
 		String taskDetails = getTaskDetails();
 
 		Pattern timePattern = Pattern.compile(ParserConstants.REGEX_POSSIBLE_TIME);
@@ -442,6 +443,19 @@ public class TimeParser {
 			return missedTime.plusHours(ParserConstants.TWELVE_HOURS);
 		}
 		return missedTime;
+	}
+
+	public void formatHyphenDelimiter() {
+		String taskDetails = getTaskDetails();
+		Pattern hyphenPattern = Pattern.compile(ParserConstants.REGEX_HYPHEN_WITH_DIGITS);
+		Matcher hyphenMatcher = hyphenPattern.matcher(taskDetails);
+		while (hyphenMatcher.find()) {
+			String split1 = taskDetails.substring(0, hyphenMatcher.start());
+			String split2 = taskDetails.substring(hyphenMatcher.start()).replaceFirst(ParserConstants.STRING_HYPHEN,
+					ParserConstants.STRING_HYPHEN_WHITESPACE);
+			taskDetails = split1 + split2;
+		}
+		setTaskDetails(taskDetails);
 	}
 
 	/**
