@@ -417,9 +417,11 @@ public class CommandParser {
 			timeList = objDateTime.getTimeList();
 		}
 
-		setDateTimeNull(oldTask);
-		setDates(dateList, oldTask);
-		setTimes(timeList, oldTask);
+		if (dateList != null && timeList != null) {
+			setDateTimeNull(oldTask);
+			setDates(dateList, oldTask);
+			setTimes(timeList, oldTask);
+		}
 
 		if (taskStatement != null && !taskStatement.isEmpty()) {
 			oldTask.setDescription(taskStatement);
