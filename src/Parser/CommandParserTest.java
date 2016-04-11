@@ -416,7 +416,7 @@ public class CommandParserTest {
 		assertEquals(true, newTask.isComplete());
 	}
 
-	@Test
+	/*@Test
 	public void checkGetCriteria1() throws Exception {
 		String testString = "this week";
 		Task newTask = CommandParser.getCriteria(testString);
@@ -438,7 +438,7 @@ public class CommandParserTest {
 		assertEquals(null, newTask.getStartTime());
 		assertEquals(null, newTask.getEndTime());
 		assertEquals(false, newTask.isComplete());
-	}
+	}*/
 
 	@Test
 	public void checkGetCriteria3() throws Exception {
