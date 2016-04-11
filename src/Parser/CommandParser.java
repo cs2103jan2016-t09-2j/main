@@ -94,7 +94,7 @@ public class CommandParser {
 				// do nothing
 				break;
 			}
-			if (newTask != null) {
+			if (newTask != null && !commandType.equals(COMMAND_TYPE.MODIFY_TASK)) {
 				newTask.setDescription(parseDescription(newTask.getDescription()));
 			}
 			if (command.getCommandType().equals(COMMAND_TYPE.HELP)
@@ -424,7 +424,7 @@ public class CommandParser {
 		}
 
 		if (taskStatement != null && !taskStatement.isEmpty()) {
-			oldTask.setDescription(taskStatement);
+			oldTask.setDescription(parseDescription(taskStatement));
 		}
 
 		return oldTask;
@@ -484,7 +484,7 @@ public class CommandParser {
 			}
 		} else {
 			if (taskStatement != null && !taskStatement.isEmpty()) {
-				oldTask.setDescription(taskStatement);
+				oldTask.setDescription(parseDescription(taskStatement));
 			}
 		}
 
