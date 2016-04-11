@@ -111,6 +111,7 @@ public class History {
 		if (indexOfCommand > 0) {
 			commandHistory.remove(indexOfCommand - 1);
 		}
+		setIndexCommandHistory();
 	}
 
 	/*
