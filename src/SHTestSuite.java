@@ -18,7 +18,7 @@ import Logic.*;
   IndexParserTest.class,
   DateTimeParserTest.class,
   HistoryTest.class,
-  StorageTest.class,
+  //StorageTest.class,
   IntegrationTest.class
   
 })
