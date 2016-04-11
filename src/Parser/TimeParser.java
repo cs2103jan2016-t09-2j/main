@@ -182,6 +182,18 @@ public class TimeParser {
 		}
 	}
 
+	/**
+	 * This method removes the missed time, extToRemove from the task details
+	 * 
+	 * @param textToRemove
+	 */
+	public void removeMissedTimeFromTaskDetails(String textToRemove, int endPos) {
+		int startIndex = taskDetails.lastIndexOf(textToRemove, endPos);
+		taskDetails = taskDetails.substring(ParserConstants.FIRST_INDEX, startIndex) + ParserConstants.STRING_WHITESPACE
+				+ taskDetails.substring(endPos);
+		taskDetails = cleanupExtraWhitespace(taskDetails);
+	}
+
 	public LocalTime getParsedTimeDuration(String text) {
 		try {
 			String firstWord = ParserConstants.STRING_EMPTY;
@@ -396,7 +408,8 @@ public class TimeParser {
 			LocalTime timeAM = getMissedTime(missedTime);
 			if (timeAM != null) {
 				timeList.add(ParserConstants.FIRST_INDEX, calculateMissed(timeAM, currentParsedTime));
-				removeTimeFromTaskDetails(previousWord);
+				removeMissedTimeFromTaskDetails(previousWord, endPos);
+				// removeTimeFromTaskDetails(previousWord);
 				return true;
 			}
 		} catch (NumberFormatException nfe) {
