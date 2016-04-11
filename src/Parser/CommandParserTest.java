@@ -399,7 +399,7 @@ public class CommandParserTest {
 		assertEquals(null, newTask.getEndTime());
 		assertEquals(false, newTask.isComplete());
 	}
-	
+
 	@Test
 	public void checkGetParsedCommand23() throws Exception {
 		String testString = " view   archive  ";
@@ -741,6 +741,57 @@ public class CommandParserTest {
 		assertEquals("2016-04-23", newTask.getEndDate().toString());
 		assertEquals("16:00", newTask.getStartTime().toString());
 		assertEquals("22:00", newTask.getEndTime().toString());
+		assertEquals(false, newTask.isComplete());
+		assertEquals(false, newTask.isFloatingTask());
+		assertEquals(true, newTask.isScheduledTask());
+	}
+
+	@Test
+	public void checkEditExistingTask10() throws Exception {
+		Task oldTask = new Task("buy dog", LocalDate.parse("2016-06-08"), LocalDate.parse("2016-08-08"),
+				LocalTime.parse("12:00"), LocalTime.parse("12:00"));
+		oldTask.setScheduledTask();
+		String testString = " 23apr";
+		Task newTask = CommandParser.editExistingTask(oldTask, testString);
+		assertEquals("buy dog", newTask.getDescription());
+		assertEquals(null, newTask.getStartDate());
+		assertEquals("2016-04-23", newTask.getEndDate().toString());
+		assertEquals(null, newTask.getStartTime());
+		assertEquals(LocalTime.MAX, newTask.getEndTime());
+		assertEquals(false, newTask.isComplete());
+		assertEquals(false, newTask.isFloatingTask());
+		assertEquals(true, newTask.isScheduledTask());
+	}
+
+	@Test
+	public void checkEditExistingTask11() throws Exception {
+		Task oldTask = new Task("buy dog", LocalDate.parse("2016-06-08"), LocalDate.parse("2016-08-08"),
+				LocalTime.parse("12:00"), LocalTime.parse("12:00"));
+		oldTask.setScheduledTask();
+		String testString = " 23apr to 19apr";
+		Task newTask = CommandParser.editExistingTask(oldTask, testString);
+		assertEquals("buy dog", newTask.getDescription());
+		assertEquals(LocalDate.of(2016, 04, 19), newTask.getStartDate());
+		assertEquals("2016-04-23", newTask.getEndDate().toString());
+		assertEquals(LocalTime.of(12, 0), newTask.getStartTime());
+		assertEquals(LocalTime.of(12, 0), newTask.getEndTime());
+		assertEquals(false, newTask.isComplete());
+		assertEquals(false, newTask.isFloatingTask());
+		assertEquals(true, newTask.isScheduledTask());
+	}
+
+	@Test
+	public void checkEditExistingTask12() throws Exception {
+		Task oldTask = new Task("buy dog", LocalDate.parse("2016-06-08"), LocalDate.parse("2016-08-08"),
+				LocalTime.parse("12:00"), LocalTime.parse("12:00"));
+		oldTask.setScheduledTask();
+		String testString = " 23apr to 23apr";
+		Task newTask = CommandParser.editExistingTask(oldTask, testString);
+		assertEquals("buy dog", newTask.getDescription());
+		assertEquals(null, newTask.getStartDate());
+		assertEquals("2016-04-23", newTask.getEndDate().toString());
+		assertEquals(null, newTask.getStartTime());
+		assertEquals(LocalTime.of(12, 0), newTask.getEndTime());
 		assertEquals(false, newTask.isComplete());
 		assertEquals(false, newTask.isFloatingTask());
 		assertEquals(true, newTask.isScheduledTask());

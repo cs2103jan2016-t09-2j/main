@@ -62,6 +62,9 @@ public class CommandParser {
 			taskStatement = indexParser.getTaskDetails();
 		}
 		if (!CommandParser.hasTaskDetails(commandType)) {
+			if (taskStatement != null && !taskStatement.isEmpty()) {
+				command.setIndexList(generateDefaultIntList());
+			}
 			return null;
 		} else {
 			// if (taskStatement != null && !taskStatement.isEmpty()) {
@@ -349,84 +352,7 @@ public class CommandParser {
 		if (oldTask.isFloatingTask()) {
 			oldTask = editFloatingTask(taskStatement, oldTask, dateList, timeList);
 		} else if (oldTask.isScheduledTask()) {
-			oldTask = editScheduledTask22(taskStatement, oldTask, dateList, timeList);
-		}
-
-		return oldTask;
-	}
-
-	// temporary edit
-	public static Task editScheduledTask22(String taskStatement, Task oldTask, ArrayList<LocalDate> dateList,
-			ArrayList<LocalTime> timeList) {
-
-		ArrayList<LocalDate> oldDateList = new ArrayList<LocalDate>();
-		ArrayList<LocalTime> oldTimeList = new ArrayList<LocalTime>();
-
-		if (oldTask.getStartDate() != null) {
-			oldDateList.add(oldTask.getStartDate());
-		}
-		oldDateList.add(oldTask.getEndDate());
-
-		if (oldTask.getStartTime() != null) {
-			oldTimeList.add(oldTask.getStartTime());
-		}
-		oldTimeList.add(oldTask.getEndTime());
-
-		if (dateList != null && timeList != null) { 
-			DateTimeParser objDateTime = new DateTimeParser(dateList, timeList);
-			objDateTime.arrangeDateTimeList();
-			dateList = objDateTime.getDateList();
-			timeList = objDateTime.getTimeList();
-		} else if (timeList != null || dateList != null) {
-			if (timeList != null) {
-				if (timeList.size() > oldTimeList.size()) {
-					dateList = new ArrayList<LocalDate>();
-					dateList.add(oldTask.getEndDate());
-					if (LocalDateTime.of(oldTask.getEndDate(), timeList.get(ParserConstants.FIRST_INDEX))
-							.isAfter(LocalDateTime.of(oldTask.getEndDate(), timeList.get(1)))) {
-						dateList.add(oldTask.getEndDate().plusDays(1));
-					} else {
-						dateList.add(oldTask.getEndDate());
-					}
-
-				} else if (timeList.size() < oldTimeList.size()) {
-					oldTask.setStartDate(null);
-				} else {
-					dateList = new ArrayList<LocalDate>(oldDateList);
-				}
-			} else {
-				if (dateList.size() > oldDateList.size()) {
-					timeList = new ArrayList<LocalTime>();
-					timeList.add(LocalTime.MAX);
-					timeList.add(oldTask.getEndTime());
-				} else if (dateList.size() < oldDateList.size()) {
-					oldTask.setStartDate(null);
-					oldTask.setStartTime(null);
-					oldTask.setEndTime(LocalTime.MAX);
-				} else {
-					timeList = new ArrayList<LocalTime>(oldTimeList);
-				}
-			}
-			DateTimeParser objDateTime = new DateTimeParser(dateList, timeList);
-			objDateTime.arrangeDateTimeList();
-			dateList = objDateTime.getDateList();
-			timeList = objDateTime.getTimeList();
-		}
-
-		/*if (dateList != null) {
-			oldTask.setEndDate(null);
-			oldTask.setStartDate(null);
-		}
-		if (timeList != null) {
-			oldTask.setEndTime(null);
-			oldTask.setStartTime(null);
-		}*/
-
-		setDates(dateList, oldTask);
-		setTimes(timeList, oldTask);
-
-		if (taskStatement != null && !taskStatement.isEmpty()) {
-			oldTask.setDescription(taskStatement);
+			oldTask = editScheduledTask(taskStatement, oldTask, dateList, timeList);
 		}
 
 		return oldTask;
@@ -445,18 +371,8 @@ public class CommandParser {
 	public static Task editScheduledTask(String taskStatement, Task oldTask, ArrayList<LocalDate> dateList,
 			ArrayList<LocalTime> timeList) {
 
-		ArrayList<LocalDate> oldDateList = new ArrayList<LocalDate>();
-		ArrayList<LocalTime> oldTimeList = new ArrayList<LocalTime>();
-
-		if (oldTask.getStartDate() != null) {
-			oldDateList.add(oldTask.getStartDate());
-		}
-		oldDateList.add(oldTask.getEndDate());
-
-		if (oldTask.getStartTime() != null) {
-			oldTimeList.add(oldTask.getStartTime());
-		}
-		oldTimeList.add(oldTask.getEndTime());
+		ArrayList<LocalDate> oldDateList = getTaskDateAsList(oldTask);
+		ArrayList<LocalTime> oldTimeList = getTaskTimeAsList(oldTask);
 
 		if (dateList != null && timeList != null) {
 			DateTimeParser objDateTime = new DateTimeParser(dateList, timeList);
@@ -474,40 +390,32 @@ public class CommandParser {
 					} else {
 						dateList.add(oldTask.getEndDate());
 					}
-
-				} else if (timeList.size() < oldTimeList.size()) {
-					oldTask.setStartDate(null);
-				}
+				} else if (timeList.size() == oldTimeList.size()) {
+					dateList = new ArrayList<LocalDate>(oldDateList);
+				} /*
+					 * else { oldTask.setStartDate(null); }
+					 */
 			} else {
 				if (dateList.size() > oldDateList.size()) {
 					timeList = new ArrayList<LocalTime>();
 					timeList.add(LocalTime.MAX);
 					timeList.add(oldTask.getEndTime());
 				} else if (dateList.size() < oldDateList.size()) {
-					oldTask.setStartDate(null);
-					oldTask.setStartTime(null);
-					oldTask.setEndTime(LocalTime.MAX);
 					/*
-					 * if (LocalDateTime.of(dateList.get(0),
-					 * oldTask.getStartTime())
-					 * .isAfter(LocalDateTime.of(dateList.get(0),
-					 * oldTask.getEndTime()))) {
-					 * dateList.add(dateList.get(0).plusDays(1)); } else {
-					 * dateList.add(dateList.get(0)); }
+					 * oldTask.setStartDate(null); oldTask.setStartTime(null);
 					 */
+					oldTask.setEndTime(LocalTime.MAX);
+				} else {
+					timeList = new ArrayList<LocalTime>(oldTimeList);
 				}
 			}
+			DateTimeParser objDateTime = new DateTimeParser(dateList, timeList);
+			objDateTime.arrangeDateTimeList();
+			dateList = objDateTime.getDateList();
+			timeList = objDateTime.getTimeList();
 		}
 
-		if (dateList != null) {
-			oldTask.setEndDate(null);
-			oldTask.setStartDate(null);
-		}
-		if (timeList != null) {
-			oldTask.setEndTime(null);
-			oldTask.setStartTime(null);
-		}
-
+		setDateTimeNull(oldTask);
 		setDates(dateList, oldTask);
 		setTimes(timeList, oldTask);
 
@@ -516,6 +424,50 @@ public class CommandParser {
 		}
 
 		return oldTask;
+	}
+
+	/**
+	 * This method sets the date and time of the given task to null
+	 * 
+	 * @param task
+	 */
+	public static void setDateTimeNull(Task task) {
+		task.setEndDate(null);
+		task.setStartDate(null);
+		task.setEndTime(null);
+		task.setStartTime(null);
+	}
+
+	/**
+	 * This method returns the dates of the given oldTask in an ArrayList
+	 * format.
+	 * 
+	 * @param oldTask
+	 * @return ArrayList<LocalDate>; dates in list format
+	 */
+	public static ArrayList<LocalDate> getTaskDateAsList(Task oldTask) {
+		ArrayList<LocalDate> oldDateList = new ArrayList<LocalDate>();
+		if (oldTask.getStartDate() != null) {
+			oldDateList.add(oldTask.getStartDate());
+		}
+		oldDateList.add(oldTask.getEndDate());
+		return oldDateList;
+	}
+
+	/**
+	 * This method returns the times of the given oldTask in an ArrayList
+	 * format.
+	 * 
+	 * @param oldTask
+	 * @return ArrayList<LocalTime>; times in list format
+	 */
+	public static ArrayList<LocalTime> getTaskTimeAsList(Task oldTask) {
+		ArrayList<LocalTime> oldTimeList = new ArrayList<LocalTime>();
+		if (oldTask.getStartTime() != null) {
+			oldTimeList.add(oldTask.getStartTime());
+		}
+		oldTimeList.add(oldTask.getEndTime());
+		return oldTimeList;
 	}
 
 	public static Task editFloatingTask(String taskStatement, Task oldTask, ArrayList<LocalDate> dateList,
@@ -755,6 +707,17 @@ public class CommandParser {
 	 */
 	public static LocalDate getCurrentDate() {
 		return LocalDate.now();
+	}
+
+	/**
+	 * This method returns an Integer ArrayList consisting of only -1.
+	 * 
+	 * @return Integer ArrayList consisting of only -1
+	 */
+	public static ArrayList<Integer> generateDefaultIntList() {
+		ArrayList<Integer> defaultList = new ArrayList<Integer>();
+		defaultList.add(ParserConstants.DEFAULT_INDEX_NUMBER);
+		return defaultList;
 	}
 
 	/**
